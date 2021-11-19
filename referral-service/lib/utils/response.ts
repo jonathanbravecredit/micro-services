@@ -6,6 +6,7 @@ export const response = (statusCode: number, body: any): APIGatewayProxyResult =
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Credentials': true,
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
   },
   body: JSON.stringify(body, null, 2),
 });
