@@ -8,6 +8,7 @@ export class Referral {
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled' = 'pending';
   processingStatus: 'pending' | 'paid' = 'pending';
+  sub: string | null | undefined;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 }
@@ -18,6 +19,7 @@ export class ReferralMaker implements Referral {
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled';
   processingStatus: 'pending' | 'paid';
+  sub: string | null;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 
@@ -27,6 +29,7 @@ export class ReferralMaker implements Referral {
     this.referredByCode = referredByCode;
     this.enrollmentStatus = 'pending';
     this.processingStatus = 'pending';
+    this.sub = null;
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
   }
