@@ -9,13 +9,7 @@ import { safeParse } from 'lib/utils/safeJson';
 import { Referral, ReferralMaker } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const body: any = safeParse(event, 'body'); // referredByCode;
-  const id = 'jpizzolato36@gmail.com'; //body.id;
-  console.log('body ==> ', body);
-  const payload: interfaces.ICreateReferral = {
-    id,
-    ...JSON.parse(body),
-  };
+  const payload: interfaces.ICreateReferral = safeParse(event, 'body'); // referredByCode;
   const validate = ajv.getSchema<interfaces.ICreateReferral>('referralCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
