@@ -45,6 +45,10 @@ provider:
       Resource: '*'
     - Effect: 'Allow'
       Action:
+        - 'lambda:InvokeFunction'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
         - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Scan
@@ -65,19 +69,6 @@ functions:
           path: /referral
           method: post
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          integration: lambda-proxy
-  createReferral2:
-    handler: src/api/referrals/create.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral2
-          method: post
-          cors: true
           authorizer: aws_iam
   getReferral:
     handler: src/api/referrals/get.main
@@ -87,11 +78,7 @@ functions:
           path: /referral
           method: get
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          integration: lambda-proxy
+          authorizer: aws_iam
   updateReferral:
     handler: src/api/referrals/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -100,11 +87,7 @@ functions:
           path: /referral
           method: put
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          integration: lambda-proxy
+          authorizer: aws_iam
   deleteReferral:
     handler: src/api/referrals/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -113,11 +96,7 @@ functions:
           path: /referral
           method: delete
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          integration: lambda-proxy
+          authorizer: aws_iam
 
 resources:
   Resources:
