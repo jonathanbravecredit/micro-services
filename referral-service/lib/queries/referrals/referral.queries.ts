@@ -42,8 +42,6 @@ export const updateReferral = async (referral: Partial<Referral>): Promise<Parti
     .update(merge.id)
     .updateAttribute('referralCode')
     .set(merge.referralCode)
-    .updateAttribute('referredByCode')
-    .set(merge.referredByCode || null)
     .updateAttribute('enrollmentStatus')
     .set(merge.enrollmentStatus || 'pending')
     .updateAttribute('processingStatus')
