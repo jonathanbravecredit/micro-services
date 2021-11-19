@@ -15,7 +15,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     ...JSON.parse(body),
   };
   const validate = ajv.getSchema<interfaces.IUpdateReferral>('referralUpdate');
-  if (!validate || !validate(payload)) throw `Malformed message=${payload}`;
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const referral: Partial<Referral> = payload;
     const updated = await queries.updateReferral(referral);

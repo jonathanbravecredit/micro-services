@@ -10,13 +10,15 @@ import { Referral, ReferralMaker } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const body: any = safeParse(event, 'body'); // referredByCode;
+  console.log('body ==> ', body);
   const id: string = event.requestContext.authorizer?.claims?.sub;
+  console.log('id ==> ', id);
   const payload: interfaces.ICreateReferral = {
     id,
     ...JSON.parse(body),
   };
   const validate = ajv.getSchema<interfaces.ICreateReferral>('referralCreate');
-  if (!validate || !validate(payload)) throw `Malformed message=${payload}`;
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const referralCode = vouchers.generate({ length: 7, count: 1 });
     const referral: Referral = new ReferralMaker(payload.id, referralCode[0], payload.referredByCode);

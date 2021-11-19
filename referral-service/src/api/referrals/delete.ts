@@ -9,7 +9,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const payload: interfaces.IDeleteReferral = { id };
   const validate = ajv.getSchema<interfaces.IDeleteReferral>('referralDelete');
-  if (!validate || !validate(payload)) throw `Malformed message=${payload}`;
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const { id } = payload;
     await queries.deleteReferral(id);
