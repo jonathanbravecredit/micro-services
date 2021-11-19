@@ -1,28 +1,25 @@
 'use strict';
-import * as vouchers from 'voucher-code-generator';
 import * as interfaces from 'lib/interfaces';
 import * as queries from 'lib/queries';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { safeParse } from 'lib/utils/safeJson';
-import { Referral, ReferralMaker } from 'lib/models/referral.model';
+import { Referral } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const body: any = safeParse(event, 'body'); // referredByCode;
-  const id = body.id;
-  console.log('body ==> ', body);
-  const payload: interfaces.ICreateReferral = {
+  const body: any = safeParse(event, 'body');
+  const id: string = event.requestContext.authorizer?.claims?.sub;
+  const payload: interfaces.IUpdateReferral = {
     id,
     ...JSON.parse(body),
   };
-  const validate = ajv.getSchema<interfaces.ICreateReferral>('referralCreate');
+  const validate = ajv.getSchema<interfaces.IUpdateReferral>('referralUpdate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
-    const referralCode = vouchers.generate({ length: 7, count: 1 });
-    const referral: Referral = new ReferralMaker(payload.id, referralCode[0], payload.referredByCode);
-    await queries.createReferral(referral);
-    return response(200, `success`);
+    const referral: Partial<Referral> = payload;
+    const updated = await queries.updateReferral(referral);
+    return updated ? response(200, updated) : response(404, updated);
   } catch (err) {
     return response(500, err);
   }

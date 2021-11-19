@@ -10,8 +10,9 @@ import { Referral, ReferralMaker } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const body: any = safeParse(event, 'body'); // referredByCode;
-  const id = body.id;
   console.log('body ==> ', body);
+  const id: string = event.requestContext.authorizer?.claims?.sub;
+  console.log('id ==> ', id);
   const payload: interfaces.ICreateReferral = {
     id,
     ...JSON.parse(body),
