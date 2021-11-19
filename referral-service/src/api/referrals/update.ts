@@ -16,8 +16,10 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   try {
     const referral: Partial<Referral> = payload;
     const updated = await queries.updateReferral(referral);
+    console.log('updated ==> ', updated);
     return updated ? response(200, updated) : response(404, updated);
   } catch (err) {
+    console.log('err ===> ', err);
     return response(500, err);
   }
 };

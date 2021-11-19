@@ -36,6 +36,7 @@ export const updateReferral = async (referral: Partial<Referral>): Promise<Parti
     ...old,
     ...referral,
   };
+  console.log('merge ===> ', merge);
   const modifiedOn = new Date().toISOString();
   return store
     .update(merge.id)
