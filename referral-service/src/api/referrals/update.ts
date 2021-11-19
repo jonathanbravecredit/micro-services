@@ -8,12 +8,9 @@ import { safeParse } from 'lib/utils/safeJson';
 import { Referral } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const body: any = safeParse(event, 'body');
-  const id: string = event.requestContext.authorizer?.claims?.sub;
-  const payload: interfaces.IUpdateReferral = {
-    id,
-    ...JSON.parse(body),
-  };
+  const payload: interfaces.IUpdateReferral = safeParse(event, 'body');
+  console.log('payload ===> ', payload);
+  // const id: string = event.requestContext.authorizer?.claims?.sub;
   const validate = ajv.getSchema<interfaces.IUpdateReferral>('referralUpdate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
