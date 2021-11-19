@@ -51,7 +51,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - !Ref Referrals
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
 
 functions:
   createReferral:
