@@ -75,7 +75,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral/{id}
           method: get
           cors: true
           authorizer: aws_iam
@@ -84,7 +84,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral/{id}
           method: put
           cors: true
           authorizer: aws_iam
@@ -93,16 +93,16 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral/{id}
           method: delete
           cors: true
           authorizer: aws_iam
   createReferral2:
-    handler: src/api/referrals/create.main
+    handler: src/api/referrals2/create.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral2
           method: post
           cors: true
           authorizer:
@@ -110,11 +110,11 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
   getReferral2:
-    handler: src/api/referrals/get.main
+    handler: src/api/referrals2/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral2
           method: get
           cors: true
           authorizer:
@@ -122,11 +122,11 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
   updateReferral2:
-    handler: src/api/referrals/update.main
+    handler: src/api/referrals2/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral2
           method: put
           cors: true
           authorizer:
@@ -134,11 +134,11 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
   deleteReferral2:
-    handler: src/api/referrals/update.main
+    handler: src/api/referrals2/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
+          path: /referral2
           method: delete
           cors: true
           authorizer:
