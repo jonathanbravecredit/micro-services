@@ -41,6 +41,9 @@ provider:
       Resource:
         - '*'
     - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
+    - Effect: 'Allow'
       Action:
         - dynamodb:ListStreams
         - dynamodb:DescribeTable
