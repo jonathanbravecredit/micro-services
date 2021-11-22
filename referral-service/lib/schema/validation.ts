@@ -1,0 +1,10 @@
+import Ajv from 'ajv';
+import * as referralGet from './referral_get.json';
+import * as referralCreate from './referral_create.json';
+import * as referralDelete from './referral_delete.json';
+import * as referralUpdate from './referral_update.json';
+export const ajv = new Ajv();
+ajv.addSchema(referralGet, 'referralGet');
+ajv.addSchema(referralCreate, 'referralCreate');
+ajv.addSchema(referralDelete, 'referralDelete');
+ajv.addSchema(referralUpdate, 'referralUpdate');

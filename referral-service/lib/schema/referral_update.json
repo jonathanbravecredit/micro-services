@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "nullable": false
+    },
+    "referralCode": {
+      "type": "string",
+      "nullable": true
+    },
+    "referredByCode": {
+      "type": "string",
+      "nullable": true
+    },
+    "enrollmentStatus": {
+      "type": "string",
+      "nullable": true
+    },
+    "processingStatus": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

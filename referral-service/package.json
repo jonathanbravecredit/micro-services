@@ -1,0 +1,35 @@
+{
+  "name": "referral-service",
+  "version": "0.1.0",
+  "description": "A TypeScript starter for Serverless Framework",
+  "main": "handler.js",
+  "scripts": {
+    "test": "serverless-bundle test"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnomalyInnovations/serverless-typescript-starter.git"
+  },
+  "devDependencies": {
+    "@types/amazon-cognito-auth-js": "^1.2.2",
+    "@types/aws-lambda": "^8.10.64",
+    "@types/jest": "^26.0.14",
+    "@types/uuid": "^8.3.3",
+    "@types/voucher-code-generator": "^1.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "serverless-bundle": "3.2.1",
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-offline": "^6.8.0"
+  },
+  "dependencies": {
+    "@shiftcoders/dynamo-easy": "^7.1.0",
+    "ajv": "7.0.2",
+    "md5": "^2.3.0",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^8.3.2",
+    "voucher-code-generator": "^1.1.1"
+  }
+}
