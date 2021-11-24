@@ -49,6 +49,15 @@ provider:
       Resource: '*'
     - Effect: 'Allow'
       Action:
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+    - Effect: 'Allow'
+      Action:
+        - cognito-idp:ListUsers
+      Resource:
+        - !SUB 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*'
+    - Effect: 'Allow'
+      Action:
         - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Scan
