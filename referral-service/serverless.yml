@@ -51,6 +51,7 @@ provider:
       Action:
         - 'ses:SendEmail'
         - 'ses:SendRawEmail'
+      Resource: '*'
     - Effect: 'Allow'
       Action:
         - cognito-idp:ListUsers
