@@ -107,6 +107,12 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  eligibleReferrals:
+    handler: src/handlers/reports/eligibleReferrals.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 8 * * ? *) # turning off
+
 resources:
   Resources:
     Referrals:
