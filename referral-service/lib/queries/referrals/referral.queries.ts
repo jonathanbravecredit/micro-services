@@ -11,6 +11,26 @@ export const getReferral = (id: string): Promise<Referral | null> => {
     .catch((err) => err);
 };
 
+export const listReferrals = (): Promise<Referral[]> => {
+  return store
+    .scan()
+    .execFetchAll()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const listEligibleReferrals = (): Promise<Referral[]> => {
+  return store
+    .scan()
+    .whereAttribute('enrollmentStatus')
+    .eq('enrolled')
+    .whereAttribute('processingStatus')
+    .eq('pending')
+    .execFetchAll()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
 export const createReferral = (referral: Referral): Promise<void> => {
   return store
     .put(referral)
