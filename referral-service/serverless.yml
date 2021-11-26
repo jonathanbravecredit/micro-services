@@ -121,7 +121,7 @@ functions:
     handler: src/handlers/reports/eligibleReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(0 8 * * ? *) # turning off
+      - schedule: cron(0 0 ? * MON *) # turning off
 
 resources:
   Resources:
