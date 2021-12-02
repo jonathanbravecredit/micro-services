@@ -72,3 +72,16 @@ export const updateReferral = async (referral: Partial<Referral>): Promise<Parti
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const enrollReferral = async (id: string): Promise<Partial<Referral> | null> => {
+  const modifiedOn = new Date().toISOString();
+  return store
+    .update(id)
+    .updateAttribute('enrollmentStatus')
+    .set('enrolled')
+    .updateAttribute('modifiedOn')
+    .set(modifiedOn)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
