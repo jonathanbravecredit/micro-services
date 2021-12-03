@@ -1,3 +1,4 @@
-export interface IGetEarningReferrals {
-    
+export interface IGetEarningReferralSummary {
+    earnings: string;
+    enrolledmentDate: string;
 }

@@ -12,9 +12,28 @@ export const main: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
-  const referral = await queries.getReferral(id);
+
   try {
-    return response(200, referral);
+    const referral = await queries.getReferral(id);
+    if (!referral) {
+      return response(404, null);
+    }
+    if (!referral.referralCode) {
+      return response(200, {
+        earnings: "",
+        enrollmentDate: referral.createdOn,
+      });
+    }
+
+    const allEnrolledReferrals =
+      await queries.listEnrolledReferralsByReferredBy(referral.referralCode);
+
+    const earningsAmount = 5 * allEnrolledReferrals.length + 5;
+
+    return response(200, {
+      earnings: `$${earningsAmount}`,
+      enrollmentDate: referral.createdOn,
+    });
   } catch (err) {
     return response(500, err);
   }
