@@ -14,7 +14,7 @@ export const main: APIGatewayProxyHandler = async (
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const referral = await queries.getReferral(id);
   try {
-    return response(200, event);
+    return response(200, referral);
   } catch (err) {
     return response(500, err);
   }
