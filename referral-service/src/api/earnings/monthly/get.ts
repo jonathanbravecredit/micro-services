@@ -21,8 +21,10 @@ export const main: APIGatewayProxyHandler = async (
     if (!referral.referralCode) {
       return response(200, {
         earnings: 0,
-        currency: 'USD',
+        currency: "USD",
         enrollmentDate: referral.createdOn,
+        month: 0,
+        year: 0,
       });
     }
 
@@ -33,8 +35,10 @@ export const main: APIGatewayProxyHandler = async (
 
     return response(200, {
       earnings: earningsAmount,
-      currency: 'USD',
+      currency: "USD",
       enrollmentDate: referral.createdOn,
+      month: 0,
+      year: 0,
     });
   } catch (err) {
     return response(500, err);
