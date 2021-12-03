@@ -34,7 +34,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
   environment:
-    NODE_ENV: ${opt:stage, 'dev'}
+    STAGE: ${opt:stage, 'dev'}
     ACCOUNT_ID: !Sub '${AWS::AccountId}'
     IDENTITY_ID: '${self:custom.settings.IDENTITY_IDS.${opt:stage}}'
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'

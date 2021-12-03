@@ -49,7 +49,7 @@ export const generateReferralEmailParams = (): IEmailParams => {
             </body>
         </html>`;
   const to =
-    process.env.NODE_ENV === 'dev' ? ['jonathan@brave.credit'] : ['jorge@brave.credit', 'jonathan@brave.credit'];
+    process.env.STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jorge@brave.credit', 'jonathan@brave.credit'];
 
   return {
     from,

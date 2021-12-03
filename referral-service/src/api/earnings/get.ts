@@ -12,9 +12,9 @@ export const main: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
-  const payload: interfaces.IGetReferral = { id };
+  const referral = await queries.getReferral(id);
   try {
-    return response(200, payload);
+    return response(200, event);
   } catch (err) {
     return response(500, err);
   }
