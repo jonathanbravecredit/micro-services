@@ -1,3 +1,4 @@
 import Ajv from 'ajv';
 export const ajv = new Ajv();
-// ajv.addSchema(referralGet, 'referralGet');
+import * as analyticCreate from './analytic_create.json';
+ajv.addSchema(analyticCreate, 'analyticCreate');

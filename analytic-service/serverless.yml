@@ -102,14 +102,14 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'analyticId'
+          - AttributeName: 'id'
             AttributeType: 'S'
-          - AttributeName: 'transactionId'
+          - AttributeName: 'event'
             AttributeType: 'S'
         KeySchema:
-          - AttributeName: 'analyticId'
+          - AttributeName: 'id'
             KeyType: 'HASH'
-          - AttributeName: 'transactionId'
+          - AttributeName: 'event'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
         TableName: Analytics
