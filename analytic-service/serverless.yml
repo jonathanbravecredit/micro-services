@@ -1,0 +1,138 @@
+# NOTE: update this with your service name
+service: analytic-service
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom:
+  bundle:
+    linting: false
+    externals: all
+  settings:
+    POOLS:
+      dev: 'us-east-2_beTcykTM9'
+      qa: 'us-east-2_beTcykTM9'
+      prod: 'us-east-2_R22DawoAR'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  environment:
+    STAGE: ${opt:stage, 'dev'}
+    POOL: '${self:custom.settings.POOLS.${opt:stage}}'
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
+    - Effect: 'Allow'
+    Action:
+      - dynamodb:ListStreams
+      - dynamodb:DescribeTable
+      - dynamodb:Scan
+      - dynamodb:Query
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
+
+functions:
+  createTracking:
+    handler: src/api/tracking/create.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /tracking
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  getTracking:
+    handler: src/api/tracking/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /tracking
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  updateTracking:
+    handler: src/api/tracking/update.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /tracking
+          method: put
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  deleteTracking:
+    handler: src/api/tracking/update.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /tracking
+          method: delete
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+resources:
+  Resources:
+    Analytics:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'id'
+            AttributeType: 'S'
+          - AttributeName: 'event'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'id'
+            KeyType: 'HASH'
+          - AttributeName: 'event'
+            KeyType: 'RANGE'
+        BillingMode: PAY_PER_REQUEST
+        TableName: Analytics
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: analytics-authorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOLS.${opt:stage}}'
+
+  Outputs:
+    AnalyticsTable:
+      Description: 'Analytics Table'
+      Value: !Ref Analytics
+      Export:
+        Name: !Sub '${self:service}-analytics'
+    AnalyticsTableStreamArn:
+      Value: { 'Fn::GetAtt': ['Analytics', 'StreamArn'] }
+      Export:
+        Name: !Sub '${self:service}-analytics-stream'

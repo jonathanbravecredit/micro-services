@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "nullable": false
+    },
+    "event": {
+      "type": "string",
+      "nullable": false
+    },
+    "sub": {
+      "type": "string",
+      "nullable": true
+    },
+    "session": {
+      "type": "string",
+      "nullable": false
+    },
+    "source": {
+      "type": "string",
+      "nullable": false
+    },
+    "value": {
+      "type": "number",
+      "nullable": false
+    }
+  },
+  "required": [
+    "id",
+    "event",
+    "sub",
+    "session",
+    "source"
+  ],
+  "additionalProperties": true
+}
