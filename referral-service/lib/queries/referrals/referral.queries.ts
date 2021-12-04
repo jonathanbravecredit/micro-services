@@ -1,5 +1,5 @@
-import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { Referral } from 'lib/models/referral.model';
+import { DynamoStore } from "@shiftcoders/dynamo-easy";
+import { Referral } from "lib/models/referral.model";
 
 const store = new DynamoStore(Referral);
 
@@ -7,6 +7,36 @@ export const getReferral = (id: string): Promise<Referral | null> => {
   return store
     .get(id)
     .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const listEnrolledReferralsByReferredBy = (
+  referredByCode: string
+): Promise<Referral[]> => {
+  return store
+    .scan()
+    .whereAttribute("referredByCode")
+    .eq(referredByCode)
+    .whereAttribute("enrollmentStatus")
+    .eq("enrolled")
+    .execFetchAll()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const listEnrolledReferralsByReferredMontly = (
+  referredByCode: string
+): Promise<Referral[]> => {
+  return store
+    .scan()
+    .whereAttribute("referredByCode")
+    .eq(referredByCode)
+    .whereAttribute("enrollmentStatus")
+    .eq("enrolled")
+    .whereAttribute("createdOn")
+    .eq("")
+    .execFetchAll()
     .then((res) => res)
     .catch((err) => err);
 };
@@ -22,10 +52,10 @@ export const listReferrals = (): Promise<Referral[]> => {
 export const listEligibleReferrals = (): Promise<Referral[]> => {
   return store
     .scan()
-    .whereAttribute('enrollmentStatus')
-    .eq('enrolled')
-    .whereAttribute('processingStatus')
-    .eq('pending')
+    .whereAttribute("enrollmentStatus")
+    .eq("enrolled")
+    .whereAttribute("processingStatus")
+    .eq("pending")
     .execFetchAll()
     .then((res) => res)
     .catch((err) => err);
@@ -43,13 +73,15 @@ export const createReferral = (referral: Referral): Promise<void> => {
 export const deleteReferral = (id: string): Promise<void> => {
   return store
     .delete(id)
-    .returnValues('ALL_OLD')
+    .returnValues("ALL_OLD")
     .exec()
     .then((res) => res)
     .catch((err) => err);
 };
 
-export const updateReferral = async (referral: Partial<Referral>): Promise<Partial<Referral> | null> => {
+export const updateReferral = async (
+  referral: Partial<Referral>
+): Promise<Partial<Referral> | null> => {
   if (!referral.id) return null;
   const old = await getReferral(referral.id);
   const merge = {
@@ -59,27 +91,29 @@ export const updateReferral = async (referral: Partial<Referral>): Promise<Parti
   const modifiedOn = new Date().toISOString();
   return store
     .update(merge.id)
-    .updateAttribute('referralCode')
+    .updateAttribute("referralCode")
     .set(merge.referralCode)
-    .updateAttribute('enrollmentStatus')
-    .set(merge.enrollmentStatus || 'pending')
-    .updateAttribute('processingStatus')
-    .set(merge.processingStatus || 'pending')
-    .updateAttribute('modifiedOn')
+    .updateAttribute("enrollmentStatus")
+    .set(merge.enrollmentStatus || "pending")
+    .updateAttribute("processingStatus")
+    .set(merge.processingStatus || "pending")
+    .updateAttribute("modifiedOn")
     .set(modifiedOn)
-    .returnValues('UPDATED_NEW')
+    .returnValues("UPDATED_NEW")
     .exec()
     .then((res) => res)
     .catch((err) => err);
 };
 
-export const enrollReferral = async (id: string): Promise<Partial<Referral> | null> => {
+export const enrollReferral = async (
+  id: string
+): Promise<Partial<Referral> | null> => {
   const modifiedOn = new Date().toISOString();
   return store
     .update(id)
-    .updateAttribute('enrollmentStatus')
-    .set('enrolled')
-    .updateAttribute('modifiedOn')
+    .updateAttribute("enrollmentStatus")
+    .set("enrolled")
+    .updateAttribute("modifiedOn")
     .set(modifiedOn)
     .exec()
     .then((res) => res)
