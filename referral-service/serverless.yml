@@ -145,6 +145,11 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+          request:
+            parameters:
+              querystrings:
+                month: string
+                year: string
 
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
