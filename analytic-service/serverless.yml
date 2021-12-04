@@ -13,7 +13,6 @@ plugins:
 custom:
   bundle:
     linting: false
-    externals: all
   settings:
     POOLS:
       dev: 'us-east-2_beTcykTM9'
@@ -33,17 +32,17 @@ provider:
       Action: 'sns:Publish'
       Resource: '*'
     - Effect: 'Allow'
-    Action:
-      - dynamodb:ListStreams
-      - dynamodb:DescribeTable
-      - dynamodb:Scan
-      - dynamodb:Query
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource:
-      - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
+      Action:
+        - dynamodb:ListStreams
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
 
 functions:
   createTracking:
@@ -94,7 +93,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-
 
 resources:
   Resources:

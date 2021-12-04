@@ -1,12 +1,12 @@
-import {APIGatewayEvent, Context} from "aws-lambda";
-import * as handler from "../handler";
+import { APIGatewayEvent, Context } from 'aws-lambda';
+import { hello } from 'handler';
 
-test("hello", async () => {
-  const event = { body: "Test Body" } as APIGatewayEvent;
+test('hello', async () => {
+  const event = { body: 'Test Body' } as APIGatewayEvent;
   const context = {} as Context;
 
-  const response = await handler.hello(event, context);
+  const response = await hello(event, context);
 
   expect(response.statusCode).toEqual(200);
-  expect(typeof response.body).toBe("string");
+  expect(typeof response.body).toBe('string');
 });
