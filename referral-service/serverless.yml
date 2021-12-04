@@ -148,8 +148,8 @@ functions:
           request:
             parameters:
               querystrings:
-                month: string
-                year: string
+                month: false
+                year: false
 
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
