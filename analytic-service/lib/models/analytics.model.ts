@@ -6,25 +6,25 @@ export class Analytics {
   id!: string;
   @SortKey()
   event!: string;
-  sub: string | null | undefined;
-  session: string | null | undefined;
-  source: string | null | undefined;
-  value: number | null | undefined;
-  createdOn: string | undefined;
-  modifiedOn: string | undefined;
+  sub!: string | null;
+  session!: string;
+  source!: string;
+  value?: number;
+  createdOn?: string;
+  modifiedOn?: string;
 }
 
 export class AnalyticsMaker implements Analytics {
   id: string;
   event: string;
-  sub: string | null | undefined;
-  session: string | null | undefined;
-  source: string | null | undefined;
-  value: number | null | undefined;
+  sub: string | null;
+  session: string;
+  source: string;
+  value: number;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 
-  constructor(id: string, event: string, sub: string, session: string, source: string, value: number = 1) {
+  constructor(id: string, event: string, sub: string | null, session: string, source: string, value: number = 1) {
     this.id = id;
     this.event = event;
     this.sub = sub;
