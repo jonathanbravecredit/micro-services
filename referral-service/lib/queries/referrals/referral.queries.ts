@@ -26,16 +26,30 @@ export const listEnrolledReferralsByReferredBy = (
 };
 
 export const listEnrolledReferralsByReferredMontly = (
-  referredByCode: string
+  referredByCode: string,
+  targetMonth?: string,
+  targetYear?: string
 ): Promise<Referral[]> => {
+  if (targetMonth && targetYear) {
+    return store
+      .scan()
+      .whereAttribute("referredByCode")
+      .eq(referredByCode)
+      .whereAttribute("enrollmentStatus")
+      .eq("enrolled")
+      .whereAttribute("createdOn")
+      .beginsWith(`${targetYear}-${targetMonth}`)
+      .execFetchAll()
+      .then((res) => res)
+      .catch((err) => err);
+  }
+
   return store
     .scan()
     .whereAttribute("referredByCode")
     .eq(referredByCode)
     .whereAttribute("enrollmentStatus")
     .eq("enrolled")
-    .whereAttribute("createdOn")
-    .eq("")
     .execFetchAll()
     .then((res) => res)
     .catch((err) => err);

@@ -1,13 +1,8 @@
-export interface IGetEarningReferralSummary {
-    earnings: string;
-    enrolledmentDate: string;
-    currency: string;
+export interface IGetEarningReferral {
+    id: string;
 }
 
-export interface IGetEarningReferralMonthlySummary {
-    earnings: string;
-    enrolledmentDate: string;
-    currency: string;
-    month: number;
-    year: number;
+export interface IGetEarningReferralMonthly extends IGetEarningReferral {
+    month?: string;
+    year?: string;
 }

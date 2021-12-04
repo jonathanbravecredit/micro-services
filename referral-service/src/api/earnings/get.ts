@@ -6,12 +6,19 @@ import {
   APIGatewayProxyHandler,
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
+  APIGatewayProxyEventQueryStringParameters,
 } from "aws-lambda";
+import { ajv } from "lib/schema/validation";
 
 export const main: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
+
+  const payload: interfaces.IGetEarningReferral = { id };
+  const validate = ajv.getSchema<interfaces.IGetEarningReferral>('referralGet');
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
+
 
   try {
     const referral = await queries.getReferral(id);
@@ -21,7 +28,7 @@ export const main: APIGatewayProxyHandler = async (
     if (!referral.referralCode) {
       return response(200, {
         earnings: 0,
-        currency: 'USD',
+        currency: "USD",
         enrollmentDate: referral.createdOn,
       });
     }
@@ -33,7 +40,7 @@ export const main: APIGatewayProxyHandler = async (
 
     return response(200, {
       earnings: earningsAmount,
-      currency: 'USD',
+      currency: "USD",
       enrollmentDate: referral.createdOn,
     });
   } catch (err) {
