@@ -9,18 +9,18 @@ export interface IUpdateAnalytic {
   value: number;
 }
 
-export interface IDeleteReferral {
+export interface IDeleteAnalytic {
   id: string;
   event: string;
 }
 
-export interface ICreateReferral {
+export interface ICreateAnalytic {
   id: string;
   event: string;
-  sub?: string | null | undefined;
-  session?: string | null | undefined;
-  source?: string | null | undefined;
-  value?: number | null | undefined;
-  createdOn?: string | undefined;
-  modifiedOn?: string | undefined;
+  sub: string | null;
+  session: string;
+  source: string;
+  value?: number;
+  createdOn?: string;
+  modifiedOn?: string;
 }
