@@ -12,15 +12,17 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   try {
     await Promise.all(
       records.map(async (record: DynamoDBRecord) => {
-        if (record.eventName == 'MODIFY') {
+        if (record.eventName == 'MODIFY' || record.eventName === 'INSERT') {
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as ICreditSummary;
           const sub = newImage.userId;
           const scoreId = new Date().valueOf();
+          const bureauId = newImage.bureauId;
           const score = newImage.currentScore || -1;
-          const creditScore = new CreditScoreMaker(sub, scoreId, score);
+          const creditScore = new CreditScoreMaker(sub, scoreId, bureauId, score);
+          console.log('credit score ==> ', creditScore);
           await createCreditScore(creditScore);
         }
       }),
