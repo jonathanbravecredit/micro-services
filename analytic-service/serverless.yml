@@ -51,6 +51,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Analytics'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScoreTrackings'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScores'
 
 functions:
   # api

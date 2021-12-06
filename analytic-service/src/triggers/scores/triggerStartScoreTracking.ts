@@ -3,7 +3,7 @@ import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecor
 import * as AWS from 'aws-sdk';
 import { ICreditSummary } from 'lib/interfaces/api/creditsummary/creditsummary.interface';
 import { CreditScoreMaker } from 'lib/models/credit-scores.model';
-import { createCreditScore } from 'lib/queries/creditscores/creditscores.queries';
+import { createCreditScore } from 'lib/queries';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
