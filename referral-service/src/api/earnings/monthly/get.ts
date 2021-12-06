@@ -8,6 +8,7 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 import { ajv } from "lib/schema/validation";
+import { Referral } from "lib/models/referral.model";
 
 export const main: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
@@ -65,11 +66,39 @@ export const main: APIGatewayProxyHandler = async (
           referral.referralCode
         );
 
-      /* Not quite sure how to tackle this. We want an array of objects,
-        one for each month with the earnings for that month,
-        but how do we figure out how many months / years, and order it properly? */
+      const referralMonthlyArray: {
+        yearMonth: number;
+        referrals: number;
+        earnings: number;
+        currency: "USD";
+      }[] = [];
 
-      return response(200, {});
+      allEnrolledReferralsByMonth.forEach((referral) => {
+        const yearMonth = +`${referral.createdOn?.slice(0, 4)}${referral.createdOn?.slice(5, 7)}`;
+        let found = false;
+
+        referralMonthlyArray.forEach((referralObj) => {
+          if (referralObj.yearMonth === yearMonth) {
+            if (found) return;
+
+            referralObj.referrals += 1;
+            referralObj.earnings += 5;
+            found = true;
+            return;
+          }
+        });
+
+        if (!found && yearMonth) {
+          referralMonthlyArray.push({
+            yearMonth,
+            referrals: 1,
+            earnings: 5,
+            currency: "USD",
+          });
+        }
+      });
+
+      return response(200, referralMonthlyArray);
     }
   } catch (err) {
     return response(500, err);
