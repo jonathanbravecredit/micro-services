@@ -1,6 +1,6 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
+import { DynamoDB } from 'aws-sdk';
 import { ICreditSummary } from 'lib/interfaces/api/creditsummary/creditsummary.interface';
 import { CreditScoreMaker } from 'lib/models/credit-scores.model';
 import { createCreditScore } from 'lib/queries';
@@ -16,7 +16,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as ICreditSummary;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as ICreditSummary;
           const sub = newImage.userId;
           const scoreId = new Date().valueOf();
           const bureauId = newImage.bureauId;

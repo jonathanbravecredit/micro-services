@@ -140,7 +140,7 @@ resources:
           - AttributeName: 'id'
             AttributeType: 'S'
           - AttributeName: 'scoreId'
-            AttributeType: 'S'
+            AttributeType: 'N'
         KeySchema:
           - AttributeName: 'id'
             KeyType: 'HASH'
