@@ -17,7 +17,6 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { OldImage, NewImage } = stream;
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as ICreditSummary;
-          // need to get the current score and then populate the table
           const sub = newImage.userId;
           const scoreId = new Date().valueOf();
           const score = newImage.currentScore || -1;
