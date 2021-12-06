@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 
 @Model({ tableName: 'CreditScores' })
