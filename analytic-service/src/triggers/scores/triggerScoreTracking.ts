@@ -26,6 +26,6 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
       }),
     );
   } catch (err) {
-    console.log('dynamodb error ===> ', err);
+    console.log('dynamodb error ==> ', err);
   }
 };
