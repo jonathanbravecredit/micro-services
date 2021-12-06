@@ -110,10 +110,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn:
-            Fn::GetAtt:
-              - Analytics
-              - StreamArn
+          arn: !ImportValue agency-services-transunion-creditscoretrackings-stream
   triggerScoreTracking:
     handler: src/triggers/scores/triggerScoreTracking.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
