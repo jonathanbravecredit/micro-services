@@ -133,7 +133,7 @@ resources:
         TableName: Analytics
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-    CreditScores:
+    CreditScoresDNU:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
@@ -147,7 +147,7 @@ resources:
           - AttributeName: 'scoreId'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
-        TableName: CreditScores
+        TableName: CreditScoresDNU
         StreamSpecification:
           StreamViewType: NEW_IMAGE
     ApiGatewayAuthorizer:
