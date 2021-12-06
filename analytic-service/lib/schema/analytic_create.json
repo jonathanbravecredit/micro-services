@@ -1,10 +1,6 @@
 {
   "type": "object",
   "properties": {
-    "id": {
-      "type": "string",
-      "nullable": false
-    },
     "event": {
       "type": "string",
       "nullable": false
@@ -27,7 +23,6 @@
     }
   },
   "required": [
-    "id",
     "event",
     "sub",
     "session",

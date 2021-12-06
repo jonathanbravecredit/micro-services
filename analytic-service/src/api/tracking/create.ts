@@ -1,6 +1,7 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
 import * as queries from 'lib/queries';
+import { v4 } from 'uuid';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -14,7 +15,8 @@ export const main: APIGatewayProxyHandler = async (
   const validate = ajv.getSchema<interfaces.ICreateAnalytic>('analyticCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
-    const { id, event, sub, session, source, value } = payload;
+    const { event, sub, session, source, value } = payload;
+    const id = v4();
     const analytic: Analytics = new AnalyticsMaker(id, event, sub, session, source, value);
     await queries.createAnalytics(analytic);
     return response(200, 'success');

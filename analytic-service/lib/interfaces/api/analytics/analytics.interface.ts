@@ -15,7 +15,6 @@ export interface IDeleteAnalytic {
 }
 
 export interface ICreateAnalytic {
-  id: string;
   event: string;
   sub: string | null;
   session: string;
