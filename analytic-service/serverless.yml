@@ -18,6 +18,9 @@ custom:
       dev: 'us-east-2_beTcykTM9'
       qa: 'us-east-2_beTcykTM9'
       prod: 'us-east-2_R22DawoAR'
+    APPDATA:
+      dev: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
+      prod: 'AppData-4tpaga7rzjayhk75opsmpeurme-prod'
 
 provider:
   name: aws
@@ -27,6 +30,9 @@ provider:
   environment:
     STAGE: ${opt:stage, 'dev'}
     POOL: '${self:custom.settings.POOLS.${opt:stage}}'
+    APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
+    CREDIT_SCORE_TABLE: CreditScoreTrackings
+    CREDIT_SCORE_STREAM: 'GetAtt:CreditScoreTrackings;StreamArn'
   iamRoleStatements:
     - Effect: 'Allow'
       Action: 'sns:Publish'
@@ -46,6 +52,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Analytics'
 
 functions:
+  # api
   createTracking:
     handler: src/api/tracking/create.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -94,6 +101,28 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+  # triggers
+  triggerStartScoreTracking:
+    handler: src/triggers/scores/triggerStartScoreTracking.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - Analytics
+              - StreamArn
+  triggerScoreTracking:
+    handler: src/triggers/scores/triggerScoreTracking.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue agency-services-transunion-creditscoretrackings-stream
 
 resources:
   Resources:
@@ -112,6 +141,23 @@ resources:
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
         TableName: Analytics
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    CreditScores:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'id'
+            AttributeType: 'S'
+          - AttributeName: 'scoreId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'id'
+            KeyType: 'HASH'
+          - AttributeName: 'scoreId'
+            KeyType: 'RANGE'
+        BillingMode: PAY_PER_REQUEST
+        TableName: CreditScores
         StreamSpecification:
           StreamViewType: NEW_IMAGE
     ApiGatewayAuthorizer:
