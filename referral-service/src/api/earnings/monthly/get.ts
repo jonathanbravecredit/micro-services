@@ -1,6 +1,6 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
-import { getReferral, listEnrolledReferralsByReferredByMonthly as query } from 'lib/queries';
+import { getReferral, listEnrolledReferralsByReferredByMonthly as getAll } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
@@ -26,7 +26,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       return response(200, blank); // exists but no earnings
     }
 
-    const allReferrals = await query(code, month, year);
+    const allReferrals = await getAll(code, month, year);
+    console.log('allReferrals ==> ', JSON.stringify(allReferrals));
     const grouped = groupReferralsByYearMonth(allReferrals);
     return response(200, grouped);
   } catch (err) {
