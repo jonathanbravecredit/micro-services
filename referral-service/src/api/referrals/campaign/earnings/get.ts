@@ -1,6 +1,6 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
-import { getReferral, listEnrolledReferralsByReferredBy as getAll } from 'lib/queries';
+import { getReferral, getAllEnrolledReferralsByCampaign } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
@@ -8,9 +8,9 @@ import { ajv } from 'lib/schema/validation';
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event ===> ', event);
   const id: string = event.requestContext.authorizer?.claims?.sub;
-
-  const payload: interfaces.IGetEarningReferral = { id };
-  const validate = ajv.getSchema<interfaces.IGetEarningReferral>('referralGet');
+  const { campaign } = event.queryStringParameters as { campaign: string };
+  const payload: interfaces.IGetReferralByCampaign = { id, campaign };
+  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralGet');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
@@ -22,11 +22,12 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       return response(200, {
         earnings: 0,
         currency: 'USD',
+        campaing: referral.campaign,
         enrollmentDate: referral.createdOn,
       });
     }
 
-    const allReferrals = await getAll(referral.referralCode);
+    const allReferrals = await getAllEnrolledReferralsByCampaign(referral.referralCode, campaign);
     console.log('allReferrals ==> ', JSON.stringify(allReferrals));
     const earningsAmount = 5 * allReferrals.length + 5;
 

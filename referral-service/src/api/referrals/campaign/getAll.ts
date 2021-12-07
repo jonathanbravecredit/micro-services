@@ -6,6 +6,7 @@ import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ===> ', event);
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const { campaign } = event.queryStringParameters as { campaign: string };
   const payload: IGetReferralByCampaign = { id, campaign };

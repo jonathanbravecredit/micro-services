@@ -75,6 +75,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
 
 functions:
+  # referrals
   createReferral:
     handler: src/api/referrals/create.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -120,7 +121,9 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  getAllReferralsByCampaign:
+
+  # referrals all by campaign
+  getAllReferralCampaign:
     handler: src/api/referrals/campaign/getAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
@@ -137,24 +140,61 @@ functions:
               querystrings:
                 campaign: true
 
-  getEarnings:
-    handler: src/api/earnings/get.main
+  # referral campaign earnings
+  getReferralCampaignEarnings:
+    handler: src/api/referrals/campaign/earnings/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /earnings
+          path: /referral/campaign/earnings
           method: get
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  getEarningsMonthly:
-    handler: src/api/earnings/monthly/get.main
+          request:
+            parameters:
+              querystrings:
+                campaign: true
+  getReferralCampaignEarningsMonthly:
+    handler: src/api/referrals/campaign/earnings/monthly/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /earnings/monthly
+          path: /referral/campaign/earnings/monthly
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+          request:
+            parameters:
+              querystrings:
+                campaign: true
+                month: false
+                year: false
+
+  # referral earnings (non-campaign specific)
+  getReferralEarnings:
+    handler: src/api/referrals/earnings/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /referral/earnings
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  getReferralEarningsMonthly:
+    handler: src/api/referrals/earnings/monthly/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /referral/earnings/monthly
           method: get
           cors: true
           authorizer:
@@ -166,14 +206,15 @@ functions:
               querystrings:
                 month: false
                 year: false
-                campaign: false
 
+  ## scheduled jobs
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 8 ? * MON *) # turning off
 
+  ## triggers (db stream)
   triggerReferralEnrollment:
     handler: src/triggers/triggerReferralEnrollment.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'

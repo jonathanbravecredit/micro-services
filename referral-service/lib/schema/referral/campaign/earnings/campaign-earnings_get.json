@@ -7,19 +7,12 @@
     },
     "campaign": {
       "type": "string",
-      "nullable": true
-    },
-    "month": {
-      "type": "string",
-      "nullable": true
-    },
-    "year": {
-      "type": "string",
-      "nullable": true
+      "nullable": false
     }
   },
   "required": [
-    "id"
+    "id",
+    "campaign"
   ],
   "additionalProperties": false
 }

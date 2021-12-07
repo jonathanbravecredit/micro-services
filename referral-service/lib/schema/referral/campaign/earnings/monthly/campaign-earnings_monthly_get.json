@@ -7,6 +7,14 @@
     },
     "campaign": {
       "type": "string",
+      "nullable": false
+    },
+    "month": {
+      "type": "string",
+      "nullable": true
+    },
+    "year": {
+      "type": "string",
       "nullable": true
     }
   },
