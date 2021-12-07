@@ -1,12 +1,13 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
-import * as queries from 'lib/queries';
+import { getReferral, listEnrolledReferralsByReferredByMonthly as query } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
 import { createBlankMonthlyReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ===> ', event);
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const { month, year } = event.queryStringParameters as { month: string | undefined; year: string | undefined };
 
@@ -15,7 +16,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
-    const referral = await queries.getReferral(id);
+    const referral = await getReferral(id);
     const code = referral?.referralCode;
     if (!referral) {
       return response(404, null); // no referral code exists
@@ -25,7 +26,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       return response(200, blank); // exists but no earnings
     }
 
-    const query = queries.listEnrolledReferralsByReferredByMonthly;
     const allReferrals = await query(code, month, year);
     const grouped = groupReferralsByYearMonth(allReferrals);
     return response(200, grouped);

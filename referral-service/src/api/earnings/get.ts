@@ -1,11 +1,12 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
-import * as queries from 'lib/queries';
+import { getReferral, listEnrolledReferralsByReferredBy as query } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ===> ', event);
   const id: string = event.requestContext.authorizer?.claims?.sub;
 
   const payload: interfaces.IGetEarningReferral = { id };
@@ -13,7 +14,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
-    const referral = await queries.getReferral(id);
+    const referral = await getReferral(id);
     if (!referral) {
       return response(404, null);
     }
@@ -25,7 +26,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       });
     }
 
-    const allEnrolledReferrals = await queries.listEnrolledReferralsByReferredBy(referral.referralCode);
+    const allEnrolledReferrals = await query(referral.referralCode);
     const earningsAmount = 5 * allEnrolledReferrals.length + 5;
 
     return response(200, {
