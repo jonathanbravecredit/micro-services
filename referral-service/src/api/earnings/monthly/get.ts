@@ -4,7 +4,7 @@ import * as queries from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
-import { createBlankReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
+import { createBlankMonthlyReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
@@ -21,7 +21,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       return response(404, null); // no referral code exists
     }
     if (!code) {
-      const blank = createBlankReferral();
+      const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings
     }
 

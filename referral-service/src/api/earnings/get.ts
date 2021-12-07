@@ -26,7 +26,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     }
 
     const allEnrolledReferrals = await queries.listEnrolledReferralsByReferredBy(referral.referralCode);
-
     const earningsAmount = 5 * allEnrolledReferrals.length + 5;
 
     return response(200, {

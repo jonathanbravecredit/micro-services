@@ -31,7 +31,7 @@ export const groupReferralsByYearMonth = (referrals: Referral[]): IGroupedYearMo
   return grouped;
 };
 
-export const createBlankReferral = (): IGroupedYearMonthReferral[] => {
+export const createBlankMonthlyReferral = (): IGroupedYearMonthReferral[] => {
   return [
     {
       yearMonth: 0,
