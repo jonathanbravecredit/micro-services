@@ -33,6 +33,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       return response(200, blank); // exists but no earnings
     }
 
+    console.log('payload ===> ', payload);
     const allReferrals = await getAllEnrolledReferralsByMonth(code, campaign, month, year);
     console.log('allReferrals ==> ', JSON.stringify(allReferrals));
     const grouped = groupReferralsByYearMonth(allReferrals);
