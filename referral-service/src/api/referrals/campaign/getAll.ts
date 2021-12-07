@@ -13,7 +13,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const validate = ajv.getSchema<IGetReferralByCampaign>('referralByCampaignGetAll');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
-    const { id } = payload;
+    const { id, campaign } = payload;
     const referral = await getReferral(id);
     if (!referral) return response(404, 'Referral not found');
     const { referralCode } = referral;

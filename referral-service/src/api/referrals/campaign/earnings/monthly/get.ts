@@ -1,9 +1,9 @@
 'use strict';
 import * as interfaces from 'lib/interfaces';
-import { getReferral, getAllEnrolledReferralsByMonth } from 'lib/queries';
-import { response } from 'lib/utils/response';
-import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
+import { response } from 'lib/utils/response';
+import { getReferral, getAllEnrolledReferralsByMonth } from 'lib/queries';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createBlankMonthlyReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -15,12 +15,15 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     year: string | undefined;
   };
 
-  const payload: interfaces.IGetEarningReferralMonthly = { id };
-  const validate = ajv.getSchema<interfaces.IGetEarningReferralMonthly>('referralGet');
+  const payload: interfaces.IGetReferralEarningsByCampaignMonthly = { id, campaign, month, year };
+  const validate = ajv.getSchema<interfaces.IGetReferralEarningsByCampaignMonthly>(
+    'referralCampaingEarningsMonthlyGet',
+  );
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
-    const referral = await getReferral(id);
+    const { campaign, month, year } = payload;
+    const referral = await getReferral(payload.id);
     const code = referral?.referralCode;
     if (!referral) {
       return response(404, null); // no referral code exists

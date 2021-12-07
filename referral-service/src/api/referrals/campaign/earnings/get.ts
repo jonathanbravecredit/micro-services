@@ -10,7 +10,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const { campaign } = event.queryStringParameters as { campaign: string };
   const payload: interfaces.IGetReferralByCampaign = { id, campaign };
-  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralGet');
+  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralCampaignEarningsGet');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
