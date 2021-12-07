@@ -8,10 +8,6 @@
     "campaign": {
       "type": "string",
       "nullable": false
-    },
-    "referredByCode": {
-      "type": "string",
-      "nullable": true
     }
   },
   "required": [

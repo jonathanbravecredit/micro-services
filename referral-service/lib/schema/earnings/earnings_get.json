@@ -1,13 +1,17 @@
 {
-    "type": "object",
-    "properties": {
-      "id": {
-        "type": "string",
-        "nullable": false
-      }
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "nullable": false
     },
-    "required": [
-      "id"
-    ],
-    "additionalProperties": false
-  }
+    "campaign": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

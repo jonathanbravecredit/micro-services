@@ -120,6 +120,22 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+  getAllReferralsByCampaign:
+    handler: src/api/referrals/campaign/getAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /referral/campaign
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+          request:
+            parameters:
+              querystrings:
+                campaign: true
 
   getEarnings:
     handler: src/api/earnings/get.main
@@ -150,6 +166,7 @@ functions:
               querystrings:
                 month: false
                 year: false
+                campaign: false
 
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
