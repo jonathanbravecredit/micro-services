@@ -18,3 +18,10 @@ export interface ICreateReferral {
   id: string;
   referredByCode?: string;
 }
+
+export interface IGroupedYearMonthReferral {
+  yearMonth: number;
+  referrals: number;
+  earnings: number;
+  currency: string;
+}

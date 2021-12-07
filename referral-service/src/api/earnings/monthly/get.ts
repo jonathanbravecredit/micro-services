@@ -1,105 +1,34 @@
-"use strict";
-import * as interfaces from "lib/interfaces";
-import * as queries from "lib/queries";
-import { response } from "lib/utils/response";
-import {
-  APIGatewayProxyHandler,
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-} from "aws-lambda";
-import { ajv } from "lib/schema/validation";
-import { Referral } from "lib/models/referral.model";
+'use strict';
+import * as interfaces from 'lib/interfaces';
+import * as queries from 'lib/queries';
+import { response } from 'lib/utils/response';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { ajv } from 'lib/schema/validation';
+import { createBlankReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
 
-export const main: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
-  let month: string | undefined;
-  let year: string | undefined;
-
-  if (event.queryStringParameters) {
-    month = event.queryStringParameters.month;
-    year = event.queryStringParameters.year;
-  }
+  const { month, year } = event.queryStringParameters as { month: string | undefined; year: string | undefined };
 
   const payload: interfaces.IGetEarningReferralMonthly = { id };
-  const validate =
-    ajv.getSchema<interfaces.IGetEarningReferralMonthly>("referralGet");
-  if (!validate || !validate(payload))
-    throw `Malformed message=${JSON.stringify(payload)}`;
+  const validate = ajv.getSchema<interfaces.IGetEarningReferralMonthly>('referralGet');
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
     const referral = await queries.getReferral(id);
+    const code = referral?.referralCode;
     if (!referral) {
-      return response(404, null);
+      return response(404, null); // no referral code exists
     }
-    if (!referral.referralCode) {
-      return response(200, [
-        {
-          earnings: 0,
-          currency: "USD",
-          enrollmentDate: referral.createdOn,
-          month: 0,
-          year: 0,
-        },
-      ]);
+    if (!code) {
+      const blank = createBlankReferral();
+      return response(200, blank); // exists but no earnings
     }
 
-    if (month && year) {
-      const allEnrolledReferralsByMonth =
-        await queries.listEnrolledReferralsByReferredMontly(
-          referral.referralCode,
-          month,
-          year
-        );
-
-      return response(200, {
-        earnings: 5 * allEnrolledReferralsByMonth.length, // THIS WILL RETURN A SINGLE OBJECT WITH THE AMOUNT OF EARNING FOR THE SPECIFIED YEAR AND MONTH
-        currency: "USD",
-        enrollmentDate: referral.createdOn,
-        month: month,
-        year: year,
-      });
-    } else {
-      const allEnrolledReferralsByMonth =
-        await queries.listEnrolledReferralsByReferredMontly(
-          referral.referralCode
-        );
-
-      const referralMonthlyArray: {
-        yearMonth: number;
-        referrals: number;
-        earnings: number;
-        currency: "USD";
-      }[] = [];
-
-      allEnrolledReferralsByMonth.forEach((referral) => {
-        const yearMonth = +`${referral.createdOn?.slice(0, 4)}${referral.createdOn?.slice(5, 7)}`;
-        let found = false;
-
-        referralMonthlyArray.forEach((referralObj) => {
-          if (referralObj.yearMonth === yearMonth) {
-            if (found) return;
-
-            referralObj.referrals += 1;
-            referralObj.earnings += 5;
-            found = true;
-            return;
-          }
-        });
-
-        if (!found && yearMonth) {
-          referralMonthlyArray.push({
-            yearMonth,
-            referrals: 1,
-            earnings: 5,
-            currency: "USD",
-          });
-        }
-      });
-
-      return response(200, referralMonthlyArray);
-    }
+    const query = queries.listEnrolledReferralsByReferredByMonthly;
+    const allReferrals = await query(code, month, year);
+    const grouped = groupReferralsByYearMonth(allReferrals);
+    return response(200, grouped);
   } catch (err) {
     return response(500, err);
   }

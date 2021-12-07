@@ -1,24 +1,16 @@
-"use strict";
-import * as interfaces from "lib/interfaces";
-import * as queries from "lib/queries";
-import { response } from "lib/utils/response";
-import {
-  APIGatewayProxyHandler,
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  APIGatewayProxyEventQueryStringParameters,
-} from "aws-lambda";
-import { ajv } from "lib/schema/validation";
+'use strict';
+import * as interfaces from 'lib/interfaces';
+import * as queries from 'lib/queries';
+import { response } from 'lib/utils/response';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { ajv } from 'lib/schema/validation';
 
-export const main: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
 
   const payload: interfaces.IGetEarningReferral = { id };
   const validate = ajv.getSchema<interfaces.IGetEarningReferral>('referralGet');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
-
 
   try {
     const referral = await queries.getReferral(id);
@@ -28,19 +20,18 @@ export const main: APIGatewayProxyHandler = async (
     if (!referral.referralCode) {
       return response(200, {
         earnings: 0,
-        currency: "USD",
+        currency: 'USD',
         enrollmentDate: referral.createdOn,
       });
     }
 
-    const allEnrolledReferrals =
-      await queries.listEnrolledReferralsByReferredBy(referral.referralCode);
+    const allEnrolledReferrals = await queries.listEnrolledReferralsByReferredBy(referral.referralCode);
 
     const earningsAmount = 5 * allEnrolledReferrals.length + 5;
 
     return response(200, {
       earnings: earningsAmount,
-      currency: "USD",
+      currency: 'USD',
       enrollmentDate: referral.createdOn,
     });
   } catch (err) {
