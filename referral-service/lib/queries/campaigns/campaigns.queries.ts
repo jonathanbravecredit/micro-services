@@ -1,5 +1,5 @@
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { Campaign } from 'lib/models/Campaign.model';
+import { Campaign } from 'lib/models/campaign.model';
 
 const store = new DynamoStore(Campaign);
 
