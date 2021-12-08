@@ -1,6 +1,6 @@
 import { Referral } from "lib/models/referral.model";
 import * as moment from "moment";
-import { IPayments } from "src/api/referrals/campaign/payments/payments.interfaces";
+import { IPayments } from "lib/interfaces/api/referrals/payments/payments.interfaces";
 
 const dec2020PaymentLogic = (allReferrals: Referral[]) => {
   let paymentScheduledDate;
