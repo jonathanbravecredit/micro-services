@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "campaignId": {
+      "type": "string",
+      "nullable": false
+    }
+  },
+  "required": [
+    "campaignId"
+  ],
+  "additionalProperties": false
+}

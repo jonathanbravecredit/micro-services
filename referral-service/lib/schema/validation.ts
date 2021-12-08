@@ -8,6 +8,10 @@ import * as earningsMonthlyGet from './referral/earnings/monthly/earnings_monthl
 import * as referralCampaignGetAll from './referral/campaign/campaign_getAll.json';
 import * as referralCampaignEarningsGet from './referral/campaign/earnings/campaign-earnings_get.json';
 import * as referralCampaingEarningsMonthlyGet from './referral/campaign/earnings/monthly/campaign-earnings_monthly_get.json';
+import * as campaignsGet from './campaigns/campaigns_get.json';
+import * as campaignsCreate from './campaigns/campaigns_create.json';
+import * as campaignsDelete from './campaigns/campaigns_delete.json';
+import * as campaignsUpdate from './campaigns/campaigns_update.json';
 export const ajv = new Ajv();
 ajv.addSchema(referralGet, 'referralGet');
 ajv.addSchema(referralCreate, 'referralCreate');
@@ -18,3 +22,7 @@ ajv.addSchema(earningsMonthlyGet, 'earningsMonthlyGet');
 ajv.addSchema(referralCampaignGetAll, 'referralCampaignGetAll');
 ajv.addSchema(referralCampaignEarningsGet, 'referralCampaignEarningsGet');
 ajv.addSchema(referralCampaingEarningsMonthlyGet, 'referralCampaingEarningsMonthlyGet');
+ajv.addSchema(campaignsGet, 'campaignsGet');
+ajv.addSchema(campaignsCreate, 'campaignsCreate');
+ajv.addSchema(campaignsDelete, 'campaignsDelete');
+ajv.addSchema(campaignsUpdate, 'campaignsUpdate');

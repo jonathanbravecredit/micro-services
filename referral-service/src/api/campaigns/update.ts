@@ -1,22 +1,20 @@
 'use strict';
-
-import { ICreateCampaign } from 'lib/interfaces';
-import { createCampaign } from 'lib/queries';
+import { IUpdateCampaign } from 'lib/interfaces';
+import { updateCampaign } from 'lib/queries';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { safeParse } from 'lib/utils/safeJson';
-import { Campaign, CampaignMaker } from 'lib/models/campaign.model';
+import { Campaign } from 'lib/models/campaign.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const payload: ICreateCampaign = safeParse(event, 'body'); // referredByCode;
-  const validate = ajv.getSchema<ICreateCampaign>('campaignsCreate');
+  const payload: IUpdateCampaign = safeParse(event, 'body');
+  const validate = ajv.getSchema<IUpdateCampaign>('campaignsUpdate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
-    const { campaignId, startDate, endDate } = payload;
-    const campaign: Campaign = new CampaignMaker(campaignId, startDate, endDate);
-    await createCampaign(campaign);
-    return response(200, `success`);
+    const campaign: Partial<Campaign> = payload;
+    const updated = await updateCampaign(campaign);
+    return updated ? response(200, updated) : response(404, updated);
   } catch (err) {
     return response(500, err);
   }

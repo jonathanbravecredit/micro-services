@@ -207,6 +207,52 @@ functions:
                 month: false
                 year: false
 
+  # campaigns
+  createCampaign:
+    handler: src/api/campaigns/create.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /campaigns
+          method: post
+          cors: true
+          authorizer: aws_iam
+  getCampaign:
+    handler: src/api/campaigns/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /campaigns
+          method: get
+          cors: true
+          authorizer: aws_iam
+          request:
+            parameters:
+              querystrings:
+                campaignId: true
+  updateCampaign:
+    handler: src/api/campaigns/update.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /campaigns
+          method: put
+          cors: true
+          authorizer: aws_iam
+  deleteCampaign:
+    handler: src/api/campaigns/update.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /campaigns
+          method: delete
+          cors: true
+          authorizer: aws_iam
+          request:
+            parameters:
+              querystrings:
+                campaignId: true
+
   ## scheduled jobs
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
@@ -239,6 +285,19 @@ resources:
             KeyType: 'HASH'
         BillingMode: PAY_PER_REQUEST
         TableName: Referrals
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    Campaigns:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'campaignId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'campaignId'
+            KeyType: 'HASH'
+        BillingMode: PAY_PER_REQUEST
+        TableName: Campaigns
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
     ApiGatewayAuthorizer:
