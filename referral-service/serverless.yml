@@ -157,6 +157,22 @@ functions:
             parameters:
               querystrings:
                 campaign: true
+  getReferralCampaignPayments:
+    handler: src/api/referrals/campaign/payments/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /referral/campaign/payments
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+          request:
+            parameters:
+              querystrings:
+                campaign: true
   getReferralCampaignEarningsMonthly:
     handler: src/api/referrals/campaign/earnings/monthly/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
