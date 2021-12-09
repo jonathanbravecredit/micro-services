@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import { IGetCampaign } from 'lib/interfaces';
 import { getCampaign } from 'lib/queries';
 import { ajv } from 'lib/schema/validation';

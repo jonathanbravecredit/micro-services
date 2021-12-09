@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import { IGetReferralByCampaign } from 'lib/interfaces';
 import { getReferral, getAllReferralsByCampaign } from 'lib/queries';
 import { ajv } from 'lib/schema/validation';

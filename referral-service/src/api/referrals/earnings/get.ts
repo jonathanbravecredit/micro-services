@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
 import { getReferral, listEnrolledReferralsByReferredBy as getAll } from 'lib/queries';
 import { response } from 'lib/utils/response';

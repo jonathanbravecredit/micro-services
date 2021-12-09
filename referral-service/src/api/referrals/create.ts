@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import * as vouchers from 'voucher-code-generator';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';

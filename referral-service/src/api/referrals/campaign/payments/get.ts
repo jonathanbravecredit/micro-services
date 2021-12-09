@@ -1,19 +1,14 @@
-"use strict";
-import * as interfaces from "lib/interfaces";
-import { ajv } from "lib/schema/validation";
-import { response } from "lib/utils/response";
-import { getReferral, getAllEnrolledReferralsByCampaign } from "lib/queries";
-import {
-  APIGatewayProxyHandler,
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-} from "aws-lambda";
-import { createBlankMonthlyReferral } from "lib/utils/referrals/referral.utils";
-import { campaignPaymentLogic } from "lib/utils/payments/campaignPaymentLogic";
+'use strict';
+import 'reflect-metadata';
+import * as interfaces from 'lib/interfaces';
+import { ajv } from 'lib/schema/validation';
+import { response } from 'lib/utils/response';
+import { getReferral, getAllEnrolledReferralsByCampaign } from 'lib/queries';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
+import { campaignPaymentLogic } from 'lib/utils/payments/campaignPaymentLogic';
 
-export const main: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
   const { campaign } = event.queryStringParameters as {
     campaign: string;
@@ -23,11 +18,8 @@ export const main: APIGatewayProxyHandler = async (
     id,
     campaign,
   };
-  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>(
-    "referralCampaingEarningsMonthlyGet"
-  );
-  if (!validate || !validate(payload))
-    throw `Malformed message=${JSON.stringify(payload)}`;
+  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralCampaingEarningsMonthlyGet');
+  if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {
     const { campaign } = payload;
@@ -41,15 +33,11 @@ export const main: APIGatewayProxyHandler = async (
       return response(200, blank); // exists but no earnings
     }
 
-    console.log("payload ===> ", payload);
+    console.log('payload ===> ', payload);
 
-    const allReferrals = await getAllEnrolledReferralsByCampaign(
-      code,
-      campaign
-    );
+    const allReferrals = await getAllEnrolledReferralsByCampaign(code, campaign);
 
-    const { paymentsProcessed, paymentsPending, paymentScheduledDate } =
-      campaignPaymentLogic[campaign](allReferrals);
+    const { paymentsProcessed, paymentsPending, paymentScheduledDate } = campaignPaymentLogic[campaign](allReferrals);
 
     return response(200, {
       paymentsProcessed,
