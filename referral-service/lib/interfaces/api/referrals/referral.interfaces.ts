@@ -16,7 +16,7 @@ export interface IDeleteReferral {
 
 export interface ICreateReferral {
   id: string;
-  campaign: string;
+  campaign?: string;
   referredByCode?: string;
 }
 

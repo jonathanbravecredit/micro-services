@@ -7,7 +7,7 @@
     },
     "campaign": {
       "type": "string",
-      "nullable": false
+      "nullable": true
     },
     "referredByCode": {
       "type": "string",
@@ -15,8 +15,7 @@
     }
   },
   "required": [
-    "id",
-    "campaign"
+    "id"
   ],
   "additionalProperties": false
 }
