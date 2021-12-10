@@ -15,7 +15,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   try {
     const { campaignId } = payload;
     const campaign = await getCampaign(campaignId);
-    return campaign ? response(200, campaign) : response(404, campaign);
+    return campaign ? response(200, campaign) : response(200, null);
   } catch (err) {
     return response(500, err);
   }
