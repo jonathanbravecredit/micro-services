@@ -1,6 +1,7 @@
 'use strict';
 import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
+import * as vouchers from 'voucher-code-generator';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { getReferral, getAllEnrolledReferralsByCampaign, createReferral } from 'lib/queries';
@@ -30,7 +31,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const code = referral?.referralCode;
     if (!referral) {
       const campaign = CURRENT_CAMPAIGN;
-      const referralCode = v4();
+      const referralCode = vouchers.generate({ length: 7, count: 1 })[0];
       const newReferral = new ReferralMaker(id, referralCode, campaign);
       newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
       await createReferral(newReferral);

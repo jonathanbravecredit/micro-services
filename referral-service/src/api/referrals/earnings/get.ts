@@ -1,12 +1,12 @@
 'use strict';
 import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
+import * as vouchers from 'voucher-code-generator';
 import { createReferral, getReferral, listEnrolledReferralsByReferredBy as getAll } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
 import { ReferralMaker } from 'lib/models/referral.model';
-import { v4 } from 'uuid';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -21,7 +21,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const referral = await getReferral(id);
     if (!referral) {
       const campaign = CURRENT_CAMPAIGN;
-      const referralCode = v4();
+      const referralCode = vouchers.generate({ length: 7, count: 1 })[0];
       const newReferral = new ReferralMaker(id, referralCode, campaign);
       newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
       await createReferral(newReferral);

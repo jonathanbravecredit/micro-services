@@ -1,6 +1,7 @@
 'use strict';
 import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
+import * as vouchers from 'voucher-code-generator';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { getReferral, getAllEnrolledReferralsByMonth, createReferral } from 'lib/queries';
@@ -8,7 +9,6 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import { createBlankMonthlyReferral, groupReferralsByYearMonth } from 'lib/utils/referrals/referral.utils';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { ReferralMaker } from 'lib/models/referral.model';
-import { v4 } from 'uuid';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event ===> ', event);
@@ -32,7 +32,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
 
     if (!referral) {
       const campaign = CURRENT_CAMPAIGN;
-      const referralCode = v4();
+      const referralCode = vouchers.generate({ length: 7, count: 1 })[0];
       const newReferral = new ReferralMaker(id, referralCode, campaign);
       newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
       await createReferral(newReferral);
