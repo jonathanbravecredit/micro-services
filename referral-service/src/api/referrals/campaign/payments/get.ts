@@ -3,10 +3,13 @@ import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
-import { getReferral, getAllEnrolledReferralsByCampaign } from 'lib/queries';
+import { getReferral, getAllEnrolledReferralsByCampaign, createReferral } from 'lib/queries';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
 import { campaignPaymentLogic } from 'lib/utils/payments/campaignPaymentLogic';
+import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
+import { ReferralMaker } from 'lib/models/referral.model';
+import { v4 } from 'uuid';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
@@ -26,8 +29,16 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const referral = await getReferral(payload.id);
     const code = referral?.referralCode;
     if (!referral) {
-      return response(404, null); // no referral code exists
+      const campaign = CURRENT_CAMPAIGN;
+      const referralCode = v4();
+      const newReferral = new ReferralMaker(id, referralCode, campaign);
+      newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
+      await createReferral(newReferral);
+      const now = new Date();
+      const blank = createBlankMonthlyReferral();
+      return response(200, blank); // exists but no earnings
     }
+
     if (!code) {
       const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings

@@ -36,4 +36,8 @@ export class ReferralMaker implements Referral {
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
   }
+
+  updateReferralEnrollment(enrollment: 'pending' | 'enrolled') {
+    this.enrollmentStatus = enrollment;
+  }
 }

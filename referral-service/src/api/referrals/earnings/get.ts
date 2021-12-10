@@ -1,10 +1,13 @@
 'use strict';
 import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
-import { getReferral, listEnrolledReferralsByReferredBy as getAll } from 'lib/queries';
+import { createReferral, getReferral, listEnrolledReferralsByReferredBy as getAll } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ajv } from 'lib/schema/validation';
+import { ReferralMaker } from 'lib/models/referral.model';
+import { v4 } from 'uuid';
+import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event ===> ', event);
@@ -17,7 +20,17 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   try {
     const referral = await getReferral(id);
     if (!referral) {
-      return response(404, null);
+      const campaign = CURRENT_CAMPAIGN;
+      const referralCode = v4();
+      const newReferral = new ReferralMaker(id, referralCode, campaign);
+      newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
+      await createReferral(newReferral);
+      const now = new Date();
+      return response(200, {
+        earnings: 0,
+        currency: 'USD',
+        enrollmentDate: now.toISOString(),
+      });
     }
     if (!referral.referralCode) {
       return response(200, {
