@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
 import { UpdateAppDataInput } from 'lib/aws/api.service';

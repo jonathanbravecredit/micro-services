@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "nullable": false
+    },
+    "campaign": {
+      "type": "string",
+      "nullable": true
+    },
+    "referredByCode": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

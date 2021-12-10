@@ -5,13 +5,14 @@
       "type": "string",
       "nullable": false
     },
-    "referredByCode": {
+    "campaign": {
       "type": "string",
-      "nullable": true
+      "nullable": false
     }
   },
   "required": [
-    "id"
+    "id",
+    "campaign"
   ],
   "additionalProperties": false
 }

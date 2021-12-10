@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
 import * as queries from 'lib/queries';
 import { ajv } from 'lib/schema/validation';

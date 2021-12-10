@@ -80,9 +80,13 @@ typings/
 
 # Serverless directories
 .serverless/
+.webpack/
 
 # FuseBox cache
 .fusebox/
 
 # DynamoDB Local files
 .dynamodb/
+
+analytic-service/.webpack/
+analytic-service/.serverless/

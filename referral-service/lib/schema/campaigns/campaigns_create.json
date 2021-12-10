@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "campaignId": {
+      "type": "string",
+      "nullable": false
+    },
+    "startDate": {
+      "type": "string",
+      "nullable": false
+    },
+    "endDate": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "required": [
+    "campaignId",
+    "startDate",
+    "endDate"
+  ],
+  "additionalProperties": false
+}

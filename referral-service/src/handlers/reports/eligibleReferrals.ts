@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Handler, ScheduledEvent } from 'aws-lambda';
 import * as queries from 'lib/queries';
 import { generateReferralEmailParams } from 'lib/utils/cognito/helpers/helpers';

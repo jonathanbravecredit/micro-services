@@ -16,5 +16,13 @@ export interface IDeleteReferral {
 
 export interface ICreateReferral {
   id: string;
+  campaign?: string;
   referredByCode?: string;
+}
+
+export interface IGroupedYearMonthReferral {
+  yearMonth: number;
+  referrals: number;
+  earnings: number;
+  currency: string;
 }
