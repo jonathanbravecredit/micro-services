@@ -37,19 +37,18 @@ export const formatData = (data: any): IFormatDataResults[] => {
   return JSON.parse(JSON.stringify(fileArr)) as IFormatDataResults[];
 };
 
-export const generateReferralEmailParams = (): IEmailParams => {
+export const generateReferralEmailParams = (subj: string = 'Your referral reports'): IEmailParams => {
   const from = 'support@brave.credit';
-  const subject = 'Your referral reports';
+  const subject = `${subj}`;
   const html = `
         <!DOCTYPE html>
         <html lang="en">
             <head></head>
             <body>
-                    <h1>Your referral reports</h1>
+                    <h1>${subj}</h1>
             </body>
         </html>`;
-  const to =
-    process.env.NODE_ENV === 'dev' ? ['jonathan@brave.credit'] : ['jorge@brave.credit', 'jonathan@brave.credit'];
+  const to = process.env.NODE_ENV === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit'];
 
   return {
     from,

@@ -16,5 +16,31 @@ export const getItemsInDB = (id: any) => {
     .catch((err) => err);
 };
 
+export const createItemInDB = (post: any) => {
+  const params = {
+    TableName: tableName,
+    Item: post,
+  };
+  return db
+    .put(params)
+    .promise()
+    .then((res) => res)
+    .catch((err) => err);
+};
 
+export const getAllItemsInDB = async () => {
+  let params: { TableName: string; ExclusiveStartKey?: any } = {
+    TableName: tableName,
+  };
 
+  let scanResults: DynamoDB.DocumentClient.AttributeMap[] = [];
+  let items: DynamoDB.DocumentClient.ScanOutput;
+
+  do {
+    items = await db.scan(params).promise();
+    items.Items?.forEach((item) => scanResults.push(item));
+    params.ExclusiveStartKey = items.LastEvaluatedKey;
+  } while (typeof items.LastEvaluatedKey != 'undefined');
+
+  return scanResults;
+};
