@@ -273,6 +273,7 @@ functions:
   eligibleReferrals:
     handler: src/handlers/reports/eligibleReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 300
     events:
       - schedule: cron(0 8 ? * MON *) # turning off
 
