@@ -145,7 +145,8 @@ export class UserSummary {
     const serviceProductString = fulfillMergeReport
       ? fulfillMergeReport?.serviceProductObject || '{}'
       : enrollMergeReport?.serviceProductObject || '{}';
-    const serviceProductObject: IMergeReport = JSON.parse(serviceProductString);
+    const serviceProductObject: IMergeReport =
+      typeof serviceProductString === 'string' ? JSON.parse(serviceProductString) : serviceProductString;
     return serviceProductObject ? serviceProductObject : ({} as IMergeReport);
   }
 

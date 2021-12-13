@@ -1,5 +1,5 @@
 'use strict';
-import { DynamoDB, SES } from 'aws-sdk';
+import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { getAllItemsInDB } from 'lib/queries/appdata/appdata';
@@ -14,7 +14,7 @@ export const main: Handler = async (): Promise<void> => {
     const records = await getAllItemsInDB();
     let enrolled: UpdateAppDataInput[] = [];
     records.forEach((attr) => {
-      const item = DynamoDB.Converter.unmarshall(attr) as unknown as UpdateAppDataInput;
+      const item = attr as unknown as UpdateAppDataInput;
       if (item.agencies?.transunion?.enrolled) {
         enrolled.push(item);
       }
