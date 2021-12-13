@@ -41,6 +41,7 @@ provider:
       Action:
         - 'ses:SendEmail'
         - 'ses:SendRawEmail'
+      Resource: '*'
     - Effect: 'Allow'
       Action:
         - dynamodb:ListStreams
