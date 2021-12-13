@@ -14,7 +14,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   try {
     const { id } = payload;
     const referral = await queries.getReferral(id);
-    return referral ? response(200, referral) : response(404, referral);
+    return referral ? response(200, referral) : response(200, null);
   } catch (err) {
     return response(500, err);
   }
