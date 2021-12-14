@@ -42,17 +42,17 @@ export class UserSummary {
   }
 
   get countOpenAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get sumBalances(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalBalances as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalBalances as number;
     return isNaN(value) ? 0 : value;
   }
 
   get countDerogatoryAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.DerogatoryAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.DerogatoryAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
@@ -62,17 +62,17 @@ export class UserSummary {
   }
 
   get ageOfOldestTradeline(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.AgeofCredit as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.AgeofCredit as number;
     return isNaN(value) ? -1 : value;
   }
 
   get countOpenInstallmentAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenInstallmentAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenInstallmentAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get sumOpenInstallmentBalances(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalInstallmentAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalInstallmentAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
@@ -85,41 +85,41 @@ export class UserSummary {
   }
 
   get countOpenRealEstateAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenMortgageAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenMortgageAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get sumOpenRealEstateBalance(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalMortgageAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalMortgageAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get countOpenRevolvingAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenRevolvingAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenRevolvingAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get sumOpenRevolvingBalances(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalRevolvingAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalRevolvingAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get countOpenCollectionAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenCollectionAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenCollectionAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get sumOpenCollectionBalances(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalCollectionAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalCollectionAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get countOpenOtherAccounts(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.OpenOtherAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.OpenOtherAccounts as number;
     return isNaN(value) ? 0 : value;
   }
   get sumOpenOtherBalances(): number {
-    const value = this.tradelineRecordsSummary?.Transunion?.TotalOtherAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.TotalOtherAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
