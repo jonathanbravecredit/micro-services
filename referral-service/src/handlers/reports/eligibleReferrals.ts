@@ -13,7 +13,11 @@ export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
   try {
     const lookup = new Map();
     // mapping all id and referral codes for quick lookup
-    (await queries.listReferrals()).forEach((r) => lookup.set(r.referralCode, r.id));
+    (await queries.listReferrals()).forEach((r) => {
+      if (r.referralCode && r.referralCode.length > 0 && r.referralCode !== '') {
+        lookup.set(r.referralCode, r.id);
+      }
+    });
     // get list of eligible new referrals
     const eligible = await queries.listEligibleReferrals();
 
@@ -25,11 +29,13 @@ export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
 
     // map the referrerId to the eligible referral and the emails to the id and referrerId
     const mapped = eligible.map((e) => {
+      const referredById = lookup.get(e.referredByCode);
+      const referredByEmail = userLookup.get(referredById);
       return {
         ...e,
         email: userLookup.get(e.id),
-        referredById: lookup.get(e.referredByCode) || e.referredByCode,
-        referredByEmail: userLookup.get(lookup.get(e.referredByCode)),
+        referredById: referredById || '',
+        referredByEmail: referredByEmail || '',
       };
     });
 
