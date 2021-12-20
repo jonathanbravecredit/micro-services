@@ -21,7 +21,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
 
   const payload: interfaces.IGetReferralEarningsByCampaignMonthly = { id, campaign, month, year };
   const validate = ajv.getSchema<interfaces.IGetReferralEarningsByCampaignMonthly>(
-    'referralCampaingEarningsMonthlyGet',
+    'referralCampaignEarningsMonthlyGet',
   );
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
@@ -39,6 +39,14 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       const now = new Date();
       const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings
+    }
+    if (referral.status === "suspended") {
+      return response(200, {
+        earnings: 0,
+        currency: "USD",
+        campaign: referral.campaign,
+        enrollmentDate: referral.createdOn,
+      });
     }
 
     if (!code) {

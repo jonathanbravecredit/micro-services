@@ -10,7 +10,6 @@ import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
 import { campaignPaymentLogic } from 'lib/utils/payments/campaignPaymentLogic';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { ReferralMaker } from 'lib/models/referral.model';
-import { v4 } from 'uuid';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
@@ -22,7 +21,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     id,
     campaign,
   };
-  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralCampaingEarningsMonthlyGet');
+  const validate = ajv.getSchema<interfaces.IGetReferralByCampaign>('referralCampaignEarningsMonthlyGet');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
 
   try {

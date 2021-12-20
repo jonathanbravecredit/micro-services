@@ -39,6 +39,13 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         enrollmentDate: referral.createdOn,
       });
     }
+    if (referral.status === "suspended") {
+      return response(200, {
+        earnings: 0,
+        currency: "USD",
+        enrollmentDate: referral.createdOn,
+      });
+    }
 
     const allReferrals = await getAll(referral.referralCode);
     console.log('allReferrals ==> ', JSON.stringify(allReferrals));
