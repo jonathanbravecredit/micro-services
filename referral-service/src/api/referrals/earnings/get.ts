@@ -32,7 +32,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         enrollmentDate: now.toISOString(),
       });
     }
-    if (!referral.referralCode) {
+    if (!referral.referralCode || referral.status === "suspended") {
       return response(200, {
         earnings: 0,
         currency: 'USD',
