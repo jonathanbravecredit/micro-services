@@ -48,15 +48,7 @@ export const main: APIGatewayProxyHandler = async (
         enrollmentDate: newReferral.createdOn,
       });
     }
-    if (!referral.referralCode) {
-      return response(200, {
-        earnings: 0,
-        currency: "USD",
-        campaign: referral.campaign,
-        enrollmentDate: referral.createdOn,
-      });
-    }
-    if (referral.status === "suspended") {
+    if (!referral.referralCode || referral.status === "suspended") {
       return response(200, {
         earnings: 0,
         currency: "USD",

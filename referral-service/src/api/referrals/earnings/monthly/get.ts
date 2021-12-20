@@ -50,16 +50,9 @@ export const main: APIGatewayProxyHandler = async (
       const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings
     }
-    if (!code) {
+    if (!code || referral.status === "suspended") {
       const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings
-    }
-    if (referral.status === "suspended") {
-      return response(200, {
-        earnings: 0,
-        currency: "USD",
-        enrollmentDate: referral.createdOn,
-      });
     }
 
     const allReferrals = await getAll(code, month, year);
