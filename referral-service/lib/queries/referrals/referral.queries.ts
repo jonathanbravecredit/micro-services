@@ -2,6 +2,7 @@ import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { Referral } from 'lib/models/referral.model';
 
 const store = new DynamoStore(Referral);
+const campaign = 'NO_PAY';
 
 export const getReferral = (id: string): Promise<Referral | null> => {
   return store
@@ -74,6 +75,10 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
 };
 
 export const createReferral = (referral: Referral): Promise<void> => {
+  const newReferral: Referral = {
+    ...referral,
+    campaign,
+  };
   return store
     .put(referral)
     .ifNotExists()
