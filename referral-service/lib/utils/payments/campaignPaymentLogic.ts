@@ -1,6 +1,6 @@
-import { Referral } from 'lib/models/referral.model';
-import * as moment from 'moment';
-import { IPayments } from 'lib/interfaces/api/referrals/payments/payments.interfaces';
+import { Referral } from "lib/models/referral.model";
+import * as moment from "moment";
+import { IPayments } from "lib/interfaces/api/referrals/payments/payments.interfaces";
 
 const dec2020PaymentLogic = (allReferrals: Referral[]) => {
   let paymentScheduledDate;
@@ -8,7 +8,9 @@ const dec2020PaymentLogic = (allReferrals: Referral[]) => {
   let paymentsPending = 0;
 
   allReferrals.forEach((referral) => {
-    referral.processingStatus === 'paid' ? (paymentsProcessed += 1) : (paymentsPending += 1);
+    referral.processingStatus === "paid"
+      ? (paymentsProcessed += 1)
+      : (paymentsPending += 1);
   });
 
   const sortedReferralsByDate = allReferrals.sort((a, b): number => {
@@ -21,16 +23,24 @@ const dec2020PaymentLogic = (allReferrals: Referral[]) => {
   if (allReferrals.length >= 10) {
     let tenthReferralDate = sortedReferralsByDate[9].createdOn;
 
-    paymentScheduledDate = moment(tenthReferralDate).add(1, 'week').isoWeekday(2);
+    if (moment(tenthReferralDate).day() === 0) {
+      paymentScheduledDate = moment(tenthReferralDate).day(2).toISOString();
+    }
+
+    paymentScheduledDate = moment(tenthReferralDate)
+      .add(1, "week")
+      .day(2)
+      .toISOString();
   } else {
-    const createdOn = sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
+    const createdOn =
+      sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
     let latestReferralDate = createdOn ? createdOn : new Date().toISOString();
 
     paymentScheduledDate = moment(latestReferralDate)
-      .add(1, 'month')
-      .startOf('month')
-      .add(6 - moment().day('Tuesday').day(), 'days')
-      .startOf('week')
+      .add(1, "month")
+      .startOf("month")
+      .add(6 - moment().day("Tuesday").day(), "days")
+      .startOf("week")
       .day(2)
       .toISOString();
   }
