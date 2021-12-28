@@ -1,4 +1,4 @@
-import { DynamoStore } from '@shiftcoders/dynamo-easy';
+import { and, attribute, DynamoStore, not } from '@shiftcoders/dynamo-easy';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { Referral } from 'lib/models/referral.model';
 
@@ -66,10 +66,13 @@ export const listReferrals = (): Promise<Referral[]> => {
 export const listEligibleReferrals = (): Promise<Referral[]> => {
   return store
     .scan()
-    .whereAttribute('enrollmentStatus')
-    .eq('enrolled')
-    .whereAttribute('processingStatus')
-    .eq('pending')
+    .where(
+      and(
+        attribute('enrollmentStatus').eq('enrolled'),
+        attribute('processingStatus').eq('pending'),
+        not(attribute('referralStatus').eq('suspended')),
+      ),
+    )
     .execFetchAll()
     .then((res) => res)
     .catch((err) => err);
