@@ -19,24 +19,12 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
 
   try {
     const referral = await getReferral(id);
-    if (!referral) {
-      const campaign = CURRENT_CAMPAIGN;
-      const referralCode = vouchers.generate({ length: 7, count: 1 })[0];
-      const newReferral = new ReferralMaker(id, referralCode, campaign);
-      newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
-      await createReferral(newReferral);
-      const now = new Date();
+    if (!referral || !referral.referralCode || referral.referralStatus === 'suspended') {
+      const now = new Date().toISOString();
       return response(200, {
         earnings: 0,
         currency: 'USD',
-        enrollmentDate: now.toISOString(),
-      });
-    }
-    if (!referral.referralCode || referral.referralStatus === 'suspended') {
-      return response(200, {
-        earnings: 0,
-        currency: 'USD',
-        enrollmentDate: referral.createdOn,
+        enrollmentDate: now,
       });
     }
 

@@ -35,18 +35,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const referral = await getReferral(payload.id);
     const code = referral?.referralCode;
 
-    if (!referral) {
-      const campaign = CURRENT_CAMPAIGN;
-      const referralCode = vouchers.generate({ length: 7, count: 1 })[0];
-      const newReferral = new ReferralMaker(id, referralCode, campaign);
-      newReferral.updateReferralEnrollment('enrolled'); // can only be enrolled when they get here
-      await createReferral(newReferral);
-      const now = new Date();
-      const blank = createBlankMonthlyReferral();
-      return response(200, blank); // exists but no earnings
-    }
-
-    if (!code || referral.referralStatus === 'suspended') {
+    if (!referral || !code || referral.referralStatus === 'suspended') {
       const blank = createBlankMonthlyReferral();
       return response(200, blank); // exists but no earnings
     }
