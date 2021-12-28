@@ -77,10 +77,10 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
 export const createReferral = (referral: Referral): Promise<void> => {
   const newReferral: Referral = {
     ...referral,
-    campaign,
+    campaign: 'NO_PAY',
   };
   return store
-    .put(referral)
+    .put(newReferral)
     .ifNotExists()
     .exec()
     .then((res) => res)
