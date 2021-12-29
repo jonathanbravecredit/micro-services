@@ -28,7 +28,7 @@ export const main = async () => {
         const data = {
           ...hash[a.sub],
           firstClick: a.createdOn!,
-          firsClickEvent: a.event,
+          firstClickEvent: a.event,
         };
         data[key] = event;
         hash[a.sub] = data;
