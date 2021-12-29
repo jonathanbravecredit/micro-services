@@ -31,25 +31,18 @@ export const main = async () => {
     const hash: { [key: string]: IHashData } = {}; // the first analytic click
     _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic, i, arr) => {
       if (analytic.sub) {
-        const dashboardProduct =
-          analytic.event === 'dashboard_product'
-            ? [...hash[analytic.sub]['dashboardProduct'], analytic.createdOn!]
-            : hash[analytic.sub]['dashboardProduct'];
+        const dashboardProduct = hash[analytic.sub] ? hash[analytic.sub].dashboardProduct || [] : [];
+        const creditMixProduct = hash[analytic.sub] ? hash[analytic.sub].creditMixProduct || [] : [];
+        const disputeSubmitted = hash[analytic.sub] ? hash[analytic.sub].disputeSubmitted || [] : [];
+        const investigationResults = hash[analytic.sub] ? hash[analytic.sub].investigationResults || [] : [];
 
-        const creditMixProduct =
-          analytic.event === 'creditmix_product_recommendation'
-            ? [...hash[analytic.sub]['creditMixProduct'], analytic.createdOn!]
-            : hash[analytic.sub]['creditMixProduct'];
-
-        const disputeSubmitted =
-          analytic.event === 'dispute_sucessfully_submited'
-            ? [...hash[analytic.sub]['disputeSubmitted'], analytic.createdOn!]
-            : hash[analytic.sub]['disputeSubmitted'];
-
-        const investigationResults =
-          analytic.event === 'dispute_investigation_results'
-            ? [...hash[analytic.sub]['investigationResults'], analytic.createdOn!]
-            : hash[analytic.sub]['investigationResults'];
+        if (analytic.event === 'dashboard_product' && hash[analytic.sub]) dashboardProduct.push(analytic.createdOn!);
+        if (analytic.event === 'creditmix_product_recommendation' && hash[analytic.sub])
+          creditMixProduct.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_sucessfully_submited' && hash[analytic.sub])
+          disputeSubmitted.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_investigation_results' && hash[analytic.sub])
+          investigationResults.push(analytic.createdOn!);
 
         const data = {
           ...hash[analytic.sub],
