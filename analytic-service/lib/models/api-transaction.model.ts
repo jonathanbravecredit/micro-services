@@ -3,14 +3,14 @@ import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 @Model({ tableName: 'APITransactionLog' })
 export class APITransactionLog {
   @PartitionKey()
-  userId: string;
+  userId!: string;
 
   @SortKey()
-  transactionId: string;
+  transactionId!: string;
 
-  action: string;
+  action!: string;
 
-  transaction: string;
+  transaction!: string;
 
-  createdOn: string;
+  createdOn!: string;
 }
