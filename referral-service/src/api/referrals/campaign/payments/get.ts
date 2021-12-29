@@ -7,7 +7,7 @@ import { response } from 'lib/utils/response';
 import { getReferral, getAllEnrolledReferralsByCampaign, createReferral } from 'lib/queries';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
-import { campaignPaymentLogic } from 'lib/utils/payments/campaignPaymentLogic';
+import { campaignPaymentLogic } from 'lib/utils/campaigns/campaignPaymentLogic';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { ReferralMaker } from 'lib/models/referral.model';
 

@@ -14,6 +14,7 @@ export class Referral {
   createdOn: string | undefined;
   modifiedOn: string | undefined;
   referralStatus: 'suspended' | 'active' | undefined;
+  referralApproved: boolean | undefined;
 }
 
 export class ReferralMaker implements Referral {
@@ -28,8 +29,9 @@ export class ReferralMaker implements Referral {
   createdOn: string | undefined;
   modifiedOn: string | undefined;
   referralStatus: 'suspended' | 'active' | undefined;
+  referralApproved: boolean | undefined;
 
-  constructor(id: string, referralCode: string, campaign: string, referredByCode?: string) {
+  constructor(id: string, referralCode: string, campaign: string, referralApproved: boolean, referredByCode?: string, ) {
     this.id = id;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
@@ -41,6 +43,7 @@ export class ReferralMaker implements Referral {
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
     this.referralStatus = 'active';
+    this.referralApproved = referralApproved;
   }
 
   updateReferralEnrollment(enrollment: 'pending' | 'enrolled') {
