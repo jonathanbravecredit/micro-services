@@ -8,6 +8,14 @@ import * as _ from 'lodash';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
+interface IHashData {
+  firstClick: string;
+  firstClickEvent: string;
+  dashboardProduct: string[];
+  creditMixProduct: string[];
+  disputeSubmitted: string[];
+  investigationResults: string[];
+}
 
 export const main = async () => {
   try {
@@ -20,33 +28,78 @@ export const main = async () => {
     //  flag scores as prior to click
     //  mark the score at click (go through the clicks and match up the score)
     //  mark all the scores after as being after the event
-    const hash: Record<string, any> = {}; // the first analytic click
-    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((a) => {
-      if (a.sub) {
-        const event = a.event;
-        const key = `${a.event}`;
+    const hash: { [key: string]: IHashData } = {}; // the first analytic click
+    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic, i, arr) => {
+      if (analytic.sub) {
+        const dashboardProduct =
+          analytic.event === 'dashboard_product'
+            ? [...hash[analytic.sub]['dashboardProduct'], analytic.createdOn!]
+            : hash[analytic.sub]['dashboardProduct'];
+
+        const creditMixProduct =
+          analytic.event === 'creditmix_product_recommendation'
+            ? [...hash[analytic.sub]['creditMixProduct'], analytic.createdOn!]
+            : hash[analytic.sub]['creditMixProduct'];
+
+        const disputeSubmitted =
+          analytic.event === 'dispute_sucessfully_submited'
+            ? [...hash[analytic.sub]['disputeSubmitted'], analytic.createdOn!]
+            : hash[analytic.sub]['disputeSubmitted'];
+
+        const investigationResults =
+          analytic.event === 'dispute_investigation_results'
+            ? [...hash[analytic.sub]['investigationResults'], analytic.createdOn!]
+            : hash[analytic.sub]['investigationResults'];
+
         const data = {
-          ...hash[a.sub],
-          firstClick: a.createdOn!,
-          firstClickEvent: a.event,
+          ...hash[analytic.sub],
+          firstClick: analytic.createdOn!,
+          firstClickEvent: analytic.event,
+          dashboardProduct,
+          creditMixProduct,
+          disputeSubmitted,
+          investigationResults,
         };
-        data[key] = event;
-        hash[a.sub] = data;
+        hash[analytic.sub] = data;
       }
     });
 
     const scores = (await listCreditScores())
       .filter((s) => hash[s.id])
       .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
-    const mapped = scores.map((s) => {
-      const analytics = hash[s.id];
-      const initiated = (s.createdOn || 0) > analytics.firstClick;
-      const initiatingEvent = initiated ? analytics.firstClickEvent : '';
-      const initiatingEventTime = initiated ? analytics.firstClick : '';
+    const mapped = scores.map((score, i, arr) => {
+      const analytics = hash[score.id];
+      const firstClick = new Date(analytics.firstClick);
+      const createdOn = new Date(score.createdOn || 0);
+      const nextCreatedOn = arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
+      const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
+      const nearestEvent = t1 ? analytics.firstClickEvent : '';
+      const nearestEventTime = t1 ? analytics.firstClick : '';
+      const dashboardProductEvent = analytics.dashboardProduct.find((event: string) => {
+        const dte = new Date(event);
+        return dte >= createdOn && dte < nextCreatedOn;
+      });
+      const creditMixProductEvent = analytics.creditMixProduct.find((event: string) => {
+        const dte = new Date(event);
+        return dte >= createdOn && dte < nextCreatedOn;
+      });
+      const disputeSubmittedEvent = analytics.disputeSubmitted.find((event: string) => {
+        const dte = new Date(event);
+        return dte >= createdOn && dte < nextCreatedOn;
+      });
+      const investigationResultsEvent = analytics.investigationResults.find((event: string) => {
+        const dte = new Date(event);
+        return dte >= createdOn && dte < nextCreatedOn;
+      });
+      //if the an analytic is greater than this score created on, but is less than the next score id
       return {
-        ...s,
-        initiatingEvent,
-        initiatingEventTime,
+        ...score,
+        nearestEvent,
+        nearestEventTime,
+        dashboardProductEvent,
+        creditMixProductEvent,
+        disputeSubmittedEvent,
+        investigationResultsEvent,
       };
     });
     const csvAnalytics = csvjson.toCSV(JSON.stringify(mapped), {
