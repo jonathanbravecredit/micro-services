@@ -16,6 +16,8 @@
     "@types/amazon-cognito-auth-js": "^1.2.2",
     "@types/aws-lambda": "^8.10.64",
     "@types/jest": "^26.0.14",
+    "@types/lodash": "^4.14.178",
+    "@types/nodemailer": "^6.4.4",
     "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
