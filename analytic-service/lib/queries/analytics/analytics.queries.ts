@@ -11,7 +11,7 @@ export const getAnalytics = (analyticId: string): Promise<Analytics | null> => {
     .catch((err) => err);
 };
 
-export const listAnalyticss = (): Promise<Analytics[]> => {
+export const listAnalytics = (): Promise<Analytics[]> => {
   return store
     .scan()
     .execFetchAll()
