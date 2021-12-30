@@ -31,20 +31,15 @@ export const main = async () => {
     const hash: { [key: string]: IHashData } = {}; // the first analytic click
     _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic) => {
       if (analytic.sub) {
-        let dashboardProduct: string[] = [];
-        let creditMixProduct: string[] = [];
-        let disputeSubmitted: string[] = [];
-        let investigationResults: string[] = [];
-        if (hash[analytic.sub]) {
-          dashboardProduct = hash[analytic.sub]?.dashboardProduct || [];
-          creditMixProduct = hash[analytic.sub]?.creditMixProduct || [];
-          disputeSubmitted = hash[analytic.sub]?.disputeSubmitted || [];
-          investigationResults = hash[analytic.sub]?.investigationResults || [];
-          if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
-          if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
-          if (analytic.event === 'dispute_sucessfully_submited') disputeSubmitted.push(analytic.createdOn!);
-          if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
-        }
+        let dashboardProduct: string[] = hash[analytic.sub]?.dashboardProduct || [];
+        let creditMixProduct: string[] = hash[analytic.sub]?.creditMixProduct || [];
+        let disputeSubmitted: string[] = hash[analytic.sub]?.disputeSubmitted || [];
+        let investigationResults: string[] = hash[analytic.sub]?.investigationResults || [];
+
+        if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
+        if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_sucessfully_submited') disputeSubmitted.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
 
         const data = {
           ...hash[analytic.sub],
