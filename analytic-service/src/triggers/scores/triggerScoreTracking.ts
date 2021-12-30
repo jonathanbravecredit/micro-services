@@ -21,8 +21,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const scoreId = new Date().valueOf();
           const bureauId = newImage.bureauId;
           const score = newImage.currentScore || -1;
-          const source = 'fulfill:unknown'; // could look at the logs and determine
-          const creditScore = new CreditScoreMaker(sub, scoreId, bureauId, score, source);
+          const creditScore = new CreditScoreMaker(sub, scoreId, bureauId, score);
           console.log('credit score ==> ', creditScore);
           await createCreditScore(creditScore);
         }
