@@ -4,6 +4,7 @@ import * as queries from 'lib/queries';
 const checkBasicEligibility = async (payload: ICreateReferral): Promise<boolean> => {
   if (!payload.referredByCode) return false;
   const partentReferral = await queries.getReferralByReferralCode(payload.referredByCode);
+  if (partentReferral?.campaign !== payload.campaign) return false;
   return !!partentReferral?.referralApproved
 }
 
