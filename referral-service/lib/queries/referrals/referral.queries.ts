@@ -70,7 +70,6 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
       and(
         attribute('enrollmentStatus').eq('enrolled'),
         attribute('processingStatus').eq('pending'),
-        not(attribute('referralStatus').eq('suspended')),
       ),
     )
     .execFetchAll()
