@@ -11,7 +11,6 @@ export class CreditScore {
   score!: number;
   createdOn?: string;
   modifiedOn?: string;
-  source?: string;
 }
 
 export class CreditScoreMaker implements CreditScore {
@@ -21,15 +20,13 @@ export class CreditScoreMaker implements CreditScore {
   bureauId: string;
   createdOn?: string | undefined;
   modifiedOn?: string | undefined;
-  source?: string | undefined;
 
-  constructor(id: string, scoreId: number, bureauId: string, score: number, source: string) {
+  constructor(id: string, scoreId: number, bureauId: string, score: number) {
     this.id = id;
     this.scoreId = scoreId;
     this.bureauId = bureauId;
     this.score = score;
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
-    this.source = source;
   }
 }
