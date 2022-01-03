@@ -1,7 +1,6 @@
 'use strict';
 import 'reflect-metadata';
 import * as interfaces from 'lib/interfaces';
-import * as vouchers from 'voucher-code-generator';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { getReferral, getAllEnrolledReferralsByCampaign, createReferral } from 'lib/queries';
@@ -10,6 +9,7 @@ import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
 import { campaignPaymentLogic } from 'lib/utils/campaigns/campaignPaymentLogic';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { ReferralMaker } from 'lib/models/referral.model';
+
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;

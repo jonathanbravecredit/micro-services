@@ -125,6 +125,10 @@ functions:
     handler: src/handlers/reports/user-summary.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
+  creditScoreTracking:
+    handler: src/handlers/reports/credit-score-tracking.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 300
 
 resources:
   Resources:
