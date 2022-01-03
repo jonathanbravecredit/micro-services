@@ -13,7 +13,6 @@ export const groupReferralsByYearMonth = (referrals: Referral[]): IGroupedYearMo
       if (group.yearMonth === yearMonth) {
         if (found) return;
         group.referrals += 1;
-        group.earnings += 5;
         found = true;
         return;
       }
@@ -23,8 +22,6 @@ export const groupReferralsByYearMonth = (referrals: Referral[]): IGroupedYearMo
       grouped.push({
         yearMonth,
         referrals: 1,
-        earnings: 5,
-        currency: 'USD',
       });
     }
   });
@@ -36,8 +33,6 @@ export const createBlankMonthlyReferral = (): IGroupedYearMonthReferral[] => {
     {
       yearMonth: 0,
       referrals: 0,
-      earnings: 0,
-      currency: 'USD',
     },
   ];
 };

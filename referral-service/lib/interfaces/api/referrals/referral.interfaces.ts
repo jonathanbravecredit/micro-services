@@ -23,6 +23,4 @@ export interface ICreateReferral {
 export interface IGroupedYearMonthReferral {
   yearMonth: number;
   referrals: number;
-  earnings: number;
-  currency: string;
 }

@@ -36,7 +36,11 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     console.log('payload ===> ', payload);
 
     const allReferrals = await getAllEnrolledReferralsByCampaign(code, campaign);
-    const { paymentsProcessed, paymentsPending, paymentScheduledDate } = campaignPaymentLogic[campaign](allReferrals);
+    const { paymentsProcessed, paymentsPending, paymentScheduledDate } = campaignPaymentLogic[campaign](
+      allReferrals,
+      referral,
+      campaign,
+    );
 
     return response(200, {
       paymentsProcessed,
