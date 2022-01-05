@@ -15,12 +15,12 @@ export const getReferral = (id: string): Promise<Referral | null> => {
 
 export const getReferralByReferralCode = (code: string | undefined): Promise<Referral | null> => {
   return store
-  .scan()
-  .whereAttribute('referralCode')
-  .eq(code)
-  .execFetchAll()
-  .then((res) => res)
-  .catch((err) => err);
+    .scan()
+    .whereAttribute('referralCode')
+    .eq(code)
+    .execSingle()
+    .then((res) => res)
+    .catch((err) => err);
 };
 
 export const listEnrolledReferralsByReferredBy = (referredByCode: string): Promise<Referral[]> => {
@@ -76,13 +76,7 @@ export const listReferrals = (): Promise<Referral[]> => {
 export const listEligibleReferrals = (): Promise<Referral[]> => {
   return store
     .scan()
-    .where(
-      and(
-        attribute('enrollmentStatus').eq('enrolled'),
-        attribute('processingStatus').eq('pending'),
-        not(attribute('referralStatus').eq('suspended')),
-      ),
-    )
+    .where(and(attribute('enrollmentStatus').eq('enrolled'), attribute('processingStatus').eq('pending')))
     .execFetchAll()
     .then((res) => res)
     .catch((err) => err);
