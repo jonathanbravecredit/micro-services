@@ -14,12 +14,15 @@ export const getReferral = (id: string): Promise<Referral | null> => {
 
 export const getReferralByReferralCode = (code: string | undefined): Promise<Referral[] | null> => {
   return store
-    .scan()
+    .query()
     .whereAttribute('referralCode')
     .eq(code)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 };
 
 export const listEnrolledReferralsByReferredBy = (referredByCode: string): Promise<Referral[]> => {

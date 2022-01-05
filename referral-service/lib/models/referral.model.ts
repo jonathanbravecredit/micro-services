@@ -1,9 +1,12 @@
-import { Model, PartitionKey } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
+
+const REFERRAL_CODE_GSI = 'referralCode-index';
 
 @Model({ tableName: 'Referrals' })
 export class Referral {
   @PartitionKey()
   id!: string;
+  @GSIPartitionKey(REFERRAL_CODE_GSI)
   referralCode: string | undefined;
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled' = 'pending';
@@ -31,7 +34,7 @@ export class ReferralMaker implements Referral {
   referralStatus: 'suspended' | 'active' | undefined;
   referralApproved: boolean | undefined;
 
-  constructor(id: string, referralCode: string, campaign: string, referralApproved: boolean, referredByCode?: string, ) {
+  constructor(id: string, referralCode: string, campaign: string, referralApproved: boolean, referredByCode?: string) {
     this.id = id;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
