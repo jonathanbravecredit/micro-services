@@ -3,7 +3,6 @@ import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { Referral } from 'lib/models/referral.model';
 
 const store = new DynamoStore(Referral);
-const campaign = 'NO_PAY';
 
 export const getReferral = (id: string): Promise<Referral | null> => {
   return store
@@ -13,12 +12,12 @@ export const getReferral = (id: string): Promise<Referral | null> => {
     .catch((err) => err);
 };
 
-export const getReferralByReferralCode = (code: string | undefined): Promise<Referral | null> => {
+export const getReferralByReferralCode = (code: string | undefined): Promise<Referral[] | null> => {
   return store
     .scan()
     .whereAttribute('referralCode')
     .eq(code)
-    .execSingle()
+    .exec()
     .then((res) => res)
     .catch((err) => err);
 };
