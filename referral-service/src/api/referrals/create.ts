@@ -12,7 +12,8 @@ import { eligible } from 'lib/utils/campaigns/campaignEligibilityLogic';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const payload: ICreateReferral = safeParse(event, 'body'); // referredByCode;
+  const body: { id: string; referredByCode?: string } = safeParse(event, 'body'); // referredByCode;
+  const payload: ICreateReferral = { ...body, campaign: CURRENT_CAMPAIGN };
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
@@ -21,7 +22,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const referral: Referral = new ReferralMaker(
       payload.id,
       referralCode[0],
-      CURRENT_CAMPAIGN,
+      payload.campaign,
       eligibility,
       eligibility ? payload.referredByCode : undefined,
     );
