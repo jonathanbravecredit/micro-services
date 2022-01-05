@@ -7,7 +7,7 @@ export class Referral {
   @PartitionKey()
   id!: string;
   @GSIPartitionKey(REFERRAL_CODE_GSI)
-  referralCode: string | undefined;
+  referralCode!: string;
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled' = 'pending';
   processingStatus: 'pending' | 'paid' = 'pending';
