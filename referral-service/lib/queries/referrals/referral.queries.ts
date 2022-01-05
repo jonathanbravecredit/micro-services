@@ -15,9 +15,9 @@ export const getReferral = (id: string): Promise<Referral | null> => {
 export const getReferralByReferralCode = (code: string | undefined): Promise<Referral[] | null> => {
   return store
     .query()
-    .whereAttribute('referralCode')
-    .eq(code)
-    .exec()
+    .index('referralCode-index')
+    .wherePartitionKey(code)
+    .execSingle()
     .then((res) => res)
     .catch((err) => {
       console.log(err);
