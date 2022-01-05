@@ -1,6 +1,6 @@
 import { and, attribute, DynamoStore, not } from '@shiftcoders/dynamo-easy';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
-import { Referral } from 'lib/models/referral.model';
+import { Referral, REFERRAL_CODE_GSI } from 'lib/models/referral.model';
 
 const store = new DynamoStore(Referral);
 
@@ -13,17 +13,48 @@ export const getReferral = (id: string): Promise<Referral | null> => {
 };
 
 export const getReferralByReferralCode = (code: string | undefined): Promise<Referral[] | null> => {
+  console.log('code ==> ', code);
   return store
     .query()
-    .index('referralCode-index')
+    .index(REFERRAL_CODE_GSI)
     .wherePartitionKey(code)
-    .execSingle()
+    .limit(1)
+    .exclusiveStartKey(null)
+    .execFullResponse()
     .then((res) => res)
     .catch((err) => {
       console.log(err);
       return err;
     });
 };
+
+// export const getAllReportsByStatus = ({
+//   status,
+//   limit = 10,
+//   startKey = null,
+//   descending = false,
+// }: ReportsByStatusParams): Promise<ReportCards[]> => {
+//   if (descending) {
+//     return DisputeReportStore.query()
+//       .index('reportStatus-createdOn-index')
+//       .wherePartitionKey(status)
+//       .descending()
+//       .limit(limit)
+//       .exclusiveStartKey(startKey)
+//       .execFullResponse()
+//       .then((res) => res)
+//       .catch((err) => err);
+//   }
+//   return DisputeReportStore.query()
+//     .index('reportStatus-createdOn-index')
+//     .wherePartitionKey(status)
+//     .ascending()
+//     .limit(limit)
+//     .exclusiveStartKey(startKey)
+//     .execFullResponse()
+//     .then((res) => res)
+//     .catch((err) => err);
+// };
 
 export const listEnrolledReferralsByReferredBy = (referredByCode: string): Promise<Referral[]> => {
   return store

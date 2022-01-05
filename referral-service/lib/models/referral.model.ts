@@ -1,6 +1,6 @@
 import { GSIPartitionKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
 
-const REFERRAL_CODE_GSI = 'referralCode-index';
+export const REFERRAL_CODE_GSI = 'referralCode-index';
 
 @Model({ tableName: 'Referrals' })
 export class Referral {
