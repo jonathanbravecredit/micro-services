@@ -1,1 +1,1 @@
-export const CURRENT_CAMPAIGN = 'NO_PAY';
+export const CURRENT_CAMPAIGN = 'jan2022';
