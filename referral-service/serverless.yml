@@ -276,6 +276,10 @@ functions:
     timeout: 300
     events:
       - schedule: cron(0 8 ? * MON *) # turning off
+  allReferrals:
+    handler: src/handlers/reports/allReferrals.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 300
 
   ## triggers (db stream)
   triggerReferralEnrollment:

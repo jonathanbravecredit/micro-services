@@ -29,20 +29,17 @@ export const main = async () => {
     //  mark the score at click (go through the clicks and match up the score)
     //  mark all the scores after as being after the event
     const hash: { [key: string]: IHashData } = {}; // the first analytic click
-    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic, i, arr) => {
+    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic) => {
       if (analytic.sub) {
-        const dashboardProduct = hash[analytic.sub] ? hash[analytic.sub].dashboardProduct || [] : [];
-        const creditMixProduct = hash[analytic.sub] ? hash[analytic.sub].creditMixProduct || [] : [];
-        const disputeSubmitted = hash[analytic.sub] ? hash[analytic.sub].disputeSubmitted || [] : [];
-        const investigationResults = hash[analytic.sub] ? hash[analytic.sub].investigationResults || [] : [];
+        let dashboardProduct: string[] = hash[analytic.sub]?.dashboardProduct || [];
+        let creditMixProduct: string[] = hash[analytic.sub]?.creditMixProduct || [];
+        let disputeSubmitted: string[] = hash[analytic.sub]?.disputeSubmitted || [];
+        let investigationResults: string[] = hash[analytic.sub]?.investigationResults || [];
 
-        if (analytic.event === 'dashboard_product' && hash[analytic.sub]) dashboardProduct.push(analytic.createdOn!);
-        if (analytic.event === 'creditmix_product_recommendation' && hash[analytic.sub])
-          creditMixProduct.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_sucessfully_submited' && hash[analytic.sub])
-          disputeSubmitted.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_investigation_results' && hash[analytic.sub])
-          investigationResults.push(analytic.createdOn!);
+        if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
+        if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_sucessfully_submited') disputeSubmitted.push(analytic.createdOn!);
+        if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
 
         const data = {
           ...hash[analytic.sub],
@@ -64,7 +61,7 @@ export const main = async () => {
       const analytics = hash[score.id];
       const firstClick = new Date(analytics.firstClick);
       const createdOn = new Date(score.createdOn || 0);
-      const nextCreatedOn = arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
+      const nextCreatedOn = !arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
       const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
       const nearestEvent = t1 ? analytics.firstClickEvent : '';
       const nearestEventTime = t1 ? analytics.firstClick : '';
