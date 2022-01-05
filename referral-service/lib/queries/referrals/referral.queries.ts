@@ -138,15 +138,15 @@ export const deleteReferral = (id: string): Promise<void> => {
 export const updateReferral = async (referral: Partial<Referral>): Promise<Partial<Referral> | null> => {
   if (!referral.id) return null;
   const old = await getReferral(referral.id);
-  const merge = {
+  const merge: Partial<Referral> = {
     ...old,
     ...referral,
   };
   const modifiedOn = new Date().toISOString();
   return store
-    .update(merge.id)
+    .update(merge.id!)
     .updateAttribute('referralCode')
-    .set(merge.referralCode)
+    .set(merge.referralCode!)
     .updateAttribute('enrollmentStatus')
     .set(merge.enrollmentStatus || 'pending')
     .updateAttribute('processingStatus')
