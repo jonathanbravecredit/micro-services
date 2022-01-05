@@ -8,6 +8,7 @@ import { safeParse } from 'lib/utils/safeJson';
 import { Referral, ReferralMaker } from 'lib/models/referral.model';
 import { ICreateReferral } from 'lib/interfaces';
 import { createReferral } from 'lib/queries';
+import { eligible } from 'lib/utils/campaigns/campaignEligibilityLogic';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const payload: ICreateReferral = safeParse(event, 'body'); // referredByCode;
@@ -15,11 +16,13 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const referralCode = vouchers.generate({ length: 7, count: 1 });
+    const eligibility = await eligible(payload)
     const referral: Referral = new ReferralMaker(
       payload.id,
       referralCode[0],
       payload.campaign || '',
-      payload.referredByCode,
+      eligibility,
+      eligibility ? payload.referredByCode : undefined,
     );
     await createReferral(referral);
     return response(200, `success`);

@@ -1,16 +1,14 @@
-import { Referral } from "lib/models/referral.model";
-import * as moment from "moment";
-import { IPayments } from "lib/interfaces/api/referrals/payments/payments.interfaces";
+import { Referral } from 'lib/models/referral.model';
+import * as moment from 'moment';
+import { IPayments } from 'lib/interfaces/api/referrals/payments/payments.interfaces';
 
-const dec2020PaymentLogic = (allReferrals: Referral[]) => {
+const dec2020PaymentLogic = (allReferrals: Referral[], referral: Referral, currentCampaign: string) => {
   let paymentScheduledDate;
   let paymentsProcessed = 0;
   let paymentsPending = 0;
 
   allReferrals.forEach((referral) => {
-    referral.processingStatus === "paid"
-      ? (paymentsProcessed += 1)
-      : (paymentsPending += 1);
+    referral.processingStatus === 'paid' ? (paymentsProcessed += 1) : (paymentsPending += 1);
   });
 
   const sortedReferralsByDate = allReferrals.sort((a, b): number => {
@@ -27,29 +25,80 @@ const dec2020PaymentLogic = (allReferrals: Referral[]) => {
       paymentScheduledDate = moment(tenthReferralDate).day(2).toISOString();
     }
 
-    paymentScheduledDate = moment(tenthReferralDate)
-      .add(1, "week")
-      .day(2)
-      .toISOString();
+    paymentScheduledDate = moment(tenthReferralDate).add(1, 'week').day(2).toISOString();
   } else {
-    const createdOn =
-      sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
+    const createdOn = sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
     let latestReferralDate = createdOn ? createdOn : new Date().toISOString();
 
     paymentScheduledDate = moment(latestReferralDate)
-      .add(1, "month")
-      .startOf("month")
-      .add(6 - moment().day("Tuesday").day(), "days")
-      .startOf("week")
+      .add(1, 'month')
+      .startOf('month')
+      .add(6 - moment().day('Tuesday').day(), 'days')
+      .startOf('week')
       .day(2)
       .toISOString();
   }
 
-  return { paymentsPending, paymentsProcessed, paymentScheduledDate };
+  return { paymentsPending, paymentsProcessed, paymentScheduledDate, currency: '', earningsAmount: 0 };
+};
+
+const jan2020PaymentLogic = (allReferrals: Referral[], referral: Referral, currentCampaign: string) => {
+  let paymentScheduledDate;
+  let paymentsProcessed = 0;
+  let paymentsPending = 0;
+  let earningsAmount = 0;
+  let currency = 'USD';
+
+  allReferrals.forEach((referral) => {
+    referral.processingStatus === 'paid' ? (paymentsProcessed += 1) : (paymentsPending += 1);
+  });
+
+  const sortedReferralsByDate = allReferrals.sort((a, b): number => {
+    let aCreatedOn: number = new Date(a.createdOn || 0).valueOf();
+    let bCreatedOn: number = new Date(b.createdOn || 0).valueOf();
+
+    return aCreatedOn - bCreatedOn;
+  });
+
+  if (allReferrals.length >= 10) {
+    let tenthReferralDate = sortedReferralsByDate[9].createdOn;
+
+    if (moment(tenthReferralDate).day() === 0) {
+      paymentScheduledDate = moment(tenthReferralDate).day(2).toISOString();
+    }
+
+    paymentScheduledDate = moment(tenthReferralDate).add(1, 'week').day(2).toISOString();
+
+    earningsAmount = 50;
+  } else {
+    const createdOn = sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
+    let latestReferralDate = createdOn ? createdOn : new Date().toISOString();
+
+    paymentScheduledDate = moment(latestReferralDate)
+      .add(1, 'month')
+      .startOf('month')
+      .add(6 - moment().day('Tuesday').day(), 'days')
+      .startOf('week')
+      .day(2)
+      .toISOString();
+
+    earningsAmount = allReferrals.length * 5;
+  }
+
+  if (allReferrals.length >= 5) {
+    earningsAmount += 10;
+  }
+
+  if (referral.campaign === currentCampaign) {
+    earningsAmount += 5;
+  }
+
+  return { paymentsPending, paymentsProcessed, paymentScheduledDate, currency, earningsAmount };
 };
 
 export const campaignPaymentLogic: {
-  [key: string]: (allReferrals: Referral[]) => IPayments;
+  [key: string]: (allReferrals: Referral[], referral: Referral, currentCampaign: string) => IPayments;
 } = {
   dec2020: dec2020PaymentLogic,
+  jan2022: jan2020PaymentLogic,
 };
