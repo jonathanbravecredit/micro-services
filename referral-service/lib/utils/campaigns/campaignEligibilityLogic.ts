@@ -3,11 +3,16 @@ import { getReferralByReferralCode } from 'lib/queries';
 
 const checkBasicEligibility = async (payload: ICreateReferral): Promise<boolean> => {
   if (!payload.referredByCode) return false;
-  const parentReferral = await getReferralByReferralCode(payload.referredByCode);
-  if (!parentReferral) return false;
-  console.log('parentReferral ===> ', parentReferral);
-  if (parentReferral[0].campaign !== payload.campaign) return false;
-  return !!parentReferral[0].referralApproved;
+  try {
+    const parentReferral = await getReferralByReferralCode(payload.referredByCode);
+    if (!parentReferral) return false;
+    console.log('parentReferral ===> ', parentReferral);
+    if (parentReferral[0].campaign !== payload.campaign) return false;
+    return !!parentReferral[0].referralApproved;
+  } catch (err) {
+    console.log('error ===> ', err);
+    return false;
+  }
 };
 
 export const campaignEligibilityLogic: {

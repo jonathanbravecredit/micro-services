@@ -16,11 +16,9 @@ export const getReferralByReferralCode = (code: string | undefined): Promise<Ref
   console.log('code ==> ', code);
   return store
     .query()
-    .index(REFERRAL_CODE_GSI)
+    .index('referralCode-index')
     .wherePartitionKey(code)
-    .limit(1)
-    .exclusiveStartKey(null)
-    .execFullResponse()
+    .execFetchAll()
     .then((res) => res)
     .catch((err) => {
       console.log(err);
