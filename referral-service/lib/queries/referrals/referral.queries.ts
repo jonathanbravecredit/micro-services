@@ -12,13 +12,13 @@ export const getReferral = (id: string): Promise<Referral | null> => {
     .catch((err) => err);
 };
 
-export const getReferralByReferralCode = (code: string | undefined): Promise<Referral[] | null> => {
+export const getReferralByReferralCode = (code: string | undefined): Promise<Referral | null> => {
   console.log('code ==> ', code);
   return store
     .query()
     .index('referralCode-index')
     .wherePartitionKey(code)
-    .execFetchAll()
+    .execSingle()
     .then((res) => res)
     .catch((err) => {
       console.log(err);
