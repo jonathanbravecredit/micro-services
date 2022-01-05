@@ -1,6 +1,7 @@
 import { Referral } from 'lib/models/referral.model';
 import * as moment from 'moment';
 import { IPayments } from 'lib/interfaces/api/referrals/payments/payments.interfaces';
+import { CURRENT_CAMPAIGN_START_DATE } from 'lib/data/campaign';
 
 const dec2020PaymentLogic = (allReferrals: Referral[], referral: Referral, currentCampaign: string) => {
   let paymentScheduledDate;
@@ -89,7 +90,7 @@ const jan2020PaymentLogic = (allReferrals: Referral[], referral: Referral, curre
     earningsAmount += 5;
   }
 
-  if (referral.campaign === currentCampaign) {
+  if (referral.enrollmentStatus === 'enrolled' && moment(referral.createdOn).isAfter(CURRENT_CAMPAIGN_START_DATE)) {
     earningsAmount += 3;
   }
 
