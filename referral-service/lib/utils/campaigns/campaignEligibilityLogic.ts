@@ -6,7 +6,6 @@ const checkBasicEligibility = async (payload: ICreateReferral): Promise<boolean>
   try {
     const parentReferral = await getReferralByReferralCode(payload.referredByCode);
     if (!parentReferral) return false;
-    console.log('parentReferral ===> ', parentReferral);
     if (parentReferral.campaign !== payload.campaign) return false;
     return !!parentReferral.referralApproved;
   } catch (err) {
