@@ -69,7 +69,7 @@ const jan2020PaymentLogic = (allReferrals: Referral[], referral: Referral, curre
 
     paymentScheduledDate = moment(tenthReferralDate).add(1, 'week').day(2).toISOString();
 
-    earningsAmount = 50;
+    earningsAmount = 30;
   } else {
     const createdOn = sortedReferralsByDate[sortedReferralsByDate.length - 1]?.createdOn;
     let latestReferralDate = createdOn ? createdOn : new Date().toISOString();
@@ -82,15 +82,15 @@ const jan2020PaymentLogic = (allReferrals: Referral[], referral: Referral, curre
       .day(2)
       .toISOString();
 
-    earningsAmount = allReferrals.length * 5;
+    earningsAmount = allReferrals.length * 3;
   }
 
   if (allReferrals.length >= 5) {
-    earningsAmount += 10;
+    earningsAmount += 5;
   }
 
   if (referral.campaign === currentCampaign) {
-    earningsAmount += 5;
+    earningsAmount += 3;
   }
 
   return { paymentsPending, paymentsProcessed, paymentScheduledDate, currency, earningsAmount };
