@@ -90,7 +90,11 @@ const jan2020PaymentLogic = (allReferrals: Referral[], referral: Referral, curre
     earningsAmount += 5;
   }
 
-  if (referral.enrollmentStatus === 'enrolled' && moment(referral.createdOn).isAfter(CURRENT_CAMPAIGN_START_DATE)) {
+  if (
+    referral.enrollmentStatus === 'enrolled' &&
+    moment(referral.createdOn).isAfter(CURRENT_CAMPAIGN_START_DATE) &&
+    referral.referredByCode
+  ) {
     earningsAmount += 3;
   }
 
