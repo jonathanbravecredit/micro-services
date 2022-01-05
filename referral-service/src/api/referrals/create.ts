@@ -22,7 +22,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const referral: Referral = new ReferralMaker(
       payload.id,
       referralCode[0],
-      payload.campaign,
+      eligibility ? payload.campaign : 'NO_PAY',
       eligibility,
       eligibility ? payload.referredByCode : undefined,
     );
