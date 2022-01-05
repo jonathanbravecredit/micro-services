@@ -14,11 +14,13 @@ import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const body: { id: string; referredByCode?: string } = safeParse(event, 'body'); // referredByCode;
   const payload: ICreateReferral = { ...body, campaign: CURRENT_CAMPAIGN };
+  console.log('payload ===> ', payload);
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const referralCode = vouchers.generate({ length: 7, count: 1 });
     const eligibility = await eligible(payload);
+    console.log('eligible ===> ', eligibility);
     const referral: Referral = new ReferralMaker(
       payload.id,
       referralCode[0],
@@ -26,6 +28,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       eligibility,
       eligibility ? payload.referredByCode : undefined,
     );
+    console.log('referral ===> ', referral);
     await createReferral(referral);
     return response(200, `success`);
   } catch (err) {
