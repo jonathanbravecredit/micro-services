@@ -7,6 +7,8 @@ import { getReferral, getAllEnrolledReferralsByCampaign, createReferral } from '
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createBlankMonthlyReferral } from 'lib/utils/referrals/referral.utils';
 import { campaignPaymentLogic } from 'lib/utils/campaigns/campaignPaymentLogic';
+import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
+import { ReferralMaker } from 'lib/models/referral.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id: string = event.requestContext.authorizer?.claims?.sub;
@@ -33,12 +35,16 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     console.log('payload ===> ', payload);
 
     const allReferrals = await getAllEnrolledReferralsByCampaign(code, campaign);
-    const { paymentsProcessed, paymentsPending, paymentScheduledDate } = campaignPaymentLogic[campaign](allReferrals);
+    const { paymentsPending, paymentsProcessed, paymentScheduledDate, currency, earningsAmount } = campaignPaymentLogic[
+      campaign
+    ](allReferrals, referral, campaign);
 
     return response(200, {
       paymentsProcessed,
       paymentsPending,
       paymentScheduledDate,
+      currency,
+      earningsAmount,
     });
   } catch (err) {
     return response(500, err);

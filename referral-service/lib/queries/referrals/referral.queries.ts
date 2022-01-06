@@ -3,7 +3,6 @@ import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 import { Referral } from 'lib/models/referral.model';
 
 const store = new DynamoStore(Referral);
-const campaign = 'NO_PAY';
 
 export const getReferral = (id: string): Promise<Referral | null> => {
   return store
@@ -11,6 +10,19 @@ export const getReferral = (id: string): Promise<Referral | null> => {
     .exec()
     .then((res) => res)
     .catch((err) => err);
+};
+
+export const getReferralByReferralCode = (code: string | undefined): Promise<Referral | null> => {
+  return store
+    .query()
+    .index('referralCode-index')
+    .wherePartitionKey(code)
+    .execSingle()
+    .then((res) => res)
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 };
 
 export const listEnrolledReferralsByReferredBy = (referredByCode: string): Promise<Referral[]> => {
@@ -102,15 +114,15 @@ export const deleteReferral = (id: string): Promise<void> => {
 export const updateReferral = async (referral: Partial<Referral>): Promise<Partial<Referral> | null> => {
   if (!referral.id) return null;
   const old = await getReferral(referral.id);
-  const merge = {
+  const merge: Partial<Referral> = {
     ...old,
     ...referral,
   };
   const modifiedOn = new Date().toISOString();
   return store
-    .update(merge.id)
+    .update(merge.id!)
     .updateAttribute('referralCode')
-    .set(merge.referralCode)
+    .set(merge.referralCode!)
     .updateAttribute('enrollmentStatus')
     .set(merge.enrollmentStatus || 'pending')
     .updateAttribute('processingStatus')
