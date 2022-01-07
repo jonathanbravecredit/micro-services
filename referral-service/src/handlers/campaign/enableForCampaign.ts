@@ -18,9 +18,13 @@ export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
     await Promise.all(
       approved.map(async (email) => {
         const sub = userLookup.get(email);
-        const resp = await approveReferral(sub);
-        counter++;
-        return;
+        try {
+          const resp = await approveReferral(sub);
+          counter++;
+          return;
+        } catch (err) {
+          return;
+        }
       }),
     );
     console.log(`Updated ${counter} records`);
