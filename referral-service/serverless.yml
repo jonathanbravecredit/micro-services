@@ -281,6 +281,10 @@ functions:
     handler: src/handlers/reports/allReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
+  enableForCampaign:
+    handler: src/handlers/campaign/enableForCampaign.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 300
 
   ## triggers (db stream)
   triggerReferralEnrollment:
