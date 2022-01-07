@@ -168,7 +168,7 @@ export class UserSummary {
 
   parsePublicRecords(report: IMergeReport): IPublicPartition[] {
     if (!report) return [];
-    const partition = report.TrueLinkCreditReportType.PulblicRecordPartition;
+    const partition = report.TrueLinkCreditReportType?.PulblicRecordPartition;
     if (partition instanceof Array) {
       return partition;
     } else {
