@@ -168,7 +168,7 @@ export class UserSummary {
 
   parsePublicRecords(report: IMergeReport): IPublicPartition[] {
     if (!report) return [];
-    const partition = report.TrueLinkCreditReportType.PulblicRecordPartition;
+    const partition = report.TrueLinkCreditReportType?.PulblicRecordPartition;
     if (partition instanceof Array) {
       return partition;
     } else {
@@ -187,10 +187,8 @@ export class UserSummary {
     );
   }
 
-  haveSelfLoans(report: IMergeReport): boolean {
-    const subscribers = this.parseSubscriberRecords(report);
-    if (!subscribers || !subscribers.length) return false;
-    return !!subscribers.find((s) => {
+  haveSelfLoans(): boolean {
+    return !!this.subscribers.find((s) => {
       const name = s.name?.toLowerCase();
       if (!name) return;
       let found = false;

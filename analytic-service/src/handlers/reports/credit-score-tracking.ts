@@ -67,8 +67,7 @@ export const main = async () => {
         if (!tu) return null;
         const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
         const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
-        const report = record.parseTransunionMergeReport(tu);
-        if (record.haveSelfLoans(report)) {
+        if (record.haveSelfLoans()) {
           selfLoanUsers.set(item.id, true);
         }
       }),
