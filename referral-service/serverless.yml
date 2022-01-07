@@ -282,7 +282,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
   enableForCampaign:
-    handler: src/handlers/reports/enableForCampaign.main
+    handler: src/handlers/campaign/enableForCampaign.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
 
