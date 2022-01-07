@@ -78,7 +78,12 @@ export const listReferrals = (): Promise<Referral[]> => {
 export const listEligibleReferrals = (): Promise<Referral[]> => {
   return store
     .scan()
-    .where(and(attribute('enrollmentStatus').eq('enrolled'), attribute('processingStatus').eq('pending')))
+    .where(
+      and(
+        attribute('campaign').eq(CURRENT_CAMPAIGN),
+        attribute('enrollmentStatus').eq('enrolled'),
+      ),
+    )
     .execFetchAll()
     .then((res) => res)
     .catch((err) => err);

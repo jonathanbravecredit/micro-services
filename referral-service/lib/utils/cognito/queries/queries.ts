@@ -8,6 +8,7 @@ const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
   region: 'us-east-2',
 });
 const pullUsers = util.promisify(cognitoidentityserviceprovider.listUsers.bind(cognitoidentityserviceprovider));
+const adminGetUser = util.promisify(cognitoidentityserviceprovider.adminGetUser.bind(cognitoidentityserviceprovider));
 const USER_POOL_ID = process.env.POOL_ID;
 
 export const getUsers = async (token: string, limit: number): Promise<IFormatDataResults[]> => {
@@ -44,4 +45,14 @@ export const getUsers = async (token: string, limit: number): Promise<IFormatDat
   await getUsersRecurse(token, limit);
   results = formatData(results);
   return results;
+};
+
+export const getUser = async (id: string) => {
+  let params = {
+    UserPoolId: USER_POOL_ID,
+    Username: id,
+  };
+
+  let resp = await adminGetUser(params);
+  return resp.data;
 };
