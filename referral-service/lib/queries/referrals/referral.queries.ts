@@ -142,3 +142,22 @@ export const enrollReferral = async (id: string): Promise<Partial<Referral> | nu
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const approveReferral = async (id: string): Promise<Partial<Referral> | null> => {
+  if (!id) return null;
+  const modifiedOn = new Date().toISOString();
+  return store
+    .update(id)
+    .updateAttribute('campaign')
+    .set(CURRENT_CAMPAIGN)
+    .updateAttribute('referralStatus')
+    .set('active')
+    .updateAttribute('referralApproved')
+    .set(true)
+    .updateAttribute('modifiedOn')
+    .set(modifiedOn)
+    .returnValues('UPDATED_NEW')
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
