@@ -1,10 +1,13 @@
 import 'reflect-metadata';
 const csvjson = require('csvjson');
+import * as _ from 'lodash';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { listAnalytics, listCreditScores } from 'lib/queries';
 import { generateEmailParams } from 'lib/utils/helpers';
-import * as _ from 'lodash';
+import { getItemsInDB } from 'lib/queries/appdata/appdata';
+import { UpdateAppDataInput } from 'lib/aws/api.service';
+import { UserSummary } from 'lib/utils/transunion/UserSummary';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -54,11 +57,29 @@ export const main = async () => {
       }
     });
 
+    // find anyone that has self
+    const selfLoanUsers = new Map();
+    await Promise.all(
+      Object.keys(hash).map(async (sub) => {
+        // look up the users credit score and
+        const item = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
+        const tu = item.agencies?.transunion;
+        if (!tu) return null;
+        const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
+        const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
+        const report = record.parseTransunionMergeReport(tu);
+        if (record.haveSelfLoans(report)) {
+          selfLoanUsers.set(item.id, true);
+        }
+      }),
+    );
+
     const scores = (await listCreditScores())
       .filter((s) => hash[s.id])
       .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
     const mapped = scores.map((score, i, arr) => {
       const analytics = hash[score.id];
+      const haveSelfLoan = selfLoanUsers.get(score.id);
       const firstClick = new Date(analytics.firstClick);
       const createdOn = new Date(score.createdOn || 0);
       const nextCreatedOn = !arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
@@ -81,6 +102,7 @@ export const main = async () => {
         const dte = new Date(event);
         return dte >= createdOn && dte < nextCreatedOn;
       });
+
       //if the an analytic is greater than this score created on, but is less than the next score id
       return {
         ...score,
@@ -90,6 +112,7 @@ export const main = async () => {
         creditMixProductEvent,
         disputeSubmittedEvent,
         investigationResultsEvent,
+        haveSelfLoan: haveSelfLoan || false,
       };
     });
     const csvAnalytics = csvjson.toCSV(JSON.stringify(mapped), {
