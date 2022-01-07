@@ -276,7 +276,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
     events:
-      - schedule: cron(0 8 ? * MON *) # turning off
+      - schedule: cron(0 8 * * ? *) # 8 am every day
   allReferrals:
     handler: src/handlers/reports/allReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
