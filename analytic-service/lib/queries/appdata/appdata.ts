@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk';
 const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const tableName = process.env.APPDATA || '';
 
-export const getItemsInDB = (id: any) => {
+export const getItemsInDB = (id: any): Promise<DynamoDB.DocumentClient.AttributeMap> => {
   const params = {
     Key: {
       id: id,
@@ -12,7 +12,7 @@ export const getItemsInDB = (id: any) => {
   return db
     .get(params)
     .promise()
-    .then((res) => res)
+    .then((res) => res.Item)
     .catch((err) => err);
 };
 

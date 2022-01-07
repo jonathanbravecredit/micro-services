@@ -187,6 +187,45 @@ export class UserSummary {
     );
   }
 
+  haveSelfLoans(report: IMergeReport): boolean {
+    const subscribers = this.parseSubscriberRecords(report);
+    if (!subscribers || !subscribers.length) return false;
+    return !!subscribers.find((s) => {
+      const name = s.name?.toLowerCase();
+      if (!name) return;
+      let found = false;
+      switch (name) {
+        case 'sbnaselflndr':
+          found = true;
+          break;
+        case 'ftself lender inc.':
+          found = true;
+          break;
+        case 'lead bank':
+          found = true;
+          break;
+        case 'sf lead bank':
+          found = true;
+          break;
+        case 'sf/lead bank':
+          found = true;
+          break;
+        case 'atlantic cap bkselflender':
+          found = true;
+          break;
+        case 'atlantic capital bank self':
+          found = true;
+          break;
+        case 'sbna self':
+          found = true;
+          break;
+        default:
+          break;
+      }
+      return found;
+    });
+  }
+
   sumOpenStudentLoans(partitions: ITradeLinePartition[] = []): number {
     if (!partitions || !partitions.length) return 0;
     const studentloans = partitions.filter((a) => {
