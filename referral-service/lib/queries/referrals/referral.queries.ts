@@ -82,6 +82,8 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
       and(
         attribute('campaign').eq(CURRENT_CAMPAIGN),
         attribute('enrollmentStatus').eq('enrolled'),
+        attribute('processingStatus').eq('pending'),
+        attribute('referralApproved').eq(true),
       ),
     )
     .execFetchAll()
@@ -90,12 +92,8 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
 };
 
 export const createReferral = (referral: Referral): Promise<void> => {
-  const newReferral: Referral = {
-    ...referral,
-    campaign: CURRENT_CAMPAIGN,
-  };
   return store
-    .put(newReferral)
+    .put(referral)
     .ifNotExists()
     .exec()
     .then((res) => res)
