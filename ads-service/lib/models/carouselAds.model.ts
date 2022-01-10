@@ -11,8 +11,8 @@ export class CarouselAd {
   annual: string | undefined;
   textOne: string | undefined;
   textTwo: string | undefined;
-  active: boolean = false;
   textThree: string | undefined;
+  active: boolean = false;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 }
