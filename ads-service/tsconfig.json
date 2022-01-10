@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "target": "es6",
     "sourceMap": true,
-    "moduleResolution": "node"
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["reflect-metadata", "jest"]
   }
 }
