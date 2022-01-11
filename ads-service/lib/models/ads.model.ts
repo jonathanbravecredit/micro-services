@@ -1,7 +1,7 @@
 import { Model, PartitionKey } from '@shiftcoders/dynamo-easy';
 
-@Model({ tableName: 'CarouselAds' })
-export class CarouselAd {
+@Model({ tableName: 'Ads' })
+export class Ad {
   @PartitionKey()
   id!: string;
   imageLink: string | undefined;

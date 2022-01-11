@@ -1,1 +1,1 @@
-export * from './api/carouselAds/carouselAds.interfaces';
+export * from './api/ads/ads.interfaces';

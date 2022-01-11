@@ -1,14 +1,14 @@
 'use strict';
 import 'reflect-metadata';
-import { getCarouselAds } from 'lib/queries';
+import { getAds } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CarouselAd } from 'lib/models/carouselAds.model';
+import { Ad } from 'lib/models/ads.model';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const carouselAds: CarouselAd[] = await getCarouselAds();
-    return carouselAds ? response(200, carouselAds) : response(200, null);
+    const ads: Ad[] = await getAds();
+    return ads ? response(200, ads) : response(200, null);
   } catch (err) {
     return response(500, err);
   }

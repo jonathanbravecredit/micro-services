@@ -1,9 +1,9 @@
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { CarouselAd } from 'lib/models/carouselAds.model';
+import { Ad } from 'lib/models/ads.model';
 
-const store = new DynamoStore(CarouselAd);
+const store = new DynamoStore(Ad);
 
-export const getCarouselAds = (): Promise<CarouselAd[]> => {
+export const getAds = (): Promise<Ad[]> => {
   return store
     .scan()
     .whereAttribute('active').equals(true)

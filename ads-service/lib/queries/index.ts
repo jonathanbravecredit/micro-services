@@ -1,2 +1,2 @@
 import 'reflect-metadata';
-export * from './carouselAds/carouselAds.queries';
+export * from './ads/ads.queries';

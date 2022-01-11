@@ -10,11 +10,28 @@ plugins:
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
 
+custom:
+  bundle:
+    linting: false
+
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:ListStreams
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Ads'
   # To load environment variables externally
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
@@ -24,12 +41,12 @@ provider:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
 functions:
-  getCarouselAds:
-    handler: src/api/carouselAds/get.main
+  getAds:
+    handler: src/api/ads/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /carouselAds
+          path: /ads
           method: get
           cors: true
           authorizer:
