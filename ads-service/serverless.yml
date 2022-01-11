@@ -53,7 +53,7 @@ provider:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 resources:
   Resources:
-   Ads:
+    Ads:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
