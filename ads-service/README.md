@@ -51,13 +51,13 @@ export async function hello(
 To create a new Serverless project.
 
 ``` bash
-$ serverless install --url https://github.com/AnomalyInnovations/serverless-typescript-starter --name ads-service
+$ serverless install --url https://github.com/AnomalyInnovations/serverless-typescript-starter --name my-project
 ```
 
 Enter the new directory
 
 ``` bash
-$ cd ads-service
+$ cd my-project
 ```
 
 Install the npm packages
