@@ -21,8 +21,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const oldEnrolled = oldImage.agencies?.transunion?.enrolled || false;
           const newEnrolled = newImage.agencies?.transunion?.enrolled || false;
           if (!oldEnrolled && newEnrolled) {
-            // const resp = await enrollReferral(newImage.id);
-            // console.log('referral update resp ===> ', resp);
+            const resp = await enrollReferral(newImage.id);
+            console.log('referral update resp ===> ', resp);
           }
         }
       }),
