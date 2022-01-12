@@ -286,18 +286,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
 
-  ## triggers (db stream)
-  triggerReferralEnrollment:
-    handler: src/triggers/triggerReferralEnrollment.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn:
-            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
-
 resources:
   Resources:
     Referrals:
