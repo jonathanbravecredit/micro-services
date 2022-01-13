@@ -23,7 +23,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       payload.id,
       referralCode[0],
       eligibility ? payload.campaign : 'NO_PAY',
-      eligibility,
+      false,
       eligibility ? payload.referredByCode : undefined,
     );
     await createReferral(referral);
