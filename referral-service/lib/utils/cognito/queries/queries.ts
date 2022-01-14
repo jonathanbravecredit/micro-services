@@ -1,14 +1,15 @@
+import { IAdminGetUserData } from 'lib/interfaces/cognito/cognito.interfaces';
 import { formatData } from 'lib/utils/cognito/helpers/helpers';
 import { IFormatDataResults } from 'lib/utils/cognito/helpers/helpers.interfaces';
 const AWS = require('aws-sdk');
 const util = require('util');
 
-const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
+const cognito = new AWS.CognitoIdentityServiceProvider({
   apiVersion: '2016-04-18',
   region: 'us-east-2',
 });
-const pullUsers = util.promisify(cognitoidentityserviceprovider.listUsers.bind(cognitoidentityserviceprovider));
-const adminGetUser = util.promisify(cognitoidentityserviceprovider.adminGetUser.bind(cognitoidentityserviceprovider));
+const pullUsers = util.promisify(cognito.listUsers.bind(cognito));
+// const adminGetUser = util.promisify(cognito.adminGetUser.bind(cognito));
 const USER_POOL_ID = process.env.POOL_ID;
 
 export const getUsers = async (token: string, limit: number): Promise<IFormatDataResults[]> => {
@@ -52,7 +53,11 @@ export const getUser = async (id: string) => {
     UserPoolId: USER_POOL_ID,
     Username: id,
   };
-
-  let resp = await adminGetUser(params);
-  return resp.data;
+  let resp = await new Promise((resolve, reject) => {
+    cognito.adminGetUser(params, (err: any, data: IAdminGetUserData) => {
+      if (err) reject(err);
+      else resolve(data);
+    });
+  });
+  return resp;
 };
