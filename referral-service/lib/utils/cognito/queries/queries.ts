@@ -48,12 +48,12 @@ export const getUsers = async (token: string, limit: number): Promise<IFormatDat
   return results;
 };
 
-export const getUser = async (id: string) => {
+export const getUser = async (id: string): Promise<IAdminGetUserData> => {
   let params = {
     UserPoolId: USER_POOL_ID,
     Username: id,
   };
-  let resp = await new Promise((resolve, reject) => {
+  let resp: IAdminGetUserData = await new Promise((resolve, reject) => {
     cognito.adminGetUser(params, (err: any, data: IAdminGetUserData) => {
       if (err) reject(err);
       else resolve(data);
