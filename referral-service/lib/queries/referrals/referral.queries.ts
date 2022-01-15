@@ -133,6 +133,17 @@ export const updateReferral = async (referral: Partial<Referral>): Promise<Parti
     .catch((err) => err);
 };
 
+export const updateDeleteReferral = async (id: string) => {
+  return store
+    .update(id)
+    .updateAttribute('campaign')
+    .set('DELETE')
+    .updateAttribute('referralApproved')
+    .set(false)
+    .updateAttribute('referralStatus')
+    .set('suspended');
+};
+
 export const enrollReferral = async (id: string): Promise<Partial<Referral> | null> => {
   const modifiedOn = new Date().toISOString();
   return store
