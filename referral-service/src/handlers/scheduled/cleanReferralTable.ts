@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { deleteReferral, listReferrals } from 'lib/queries';
+import { listReferrals, updateDeleteReferral } from 'lib/queries';
 import { Handler, ScheduledEvent } from 'aws-lambda';
 import { getUser } from 'lib/utils/cognito/queries/queries';
 
@@ -9,10 +9,18 @@ export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
     const referrals = await listReferrals();
     await Promise.all(
       referrals.map(async (r) => {
-        const user = await getUser(r.id);
-        if (!user.Username) {
-          await deleteReferral(r.id);
-          removed++;
+        try {
+          const user = await getUser(r.id);
+          if (!user.Username) {
+            await updateDeleteReferral(r.id);
+            removed++;
+          }
+        } catch (err: any) {
+          const errDesc: string = err;
+          if (errDesc.indexOf('UserNotFound')) {
+            await updateDeleteReferral(r.id);
+            removed++;
+          }
         }
         return;
       }),
