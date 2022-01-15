@@ -141,7 +141,10 @@ export const updateDeleteReferral = async (id: string) => {
     .updateAttribute('referralApproved')
     .set(false)
     .updateAttribute('referralStatus')
-    .set('suspended');
+    .set('suspended')
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
 };
 
 export const enrollReferral = async (id: string): Promise<Partial<Referral> | null> => {
