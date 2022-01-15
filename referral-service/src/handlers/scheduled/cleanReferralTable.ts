@@ -16,11 +16,8 @@ export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
             removed++;
           }
         } catch (err: any) {
-          const errDesc: string = err;
-          if (errDesc.indexOf('UserNotFound')) {
-            await updateDeleteReferral(r.id);
-            removed++;
-          }
+          await updateDeleteReferral(r.id);
+          removed++;
         }
         return;
       }),
