@@ -290,8 +290,8 @@ functions:
     handler: src/handlers/scheduled/cleanReferralTable.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
-    events:
-      - schedule: cron(0 8 * * ? *) # 8 am UTC every day
+    # events:
+    #   - schedule: cron(0 8 * * ? *) # 8 am UTC every day
 
 resources:
   Resources:

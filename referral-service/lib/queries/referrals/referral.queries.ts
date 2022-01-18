@@ -165,7 +165,7 @@ export const approveReferral = async (id: string): Promise<Partial<Referral> | n
   return store
     .update(id)
     .updateAttribute('campaign')
-    .set(CURRENT_CAMPAIGN)
+    .set('jan2022')
     .updateAttribute('referralStatus')
     .set('active')
     .updateAttribute('referralApproved')
