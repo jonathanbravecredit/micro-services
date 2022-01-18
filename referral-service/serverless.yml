@@ -59,6 +59,7 @@ provider:
     - Effect: 'Allow'
       Action:
         - cognito-idp:ListUsers
+        - cognito-idp:AdminGetUser
       Resource:
         - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*'
     - Effect: 'Allow'
@@ -276,7 +277,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
     events:
-      - schedule: cron(0 8 * * ? *) # 8 am every day
+      - schedule: cron(0 8 * * ? *) # 8 am UTC every day
   allReferrals:
     handler: src/handlers/reports/allReferrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -285,18 +286,12 @@ functions:
     handler: src/handlers/campaign/enableForCampaign.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 300
-
-  ## triggers (db stream)
-  triggerReferralEnrollment:
-    handler: src/triggers/triggerReferralEnrollment.main
+  cleanReferralTable:
+    handler: src/handlers/scheduled/cleanReferralTable.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 300
     events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn:
-            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
+      - schedule: cron(0 8 * * ? *) # 8 am UTC every day
 
 resources:
   Resources:
