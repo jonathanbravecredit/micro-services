@@ -80,7 +80,7 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
     .scan()
     .where(
       and(
-        attribute('campaign').eq(CURRENT_CAMPAIGN),
+        attribute('campaign').eq('jan2022'),
         attribute('enrollmentStatus').eq('enrolled'),
         attribute('referralApproved').eq(true),
       ),
