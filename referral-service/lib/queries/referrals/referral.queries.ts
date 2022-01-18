@@ -82,7 +82,6 @@ export const listEligibleReferrals = (): Promise<Referral[]> => {
       and(
         attribute('campaign').eq(CURRENT_CAMPAIGN),
         attribute('enrollmentStatus').eq('enrolled'),
-        attribute('processingStatus').eq('pending'),
         attribute('referralApproved').eq(true),
       ),
     )
