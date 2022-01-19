@@ -31,6 +31,8 @@ export class Referral {
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
 
+  nextPaymentDate: string = '';
+  notified: boolean = false;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 }
@@ -61,7 +63,8 @@ export class ReferralMaker implements Referral {
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
 
-  nextPaymentDate: string | undefined;
+  nextPaymentDate: string = '';
+  notified: boolean = false;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 

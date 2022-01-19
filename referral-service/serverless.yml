@@ -127,8 +127,14 @@ functions:
                 campaignId: true
 
   # monitors
-  campaignMonitor:
-    handler: src/handlers/monitors/campaignMonitor.main
+  campaignActiveMonitor:
+    handler: src/handlers/monitors/campaignActiveMonitor.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(15 * * * ? *)
+
+  campaignDataWrite:
+    handler: src/handlers/monitors/campaignDataWriter.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - stream:
