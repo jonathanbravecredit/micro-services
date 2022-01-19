@@ -134,7 +134,7 @@ functions:
     events:
       - schedule: cron(15 * * * ? *)
 
-  campaignDataWrite:
+  campaignDataWriter:
     handler: src/handlers/monitors/campaignDataWriter.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:

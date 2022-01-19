@@ -1,12 +1,13 @@
-import { DynamoDBStreamEvent, DynamoDBStreamHandler, Handler, StreamRecord } from 'aws-lambda';
+import { DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { Campaign } from 'lib/models/campaign.model';
-import { getActiveCampaignReferrals, getCampaign, getEligibileReferrals, updateCurrentCampaign, updateReferral } from 'lib/queries';
-import * as moment from 'moment';
+import { getActiveCampaignReferrals, getCampaign, getEligibileReferrals, updateReferral } from 'lib/queries';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
+  records.forEach((r) => {
+    console.log('campaign data writer record: ', JSON.stringify(r));
+  });
 
   await Promise.all(
     records.map(async (r) => {
@@ -20,7 +21,12 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
         const noCampaign = await getCampaign(1, 1);
 
         // the active campaign is no longer....shutting off. campaing == 'NO_CAMPAIGN'
-        if (pKey === 1 && version === 0 && oldImage.currentVersion !== newImage.currentVersion && newImage.campaign === noCampaign?.campaign) {
+        if (
+          pKey === 1 &&
+          version === 0 &&
+          oldImage.currentVersion !== newImage.currentVersion &&
+          newImage.campaign === noCampaign?.campaign
+        ) {
           try {
             const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
             await Promise.all(
@@ -42,22 +48,27 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                   campaignPriorPaid: r.campaignActivePaid,
                   campaignPriorAddOn: r.campaignActiveAddOn,
                   notified: false,
-                  modifiedOn: now
-                }
+                  modifiedOn: now,
+                };
                 try {
                   await updateReferral(updated);
                 } catch (err) {
                   console.log('error updating referral 1: ', JSON.stringify(err));
                 }
-              })
+              }),
             );
           } catch (err) {
-            console.log('error updating current referrals: ', err)
+            console.log('error updating current referrals: ', err);
           }
         }
 
         // a new active campaign has been added...turn on for eligible
-        if (pKey === 1 && version === 0 && oldImage.currentVersion !== newImage.currentVersion && newImage.campaign !== noCampaign?.campaign) {
+        if (
+          pKey === 1 &&
+          version === 0 &&
+          oldImage.currentVersion !== newImage.currentVersion &&
+          newImage.campaign !== noCampaign?.campaign
+        ) {
           try {
             const eligibleReferrals = await getEligibileReferrals();
             await Promise.all(
@@ -72,22 +83,22 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                   campaignActiveEarned: 0,
                   campaignActivePaid: 0,
                   campaignActiveAddOn: 0,
-                  modifiedOn: now
-                }
+                  modifiedOn: now,
+                };
                 try {
                   await updateReferral(updated);
                 } catch (err) {
                   console.log('error updating referral 2: ', JSON.stringify(err));
                 }
-              })
-            )
+              }),
+            );
           } catch (err) {
-            console.log('error updating eligible referrals: ', err)
+            console.log('error updating eligible referrals: ', err);
           }
         }
       }
-    })
-  )
+    }),
+  );
 
   // this monitors the campaigns table...
   // when a campaign ends it needs to do the following...the current campaign has been updated
