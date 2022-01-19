@@ -8,23 +8,28 @@ export class Referral {
   id!: string;
   @GSIPartitionKey(REFERRAL_CODE_GSI)
   referralCode!: string;
-  referralStatus: string = 'active';
-
-  baseEarned: number = 0;
-  basePending: number = 0;
-  basePaymentScheduledOn: string = '';
-  bonusEarned: number = 0;
-  bonusPending: number = 0;
-  bonusPaymentScheduledOn: string = '';
-
-  campaignActive: string = '';
-  campaignActiveStatus: 'inactive' | 'active' = 'inactive';
-  campaignActiveReferred: number = 0;
-  campaignActiveEarned: number = 0;
-
   referredByCode: string | null | undefined;
   referredById: string | undefined;
   referredByEmail: string | undefined;
+
+  eligible: boolean = false;
+
+  baseEarned: number = 0;
+  bonusEarned: number = 0;
+  addOnEarned: number = 0;
+
+  campaignActive: string = '';
+  campaignActiveReferred: number = 0;
+  campaignActiveEarned: number = 0;
+  campaignActivePaid: number = 0;
+  campaignActiveAddOn: number = 0;
+
+  campaignPrior: string = '';
+  campaignPriorReferred: number = 0;
+  campaignPriorEarned: number = 0;
+  campaignPriorPaid: number = 0;
+  campaignPriorAddOn: number = 0;
+
 
   createdOn: string | undefined;
   modifiedOn: string | undefined;
@@ -32,39 +37,42 @@ export class Referral {
 
 export class ReferralMaker implements Referral {
   id: string;
+
   referralCode: string;
-  referralStatus: string = 'active';
-
-  baseEarned: number = 0;
-  basePending: number = 0;
-  basePaymentScheduledOn: string = '';
-  bonusEarned: number = 0;
-  bonusPending: number = 0;
-  bonusPaymentScheduledOn: string = '';
-
-  campaignActive: string = '';
-  campaignActiveStatus: 'inactive' | 'active' = 'inactive';
-  campaignActiveReferred: number = 0;
-  campaignActiveEarned: number = 0;
-
   referredByCode: string | null | undefined;
   referredById: string | undefined;
   referredByEmail: string | undefined;
 
-  campaign: string | null | undefined;
+  eligible: boolean = false;
+
+  baseEarned: number = 0;
+  bonusEarned: number = 0;
+  addOnEarned: number = 0;
+
+  campaignActive: string = '';
+  campaignActiveReferred: number = 0;
+  campaignActiveEarned: number = 0;
+  campaignActivePaid: number = 0;
+  campaignActiveAddOn: number = 0;
+
+  campaignPrior: string = '';
+  campaignPriorReferred: number = 0;
+  campaignPriorEarned: number = 0;
+  campaignPriorPaid: number = 0;
+  campaignPriorAddOn: number = 0;
+
+  nextPaymentDate: string | undefined;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 
   constructor(
     id: string,
-    campaign: string,
     referralCode: string,
     referredByCode: string,
     referredById: string,
     referredByEmail: string,
   ) {
     this.id = id;
-    this.campaign = campaign;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
     this.referredById = referredById;
