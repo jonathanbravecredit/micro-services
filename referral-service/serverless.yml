@@ -146,7 +146,7 @@ functions:
 
   # aggregators
   referralAggregator:
-    handler: src/handlers/aggregrators/referralAggregator.main
+    handler: src/handlers/aggregators/referralAggregator.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - stream:
@@ -154,9 +154,18 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
+      - sns:
+          arn: !Ref ReferralSNSTopic
+          topicName: ${self:provider.stage}-referral-sns-topic
+          integration: lambda-proxy
 
 resources:
   Resources:
+    ReferralSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-referral-sns-topic
+
     Referrals:
       Type: AWS::DynamoDB::Table
       Properties:
