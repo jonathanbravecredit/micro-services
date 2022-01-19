@@ -308,6 +308,19 @@ resources:
         TableName: Referrals
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+    ReferralUsers:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'id'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'id'
+            KeyType: 'HASH'
+        BillingMode: PAY_PER_REQUEST
+        TableName: ReferralUsers
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
     Campaigns:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -342,3 +355,12 @@ resources:
       Value: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-referrals-stream'
+    ReferralUserTable:
+      Description: 'Referral User Config Table'
+      Value: !Ref ReferralUsers
+      Export:
+        Name: !Sub '${self:service}-referral-user'
+    ReferralUserTableStreamArn:
+      Value: { 'Fn::GetAtt': ['ReferralUsers', 'StreamArn'] }
+      Export:
+        Name: !Sub '${self:service}-referral-user-stream'
