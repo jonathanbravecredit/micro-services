@@ -175,12 +175,3 @@ resources:
       Value: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-referrals-stream'
-    ReferralUserTable:
-      Description: 'Referral User Config Table'
-      Value: !Ref ReferralUsers
-      Export:
-        Name: !Sub '${self:service}-referral-user'
-    ReferralUserTableStreamArn:
-      Value: { 'Fn::GetAtt': ['ReferralUsers', 'StreamArn'] }
-      Export:
-        Name: !Sub '${self:service}-referral-user-stream'
