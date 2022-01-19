@@ -3,9 +3,9 @@ import { Campaign } from 'lib/models/campaign.model';
 
 const store = new DynamoStore(Campaign);
 
-export const getCampaign = (id: string): Promise<Campaign | null> => {
+export const getCampaign = (pkey: number, skey: number): Promise<Campaign | null> => {
   return store
-    .get(id)
+    .get(pkey, skey)
     .exec()
     .then((res) => res)
     .catch((err) => err);
@@ -19,10 +19,47 @@ export const listCampaigns = (): Promise<Campaign[]> => {
     .catch((err) => err);
 };
 
-export const createCampaign = (Campaign: Campaign): Promise<void> => {
+export const createCampaign = (campaign: Campaign): Promise<void> => {
   return store
-    .put(Campaign)
+    .put(campaign)
     .ifNotExists()
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const updateCurrentCampaign = (campaign: Campaign) => {
+  const now = new Date().toISOString();
+  return store
+    .update(1, 0)
+    .updateAttribute('currentVersion')
+    .set(campaign.currentVersion)
+    .updateAttribute('campaign')
+    .set(campaign.campaign)
+    .updateAttribute('denomination')
+    .set(campaign.denomination)
+    .updateAttribute('bonusThreshold')
+    .set(campaign.bonusThreshold)
+    .updateAttribute('addOnFlagOne')
+    .set(campaign.addOnFlagOne)
+    .updateAttribute('addOnFlagTwo')
+    .set(campaign.addOnFlagTwo)
+    .updateAttribute('addOnFlagThree')
+    .set(campaign.addOnFlagThree)
+    .updateAttribute('startDate')
+    .set(campaign.startDate)
+    .updateAttribute('endDate')
+    .set(campaign.endDate)
+    .updateAttribute('modifiedOn')
+    .set(now);
+};
+
+export const getLatestCampaign = (pkey: number) => {
+  return store
+    .query()
+    .wherePartitionKey(pkey)
+    .descending()
+    .limit(1)
     .exec()
     .then((res) => res)
     .catch((err) => err);
