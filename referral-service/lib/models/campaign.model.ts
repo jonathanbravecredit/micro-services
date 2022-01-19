@@ -12,6 +12,7 @@ export class Campaign {
   campaign: string = 'NO_CAMPAIGN';
   denomination: number = 0;
   bonusThreshold: number = 9999;
+  bonusAmount: number = 0;
   addOnFlagOne: string = '';
   addOnFlagTwo: string = '';
   addOnFlagThree: string = '';
@@ -28,6 +29,7 @@ export class CampaignMaker implements Campaign {
   campaign: string = 'NO_CAMPAIGN';
   denomination: number = 0;
   bonusThreshold: number = 9999;
+  bonusAmount: number = 0;
   addOnFlagOne: string = '';
   addOnFlagTwo: string = '';
   addOnFlagThree: string = '';

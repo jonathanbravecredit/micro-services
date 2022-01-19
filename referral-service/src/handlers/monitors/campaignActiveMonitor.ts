@@ -3,11 +3,6 @@ import { getCampaign, getLatestCampaign, updateCurrentCampaign } from 'lib/queri
 import * as moment from 'moment';
 
 export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<void> => {
-  // set up rules
-  // find the conditions
-  //   - campaign ended
-  //   - campaign started
-
   // current campaign has ended
   try {
     const campaign = await getCampaign(1, 0);

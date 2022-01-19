@@ -1,5 +1,5 @@
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, Referral } from 'lib/models/referral.model';
+import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, Referral, REFERRAL_CODE_GSI } from 'lib/models/referral.model';
 
 const store = new DynamoStore(Referral);
 
@@ -52,6 +52,16 @@ export const getEligibileReferrals = (): Promise<Referral[]> => {
     .index(ELIGIBLE_GSI)
     .wherePartitionKey(1)
     .execFetchAll()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const getReferralByCode = (code: string): Promise<Referral | null> => {
+  return store
+    .query()
+    .index(REFERRAL_CODE_GSI)
+    .wherePartitionKey(code)
+    .execSingle()
     .then((res) => res)
     .catch((err) => err);
 };

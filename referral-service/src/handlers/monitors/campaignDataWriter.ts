@@ -20,7 +20,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
         const { pKey, version } = newImage;
         const noCampaign = await getCampaign(1, 1);
 
-        // the active campaign is no longer....shutting off. campaing == 'NO_CAMPAIGN'
+        // the active campaign is no longer....shutting off. campaign ==> 'NO_CAMPAIGN'
         if (
           pKey === 1 &&
           version === 0 &&
@@ -62,7 +62,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           }
         }
 
-        // a new active campaign has been added...turn on for eligible
+        // a new active campaign has been added...enable for eligible
         if (
           pKey === 1 &&
           version === 0 &&
@@ -74,7 +74,6 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
             await Promise.all(
               eligibleReferrals.map(async (r) => {
                 // 1. update the campaign to the current campaign active
-                // 2. it needs to move the current campaign attributes to the prior campaign attributes
                 const now = new Date().toISOString();
                 const updated = {
                   ...r,
@@ -99,9 +98,4 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
       }
     }),
   );
-
-  // this monitors the campaigns table...
-  // when a campaign ends it needs to do the following...the current campaign has been updated
-  // 1. update the campaign in the referral database to the current campaign...in most cases it will be the default.
-  // 2. it needs to move the current campaign attributes to the prior campaign attributes
 };
