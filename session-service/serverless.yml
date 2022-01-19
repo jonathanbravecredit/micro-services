@@ -39,7 +39,11 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
+<<<<<<< HEAD
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
+=======
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Ads'
+>>>>>>> 957f27a... setting up session service
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'
