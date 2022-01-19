@@ -124,7 +124,8 @@ functions:
           request:
             parameters:
               querystrings:
-                campaignId: true
+                pKey: true
+                version: true
 
   # monitors
   campaignActiveMonitor:

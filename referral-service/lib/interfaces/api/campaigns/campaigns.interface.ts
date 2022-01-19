@@ -1,5 +1,6 @@
 export interface IGetCampaign {
-  campaignId: string;
+  pKey: number;
+  version: number;
 }
 
 export interface IUpdateCampaign {

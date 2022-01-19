@@ -1,13 +1,18 @@
 {
   "type": "object",
   "properties": {
-    "campaignId": {
-      "type": "string",
+    "pKey": {
+      "type": "number",
+      "nullable": false
+    },
+    "version": {
+      "type": "number",
       "nullable": false
     }
   },
   "required": [
-    "campaignId"
+    "pKey",
+    "version"
   ],
   "additionalProperties": false
 }
