@@ -17,6 +17,9 @@ const checkBasicEligibility = async (payload: ICreateReferral): Promise<boolean>
 export const campaignEligibilityLogic: {
   [key: string]: (payload: ICreateReferral) => Promise<boolean>;
 } = {
+  NO_CAMPAIGN: async () => {
+    return true;
+  },
   dec2020: async () => {
     return false;
   },

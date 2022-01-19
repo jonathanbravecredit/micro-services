@@ -10,9 +10,14 @@ export class Referral {
   referralCode!: string;
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled' = 'pending';
-  processingStatus: 'pending' | 'paid' = 'pending';
-  paidOut: 'pending' | 'paid' = 'pending';
-  sub: string | null | undefined;
+
+  enrollmentEarnings: number = 0;
+  enrollmentEarningsStatus: 'pending' | 'paid' = 'pending';
+  referralEarnings: number = 0;
+  referralEarningsStatus: 'pending' | 'paid' = 'pending';
+  bonusEarnings: number = 0;
+  bonusEarningsStatus: 'pending' | 'paid' = 'pending';
+
   campaign: string | null | undefined;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
@@ -25,9 +30,14 @@ export class ReferralMaker implements Referral {
   referralCode: string;
   referredByCode: string | null | undefined;
   enrollmentStatus: 'pending' | 'enrolled';
-  processingStatus: 'pending' | 'paid';
-  paidOut: 'pending' | 'paid';
-  sub: string | null;
+
+  enrollmentEarnings: number;
+  enrollmentEarningsStatus: 'pending' | 'paid';
+  referralEarnings: number;
+  referralEarningsStatus: 'pending' | 'paid';
+  bonusEarnings: number;
+  bonusEarningsStatus: 'pending' | 'paid';
+
   campaign: string | null;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
@@ -39,9 +49,14 @@ export class ReferralMaker implements Referral {
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
     this.enrollmentStatus = 'pending';
-    this.processingStatus = 'pending';
-    this.paidOut = 'pending';
-    this.sub = null;
+
+    this.enrollmentEarnings = 0;
+    this.enrollmentEarningsStatus = 'pending';
+    this.referralEarnings = 0;
+    this.referralEarningsStatus = 'pending';
+    this.bonusEarnings = 0;
+    this.bonusEarningsStatus = 'pending';
+
     this.campaign = campaign;
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
