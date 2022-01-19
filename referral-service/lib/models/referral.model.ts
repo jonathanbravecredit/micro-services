@@ -16,7 +16,7 @@ export class Referral {
   referredByEmail: string | undefined;
 
   @GSIPartitionKey(ELIGIBLE_GSI)
-  eligible: boolean = false;
+  eligible: 0 | 1 = 0;
 
   baseEarned: number = 0;
   bonusEarned: number = 0;
@@ -49,7 +49,7 @@ export class ReferralMaker implements Referral {
   referredById: string | undefined;
   referredByEmail: string | undefined;
 
-  eligible: boolean = false;
+  eligible: 0 | 1 = 0;
 
   baseEarned: number = 0;
   bonusEarned: number = 0;
