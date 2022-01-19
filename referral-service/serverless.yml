@@ -308,6 +308,7 @@ resources:
         TableName: Referrals
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     ReferralUsers:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -317,19 +318,42 @@ resources:
         KeySchema:
           - AttributeName: 'id'
             KeyType: 'HASH'
+        GlobalSecondaryIndexes:
+          - IndexName: referralCode-index
+            KeySchema:
+              - AttributeName: referralCode
+                KeyType: 'HASH'
+            Projection:
+              ProjectionType: ALL
+          - IndexName: referralCode-index
+            KeySchema:
+              - AttributeName: referralCode
+                KeyType: 'HASH'
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ReferralUsers
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     Campaigns:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: 'campaignId'
             AttributeType: 'S'
+          - AttributeName: 'campaignStatus'
+            AttributeType: 'S'
         KeySchema:
           - AttributeName: 'campaignId'
             KeyType: 'HASH'
+        GlobalSecondaryIndexes:
+          - IndexName: campaignStatus-index
+            KeySchema:
+              - AttributeName: campaignStatus
+                KeyType: 'HASH'
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: Campaigns
         StreamSpecification:

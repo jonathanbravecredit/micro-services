@@ -1,17 +1,9 @@
 import { ICreateReferral } from 'lib/interfaces';
-import { getReferralByReferralCode } from 'lib/queries';
+import { listActiveCampaigns } from 'lib/queries';
+import * as moment from 'moment';
 
 const checkBasicEligibility = async (payload: ICreateReferral): Promise<boolean> => {
-  if (!payload.referredByCode) return false;
-  try {
-    const parentReferral = await getReferralByReferralCode(payload.referredByCode);
-    if (!parentReferral) return false;
-    if (parentReferral.campaign !== payload.campaign) return false;
-    return !!parentReferral.referralApproved;
-  } catch (err) {
-    console.log('error ===> ', err);
-    return false;
-  }
+  return false;
 };
 
 export const campaignEligibilityLogic: {
@@ -31,4 +23,14 @@ export const eligible = (referral: ICreateReferral) => {
   const logic = campaignEligibilityLogic[referral.campaign];
   if (!logic) return false;
   return logic(referral);
+};
+
+export const defaultEligibility = async (referral: ICreateReferral): Promise<boolean> => {
+  // check if a campaign is active
+  const activeCampaigns = await listActiveCampaigns();
+  const currentCampaign = activeCampaigns.filter((c) => {
+    const now = new Date();
+    return moment(now).isBefore(c.endDate);
+  })[0];
+  return currentCampaign ? true : false;
 };

@@ -1,11 +1,13 @@
-import { Model, PartitionKey } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, GSISortKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
+
+export const CAMPAIGNSTATUS_INDEX = 'campaignStatus-index';
 
 @Model({ tableName: 'Campaigns' })
 export class Campaign {
   @PartitionKey()
   campaignId!: string;
-  status: 'active' | 'inactive' = 'inactive';
-  startDate: string | undefined;
+  @GSIPartitionKey(CAMPAIGNSTATUS_INDEX)
+  campaginStatus: 'active' | 'inactive' = 'inactive';
   endDate: string | undefined;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
@@ -13,7 +15,7 @@ export class Campaign {
 
 export class CampaignMaker implements Campaign {
   campaignId: string;
-  status: 'active' | 'inactive';
+  campaginStatus: 'active' | 'inactive';
   startDate: string | undefined;
   endDate: string | undefined;
   createdOn: string | undefined;
@@ -21,7 +23,7 @@ export class CampaignMaker implements Campaign {
 
   constructor(campaignId: string, startDate: string, endDate: string) {
     this.campaignId = campaignId;
-    this.status = 'inactive';
+    this.campaginStatus = 'inactive';
     this.startDate = startDate;
     this.endDate = endDate;
     this.createdOn = new Date().toISOString();
