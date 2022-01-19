@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "target": "es6",
-    "sourceMap": true,
-    "moduleResolution": "node"
-  }
-}
