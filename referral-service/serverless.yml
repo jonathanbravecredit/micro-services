@@ -75,6 +75,8 @@ provider:
       Resource:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/index/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/index/*'
 
 functions:
   # referrals
@@ -124,6 +126,17 @@ functions:
               querystrings:
                 campaignId: true
 
+  # monitors
+  campaignMonitor:
+    handler: src/handlers/monitors/campaignMonitor.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
+
 resources:
   Resources:
     Referrals:
@@ -140,7 +153,7 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    CampaignsOld:
+    Campaigns:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:

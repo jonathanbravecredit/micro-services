@@ -8,6 +8,7 @@ export class Referral {
   id!: string;
   @GSIPartitionKey(REFERRAL_CODE_GSI)
   referralCode!: string;
+
   referredByCode: string | null | undefined;
   referredById: string | undefined;
   referredByEmail: string | undefined;
