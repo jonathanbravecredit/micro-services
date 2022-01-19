@@ -140,7 +140,7 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    Campaigns:
+    CampaignsOld:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
