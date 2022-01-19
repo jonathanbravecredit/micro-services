@@ -99,131 +99,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  updateReferral:
-    handler: src/api/referrals/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral
-          method: put
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-  deleteReferral:
-    handler: src/api/referrals/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral
-          method: delete
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-
-  # referrals all by campaign
-  getAllReferralCampaign:
-    handler: src/api/referrals/campaign/getAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-
-  # referral campaign earnings
-  getReferralCampaignEarnings:
-    handler: src/api/referrals/campaign/earnings/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign/earnings
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-  getReferralCampaignPayments:
-    handler: src/api/referrals/campaign/payments/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign/payments
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-  getReferralCampaignEarningsMonthly:
-    handler: src/api/referrals/campaign/earnings/monthly/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign/earnings/monthly
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-                month: false
-                year: false
-
-  # referral earnings (non-campaign specific)
-  getReferralEarnings:
-    handler: src/api/referrals/earnings/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/earnings
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-  getReferralEarningsMonthly:
-    handler: src/api/referrals/earnings/monthly/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/earnings/monthly
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                month: false
-                year: false
 
   # campaigns
   createCampaign:
@@ -242,28 +117,6 @@ functions:
       - http:
           path: /campaigns
           method: get
-          cors: true
-          authorizer: aws_iam
-          request:
-            parameters:
-              querystrings:
-                campaignId: true
-  updateCampaign:
-    handler: src/api/campaigns/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: put
-          cors: true
-          authorizer: aws_iam
-  deleteCampaign:
-    handler: src/api/campaigns/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: delete
           cors: true
           authorizer: aws_iam
           request:
@@ -309,55 +162,20 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    ReferralUsers:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: 'id'
-            AttributeType: 'S'
-        KeySchema:
-          - AttributeName: 'id'
-            KeyType: 'HASH'
-        GlobalSecondaryIndexes:
-          - IndexName: referralCode-index
-            KeySchema:
-              - AttributeName: referralCode
-                KeyType: 'HASH'
-            Projection:
-              ProjectionType: ALL
-          - IndexName: referralCode-index
-            KeySchema:
-              - AttributeName: referralCode
-                KeyType: 'HASH'
-            Projection:
-              ProjectionType: ALL
-        BillingMode: PAY_PER_REQUEST
-        TableName: ReferralUsers
-        StreamSpecification:
-          StreamViewType: NEW_AND_OLD_IMAGES
-
     Campaigns:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'campaignId'
-            AttributeType: 'S'
-          - AttributeName: 'campaignStatus'
-            AttributeType: 'S'
+          - AttributeName: 'pKey'
+            AttributeType: 'N'
+          - AttributeName: 'version'
+            AttributeType: 'N'
         KeySchema:
-          - AttributeName: 'campaignId'
+          - AttributeName: 'pKey'
             KeyType: 'HASH'
-        GlobalSecondaryIndexes:
-          - IndexName: campaignStatus-index
-            KeySchema:
-              - AttributeName: campaignStatus
-                KeyType: 'HASH'
-            Projection:
-              ProjectionType: ALL
-        BillingMode: PAY_PER_REQUEST
-        TableName: Campaigns
-        StreamSpecification:
-          StreamViewType: NEW_AND_OLD_IMAGES
+          - AttributeName: 'version'
+            KeyType: 'RANGE'
+
     ApiGatewayAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:

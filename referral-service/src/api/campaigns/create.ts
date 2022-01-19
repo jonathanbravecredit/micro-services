@@ -14,8 +14,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     const { campaignId, startDate, endDate } = payload;
-    const campaign: Campaign = new CampaignMaker(campaignId, startDate, endDate);
-    await createCampaign(campaign);
+    // const campaign: Campaign = new CampaignMaker(campaignId, startDate, endDate);
+    // await createCampaign(campaign);
     return response(200, `success`);
   } catch (err) {
     return response(500, err);
