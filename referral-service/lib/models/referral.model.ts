@@ -30,7 +30,6 @@ export class Referral {
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
 
-
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 }
@@ -65,19 +64,16 @@ export class ReferralMaker implements Referral {
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 
-  constructor(
-    id: string,
-    referralCode: string,
-    referredByCode: string,
-    referredById: string,
-    referredByEmail: string,
-  ) {
+  constructor(id: string, referralCode: string, referredByCode: string, referredById: string) {
     this.id = id;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
     this.referredById = referredById;
-    this.referredByEmail = referredByEmail;
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
+  }
+
+  getReferredById() {
+    // add in logic here to look up the referred by code
   }
 }
