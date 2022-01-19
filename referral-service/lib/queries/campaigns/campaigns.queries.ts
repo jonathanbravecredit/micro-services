@@ -1,5 +1,5 @@
-import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { Campaign } from 'lib/models/campaign.model';
+import { attribute, DynamoStore } from '@shiftcoders/dynamo-easy';
+import { Campaign, CAMPAIGNSTATUS_INDEX } from 'lib/models/campaign.model';
 
 const store = new DynamoStore(Campaign);
 
@@ -28,36 +28,12 @@ export const createCampaign = (Campaign: Campaign): Promise<void> => {
     .catch((err) => err);
 };
 
-export const deleteCampaign = (id: string): Promise<void> => {
+export const listActiveCampaigns = (): Promise<Campaign[]> => {
   return store
-    .delete(id)
-    .returnValues('ALL_OLD')
-    .exec()
-    .then((res) => res)
-    .catch((err) => err);
-};
-
-export const updateCampaign = async (campaign: Partial<Campaign>): Promise<Partial<Campaign> | null> => {
-  if (!campaign.campaignId) return null;
-  const old = await getCampaign(campaign.campaignId);
-  if (!old) return null;
-  const merge = {
-    ...old,
-    ...campaign,
-  };
-  const modifiedOn = new Date().toISOString();
-  return store
-    .update(merge.campaignId)
-    .updateAttribute('status')
-    .set(merge.status)
-    .updateAttribute('startDate')
-    .set(merge.startDate)
-    .updateAttribute('endDate')
-    .set(merge.endDate)
-    .updateAttribute('modifiedOn')
-    .set(modifiedOn)
-    .returnValues('UPDATED_NEW')
-    .exec()
+    .query()
+    .index(CAMPAIGNSTATUS_INDEX)
+    .wherePartitionKey('active')
+    .execFetchAll()
     .then((res) => res)
     .catch((err) => err);
 };

@@ -1,6 +1,7 @@
 'use strict';
 import 'reflect-metadata';
 import * as vouchers from 'voucher-code-generator';
+import * as uuid from 'uuid';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -17,16 +18,25 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
-    const referralCode = vouchers.generate({ length: 7, count: 1 });
-    const eligibility = await eligible(payload);
-    const referral: Referral = new ReferralMaker(
-      payload.id,
-      referralCode[0],
-      eligibility ? payload.campaign : 'NO_PAY',
-      false,
-      eligibility ? payload.referredByCode : undefined,
-    );
-    await createReferral(referral);
+    // determine eligibility
+    const approved = await eligible(payload);
+    // if (approved) {
+    //   const { referralCode } = referralUser;
+    //   const referral = new ReferralMaker(
+    //     payload.id,
+    //     referrealUser
+    //     payload.campaign,
+    //     false,
+    //     payload.referredByCode,
+    //   );
+
+    // }
+  } catch (err) {
+    return response(500, err);
+  }
+
+  try {
+    // await createReferral(referral);
     return response(200, `success`);
   } catch (err) {
     return response(500, err);
