@@ -14,7 +14,13 @@ export interface campaignIdeleteCampaign {
 }
 
 export interface ICreateCampaign {
-  campaignId: string;
+  version: number;
+  campaign: string;
+  denomination: number;
+  bonusThreshold: number;
+  addOnFlagOne: string;
+  addOnFlagTwo: string;
+  addOnFlagThree: string;
   startDate: string;
   endDate: string;
 }
