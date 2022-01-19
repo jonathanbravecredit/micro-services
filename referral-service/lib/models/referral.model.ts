@@ -1,6 +1,8 @@
 import { GSIPartitionKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
 
 export const REFERRAL_CODE_GSI = 'referralCode-index';
+export const CAMPAIGNACTIVE_GSI = 'campaignActive-index';
+export const ELIGIBLE_GSI = 'eligible-index';
 
 @Model({ tableName: 'Referrals' })
 export class Referral {
@@ -13,12 +15,14 @@ export class Referral {
   referredById: string | undefined;
   referredByEmail: string | undefined;
 
+  @GSIPartitionKey(ELIGIBLE_GSI)
   eligible: boolean = false;
 
   baseEarned: number = 0;
   bonusEarned: number = 0;
   addOnEarned: number = 0;
 
+  @GSIPartitionKey(CAMPAIGNACTIVE_GSI)
   campaignActive: string = '';
   campaignActiveReferred: number = 0;
   campaignActiveEarned: number = 0;
