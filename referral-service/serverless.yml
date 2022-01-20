@@ -171,7 +171,7 @@ functions:
 
 resources:
   Resources:
-    ReferralsTopic:
+    ReferralsSNSTopic:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${self:provider.stage}-referral-sns-topic
@@ -238,8 +238,8 @@ resources:
       Value: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-campaigns-stream'
-    ReferralsSNSTopic:
+    ReferralsSNSTopicArn:
       Description: 'Referrals sub topic'
-      Value: !Ref ReferralSNSTopic
+      Value: !Ref ReferralsSNSTopic
       Export:
         Name: !Sub '${self:service}-referrals-sns-topic'
