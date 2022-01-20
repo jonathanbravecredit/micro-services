@@ -144,15 +144,14 @@ functions:
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
 
-  # referralActiveMonitor:
-  #   handler: src/handlers/monitors/referralActiveMonitor.main
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: { 'Fn::GetAtt': ['Sessions', 'StreamArn'] }
+  referralActiveMonitor:
+    handler: src/handlers/monitors/referralActiveMonitor.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sns:
+          arn: !Ref ReferralsSNSTopic
+          topicName: ${self:provider.stage}-referral-sns-topic
+          integration: lambda-proxy
 
   # aggregators
   referralAggregator:

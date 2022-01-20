@@ -27,6 +27,7 @@ provider:
   environment:
     STAGE: ${opt:stage, 'dev'}
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
+    REFERRAL_TOPIC_ARN: !ImportValue 'referral-service-referrals-sns-topic'
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -74,6 +75,16 @@ functions:
               querystrings:
                 limit: true
                 sort: true
+  # handlers
+  sessionPub:
+    handler: src/handlers/sessionPub.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: { 'Fn::GetAtt': ['Sessions', 'StreamArn'] }
 
   # To load environment variables externally
   # rename env.example to .env and uncomment

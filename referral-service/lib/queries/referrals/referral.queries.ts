@@ -65,3 +65,13 @@ export const getReferralByCode = (code: string): Promise<Referral | null> => {
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promise<void> => {
+  return store
+    .update(id)
+    .updateAttribute('eligible')
+    .set(eligibility)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
