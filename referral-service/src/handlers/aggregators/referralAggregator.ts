@@ -23,6 +23,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
   });
 
   const current = await getCampaign(1, 0);
+  console.log('current campaign: ', JSON.stringify(current));
   if (!current || current?.campaign === 'NO_CAMPAIGN') return;
   try {
     await Promise.all(
@@ -71,17 +72,21 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
           // sns will only look for add ons. enrollments, etc
           const sns = r as SNSEventRecord;
           // currently only accepting enrollment data from app
-          const t1 = sns.Sns.Subject === 'transunionenrollment';
           const { service, message } = JSON.parse(sns.Sns.Message) as {
             service: string;
             command: string;
             message: UpdateAppDataInput;
           };
+          const t1 = sns.Sns.Subject === 'transunionenrollment';
           const t2 = service === 'referralservice';
+          console.log('t1: ', t1);
+          console.log('t2: ', t2);
           if (t1 && t2) {
             const { id } = message;
-            const { denomination, bonusThreshold, bonusAmount, addOnFlagOne } = current;
+            console.log('id: ', id);
+            const { denomination, addOnFlagOne } = current;
             const referral = await getReferral(id);
+            console.log('referral in sns: ', JSON.stringify(referral));
             if (!referral) return;
             // check if the addon for enrollment is enabled
             const earned =
@@ -94,7 +99,8 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               enrolled: true,
               campaignActiveEarned: earned,
             };
-            await updateReferral(updated);
+            const response = await updateReferral(updated);
+            console.log('update referral resp: ', JSON.stringify(response));
           }
         }
       }),
