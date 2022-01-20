@@ -11,7 +11,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!params || !sub) return response(200, null);
   const { limit = '1', sort = 'desc' } = params;
   try {
-    const session = await getLatestSession(sub, sort, +limit);
+    const limNum = isNaN(+limit) ? 1 : +limit;
+    const session = await getLatestSession(sub, sort, limNum);
     console.log('session: ', session);
     return session ? response(200, session) : response(200, null);
   } catch (err) {
