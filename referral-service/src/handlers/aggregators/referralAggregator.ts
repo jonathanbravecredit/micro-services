@@ -1,3 +1,4 @@
+import { resolveUrl } from 'ajv/dist/compile/resolve';
 import {
   DynamoDBRecord,
   DynamoDBStreamEvent,
@@ -99,8 +100,14 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               enrolled: true,
               campaignActiveEarned: earned,
             };
-            const response = await updateReferral(updated);
-            console.log('update referral resp: ', JSON.stringify(response));
+            console.log('updated: ', JSON.stringify(updated));
+            await updateReferral(updated)
+              .then((res) => {
+                console.log('update referral resp: ', JSON.stringify(res));
+              })
+              .catch((err) => {
+                console.log('update referral err: ', JSON.stringify(err));
+              });
           }
         }
       }),
