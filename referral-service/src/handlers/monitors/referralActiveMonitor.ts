@@ -1,4 +1,3 @@
-import { SessionValidityEnsurer } from '@shiftcoders/dynamo-easy';
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
 import { updateReferralEligibility } from 'lib/queries';
@@ -21,9 +20,11 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
       records.map(async (r) => {
         const { message } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
         const sessions = await listUserSessions(message.userId, 20);
+        console.log('sessions: ', JSON.stringify(sessions));
         const keyPageViews = sessions.reduce((a, b) => {
           return a + b.pageViews;
         }, 0);
+        console.log('pageViews: ', keyPageViews);
         if (keyPageViews > 3 && sessions.length > 1) {
           // auto approve
           await updateReferralEligibility(message.userId, 1);
