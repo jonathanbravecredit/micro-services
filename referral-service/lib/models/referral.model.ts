@@ -45,7 +45,7 @@ export class ReferralMaker implements Referral {
   id: string;
 
   referralCode: string;
-  referredByCode: string | null | undefined;
+  referredByCode: string | undefined;
   referredById: string | undefined;
   referredByEmail: string | undefined;
 
@@ -72,7 +72,7 @@ export class ReferralMaker implements Referral {
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 
-  constructor(id: string, referralCode: string, referredByCode: string, referredById: string) {
+  constructor(id: string, referralCode: string, referredByCode?: string, referredById?: string) {
     this.id = id;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
