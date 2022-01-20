@@ -41,6 +41,7 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions/index/userIdSessionDate-index'
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'
