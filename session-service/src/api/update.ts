@@ -18,9 +18,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         userId: sub,
         sessionId: sessionId,
       };
-      console.log('session ', JSON.stringify(session));
-      const referral = await getSession(sub, sessionId);
-      console.log('referral ', JSON.stringify(referral));
       const updated = await incrementSessionPageViews(session, 1);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
