@@ -19,8 +19,10 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionExpirationDate: payload.expirationDate,
       };
       const updated = await updateSession(session, 1);
+      console.log('updated 1: ', JSON.stringify(updated));
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
+      console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
   } else if (payload.event === 'disputes_enroll') {
@@ -31,6 +33,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionExpirationDate: payload.expirationDate,
       };
       const updated = await updateSession(session, 3);
+      console.log('updated 2: ', JSON.stringify(updated));
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
       console.log('err: ', JSON.stringify(err));
@@ -44,6 +47,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionExpirationDate: payload.expirationDate,
       };
       const updated = await updateSession(session, 0);
+      console.log('updated 3: ', JSON.stringify(updated));
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
       console.log('err: ', JSON.stringify(err));

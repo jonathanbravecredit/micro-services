@@ -78,5 +78,8 @@ export const updateSession = async (
     .returnValues('UPDATED_NEW')
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('update session db error: ', JSON.stringify(err));
+      return err;
+    });
 };
