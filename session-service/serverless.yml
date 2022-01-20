@@ -51,8 +51,20 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /:sessionId
+          path: /{sessionId}
           method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  createSessionData:
+    handler: src/api/create.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /
+          method: put
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
