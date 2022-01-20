@@ -8,9 +8,11 @@ import {
   StreamRecord,
 } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
+import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { DynamoDBorSNSRecord } from 'lib/interfaces';
 import { Referral } from 'lib/models/referral.model';
-import { getCampaign, getReferralByCode, updateReferral } from 'lib/queries';
+import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
+import { AddOnsCalculator } from 'lib/utils/addons/addons';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
@@ -64,10 +66,33 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
         }
 
         if (isSNS) {
-          // do sns related stuff TODO
           // sns will only look for add ons. enrollments, etc
           const sns = r as SNSEventRecord;
-          console.log('sns record ==> ', JSON.stringify(sns));
+          // currently only accepting enrollment data from app
+          const t1 = sns.Sns.Subject === 'transunionenrollment';
+          const { service, message } = JSON.parse(sns.Sns.Message) as {
+            service: string;
+            command: string;
+            message: UpdateAppDataInput;
+          };
+          const t2 = service === 'referralservice';
+          if (t1 && t2) {
+            const { id } = message;
+            const { denomination, bonusThreshold, bonusAmount, addOnFlagOne } = current;
+            const referral = await getReferral(id);
+            if (!referral) return;
+            // check if the addon for enrollment is enabled
+            const earned =
+              addOnFlagOne === 'enrollment'
+                ? referral.campaignActiveEarned + AddOnsCalculator.enrollemnt(denomination)
+                : referral.campaignActiveEarned;
+            // check if the bonus threshold is hit...wasn't and now would be
+            const updated = {
+              ...referral,
+              campaignActiveEarned: earned,
+            };
+            await updateReferral(updated);
+          }
         }
       }),
     );

@@ -38,6 +38,7 @@ provider:
     ACCOUNT_ID: !Sub '${AWS::AccountId}'
     IDENTITY_ID: '${self:custom.settings.IDENTITY_IDS.${opt:stage}}'
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
+    REFERRAL_TOPIC_ARN: !Ref ReferralsSNSTopic
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -167,6 +168,18 @@ functions:
           arn: !Ref ReferralsSNSTopic
           topicName: ${self:provider.stage}-referral-sns-topic
           integration: lambda-proxy
+
+  # handlers
+  appDataPub:
+    handler: src/handlers/pubs/appDataPub.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
 
 resources:
   Resources:
