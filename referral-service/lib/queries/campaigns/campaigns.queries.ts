@@ -51,7 +51,15 @@ export const updateCurrentCampaign = (campaign: Campaign) => {
     .updateAttribute('endDate')
     .set(campaign.endDate)
     .updateAttribute('modifiedOn')
-    .set(now);
+    .set(now)
+    .exec()
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      console.log('updateCurrentCampaign Error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const getLatestCampaign = (pkey: number) => {
