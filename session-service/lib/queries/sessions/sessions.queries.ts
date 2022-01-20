@@ -58,23 +58,12 @@ export const updateSession = async (
   session: Partial<Session>,
   keyPageIncrement: number = 0,
 ): Promise<Partial<Session> | null> => {
-  if (!session.userId || !session.sessionId) return null;
-  const old = await getSession(session.userId, session.sessionId);
-  if (!old) return null;
-  const merge = {
-    ...old,
-    ...session,
-  };
+  const { userId, sessionId } = session;
+  if (!userId || !sessionId) return null;
   return store
-    .update(merge.userId)
-    .updateAttribute('sessionId')
-    .set(merge.sessionId)
-    .updateAttribute('sessionDate')
-    .set(merge.sessionDate)
-    .updateAttribute('sessionExpirationDate')
-    .set(merge.sessionExpirationDate)
+    .update(userId, sessionId)
     .updateAttribute('pageViews')
-    .set(merge.pageViews + keyPageIncrement)
+    .incrementBy(keyPageIncrement)
     .returnValues('UPDATED_NEW')
     .exec()
     .then((res) => res)
