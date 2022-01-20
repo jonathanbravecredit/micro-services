@@ -6,13 +6,13 @@ export const USERID_SESSIONDATE_INDEX = 'userIdSessionDate-index';
 export class Session {
   @GSIPartitionKey(USERID_SESSIONDATE_INDEX)
   @PartitionKey()
-  userId: string;
+  userId!: string;
   @SortKey()
-  sessionId: string;
+  sessionId!: string;
   @GSISortKey(USERID_SESSIONDATE_INDEX)
-  sessionDate: string;
-  sessionExpirationDate: string;
-  pageViews: number;
+  sessionDate!: string;
+  sessionExpirationDate!: string;
+  pageViews!: number;
 }
 
 export class SessionMaker implements Session {

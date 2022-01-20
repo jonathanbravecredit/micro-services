@@ -1,10 +1,10 @@
 'use strict';
-import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { ISessionData, IUpdateSessionData } from 'lib/interfaces';
+import { IUpdateSessionData } from 'lib/interfaces';
 import { safeParse } from 'lib/utils/safeJson';
 import { updateSession } from 'lib/queries';
 import { Session } from 'lib/models/session.model';
+import { response } from 'lib/utils/response';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const payload: IUpdateSessionData = safeParse(event, 'body');
@@ -17,7 +17,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       };
       const updated = await updateSession(session);
 
-      if (updated.pageViews >= 3) {
+      if ((updated?.pageViews || 0) >= 3) {
         //todo add update to referral
       }
 
