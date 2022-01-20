@@ -14,6 +14,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
 
   try {
     const session = await getSession(sub, sessionId);
+    console.log('session: ', session);
     return session ? response(200, session) : response(200, null);
   } catch (err) {
     console.log('err: ', JSON.stringify(err));
