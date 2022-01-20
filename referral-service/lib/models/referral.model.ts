@@ -29,12 +29,14 @@ export class Referral {
   campaignActiveEarned: number = 0;
   campaignActivePaid: number = 0;
   campaignActiveAddOn: number = 0;
+  campaignActiveBonus: boolean = false;
 
   campaignPrior: string = '';
   campaignPriorReferred: number = 0;
   campaignPriorEarned: number = 0;
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
+  campaignPriorBonus: boolean = false;
 
   nextPaymentDate: string = '';
   notified: boolean = false;
@@ -62,12 +64,14 @@ export class ReferralMaker implements Referral {
   campaignActiveEarned: number = 0;
   campaignActivePaid: number = 0;
   campaignActiveAddOn: number = 0;
+  campaignActiveBonus: boolean = false;
 
   campaignPrior: string = '';
   campaignPriorReferred: number = 0;
   campaignPriorEarned: number = 0;
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
+  campaignPriorBonus: boolean = false;
 
   nextPaymentDate: string = '';
   notified: boolean = false;

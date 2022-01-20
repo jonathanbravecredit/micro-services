@@ -50,6 +50,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             if (!referral) return;
             // check if the bonus threshold is hit...wasn't and now would be
             const bonus = (referral.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
+            const campaignActiveBonus = referral.campaignActiveBonus || bonus > 0 ? true : false;
             const earned = referral.campaignActiveEarned + denomination + bonus;
             const referred = referral.campaignActiveReferred + 1;
             const baseEarned = referral.baseEarned + denomination + bonus;
@@ -58,6 +59,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               ...referral,
               campaignActiveReferred: referred,
               campaignActiveEarned: earned,
+              campaignActiveBonus: campaignActiveBonus,
               baseEarned: baseEarned,
               bonusEarned: bonusEarned,
             };

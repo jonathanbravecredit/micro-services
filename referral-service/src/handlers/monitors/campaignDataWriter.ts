@@ -42,11 +42,13 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                   campaignActiveEarned: 0,
                   campaignActivePaid: 0,
                   campaignActiveAddOn: 0,
+                  campaignActiveBonus: false,
                   campaignPrior: oldImage.campaign,
                   campaignPriorReferred: r.campaignActiveReferred,
                   campaignPriorEarned: r.campaignActiveEarned,
                   campaignPriorPaid: r.campaignActivePaid,
                   campaignPriorAddOn: r.campaignActiveAddOn,
+                  campaignPriorBonus: r.campaignActiveBonus,
                   notified: false,
                   modifiedOn: now,
                 };
