@@ -16,11 +16,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionExpirationDate: payload.expirationDate,
       };
       const updated = await updateSession(session);
-
-      if ((updated?.pageViews || 0) >= 3) {
-        //todo add update to referral
-      }
-
       return updated ? response(200, updated) : response(404, updated);
     } catch (err) {
       return response(500, err);
