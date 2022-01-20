@@ -6,10 +6,9 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import { safeParse } from 'lib/utils/safeJson';
 import { Session, SessionMaker } from 'lib/models/session.model';
 
-export const main: APIGatewayProxyHandler = async (
-  proxyEvent: APIGatewayProxyEvent,
-): Promise<APIGatewayProxyResult> => {
-  const payload: interfaces.ISessionDB = safeParse(proxyEvent, 'body');
+export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ==> ', JSON.stringify(event));
+  const payload: interfaces.ISessionDB = safeParse(event, 'body');
   try {
     const { userId, sessionId, sessionDate, sessionExpirationDate, pageViews } = payload;
     const newSession: Session = new SessionMaker(userId, sessionId, sessionDate, sessionExpirationDate, pageViews);

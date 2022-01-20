@@ -5,10 +5,11 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import { response } from 'lib/utils/response';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ==> ', JSON.stringify(event));
   const params = event.pathParameters;
-  if (!params) return response(200, null);
+  const sub = event?.requestContext?.authorizer?.claims?.sub;
+  if (!params || !sub) return response(200, null);
   const { sessionId } = params;
-  const { sub } = event?.requestContext?.authorizer?.claims;
   if (!sessionId || !sub) return response(200, null);
 
   try {

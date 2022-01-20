@@ -5,9 +5,10 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import { response } from 'lib/utils/response';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event ==> ', JSON.stringify(event));
   const params = event.queryStringParameters;
-  if (!params) return response(200, null);
-  const { sub } = event?.requestContext?.authorizer?.claims;
+  const sub = event?.requestContext?.authorizer?.claims?.sub;
+  if (!params || !sub) return response(200, null);
   const { limit = '1', sort = 'desc' } = params;
   try {
     const session = await getLatestSession(sub, limit, sort);

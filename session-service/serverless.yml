@@ -149,6 +149,7 @@ resources:
         TableName: Sessions
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     ApiGatewayAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:
