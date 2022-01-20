@@ -89,6 +89,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             // check if the bonus threshold is hit...wasn't and now would be
             const updated = {
               ...referral,
+              enrolled: true,
               campaignActiveEarned: earned,
             };
             await updateReferral(updated);
