@@ -164,17 +164,17 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
-      - sns:
-          arn: !Ref ReferralsSNSTopic
-          topicName: ${self:provider.stage}-referral-sns-topic
-          integration: lambda-proxy
+      # - sns:
+      #     arn: !Ref ReferralsSNSTopic
+      #     topicName: ${self:provider.stage}-referral-sns-topic
+      #     integration: lambda-proxy
 
 resources:
   Resources:
-    ReferralsSNSTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: ${self:provider.stage}-referral-sns-topic
+    # ReferralsSNSTopic:
+    #   Type: AWS::SNS::Topic
+    #   Properties:
+    #     TopicName: ${self:provider.stage}-referral-sns-topic
 
     Referrals:
       Type: AWS::DynamoDB::Table
@@ -238,8 +238,8 @@ resources:
       Value: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-campaigns-stream'
-    ReferralsSNSTopicArn:
-      Description: 'Referrals sub topic'
-      Value: !Ref ReferralsSNSTopic
-      Export:
-        Name: !Sub '${self:service}-referrals-sns-topic'
+    # ReferralsSNSTopicArn:
+    #   Description: 'Referrals sub topic'
+    #   Value: !Ref ReferralsSNSTopic
+    #   Export:
+    #     Name: !Sub '${self:service}-referrals-sns-topic'
