@@ -11,14 +11,14 @@ export const getSession = (sub: string, sessionId: string): Promise<Session | nu
     .catch((err) => err);
 };
 
-export const getLatestSession = (userId: any, sort: string = 'desc', limit: string = '1'): Promise<Session | null> => {
+export const getLatestSession = (userId: any, sort: string = 'desc', limit: number = 1): Promise<Session | null> => {
   if (sort === 'desc') {
     return store
       .query()
       .index(USERID_SESSIONDATE_INDEX)
       .wherePartitionKey(userId)
       .descending()
-      .limit(+limit)
+      .limit(limit)
       .execFetchAll()
       .then((res) => res)
       .catch((err) => err);
@@ -28,7 +28,7 @@ export const getLatestSession = (userId: any, sort: string = 'desc', limit: stri
       .index(USERID_SESSIONDATE_INDEX)
       .wherePartitionKey(userId)
       .ascending()
-      .limit(+limit)
+      .limit(limit)
       .execFetchAll()
       .then((res) => res)
       .catch((err) => err);
