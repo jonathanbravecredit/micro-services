@@ -55,7 +55,7 @@ export class ReferralMaker implements Referral {
   bonusEarned: number = 0;
   addOnEarned: number = 0;
 
-  campaignActive: string = '';
+  campaignActive: string = 'NO_CAMPAIGN';
   campaignActiveReferred: number = 0;
   campaignActiveEarned: number = 0;
   campaignActivePaid: number = 0;
