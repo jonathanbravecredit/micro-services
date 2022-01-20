@@ -78,6 +78,8 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/index/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/index/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions/index/*'
 
 functions:
   # referrals
