@@ -5,6 +5,7 @@ const enrollmentAddOn = (denomination: number) => {
   return denomination;
 };
 
-export const AddOnsCalculator: { [key: string]: any } = {
-  enrollment: enrollmentAddOn,
-};
+export class AddOnsCalculator {
+  enrollment: (arg0: number) => number = enrollmentAddOn;
+  constructor() {}
+}

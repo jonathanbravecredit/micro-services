@@ -90,10 +90,12 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             console.log('referral in sns: ', JSON.stringify(referral));
             if (!referral) return;
             // check if the addon for enrollment is enabled
+            const calculator = new AddOnsCalculator();
             const earned =
               addOnFlagOne === 'enrollment'
-                ? referral.campaignActiveEarned + AddOnsCalculator.enrollemnt(denomination)
+                ? referral.campaignActiveEarned + calculator.enrollment(denomination)
                 : referral.campaignActiveEarned;
+            console.log('earned: ', earned);
             // check if the bonus threshold is hit...wasn't and now would be
             const updated = {
               ...referral,
