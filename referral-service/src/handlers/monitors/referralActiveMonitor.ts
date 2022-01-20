@@ -22,10 +22,13 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const sessions = await listUserSessions(message.userId, 20);
         console.log('sessions: ', JSON.stringify(sessions));
         const keyPageViews = sessions.reduce((a, b) => {
-          return a + b.pageViews;
+          return a + (b.pageViews || 0);
+        }, 0);
+        const clickEvents = sessions.reduce((a, b) => {
+          return a + (b.clickEvents || 0);
         }, 0);
         console.log('pageViews: ', keyPageViews);
-        if (keyPageViews > 3 && sessions.length > 1) {
+        if ((keyPageViews > 2 && sessions.length > 1) || clickEvents > 0) {
           // auto approve
           await updateReferralEligibility(message.userId, 1);
         }

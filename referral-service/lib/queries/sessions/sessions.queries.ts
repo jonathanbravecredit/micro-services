@@ -54,26 +54,40 @@ export const createSession = (Sessions: Session): Promise<void> => {
     .catch((err) => err);
 };
 
-export const updateSession = async (session: Partial<Session>): Promise<Partial<Session> | null> => {
-  if (!session.userId || !session.sessionId) return null;
-  const old = await getSession(session.userId, session.sessionId);
-  if (!old) return null;
-  const merge = {
-    ...old,
-    ...session,
-  };
+export const incrementSessionPageViews = async (
+  session: Partial<Session>,
+  keyPageIncrement: number = 0,
+): Promise<Session | null> => {
+  const { userId, sessionId } = session;
+  if (!userId || !sessionId) return null;
   return store
-    .update(merge.userId)
-    .updateAttribute('sessionId')
-    .set(merge.sessionId)
-    .updateAttribute('sessionDate')
-    .set(merge.sessionDate)
-    .updateAttribute('sessionExpirationDate')
-    .set(merge.sessionExpirationDate)
+    .update(userId, sessionId)
     .updateAttribute('pageViews')
-    .set(merge.pageViews + 1)
-    .returnValues('UPDATED_NEW')
+    .incrementBy(keyPageIncrement)
+    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('update session db error: ', JSON.stringify(err));
+      return err;
+    });
+};
+
+export const incrementSessionClickEvents = async (
+  session: Partial<Session>,
+  increment: number = 0,
+): Promise<Session | null> => {
+  const { userId, sessionId } = session;
+  if (!userId || !sessionId) return null;
+  return store
+    .update(userId, sessionId)
+    .updateAttribute('clickEvents')
+    .incrementBy(increment)
+    .returnValues('ALL_NEW')
+    .exec()
+    .then((res) => res)
+    .catch((err) => {
+      console.log('update session db error: ', JSON.stringify(err));
+      return err;
+    });
 };

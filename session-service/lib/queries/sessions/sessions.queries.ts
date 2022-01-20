@@ -54,16 +54,35 @@ export const createSession = (Sessions: Session): Promise<void> => {
     .catch((err) => err);
 };
 
-export const updateSession = async (
+export const incrementSessionPageViews = async (
   session: Partial<Session>,
-  keyPageIncrement: number = 0,
+  increment: number = 0,
 ): Promise<Session | null> => {
   const { userId, sessionId } = session;
   if (!userId || !sessionId) return null;
   return store
     .update(userId, sessionId)
     .updateAttribute('pageViews')
-    .incrementBy(keyPageIncrement)
+    .incrementBy(increment)
+    .returnValues('ALL_NEW')
+    .exec()
+    .then((res) => res)
+    .catch((err) => {
+      console.log('update session db error: ', JSON.stringify(err));
+      return err;
+    });
+};
+
+export const incrementSessionClickEvents = async (
+  session: Partial<Session>,
+  increment: number = 0,
+): Promise<Session | null> => {
+  const { userId, sessionId } = session;
+  if (!userId || !sessionId) return null;
+  return store
+    .update(userId, sessionId)
+    .updateAttribute('clickEvents')
+    .incrementBy(increment)
     .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)

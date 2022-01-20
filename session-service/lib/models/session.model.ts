@@ -13,6 +13,7 @@ export class Session {
   sessionDate!: string;
   sessionExpirationDate!: string;
   pageViews!: number;
+  clickEvents!: number;
 }
 
 export class SessionMaker implements Session {
@@ -20,7 +21,8 @@ export class SessionMaker implements Session {
   sessionId: string;
   sessionDate: string;
   sessionExpirationDate: string;
-  pageViews: number;
+  pageViews: number = 0;
+  clickEvents: number = 0;
 
   constructor(
     userId: string,
@@ -28,11 +30,13 @@ export class SessionMaker implements Session {
     sessionDate: string,
     sessionExpirationDate: string,
     pageViews: number,
+    clickEvents: number,
   ) {
     this.userId = userId;
     this.sessionId = sessionId;
     this.sessionDate = sessionDate;
     this.sessionExpirationDate = sessionExpirationDate;
     this.pageViews = pageViews;
+    this.clickEvents = clickEvents;
   }
 }

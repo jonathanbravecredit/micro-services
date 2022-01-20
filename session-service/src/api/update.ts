@@ -1,7 +1,7 @@
 'use strict';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { IUpdateSessionData } from 'lib/interfaces';
-import { updateSession } from 'lib/queries';
+import { incrementSessionClickEvents, incrementSessionPageViews } from 'lib/queries';
 import { Session } from 'lib/models/session.model';
 import { response } from 'lib/utils/response';
 
@@ -18,9 +18,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionId: payload.sessionId,
         sessionExpirationDate: payload.expirationDate,
       };
-      console.log('session 1: ', JSON.stringify(session));
-      const updated = await updateSession(session, 1);
-      console.log('updated 1: ', JSON.stringify(updated));
+      const updated = await incrementSessionPageViews(session, 1);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
       console.log('err: ', JSON.stringify(err));
@@ -33,28 +31,12 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         sessionId: payload.sessionId,
         sessionExpirationDate: payload.expirationDate,
       };
-      console.log('session 3: ', JSON.stringify(session));
-      const updated = await updateSession(session, 3);
-      console.log('updated 2: ', JSON.stringify(updated));
-      return updated ? response(200, updated) : response(200, null);
-    } catch (err) {
-      console.log('err: ', JSON.stringify(err));
-      return response(500, err);
-    }
-  } else {
-    try {
-      const session: Partial<Session> = {
-        userId: sub,
-        sessionId: payload.sessionId,
-        sessionExpirationDate: payload.expirationDate,
-      };
-      console.log('session 3: ', JSON.stringify(session));
-      const updated = await updateSession(session, 0);
-      console.log('updated 3: ', JSON.stringify(updated));
+      const updated = await incrementSessionClickEvents(session, 1);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
       console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
   }
+  return response(200, null);
 };
