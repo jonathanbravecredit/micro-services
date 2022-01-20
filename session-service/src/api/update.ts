@@ -1,7 +1,7 @@
 'use strict';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { IUpdateSessionData } from 'lib/interfaces';
-import { incrementSessionClickEvents, incrementSessionPageViews } from 'lib/queries';
+import { getSession, incrementSessionClickEvents, incrementSessionPageViews } from 'lib/queries';
 import { Session } from 'lib/models/session.model';
 import { response } from 'lib/utils/response';
 
@@ -13,10 +13,14 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const payload: IUpdateSessionData = JSON.parse(body);
   if (payload.event === 'key_page_view') {
     try {
+      const { sessionId } = payload;
       const session: Partial<Session> = {
         userId: sub,
-        sessionId: payload.sessionId,
+        sessionId: sessionId,
       };
+      console.log('session ', JSON.stringify(session));
+      const referral = await getSession(sub, sessionId);
+      console.log('referral ', JSON.stringify(referral));
       const updated = await incrementSessionPageViews(session, 1);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
