@@ -1,15 +1,13 @@
 'use strict';
 import 'reflect-metadata';
-import * as vouchers from 'voucher-code-generator';
 import * as uuid from 'uuid';
 import { ajv } from 'lib/schema/validation';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { safeParse } from 'lib/utils/safeJson';
-import { Referral, ReferralMaker } from 'lib/models/referral.model';
+import { ReferralMaker } from 'lib/models/referral.model';
 import { ICreateReferral } from 'lib/interfaces';
-import { createReferral } from 'lib/queries';
-import { eligible } from 'lib/utils/campaigns/campaignEligibilityLogic';
+import { createReferral, getReferralByCode } from 'lib/queries';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -19,18 +17,15 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
   try {
     // determine eligibility
-    const approved = await eligible(payload);
-    // if (approved) {
-    //   const { referralCode } = referralUser;
-    //   const referral = new ReferralMaker(
-    //     payload.id,
-    //     referrealUser
-    //     payload.campaign,
-    //     false,
-    //     payload.referredByCode,
-    //   );
-
-    // }
+    // const approved = await eligible(payload);
+    const referredBy = payload.referredByCode ? await getReferralByCode(payload.referredByCode) : null;
+    if (referredBy && payload.referredByCode) {
+      const referral = new ReferralMaker(payload.id, uuid.v4(), payload.referredByCode, referredBy.id);
+      await createReferral(referral);
+    } else {
+      const referral = new ReferralMaker(payload.id, uuid.v4());
+      await createReferral(referral);
+    }
   } catch (err) {
     return response(500, err);
   }
