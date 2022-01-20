@@ -64,7 +64,6 @@ export const incrementSessionPageViews = async (
     .update(userId, sessionId)
     .updateAttribute('pageViews')
     .incrementBy(increment)
-    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
     .catch((err) => {
@@ -83,7 +82,6 @@ export const incrementSessionClickEvents = async (
     .update(userId, sessionId)
     .updateAttribute('clickEvents')
     .incrementBy(increment)
-    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
     .catch((err) => {
