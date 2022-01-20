@@ -54,7 +54,10 @@ export const createSession = (Sessions: Session): Promise<void> => {
     .catch((err) => err);
 };
 
-export const updateSession = async (session: Partial<Session>): Promise<Partial<Session> | null> => {
+export const updateSession = async (
+  session: Partial<Session>,
+  keyPageIncrement: number = 0,
+): Promise<Partial<Session> | null> => {
   if (!session.userId || !session.sessionId) return null;
   const old = await getSession(session.userId, session.sessionId);
   if (!old) return null;
@@ -71,7 +74,7 @@ export const updateSession = async (session: Partial<Session>): Promise<Partial<
     .updateAttribute('sessionExpirationDate')
     .set(merge.sessionExpirationDate)
     .updateAttribute('pageViews')
-    .set(merge.pageViews + 1)
+    .set(merge.pageViews + keyPageIncrement)
     .returnValues('UPDATED_NEW')
     .exec()
     .then((res) => res)
