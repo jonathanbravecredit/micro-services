@@ -24,19 +24,10 @@ export class SessionMaker implements Session {
   pageViews: number = 0;
   clickEvents: number = 0;
 
-  constructor(
-    userId: string,
-    sessionId: string,
-    sessionDate: string,
-    sessionExpirationDate: string,
-    pageViews: number,
-    clickEvents: number,
-  ) {
+  constructor(userId: string, sessionId: string, sessionDate: string, sessionExpirationDate: string) {
     this.userId = userId;
     this.sessionId = sessionId;
     this.sessionDate = sessionDate;
     this.sessionExpirationDate = sessionExpirationDate;
-    this.pageViews = pageViews;
-    this.clickEvents = clickEvents;
   }
 }

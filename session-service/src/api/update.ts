@@ -16,7 +16,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       const session: Partial<Session> = {
         userId: sub,
         sessionId: payload.sessionId,
-        sessionExpirationDate: payload.expirationDate,
       };
       const updated = await incrementSessionPageViews(session, 1);
       return updated ? response(200, updated) : response(200, null);
@@ -29,7 +28,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       const session: Partial<Session> = {
         userId: sub,
         sessionId: payload.sessionId,
-        sessionExpirationDate: payload.expirationDate,
       };
       const updated = await incrementSessionClickEvents(session, 1);
       return updated ? response(200, updated) : response(200, null);
