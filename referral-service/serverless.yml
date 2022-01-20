@@ -165,7 +165,7 @@ functions:
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
       - sns:
-          arn: !Ref ReferralSNSTopic
+          arn: !Ref ReferralsSNSTopic
           topicName: ${self:provider.stage}-referral-sns-topic
           integration: lambda-proxy
 
