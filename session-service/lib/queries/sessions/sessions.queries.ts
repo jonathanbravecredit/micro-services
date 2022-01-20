@@ -57,14 +57,14 @@ export const createSession = (Sessions: Session): Promise<void> => {
 export const updateSession = async (
   session: Partial<Session>,
   keyPageIncrement: number = 0,
-): Promise<Partial<Session> | null> => {
+): Promise<Session | null> => {
   const { userId, sessionId } = session;
   if (!userId || !sessionId) return null;
   return store
     .update(userId, sessionId)
     .updateAttribute('pageViews')
     .incrementBy(keyPageIncrement)
-    .returnValues('UPDATED_NEW')
+    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
     .catch((err) => {
