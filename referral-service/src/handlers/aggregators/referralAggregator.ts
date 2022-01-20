@@ -75,14 +75,14 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
           const { service, message } = JSON.parse(sns.Sns.Message) as {
             service: string;
             command: string;
-            message: string;
+            message: UpdateAppDataInput;
           };
           const t1 = sns.Sns.Subject === 'transunionenrollment';
           const t2 = service === 'referralservice';
           console.log('t1: ', t1);
           console.log('t2: ', t2);
           if (t1 && t2) {
-            const { id } = JSON.parse(message) as UpdateAppDataInput;
+            const { id } = message;
             console.log('id: ', id);
             const { denomination, addOnFlagOne } = current;
             const referral = await getReferral(id);

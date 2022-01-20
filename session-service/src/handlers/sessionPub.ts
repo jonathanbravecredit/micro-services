@@ -1,5 +1,6 @@
-import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
+import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda';
+import { SNS, DynamoDB } from 'aws-sdk';
+import { Session } from 'lib/models/session.model';
 import { PubSubUtil } from 'lib/utils/pubsub/pubsub';
 
 const sns = new SNS({ region: 'us-east-2' });
@@ -13,10 +14,14 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   try {
     await Promise.all(
       records.map(async (r) => {
+        const stream = r.dynamodb || {};
+        const { NewImage } = stream;
+        if (!NewImage) return;
         const subject = 'sessiondataupdate';
         const service = 'referralservice';
-        const message = JSON.stringify(r);
-        const payload = pubsub.createSNSPayload<string>(subject, message, service);
+        const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Session;
+        const message = newImage;
+        const payload = pubsub.createSNSPayload<Session>(subject, message, service);
         await sns.publish(payload).promise();
       }),
     );

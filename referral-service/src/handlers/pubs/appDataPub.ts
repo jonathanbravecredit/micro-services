@@ -27,8 +27,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           if (!oldEnrolled && newEnrolled) {
             const subject = 'transunionenrollment';
             const service = 'referralservice';
-            const message = JSON.stringify(newImage);
-            const payload = pubsub.createSNSPayload<string>(subject, message, service);
+            const message = newImage;
+            const payload = pubsub.createSNSPayload<UpdateAppDataInput>(subject, message, service);
             await sns.publish(payload).promise();
           }
         }
