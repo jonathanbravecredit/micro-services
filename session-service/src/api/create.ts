@@ -14,7 +14,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const newSession: Session = new SessionMaker(userId, sessionId, sessionDate, sessionExpirationDate, pageViews);
     await queries.createSession(newSession);
     return response(200, 'success');
-  } catch (error) {
-    return response(500, error);
+  } catch (err) {
+    console.log('err: ', JSON.stringify(err));
+    return response(500, err);
   }
 };

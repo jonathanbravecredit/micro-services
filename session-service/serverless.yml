@@ -40,7 +40,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Ads'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'

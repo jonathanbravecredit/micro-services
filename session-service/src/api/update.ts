@@ -33,6 +33,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       const updated = await updateSession(session, 3);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
+      console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
   } else {
@@ -45,6 +46,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
       const updated = await updateSession(session, 0);
       return updated ? response(200, updated) : response(200, null);
     } catch (err) {
+      console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
   }
