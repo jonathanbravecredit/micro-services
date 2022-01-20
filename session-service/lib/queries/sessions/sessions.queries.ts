@@ -87,7 +87,7 @@ export const incrementSessionClickEvents = async (
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('update session db error: ', JSON.stringify(err));
+      console.log('update session  db error: ', JSON.stringify(err));
       return err;
     });
 };
