@@ -2,11 +2,11 @@
   "type": "object",
   "properties": {
     "pKey": {
-      "type": "number",
+      "type": "string",
       "nullable": false
     },
     "version": {
-      "type": "number",
+      "type": "string",
       "nullable": false
     }
   },
