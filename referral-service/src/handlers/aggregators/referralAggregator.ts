@@ -74,26 +74,17 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             await updateReferral(updated);
           }
 
-          if (enrollment && current.campaign !== 'NO_CAMPAIGN') {
-            // need to give the user the bonus if within a campaign
-            const { denomination, bonusThreshold, bonusAmount } = current;
+          if (enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
+            // need to give the user credit for enrolling
+            const { denomination } = current;
             const referral = await getReferral(newImage.id);
             if (!referral) return;
-            // check if the bonus threshold is hit...wasn't and now would be
-            const bonus = (referral.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
-            const campaignActiveBonus = referral.campaignActiveBonus || bonus > 0 ? true : false;
-            const earned = referral.campaignActiveEarned + denomination + bonus;
-            const referred = referral.campaignActiveReferred + 1;
-            const baseEarned = referral.baseEarned + denomination + bonus;
-            const bonusEarned = referral.bonusEarned + bonus;
+            const baseEarned = referral.baseEarned + denomination;
             const paymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
             const updated = {
               ...referral,
-              campaignActiveReferred: referred,
-              campaignActiveEarned: earned,
-              campaignActiveBonus: campaignActiveBonus,
+              campaignActiveAddOn: denomination,
               baseEarned: baseEarned,
-              bonusEarned: bonusEarned,
               nextPaymentDate: paymentDate,
             };
             await updateReferral(updated);
