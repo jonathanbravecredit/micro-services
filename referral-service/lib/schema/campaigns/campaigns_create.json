@@ -13,6 +13,10 @@
       "type": "number",
       "nullable": false
     },
+    "maxReferrals": {
+      "type": "number",
+      "nullable": false
+    },
     "bonusThreshold": {
       "type": "number",
       "nullable": false
@@ -42,6 +46,7 @@
     "version",
     "campaign",
     "denomination",
+    "maxReferrals",
     "bonusThreshold",
     "addOnFlagOne",
     "addOnFlagTwo",

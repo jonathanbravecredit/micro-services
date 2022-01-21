@@ -18,6 +18,7 @@ export interface ICreateCampaign {
   version: number;
   campaign: string;
   denomination: number;
+  maxReferrals: number;
   bonusThreshold: number;
   addOnFlagOne: string;
   addOnFlagTwo: string;
