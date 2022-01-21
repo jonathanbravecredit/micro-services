@@ -32,6 +32,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
         const isDynamo = (r as DynamoDBRecord).eventSource === 'aws:dynamodb';
         const isSNS = (r as SNSEventRecord).EventSource === 'aws:sns';
         if (isDynamo) {
+          // !!! REFERRAL Database !!!
           // do dynamodb stuff
           // data coming from referral data base. inserts and modifications
           // only concerned with modifies...people going from unenrolled to enrolled
@@ -76,40 +77,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
         if (isSNS) {
           // sns will only look for add ons. enrollments, etc
           // these are their own enrollments
-          const sns = r as SNSEventRecord;
-          // currently only accepting enrollment data from app
-          const { service, message } = JSON.parse(sns.Sns.Message) as {
-            service: string;
-            command: string;
-            message: UpdateAppDataInput;
-          };
-          const t1 = sns.Sns.Subject === 'transunionenrollment';
-          const t2 = service === 'referralservice';
-          console.log('t1: ', t1);
-          console.log('t2: ', t2);
-          if (t1 && t2) {
-            const { id } = message;
-            console.log('id: ', id);
-            const { denomination, addOnFlagOne } = current;
-            const referral = await getReferral(id);
-            console.log('referral in sns: ', JSON.stringify(referral));
-            if (!referral) return;
-            // check if the addon for enrollment is enabled
-            const calculator = new AddOnsCalculator();
-            const earned =
-              addOnFlagOne === 'enrollment'
-                ? referral.campaignActiveEarned + calculator.enrollment(denomination)
-                : referral.campaignActiveEarned;
-            console.log('earned: ', earned);
-            // check if the bonus threshold is hit...wasn't and now would be
-            const updated = {
-              ...referral,
-              enrolled: true,
-              campaignActiveEarned: earned,
-            };
-            console.log('updated: ', JSON.stringify(updated));
-            await updateReferral(updated);
-          }
+          // no events for aggregator now...enrollments handled above
         }
       }),
     );

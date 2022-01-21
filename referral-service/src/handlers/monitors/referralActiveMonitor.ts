@@ -15,6 +15,9 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
     console.log('referral active monitor record: ', JSON.stringify(r));
   });
 
+  // checks if a user is eligible
+  //  -- if so, updates there eligibility
+  //     and enrolls them in the current campaign.
   try {
     await Promise.all(
       records.map(async (r) => {
