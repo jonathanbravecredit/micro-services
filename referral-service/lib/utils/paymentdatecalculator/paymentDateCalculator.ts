@@ -14,6 +14,7 @@ export class PaymentDateCalculator {
           .add(6 - moment().day('Tuesday').day(), 'days')
           .startOf('week')
           .day(2)
+          .add(12, 'hours')
           .toISOString();
   }
 }
