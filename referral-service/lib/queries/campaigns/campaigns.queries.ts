@@ -62,9 +62,7 @@ export const updateCurrentCampaign = (campaign: Campaign) => {
     .updateAttribute('modifiedOn')
     .set(now)
     .exec()
-    .then((res) => {
-      return res;
-    })
+    .then((res) => res)
     .catch((err) => {
       console.log('updateCurrentCampaign Error: ', JSON.stringify(err));
       return err;

@@ -6,10 +6,12 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
   // current campaign has ended
   try {
     const campaign = await getCampaign(1, 0);
+    console.log('campaign: ', campaign);
     const now = new Date();
     if (moment(now).isAfter(campaign?.endDate)) {
       // get the default campaign
       const noCampaign = await getCampaign(1, 1);
+      console.log('noCampaign: ', noCampaign);
       await updateCurrentCampaign(noCampaign!);
     }
   } catch (err) {
