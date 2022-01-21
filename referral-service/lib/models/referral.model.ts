@@ -18,6 +18,7 @@ export class Referral {
   @GSIPartitionKey(ELIGIBLE_GSI)
   eligible: 0 | 1 = 0;
   enrolled: boolean = false;
+  suspended: boolean = false;
 
   baseEarned: number = 0;
   bonusEarned: number = 0;
@@ -54,6 +55,7 @@ export class ReferralMaker implements Referral {
 
   eligible: 0 | 1 = 0;
   enrolled: boolean = false;
+  suspended: boolean = false;
 
   baseEarned: number = 0;
   bonusEarned: number = 0;
