@@ -3,6 +3,7 @@ import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
 import { getCampaign, updateReferralCampaign, updateReferralEligibility, updateEnrollment } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
+import * as moment from 'moment';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   /*============================================*/
@@ -37,9 +38,15 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         console.log('pageViews: ', keyPageViews);
         if ((keyPageViews > 2 && sessions.length > 1) || clickEvents > 0) {
           // auto approve
-          await updateReferralEligibility(message.userId, 1);
+          // 1. update the campaign to current...must be first
+          //  - the campaign can't be expired...otherwise use the default
           const current = await getCampaign(1, 0);
-          await updateReferralCampaign(message.userId, current!.campaign);
+          const defaultCamp = await getCampaign(1, 1);
+          const now = new Date();
+          const campaign = moment(now).isAfter(current!.endDate) ? defaultCamp : current;
+          await updateReferralCampaign(message.userId, campaign!.campaign);
+          // 1. update the eligible flag to 1/true;
+          await updateReferralEligibility(message.userId, 1);
         }
       }),
     );
