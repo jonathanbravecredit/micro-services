@@ -29,16 +29,17 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
     console.log('latest: ', latest);
     const now = new Date();
     const started = moment(now).isAfter(latest?.startDate);
-    const ended = moment(now).isAfter(latest?.endDate);
-    const alreadyStarted = current?.version === latest.version;
+    const ongoing = moment(now).isBefore(latest?.endDate);
+    const active = current?.version === latest.version;
     let msg = 'no new campaign';
-    if (started && !ended && !alreadyStarted) {
+    console.log('tests: ', started, ongoing, !active);
+    if (started && ongoing && !active) {
       // set the current campaign to the started campaign
       const update = {
         ...latest!,
         currentVersion: latest.version,
       };
-      await updateCurrentCampaign(latest);
+      await updateCurrentCampaign(update);
       msg = 'campaign has been updated';
     }
     console.log('new campaign msg: ', msg);
