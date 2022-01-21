@@ -53,7 +53,30 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
           if (newImage.referredByCode && enrollment) {
             const { denomination, bonusThreshold, bonusAmount } = current;
             // get the record by referredByCode
-            const referral = await getReferralByCode(newImage.referredByCode);
+            const referrer = await getReferralByCode(newImage.referredByCode);
+            if (!referrer) return;
+            // check if the bonus threshold is hit...wasn't and now would be
+            const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
+            const campaignActiveBonus = referrer.campaignActiveBonus || bonus > 0 ? true : false;
+            const earned = referrer.campaignActiveEarned + denomination + bonus;
+            const referred = referrer.campaignActiveReferred + 1;
+            const baseEarned = referrer.baseEarned + denomination + bonus;
+            const bonusEarned = referrer.bonusEarned + bonus;
+            const updated = {
+              ...referrer,
+              campaignActiveReferred: referred,
+              campaignActiveEarned: earned,
+              campaignActiveBonus: campaignActiveBonus,
+              baseEarned: baseEarned,
+              bonusEarned: bonusEarned,
+            };
+            await updateReferral(updated);
+          }
+
+          if (enrollment && current.campaign !== 'NO_CAMPAIGN') {
+            // need to give the user the bonus if within a campaign
+            const { denomination, bonusThreshold, bonusAmount } = current;
+            const referral = await getReferral(newImage.id);
             if (!referral) return;
             // check if the bonus threshold is hit...wasn't and now would be
             const bonus = (referral.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
