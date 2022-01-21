@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { Session, USERID_SESSIONDATE_INDEX } from 'lib/models/session.model';
 
