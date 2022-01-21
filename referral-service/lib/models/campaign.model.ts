@@ -11,6 +11,7 @@ export class Campaign {
   currentVersion: number = 0;
   campaign: string = 'NO_CAMPAIGN';
   denomination: number = 0;
+  maxReferrals: number = 10;
   bonusThreshold: number = 9999;
   bonusAmount: number = 0;
   addOnFlagOne: string = '';
@@ -28,6 +29,7 @@ export class CampaignMaker implements Campaign {
   currentVersion: number = 0;
   campaign: string = 'NO_CAMPAIGN';
   denomination: number = 0;
+  maxReferrals: number = 10;
   bonusThreshold: number = 9999;
   bonusAmount: number = 0;
   addOnFlagOne: string = '';
@@ -42,6 +44,7 @@ export class CampaignMaker implements Campaign {
     version: number,
     campaign: string,
     denomination: number,
+    maxReferrals: number,
     bonusThreshold: number,
     addOnFlagOne: string,
     addOnFlagTwo: string,
@@ -52,6 +55,7 @@ export class CampaignMaker implements Campaign {
     this.version = version;
     this.campaign = campaign;
     this.denomination = denomination;
+    this.maxReferrals = maxReferrals;
     this.bonusThreshold = bonusThreshold;
     this.addOnFlagOne = addOnFlagOne;
     this.addOnFlagTwo = addOnFlagTwo;

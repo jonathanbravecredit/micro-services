@@ -71,6 +71,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               bonusEarned: bonusEarned,
               nextPaymentDate: paymentDate,
             };
+            if (referred > current.maxReferrals) return;
             await updateReferral(updated);
           }
 
