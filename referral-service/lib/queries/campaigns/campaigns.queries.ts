@@ -37,7 +37,7 @@ export const createCampaign = (campaign: Campaign): Promise<void> => {
     });
 };
 
-export const updateCurrentCampaign = (campaign: Campaign) => {
+export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
   const now = new Date().toISOString();
   return store
     .update(1, 0)
@@ -49,12 +49,14 @@ export const updateCurrentCampaign = (campaign: Campaign) => {
     .set(campaign.denomination)
     .updateAttribute('bonusThreshold')
     .set(campaign.bonusThreshold)
+    .updateAttribute('bonusAmount')
+    .set(campaign.bonusAmount)
     .updateAttribute('addOnFlagOne')
-    .set(campaign.addOnFlagOne)
+    .set(campaign.addOnFlagOne || '')
     .updateAttribute('addOnFlagTwo')
-    .set(campaign.addOnFlagTwo)
+    .set(campaign.addOnFlagTwo || '')
     .updateAttribute('addOnFlagThree')
-    .set(campaign.addOnFlagThree)
+    .set(campaign.addOnFlagThree || '')
     .updateAttribute('startDate')
     .set(campaign.startDate)
     .updateAttribute('endDate')
@@ -68,6 +70,22 @@ export const updateCurrentCampaign = (campaign: Campaign) => {
       return err;
     });
 };
+
+// {
+//   pKey: 1,
+//   version: 1,
+//   campaign: 'NO_CAMPAIGN',
+//   denomination: 0,
+//   bonusThreshold: 9999,
+//   bonusAmount: 0,
+//   addOnFlagOne: '',
+//   addOnFlagTwo: ''
+//   addOnFlagThree: '',
+//   startDate: '9999-12-01T00:00:00.000Z',
+//   endDate: '9999-12-01T00:00:00.000Z',
+//   createdOn: '2022-01-19T20:48:30.862Z',
+//   modifiedOn: '2022-01-19T20:48:30.862Z',
+// }
 
 export const getLatestCampaign = (pkey: number) => {
   return store

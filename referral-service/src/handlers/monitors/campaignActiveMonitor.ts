@@ -11,8 +11,13 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
     if (moment(now).isAfter(campaign?.endDate)) {
       // get the default campaign
       const noCampaign = await getCampaign(1, 1);
-      console.log('noCampaign: ', noCampaign);
-      await updateCurrentCampaign(noCampaign!);
+
+      const update = {
+        ...noCampaign!,
+        currentVersion: 1,
+      };
+      const response = await updateCurrentCampaign(update);
+      console.log('response: ', response);
     }
   } catch (err) {
     console.log('campaign monitor end campaign error: ', JSON.stringify(err));
@@ -28,6 +33,10 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
     const alreadyStarted = current?.version === latest.version;
     if (started && !ended && !alreadyStarted) {
       // set the current campaign to the started campaign
+      const update = {
+        ...latest!,
+        currentVersion: latest.version,
+      };
       await updateCurrentCampaign(latest);
     }
   } catch (err) {
