@@ -55,7 +55,8 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
           //  - increment up the count and the earnings...campaignActiveReferred
           const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
           if (newImage.referredByCode && enrollment) {
-            const { denomination, bonusThreshold, bonusAmount } = current;
+            const { denomination, bonusThreshold, bonusAmount, campaign } = current;
+            if (campaign === 'NO_CAMPAIGN') return;
             // get the record by referredByCode
             const referrer = await getReferralByCode(newImage.referredByCode);
             if (!referrer) return;

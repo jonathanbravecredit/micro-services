@@ -54,7 +54,8 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const defaultCamp = await getCampaign(1, 1);
           const now = new Date();
           const campaign = moment(now).isAfter(current!.endDate) ? defaultCamp : current;
-          // double check there is a referral
+          // 2. double check there is a referral
+          //   - if not create one
           const referral = await getReferral(message.userId);
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
@@ -90,7 +91,8 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           message: UpdateAppDataInput;
         };
         const { id } = message;
-        // double check there is a referral
+        // 1. double check there is a referral
+        //   - if not create one
         const referral = await getReferral(message.id);
         if (!referral) {
           const newReferral = new ReferralMaker(message.id, uuid.v4());
