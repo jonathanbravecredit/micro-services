@@ -9,6 +9,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
     console.log('campaign data writer record: ', JSON.stringify(r));
   });
 
+  // Only runs once. when a new campaign is activated.
   await Promise.all(
     records.map(async (r) => {
       if (r.eventName === 'MODIFY') {

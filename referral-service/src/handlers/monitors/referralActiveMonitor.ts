@@ -1,6 +1,6 @@
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import { updateReferralEligibility } from 'lib/queries';
+import { getCampaign, updateReferralCampaign, updateReferralEligibility } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
@@ -31,6 +31,8 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         if ((keyPageViews > 2 && sessions.length > 1) || clickEvents > 0) {
           // auto approve
           await updateReferralEligibility(message.userId, 1);
+          const current = await getCampaign(1, 0);
+          await updateReferralCampaign(message.userId, current!.campaign);
         }
       }),
     );

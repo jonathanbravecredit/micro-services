@@ -34,18 +34,22 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
         if (isDynamo) {
           // do dynamodb stuff
           // data coming from referral data base. inserts and modifications
-          // only concerned with inserts
+          // only concerned with modifies...people going from unenrolled to enrolled
           const dynamo = r as DynamoDBRecord;
+          if (dynamo.eventName === 'INSERT') return;
           const stream: StreamRecord = dynamo.dynamodb || {};
-          const { NewImage } = stream;
-          if (!NewImage) return;
+          const { OldImage, NewImage } = stream;
+          if (!NewImage || !OldImage) return;
           const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
+          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
+          // the referred user needs to go from enrolled to not in rolled
           // need to find if there is a referred by code
           // if there is than we need to:
           //  - get the current campaign attributes
           //  - double check the current campaign is an active one
           //  - increment up the count and the earnings...campaignActiveReferred
-          if (newImage.referredByCode) {
+          const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
+          if (newImage.referredByCode && enrollment) {
             const { denomination, bonusThreshold, bonusAmount } = current;
             // get the record by referredByCode
             const referral = await getReferralByCode(newImage.referredByCode);
@@ -71,6 +75,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
 
         if (isSNS) {
           // sns will only look for add ons. enrollments, etc
+          // these are their own enrollments
           const sns = r as SNSEventRecord;
           // currently only accepting enrollment data from app
           const { service, message } = JSON.parse(sns.Sns.Message) as {
@@ -103,13 +108,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               campaignActiveEarned: earned,
             };
             console.log('updated: ', JSON.stringify(updated));
-            await updateReferral(updated)
-              .then((res) => {
-                console.log('update referral resp: ', JSON.stringify(res));
-              })
-              .catch((err) => {
-                console.log('update referral err: ', JSON.stringify(err));
-              });
+            await updateReferral(updated);
           }
         }
       }),

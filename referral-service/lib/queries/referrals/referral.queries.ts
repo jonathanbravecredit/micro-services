@@ -75,3 +75,13 @@ export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promi
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const updateReferralCampaign = (id: string, campaign: string): Promise<void> => {
+  return store
+    .update(id)
+    .updateAttribute('campaignActive')
+    .set(campaign)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
