@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { IUpdateSessionData } from 'lib/interfaces';
 import { getSession, incrementSessionClickEvents, incrementSessionPageViews } from 'lib/queries';

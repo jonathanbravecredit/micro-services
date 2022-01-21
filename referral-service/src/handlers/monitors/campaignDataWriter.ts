@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { Campaign } from 'lib/models/campaign.model';

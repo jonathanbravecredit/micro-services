@@ -1,4 +1,5 @@
 'use strict';
+import 'reflect-metadata';
 import * as uuid from 'uuid';
 import * as moment from 'moment';
 import { createSession } from 'lib/queries';

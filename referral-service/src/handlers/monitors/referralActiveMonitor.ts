@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GSIPartitionKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
 
 export const REFERRAL_CODE_GSI = 'referralCode-index';

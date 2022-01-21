@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ScheduledEvent, ScheduledHandler } from 'aws-lambda';
 import { getCampaign, getLatestCampaign, updateCurrentCampaign } from 'lib/queries';
 import * as moment from 'moment';

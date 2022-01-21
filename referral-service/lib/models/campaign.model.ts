@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 
 export const CAMPAIGNSTATUS_INDEX = 'campaignStatus-index';

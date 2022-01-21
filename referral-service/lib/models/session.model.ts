@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 
 export const USERID_SESSIONDATE_INDEX = 'userIdSessionDate-index';
