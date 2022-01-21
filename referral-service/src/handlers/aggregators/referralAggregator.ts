@@ -60,7 +60,8 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const referred = referrer.campaignActiveReferred + 1;
             const baseEarned = referrer.baseEarned + denomination + bonus;
             const bonusEarned = referrer.bonusEarned + bonus;
-            const paymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
+            const bonusHit = bonus > 0;
+            const paymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
             const updated = {
               ...referrer,
               campaignActiveReferred: referred,
