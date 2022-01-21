@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, Referral, REFERRAL_CODE_GSI } from 'lib/models/referral.model';
 
