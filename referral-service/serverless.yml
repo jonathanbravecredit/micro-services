@@ -123,12 +123,10 @@ functions:
           path: /campaigns
           method: get
           cors: true
-          authorizer: aws_iam
-          request:
-            parameters:
-              querystrings:
-                pKey: true
-                version: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
   # monitors
   campaignActiveMonitor:
