@@ -14,6 +14,7 @@ import { DynamoDBorSNSRecord } from 'lib/interfaces';
 import { Referral } from 'lib/models/referral.model';
 import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
 import { AddOnsCalculator } from 'lib/utils/addons/addons';
+import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
@@ -62,6 +63,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const referred = referrer.campaignActiveReferred + 1;
             const baseEarned = referrer.baseEarned + denomination + bonus;
             const bonusEarned = referrer.bonusEarned + bonus;
+            const paymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
             const updated = {
               ...referrer,
               campaignActiveReferred: referred,
@@ -69,6 +71,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               campaignActiveBonus: campaignActiveBonus,
               baseEarned: baseEarned,
               bonusEarned: bonusEarned,
+              nextPaymentDate: paymentDate,
             };
             await updateReferral(updated);
           }
@@ -85,6 +88,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const referred = referral.campaignActiveReferred + 1;
             const baseEarned = referral.baseEarned + denomination + bonus;
             const bonusEarned = referral.bonusEarned + bonus;
+            const paymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
             const updated = {
               ...referral,
               campaignActiveReferred: referred,
@@ -92,6 +96,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               campaignActiveBonus: campaignActiveBonus,
               baseEarned: baseEarned,
               bonusEarned: bonusEarned,
+              nextPaymentDate: paymentDate,
             };
             await updateReferral(updated);
           }
