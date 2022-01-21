@@ -1,9 +1,18 @@
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import { getCampaign, updateReferralCampaign, updateReferralEligibility, updateEnrollment } from 'lib/queries';
+import { ReferralMaker } from 'lib/models/referral.model';
+import {
+  getCampaign,
+  updateReferralCampaign,
+  updateReferralEligibility,
+  updateEnrollment,
+  getReferral,
+  createReferral,
+} from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
 import * as moment from 'moment';
+import * as uuid from 'uuid';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   /*============================================*/
@@ -44,6 +53,12 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const defaultCamp = await getCampaign(1, 1);
           const now = new Date();
           const campaign = moment(now).isAfter(current!.endDate) ? defaultCamp : current;
+          // double check there is a referral
+          const referral = await getReferral(message.userId);
+          if (!referral) {
+            const newReferral = new ReferralMaker(message.userId, uuid.v4());
+            await createReferral(newReferral);
+          }
           await updateReferralCampaign(message.userId, campaign!.campaign);
           // 1. update the eligible flag to 1/true;
           await updateReferralEligibility(message.userId, 1);
@@ -74,6 +89,12 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           message: UpdateAppDataInput;
         };
         const { id } = message;
+        // double check there is a referral
+        const referral = await getReferral(message.id);
+        if (!referral) {
+          const newReferral = new ReferralMaker(message.id, uuid.v4());
+          await createReferral(newReferral);
+        }
         await updateEnrollment(id);
       }),
     );

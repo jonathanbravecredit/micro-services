@@ -10,97 +10,97 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   });
 
   // // Only runs once. when a new campaign is activated.
-  // NEEDS WORK
-  // await Promise.all(
-  //   records.map(async (r) => {
-  //     if (r.eventName === 'MODIFY') {
-  //       const stream: StreamRecord = r.dynamodb || {};
-  //       const { OldImage, NewImage } = stream;
-  //       if (!OldImage || !NewImage) return;
-  //       const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Campaign;
-  //       const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Campaign;
-  //       const { pKey, version } = newImage;
-  //       const noCampaign = await getCampaign(1, 1);
+  await Promise.all(
+    records.map(async (r) => {
+      if (r.eventName === 'MODIFY') {
+        const stream: StreamRecord = r.dynamodb || {};
+        const { OldImage, NewImage } = stream;
+        if (!OldImage || !NewImage) return;
+        const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Campaign;
+        const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Campaign;
+        const { pKey, version } = newImage;
+        const noCampaign = await getCampaign(1, 1);
 
-  //       // the active campaign is no longer....shutting off. campaign ==> 'NO_CAMPAIGN'
-  //       if (
-  //         pKey === 1 &&
-  //         version === 0 &&
-  //         oldImage.currentVersion !== newImage.currentVersion &&
-  //         newImage.campaign === noCampaign?.campaign
-  //       ) {
-  //         try {
-  //           const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
-  //           await Promise.all(
-  //             activeReferrals.map(async (r) => {
-  //               // 1. update the campaign to the default
-  //               // 2. move the current campaign values to the prior campaign attributes
-  //               // 3. reset the notification flag, so we can better control emails.
-  //               const now = new Date().toISOString();
-  //               const updated = {
-  //                 ...r,
-  //                 campaignActive: newImage.campaign,
-  //                 campaignActiveReferred: 0,
-  //                 campaignActiveEarned: 0,
-  //                 campaignActivePaid: 0,
-  //                 campaignActiveAddOn: 0,
-  //                 campaignActiveBonus: false,
-  //                 campaignPrior: oldImage.campaign,
-  //                 campaignPriorReferred: r.campaignActiveReferred,
-  //                 campaignPriorEarned: r.campaignActiveEarned,
-  //                 campaignPriorPaid: r.campaignActivePaid,
-  //                 campaignPriorAddOn: r.campaignActiveAddOn,
-  //                 campaignPriorBonus: r.campaignActiveBonus,
-  //                 nextPaymentDate: '',
-  //                 notified: false,
-  //                 modifiedOn: now,
-  //               };
-  //               try {
-  //                 await updateReferral(updated);
-  //               } catch (err) {
-  //                 console.log('error updating referral 1: ', JSON.stringify(err));
-  //               }
-  //             }),
-  //           );
-  //         } catch (err) {
-  //           console.log('error updating current referrals: ', err);
-  //         }
-  //       }
+        // the active campaign is no longer....shutting off. campaign ==> 'NO_CAMPAIGN'
+        if (
+          pKey === 1 &&
+          version === 0 &&
+          oldImage.currentVersion !== newImage.currentVersion &&
+          newImage.campaign === noCampaign?.campaign
+        ) {
+          try {
+            const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
+            await Promise.all(
+              activeReferrals.map(async (r) => {
+                // 1. update the campaign to the default
+                // 2. move the current campaign values to the prior campaign attributes
+                // 3. reset the notification flag, so we can better control emails.
+                const now = new Date().toISOString();
+                const updated = {
+                  ...r,
+                  campaignActive: newImage.campaign,
+                  campaignActiveReferred: 0,
+                  campaignActiveEarned: 0,
+                  campaignActivePaid: 0,
+                  campaignActiveAddOn: 0,
+                  campaignActiveBonus: false,
+                  campaignPrior: oldImage.campaign,
+                  campaignPriorReferred: r.campaignActiveReferred,
+                  campaignPriorEarned: r.campaignActiveEarned,
+                  campaignPriorPaid: r.campaignActivePaid,
+                  campaignPriorAddOn: r.campaignActiveAddOn,
+                  campaignPriorBonus: r.campaignActiveBonus,
+                  nextPaymentDate: '',
+                  notified: false,
+                  modifiedOn: now,
+                };
+                try {
+                  await updateReferral(updated);
+                } catch (err) {
+                  console.log('error updating referral 1: ', JSON.stringify(err));
+                }
+              }),
+            );
+          } catch (err) {
+            console.log('error updating current referrals: ', err);
+          }
+        }
 
-  //       // a new active campaign has been added...enable for eligible
-  //       if (
-  //         pKey === 1 &&
-  //         version === 0 &&
-  //         oldImage.currentVersion !== newImage.currentVersion &&
-  //         newImage.campaign !== noCampaign?.campaign
-  //       ) {
-  //         try {
-  //           const eligibleReferrals = await getEligibileReferrals();
-  //           await Promise.all(
-  //             eligibleReferrals.map(async (r) => {
-  //               // 1. update the campaign to the current campaign active
-  //               const now = new Date().toISOString();
-  //               const updated = {
-  //                 ...r,
-  //                 campaignActive: newImage.campaign,
-  //                 campaignActiveReferred: 0,
-  //                 campaignActiveEarned: 0,
-  //                 campaignActivePaid: 0,
-  //                 campaignActiveAddOn: 0,
-  //                 modifiedOn: now,
-  //               };
-  //               try {
-  //                 await updateReferral(updated);
-  //               } catch (err) {
-  //                 console.log('error updating referral 2: ', JSON.stringify(err));
-  //               }
-  //             }),
-  //           );
-  //         } catch (err) {
-  //           console.log('error updating eligible referrals: ', err);
-  //         }
-  //       }
-  //     }
-  //   }),
-  // );
+        // a new active campaign has been added...enable for eligible
+        if (
+          pKey === 1 &&
+          version === 0 &&
+          oldImage.currentVersion !== newImage.currentVersion &&
+          newImage.campaign !== noCampaign?.campaign &&
+          newImage.campaign !== 'NO_CAMPAIGN'
+        ) {
+          try {
+            const eligibleReferrals = await getEligibileReferrals();
+            await Promise.all(
+              eligibleReferrals.map(async (r) => {
+                // 1. update the campaign to the current campaign active
+                const now = new Date().toISOString();
+                const updated = {
+                  ...r,
+                  campaignActive: newImage.campaign,
+                  campaignActiveReferred: 0,
+                  campaignActiveEarned: 0,
+                  campaignActivePaid: 0,
+                  campaignActiveAddOn: 0,
+                  modifiedOn: now,
+                };
+                try {
+                  await updateReferral(updated);
+                } catch (err) {
+                  console.log('error updating referral 2: ', JSON.stringify(err));
+                }
+              }),
+            );
+          } catch (err) {
+            console.log('error updating eligible referrals: ', err);
+          }
+        }
+      }
+    }),
+  );
 };
