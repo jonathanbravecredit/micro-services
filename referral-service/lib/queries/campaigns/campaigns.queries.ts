@@ -8,7 +8,10 @@ export const getCampaign = (pkey: number, skey: number): Promise<Campaign | null
     .get(pkey, skey)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('getCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const listCampaigns = (): Promise<Campaign[]> => {
@@ -16,7 +19,10 @@ export const listCampaigns = (): Promise<Campaign[]> => {
     .scan()
     .execFetchAll()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('listCampaigns error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const createCampaign = (campaign: Campaign): Promise<void> => {
@@ -25,7 +31,10 @@ export const createCampaign = (campaign: Campaign): Promise<void> => {
     .ifNotExists()
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('createCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const updateCurrentCampaign = (campaign: Campaign) => {
@@ -70,5 +79,8 @@ export const getLatestCampaign = (pkey: number) => {
     .limit(1)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('getLatestCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
