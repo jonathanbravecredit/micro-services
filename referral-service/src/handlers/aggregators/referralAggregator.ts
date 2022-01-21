@@ -12,6 +12,7 @@ import { DynamoDBorSNSRecord } from 'lib/interfaces';
 import { Referral } from 'lib/models/referral.model';
 import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
 import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
+import * as moment from 'moment';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
@@ -22,6 +23,10 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
   });
 
   const current = await getCampaign(1, 0);
+  const now = new Date();
+  const ended = moment(now).isAfter(current?.endDate);
+  if (current && ended) return;
+
   console.log('current campaign: ', JSON.stringify(current));
   if (!current || current?.campaign === 'NO_CAMPAIGN') return;
   try {
