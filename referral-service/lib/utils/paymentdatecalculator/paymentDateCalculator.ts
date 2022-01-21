@@ -6,7 +6,7 @@ export class PaymentDateCalculator {
     const now = new Date();
     const campaignEnd = new Date(endDate);
     return bonusHit
-      ? moment(now).day(2).toISOString()
+      ? moment(now).add(7, 'days').day(2).toISOString()
       : moment(campaignEnd)
           .add(1, 'month')
           .startOf('month')
