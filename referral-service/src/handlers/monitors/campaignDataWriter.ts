@@ -50,6 +50,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                   campaignPriorPaid: r.campaignActivePaid,
                   campaignPriorAddOn: r.campaignActiveAddOn,
                   campaignPriorBonus: r.campaignActiveBonus,
+                  nextPaymentDate: '',
                   notified: false,
                   modifiedOn: now,
                 };

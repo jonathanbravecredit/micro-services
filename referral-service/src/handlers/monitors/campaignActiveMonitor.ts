@@ -8,6 +8,7 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
     const campaign = await getCampaign(1, 0);
     console.log('campaign: ', campaign);
     const now = new Date();
+    let msg = 'possible campaign ending';
     if (moment(now).isAfter(campaign?.endDate)) {
       // get the default campaign
       const noCampaign = await getCampaign(1, 1);
@@ -17,7 +18,9 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
         currentVersion: 1,
       };
       await updateCurrentCampaign(update);
+      msg = 'campaign has ended';
     }
+    console.log('old campaign msg: ', msg);
   } catch (err) {
     console.log('campaign monitor end campaign error: ', JSON.stringify(err));
   }
