@@ -1,17 +1,8 @@
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import {
-  getCampaign,
-  getReferral,
-  updateReferral,
-  getReferralByCode,
-  updateReferralCampaign,
-  updateReferralEligibility,
-  updateEnrollment,
-} from 'lib/queries';
+import { getCampaign, updateReferralCampaign, updateReferralEligibility, updateEnrollment } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
-import { AddOnsCalculator } from 'lib/utils/addons/addons';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   /*============================================*/
