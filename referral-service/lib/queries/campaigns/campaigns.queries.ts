@@ -87,7 +87,7 @@ export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
 //   modifiedOn: '2022-01-19T20:48:30.862Z',
 // }
 
-export const getLatestCampaign = (pkey: number) => {
+export const getLatestCampaign = (pkey: number): Promise<Campaign[]> => {
   return store
     .query()
     .wherePartitionKey(pkey)

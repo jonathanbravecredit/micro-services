@@ -16,8 +16,7 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
         ...noCampaign!,
         currentVersion: 1,
       };
-      const response = await updateCurrentCampaign(update);
-      console.log('response: ', response);
+      await updateCurrentCampaign(update);
     }
   } catch (err) {
     console.log('campaign monitor end campaign error: ', JSON.stringify(err));
@@ -26,11 +25,13 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
   // new campaign has started
   try {
     const current = await getCampaign(1, 0);
-    const latest = await getLatestCampaign(1);
+    const latest = (await getLatestCampaign(1))[0];
+    console.log('latest: ', latest);
     const now = new Date();
     const started = moment(now).isAfter(latest?.startDate);
     const ended = moment(now).isAfter(latest?.endDate);
     const alreadyStarted = current?.version === latest.version;
+    let msg = 'no new campaign';
     if (started && !ended && !alreadyStarted) {
       // set the current campaign to the started campaign
       const update = {
@@ -38,7 +39,9 @@ export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<voi
         currentVersion: latest.version,
       };
       await updateCurrentCampaign(latest);
+      msg = 'campaign has been updated';
     }
+    console.log('new campaign msg: ', msg);
   } catch (err) {
     console.log('campaign monitor start campaign error: ', JSON.stringify(err));
   }
