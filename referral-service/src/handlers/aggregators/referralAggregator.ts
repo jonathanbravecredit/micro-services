@@ -1,4 +1,3 @@
-import { resolveUrl } from 'ajv/dist/compile/resolve';
 import {
   DynamoDBRecord,
   DynamoDBStreamEvent,
@@ -9,11 +8,9 @@ import {
   StreamRecord,
 } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { DynamoDBorSNSRecord } from 'lib/interfaces';
 import { Referral } from 'lib/models/referral.model';
 import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
-import { AddOnsCalculator } from 'lib/utils/addons/addons';
 import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
