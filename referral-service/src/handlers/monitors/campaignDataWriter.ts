@@ -83,10 +83,6 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                 const updated = {
                   ...r,
                   campaignActive: newImage.campaign,
-                  campaignActiveReferred: 0,
-                  campaignActiveEarned: 0,
-                  campaignActivePaid: 0,
-                  campaignActiveAddOn: 0,
                   modifiedOn: now,
                 };
                 try {
