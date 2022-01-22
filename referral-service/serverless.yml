@@ -122,7 +122,7 @@ functions:
     events:
       - http:
           path: /referral/validation/{referralCode}
-          method: get
+          method: post
           cors: true
           authorizer: aws_iam
 
