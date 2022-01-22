@@ -8,6 +8,7 @@ import { generateEmailParams } from 'lib/utils/helpers';
 import { getItemsInDB } from 'lib/queries/appdata/appdata';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { UserSummary } from 'lib/utils/transunion/UserSummary';
+import { getItemsInDisputeDB } from 'lib/queries/disputes/disputes.queries';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -65,7 +66,7 @@ export const main = async () => {
         const item = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
         const tu = item.agencies?.transunion;
         if (!tu) return null;
-        const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
+        const disputed = (await getItemsInDisputeDB(item.id)) !== undefined;
         const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
         if (record.haveSelfLoans()) {
           selfLoanUsers.set(item.id, true);
