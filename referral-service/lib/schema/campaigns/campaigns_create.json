@@ -1,7 +1,35 @@
 {
   "type": "object",
   "properties": {
-    "campaignId": {
+    "version": {
+      "type": "number",
+      "nullable": false
+    },
+    "campaign": {
+      "type": "string",
+      "nullable": false
+    },
+    "denomination": {
+      "type": "number",
+      "nullable": false
+    },
+    "maxReferrals": {
+      "type": "number",
+      "nullable": false
+    },
+    "bonusThreshold": {
+      "type": "number",
+      "nullable": false
+    },
+    "addOnFlagOne": {
+      "type": "string",
+      "nullable": false
+    },
+    "addOnFlagTwo": {
+      "type": "string",
+      "nullable": false
+    },
+    "addOnFlagThree": {
       "type": "string",
       "nullable": false
     },
@@ -15,7 +43,14 @@
     }
   },
   "required": [
-    "campaignId",
+    "version",
+    "campaign",
+    "denomination",
+    "maxReferrals",
+    "bonusThreshold",
+    "addOnFlagOne",
+    "addOnFlagTwo",
+    "addOnFlagThree",
     "startDate",
     "endDate"
   ],

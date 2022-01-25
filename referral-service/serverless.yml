@@ -38,6 +38,7 @@ provider:
     ACCOUNT_ID: !Sub '${AWS::AccountId}'
     IDENTITY_ID: '${self:custom.settings.IDENTITY_IDS.${opt:stage}}'
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
+    REFERRAL_TOPIC_ARN: !Ref ReferralsSNSTopic
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -72,9 +73,14 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - dynamodb:BatchWriteItem
       Resource:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/index/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/index/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions/index/*'
 
 functions:
   # referrals
@@ -99,131 +105,27 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  updateReferral:
-    handler: src/api/referrals/update.main
+  getReferralByCode:
+    handler: src/api/referrals/getReferralByCode.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral
-          method: put
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-  deleteReferral:
-    handler: src/api/referrals/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral
-          method: delete
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-
-  # referrals all by campaign
-  getAllReferralCampaign:
-    handler: src/api/referrals/campaign/getAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign
+          path: /referral/{referralCode}
           method: get
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-
-  # referral campaign earnings
-  getReferralCampaignEarnings:
-    handler: src/api/referrals/campaign/earnings/get.main
+  getReferralValidation:
+    handler: src/api/referrals/getReferralValidation.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /referral/campaign/earnings
-          method: get
+          path: /referral/validation/{referralCode}
+          method: post
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-  getReferralCampaignPayments:
-    handler: src/api/referrals/campaign/payments/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign/payments
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-  getReferralCampaignEarningsMonthly:
-    handler: src/api/referrals/campaign/earnings/monthly/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/campaign/earnings/monthly
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                campaign: true
-                month: false
-                year: false
-
-  # referral earnings (non-campaign specific)
-  getReferralEarnings:
-    handler: src/api/referrals/earnings/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/earnings
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-  getReferralEarningsMonthly:
-    handler: src/api/referrals/earnings/monthly/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/earnings/monthly
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          request:
-            parameters:
-              querystrings:
-                month: false
-                year: false
+          authorizer: aws_iam
 
   # campaigns
   createCampaign:
@@ -243,58 +145,75 @@ functions:
           path: /campaigns
           method: get
           cors: true
-          authorizer: aws_iam
-          request:
-            parameters:
-              querystrings:
-                campaignId: true
-  updateCampaign:
-    handler: src/api/campaigns/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: put
-          cors: true
-          authorizer: aws_iam
-  deleteCampaign:
-    handler: src/api/campaigns/update.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: delete
-          cors: true
-          authorizer: aws_iam
-          request:
-            parameters:
-              querystrings:
-                campaignId: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
-  ## scheduled jobs
-  eligibleReferrals:
-    handler: src/handlers/reports/eligibleReferrals.main
+  # monitors
+  campaignActiveMonitor:
+    handler: src/handlers/monitors/campaignActiveMonitor.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 300
     events:
-      - schedule: cron(0 8 * * ? *) # 8 am UTC every day
-  allReferrals:
-    handler: src/handlers/reports/allReferrals.main
+      - schedule: cron(*/15 * * * ? *)
+
+  campaignDataWriter:
+    handler: src/handlers/monitors/campaignDataWriter.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 300
-  enableForCampaign:
-    handler: src/handlers/campaign/enableForCampaign.main
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
+
+  referralActiveMonitor:
+    handler: src/handlers/monitors/referralActiveMonitor.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 300
+    events:
+      - sns:
+          arn: !Ref ReferralsSNSTopic
+          topicName: ${self:provider.stage}-referral-sns-topic
+          integration: lambda-proxy
+
+  # aggregators
+  referralAggregator:
+    handler: src/handlers/aggregators/referralAggregator.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
+      - sns:
+          arn: !Ref ReferralsSNSTopic
+          topicName: ${self:provider.stage}-referral-sns-topic
+          integration: lambda-proxy
+
+  # handlers
   cleanReferralTable:
     handler: src/handlers/scheduled/cleanReferralTable.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 300
-    # events:
-    #   - schedule: cron(0 8 * * ? *) # 8 am UTC every day
+
+  appDataPub:
+    handler: src/handlers/pubs/appDataPub.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
 
 resources:
   Resources:
+    ReferralsSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-referral-sns-topic
+
     Referrals:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -308,19 +227,25 @@ resources:
         TableName: Referrals
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     Campaigns:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'campaignId'
-            AttributeType: 'S'
+          - AttributeName: 'pKey'
+            AttributeType: 'N'
+          - AttributeName: 'version'
+            AttributeType: 'N'
         KeySchema:
-          - AttributeName: 'campaignId'
+          - AttributeName: 'pKey'
             KeyType: 'HASH'
+          - AttributeName: 'version'
+            KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
         TableName: Campaigns
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     ApiGatewayAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:
@@ -342,3 +267,17 @@ resources:
       Value: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-referrals-stream'
+    CampaignsTable:
+      Description: 'Campaigns Table'
+      Value: !Ref Campaigns
+      Export:
+        Name: !Sub '${self:service}-campaigns'
+    CampaignsTableStreamArn:
+      Value: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
+      Export:
+        Name: !Sub '${self:service}-campaigns-stream'
+    ReferralsSNSTopicArn:
+      Description: 'Referrals sub topic'
+      Value: !Ref ReferralsSNSTopic
+      Export:
+        Name: !Sub '${self:service}-referrals-sns-topic'

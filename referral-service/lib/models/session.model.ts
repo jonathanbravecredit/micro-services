@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 
 export const USERID_SESSIONDATE_INDEX = 'userIdSessionDate-index';
@@ -24,10 +25,19 @@ export class SessionMaker implements Session {
   pageViews: number = 0;
   clickEvents: number = 0;
 
-  constructor(userId: string, sessionId: string, sessionDate: string, sessionExpirationDate: string) {
+  constructor(
+    userId: string,
+    sessionId: string,
+    sessionDate: string,
+    sessionExpirationDate: string,
+    pageViews: number,
+    clickEvents: number,
+  ) {
     this.userId = userId;
     this.sessionId = sessionId;
     this.sessionDate = sessionDate;
     this.sessionExpirationDate = sessionExpirationDate;
+    this.pageViews = pageViews;
+    this.clickEvents = clickEvents;
   }
 }

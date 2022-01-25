@@ -1,5 +1,6 @@
 export interface IGetCampaign {
-  campaignId: string;
+  pKey: number;
+  version: number;
 }
 
 export interface IUpdateCampaign {
@@ -14,7 +15,14 @@ export interface campaignIdeleteCampaign {
 }
 
 export interface ICreateCampaign {
-  campaignId: string;
+  version: number;
+  campaign: string;
+  denomination: number;
+  maxReferrals: number;
+  bonusThreshold: number;
+  addOnFlagOne: string;
+  addOnFlagTwo: string;
+  addOnFlagThree: string;
   startDate: string;
   endDate: string;
 }

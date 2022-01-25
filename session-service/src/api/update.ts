@@ -1,45 +1,42 @@
 'use strict';
-import { response } from 'lib/utils/response';
+import 'reflect-metadata';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { ISessionData, IUpdateSessionData } from 'lib/interfaces';
-import { safeParse } from 'lib/utils/safeJson';
-import { updateSession } from 'lib/queries';
+import { IUpdateSessionData } from 'lib/interfaces';
+import { getSession, incrementSessionClickEvents, incrementSessionPageViews } from 'lib/queries';
 import { Session } from 'lib/models/session.model';
+import { response } from 'lib/utils/response';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const payload: IUpdateSessionData = safeParse(event, 'body');
+  console.log('event ==> ', JSON.stringify(event));
+  const sub = event?.requestContext?.authorizer?.claims?.sub;
+  const body = event.body;
+  if (!sub || !body) return response(200, null);
+  const payload: IUpdateSessionData = JSON.parse(body);
   if (payload.event === 'key_page_view') {
     try {
+      const { sessionId } = payload;
       const session: Partial<Session> = {
-        userId: payload.userId,
-        sessionId: payload.sessionId,
-        sessionExpirationDate: payload.expirationDate,
+        userId: sub,
+        sessionId: sessionId,
       };
-      const updated = await updateSession(session);
-
-      if (updated.pageViews >= 3) {
-        //todo add update to referral
-      }
-
-      return updated ? response(200, updated) : response(404, updated);
+      const updated = await incrementSessionPageViews(session, 1);
+      return updated ? response(200, updated) : response(200, null);
     } catch (err) {
+      console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
-  } else {
+  } else if (payload.event === 'disputes_enroll') {
     try {
       const session: Partial<Session> = {
-        userId: payload.userId,
+        userId: sub,
         sessionId: payload.sessionId,
-        sessionExpirationDate: payload.expirationDate,
-        pageViews: 3,
       };
-      const updated = await updateSession(session);
-
-      //todo add update to referral
-
-      return updated ? response(200, updated) : response(404, updated);
+      const updated = await incrementSessionClickEvents(session, 1);
+      return updated ? response(200, updated) : response(200, null);
     } catch (err) {
+      console.log('err: ', JSON.stringify(err));
       return response(500, err);
     }
   }
+  return response(200, null);
 };

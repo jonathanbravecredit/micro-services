@@ -1,29 +1,19 @@
 import 'reflect-metadata';
-import { listReferrals, updateDeleteReferral } from 'lib/queries';
+import { batchDeleteReferrals, listReferrals } from 'lib/queries';
 import { Handler, ScheduledEvent } from 'aws-lambda';
-import { getUser } from 'lib/utils/cognito/queries/queries';
 
 export const main: Handler = async (event: ScheduledEvent): Promise<void> => {
   try {
-    let removed = 0;
     const referrals = await listReferrals();
-    await Promise.all(
-      referrals.map(async (r) => {
-        try {
-          const user = await getUser(r.id);
-          if (!user.Username) {
-            await updateDeleteReferral(r.id);
-            removed++;
-          }
-        } catch (err: any) {
-          await updateDeleteReferral(r.id);
-          removed++;
-        }
-        return;
-      }),
-    );
-    console.log(`removed ${removed} no. of referrals`);
+    if (!referrals?.length) return;
+    let queue = referrals;
+    while (queue.length) {
+      const next = queue.splice(0, 24);
+      await batchDeleteReferrals(next);
+    }
+    return;
   } catch (err) {
-    console.log('err ==> ', err);
+    console.log('general err ===> ', err);
+    return;
   }
 };

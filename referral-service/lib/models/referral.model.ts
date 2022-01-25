@@ -1,6 +1,9 @@
+import 'reflect-metadata';
 import { GSIPartitionKey, Model, PartitionKey } from '@shiftcoders/dynamo-easy';
 
 export const REFERRAL_CODE_GSI = 'referralCode-index';
+export const CAMPAIGNACTIVE_GSI = 'campaignActive-index';
+export const ELIGIBLE_GSI = 'eligible-index';
 
 @Model({ tableName: 'Referrals' })
 export class Referral {
@@ -8,52 +11,86 @@ export class Referral {
   id!: string;
   @GSIPartitionKey(REFERRAL_CODE_GSI)
   referralCode!: string;
+
   referredByCode: string | null | undefined;
-  enrollmentStatus: 'pending' | 'enrolled' = 'pending';
-  processingStatus: 'pending' | 'paid' = 'pending';
-  paidOut: 'pending' | 'paid' = 'pending';
-  sub: string | null | undefined;
-  campaign: string | null | undefined;
+  referredById: string | undefined;
+  referredByEmail: string | undefined;
+
+  @GSIPartitionKey(ELIGIBLE_GSI)
+  eligible: 0 | 1 = 0;
+  enrolled: boolean = false;
+  suspended: boolean = false;
+
+  baseEarned: number = 0;
+  bonusEarned: number = 0;
+  addOnEarned: number = 0;
+
+  @GSIPartitionKey(CAMPAIGNACTIVE_GSI)
+  campaignActive: string = '';
+  campaignActiveReferred: number = 0;
+  campaignActiveEarned: number = 0;
+  campaignActivePaid: number = 0;
+  campaignActiveAddOn: number = 0;
+  campaignActiveBonus: boolean = false;
+
+  campaignPrior: string = '';
+  campaignPriorReferred: number = 0;
+  campaignPriorEarned: number = 0;
+  campaignPriorPaid: number = 0;
+  campaignPriorAddOn: number = 0;
+  campaignPriorBonus: boolean = false;
+
+  nextPaymentDate: string = '';
+  notified: boolean = false;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
-  referralStatus: 'suspended' | 'active' | undefined;
-  referralApproved: boolean | undefined;
 }
 
 export class ReferralMaker implements Referral {
   id: string;
+
   referralCode: string;
-  referredByCode: string | null | undefined;
-  enrollmentStatus: 'pending' | 'enrolled';
-  processingStatus: 'pending' | 'paid';
-  paidOut: 'pending' | 'paid';
-  sub: string | null;
-  campaign: string | null;
+  referredByCode: string | undefined;
+  referredById: string | undefined;
+  referredByEmail: string | undefined;
+
+  eligible: 0 | 1 = 0;
+  enrolled: boolean = false;
+  suspended: boolean = false;
+
+  baseEarned: number = 0;
+  bonusEarned: number = 0;
+  addOnEarned: number = 0;
+
+  campaignActive: string = 'NO_CAMPAIGN';
+  campaignActiveReferred: number = 0;
+  campaignActiveEarned: number = 0;
+  campaignActivePaid: number = 0;
+  campaignActiveAddOn: number = 0;
+  campaignActiveBonus: boolean = false;
+
+  campaignPrior: string = '';
+  campaignPriorReferred: number = 0;
+  campaignPriorEarned: number = 0;
+  campaignPriorPaid: number = 0;
+  campaignPriorAddOn: number = 0;
+  campaignPriorBonus: boolean = false;
+
+  nextPaymentDate: string = '';
+  notified: boolean = false;
   createdOn: string | undefined;
   modifiedOn: string | undefined;
-  referralStatus: 'suspended' | 'active' | undefined;
-  referralApproved: boolean | undefined;
 
-  constructor(id: string, referralCode: string, campaign: string, referralApproved: boolean, referredByCode?: string) {
+  constructor(id: string, referralCode: string, referredByCode?: string, referredById?: string) {
     this.id = id;
     this.referralCode = referralCode;
     this.referredByCode = referredByCode;
-    this.enrollmentStatus = 'pending';
-    this.processingStatus = 'pending';
-    this.paidOut = 'pending';
-    this.sub = null;
-    this.campaign = campaign;
+    this.referredById = referredById;
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
-    this.referralStatus = 'active';
-    this.referralApproved = referralApproved;
   }
 
-  updateReferralEnrollment(enrollment: 'pending' | 'enrolled') {
-    this.enrollmentStatus = enrollment;
-  }
-
-  updateAccountStatus(status: 'suspended' | 'active') {
-    this.referralStatus = status;
+  getReferredById() {
+    // add in logic here to look up the referred by code
   }
 }

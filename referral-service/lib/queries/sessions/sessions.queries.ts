@@ -12,14 +12,14 @@ export const getSession = (sub: string, sessionId: string): Promise<Session | nu
     .catch((err) => err);
 };
 
-export const getLatestSession = (userId: any, sort: string = 'desc', limit: number = 1): Promise<Session | null> => {
+export const getLatestSession = (userId: any, sort: string = 'desc', limit: string = '1'): Promise<Session | null> => {
   if (sort === 'desc') {
     return store
       .query()
       .index(USERID_SESSIONDATE_INDEX)
       .wherePartitionKey(userId)
       .descending()
-      .limit(limit)
+      .limit(+limit)
       .execFetchAll()
       .then((res) => res)
       .catch((err) => err);
@@ -29,7 +29,7 @@ export const getLatestSession = (userId: any, sort: string = 'desc', limit: numb
       .index(USERID_SESSIONDATE_INDEX)
       .wherePartitionKey(userId)
       .ascending()
-      .limit(limit)
+      .limit(+limit)
       .execFetchAll()
       .then((res) => res)
       .catch((err) => err);
@@ -57,14 +57,15 @@ export const createSession = (Sessions: Session): Promise<void> => {
 
 export const incrementSessionPageViews = async (
   session: Partial<Session>,
-  increment: number = 0,
+  keyPageIncrement: number = 0,
 ): Promise<Session | null> => {
   const { userId, sessionId } = session;
   if (!userId || !sessionId) return null;
   return store
     .update(userId, sessionId)
     .updateAttribute('pageViews')
-    .incrementBy(increment)
+    .incrementBy(keyPageIncrement)
+    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
     .catch((err) => {
@@ -83,10 +84,11 @@ export const incrementSessionClickEvents = async (
     .update(userId, sessionId)
     .updateAttribute('clickEvents')
     .incrementBy(increment)
+    .returnValues('ALL_NEW')
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('update session  db error: ', JSON.stringify(err));
+      console.log('update session db error: ', JSON.stringify(err));
       return err;
     });
 };

@@ -4,7 +4,7 @@ export interface ISessionData {
 }
 
 export interface IUpdateSessionData {
-  userId: string
+  userId: string;
   sessionId: string;
   expirationDate: string;
   event: string;
@@ -16,4 +16,5 @@ export interface ISessionDB {
   sessionDate: string;
   sessionExpirationDate: string;
   pageViews: number;
+  clickEvents: number;
 }

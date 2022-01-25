@@ -1,14 +1,18 @@
+import 'reflect-metadata';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { Campaign } from 'lib/models/campaign.model';
 
 const store = new DynamoStore(Campaign);
 
-export const getCampaign = (id: string): Promise<Campaign | null> => {
+export const getCampaign = (pkey: number, skey: number): Promise<Campaign | null> => {
   return store
-    .get(id)
+    .get(pkey, skey)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('getCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const listCampaigns = (): Promise<Campaign[]> => {
@@ -16,48 +20,84 @@ export const listCampaigns = (): Promise<Campaign[]> => {
     .scan()
     .execFetchAll()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('listCampaigns error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
-export const createCampaign = (Campaign: Campaign): Promise<void> => {
+export const createCampaign = (campaign: Campaign): Promise<void> => {
   return store
-    .put(Campaign)
+    .put(campaign)
     .ifNotExists()
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('createCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
-export const deleteCampaign = (id: string): Promise<void> => {
+export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
+  const now = new Date().toISOString();
   return store
-    .delete(id)
-    .returnValues('ALL_OLD')
-    .exec()
-    .then((res) => res)
-    .catch((err) => err);
-};
-
-export const updateCampaign = async (campaign: Partial<Campaign>): Promise<Partial<Campaign> | null> => {
-  if (!campaign.campaignId) return null;
-  const old = await getCampaign(campaign.campaignId);
-  if (!old) return null;
-  const merge = {
-    ...old,
-    ...campaign,
-  };
-  const modifiedOn = new Date().toISOString();
-  return store
-    .update(merge.campaignId)
-    .updateAttribute('status')
-    .set(merge.status)
+    .update(1, 0)
+    .updateAttribute('currentVersion')
+    .set(campaign.currentVersion)
+    .updateAttribute('campaign')
+    .set(campaign.campaign)
+    .updateAttribute('denomination')
+    .set(campaign.denomination)
+    .updateAttribute('bonusThreshold')
+    .set(campaign.bonusThreshold)
+    .updateAttribute('bonusAmount')
+    .set(campaign.bonusAmount)
+    .updateAttribute('addOnFlagOne')
+    .set(campaign.addOnFlagOne || '')
+    .updateAttribute('addOnFlagTwo')
+    .set(campaign.addOnFlagTwo || '')
+    .updateAttribute('addOnFlagThree')
+    .set(campaign.addOnFlagThree || '')
     .updateAttribute('startDate')
-    .set(merge.startDate)
+    .set(campaign.startDate)
     .updateAttribute('endDate')
-    .set(merge.endDate)
+    .set(campaign.endDate)
     .updateAttribute('modifiedOn')
-    .set(modifiedOn)
-    .returnValues('UPDATED_NEW')
+    .set(now)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log('updateCurrentCampaign Error: ', JSON.stringify(err));
+      return err;
+    });
+};
+
+// {
+//   pKey: 1,
+//   version: 1,
+//   campaign: 'NO_CAMPAIGN',
+//   denomination: 0,
+//   bonusThreshold: 9999,
+//   bonusAmount: 0,
+//   addOnFlagOne: '',
+//   addOnFlagTwo: ''
+//   addOnFlagThree: '',
+//   startDate: '9999-12-01T00:00:00.000Z',
+//   endDate: '9999-12-01T00:00:00.000Z',
+//   createdOn: '2022-01-19T20:48:30.862Z',
+//   modifiedOn: '2022-01-19T20:48:30.862Z',
+// }
+
+export const getLatestCampaign = (pkey: number): Promise<Campaign[]> => {
+  return store
+    .query()
+    .wherePartitionKey(pkey)
+    .descending()
+    .limit(1)
+    .exec()
+    .then((res) => res)
+    .catch((err) => {
+      console.log('getLatestCampaign error: ', JSON.stringify(err));
+      return err;
+    });
 };

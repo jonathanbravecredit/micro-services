@@ -1,13 +1,17 @@
 'use strict';
 import 'reflect-metadata';
-import { getCampaign } from 'lib/queries';
+import { getReferralByCode } from 'lib/queries';
 import { response } from 'lib/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  const params = event.pathParameters;
+  if (!params) return response(200, null);
+  const { referralCode } = params;
+  if (!referralCode) return response(200, null);
   try {
-    const campaign = await getCampaign(1, 0); //This is always the active campaign;
-    return campaign ? response(200, campaign) : response(200, null);
+    const referral = await getReferralByCode(referralCode);
+    return referral ? response(200, referral) : response(200, null);
   } catch (err) {
     return response(500, err);
   }

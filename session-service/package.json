@@ -1,5 +1,5 @@
 {
-  "name": "session-service",
+  "name": "analytic-service",
   "version": "0.1.0",
   "description": "A TypeScript starter for Serverless Framework",
   "main": "handler.js",
