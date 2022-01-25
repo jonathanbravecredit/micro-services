@@ -8,6 +8,7 @@ import { generateEmailParams } from 'lib/utils/helpers';
 import { getItemsInDB } from 'lib/queries/appdata/appdata';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { UserSummary } from 'lib/utils/transunion/UserSummary';
+import { getItemsInDisputeDB } from 'lib/queries/disputes/disputes.queries';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -33,11 +34,11 @@ export const main = async () => {
     //  mark all the scores after as being after the event
     const hash: { [key: string]: IHashData } = {}; // the first analytic click
     _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic) => {
-      if (analytic.sub) {
-        let dashboardProduct: string[] = hash[analytic.sub]?.dashboardProduct || [];
-        let creditMixProduct: string[] = hash[analytic.sub]?.creditMixProduct || [];
-        let disputeSubmitted: string[] = hash[analytic.sub]?.disputeSubmitted || [];
-        let investigationResults: string[] = hash[analytic.sub]?.investigationResults || [];
+      if (analytic.id) {
+        let dashboardProduct: string[] = hash[analytic.id]?.dashboardProduct || [];
+        let creditMixProduct: string[] = hash[analytic.id]?.creditMixProduct || [];
+        let disputeSubmitted: string[] = hash[analytic.id]?.disputeSubmitted || [];
+        let investigationResults: string[] = hash[analytic.id]?.investigationResults || [];
 
         if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
         if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
@@ -45,7 +46,7 @@ export const main = async () => {
         if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
 
         const data = {
-          ...hash[analytic.sub],
+          ...hash[analytic.id],
           firstClick: analytic.createdOn!,
           firstClickEvent: analytic.event,
           dashboardProduct,
@@ -53,7 +54,7 @@ export const main = async () => {
           disputeSubmitted,
           investigationResults,
         };
-        hash[analytic.sub] = data;
+        hash[analytic.id] = data;
       }
     });
 
@@ -66,7 +67,7 @@ export const main = async () => {
         if (!item) return null;
         const tu = item.agencies?.transunion;
         if (!tu) return null;
-        const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
+        const disputed = (await getItemsInDisputeDB(item.id)) !== undefined;
         const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
         if (record.haveSelfLoans()) {
           selfLoanUsers.set(item.id, true);

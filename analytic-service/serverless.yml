@@ -55,6 +55,7 @@ provider:
       Resource:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Analytics'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Disputes'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScoreTrackings'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScores'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}'
