@@ -160,12 +160,12 @@ functions:
   campaignDataWriter:
     handler: src/handlers/monitors/campaignDataWriter.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
+    # events:
+    #   - stream:
+    #       type: dynamodb
+    #       batchSize: 100
+    #       startingPosition: LATEST
+    #       arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
 
   referralActiveMonitor:
     handler: src/handlers/monitors/referralActiveMonitor.main
