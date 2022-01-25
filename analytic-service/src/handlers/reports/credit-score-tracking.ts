@@ -63,6 +63,7 @@ export const main = async () => {
       Object.keys(hash).map(async (sub) => {
         // look up the users credit score and
         const item = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
+        if (!item) return null;
         const tu = item.agencies?.transunion;
         if (!tu) return null;
         const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
@@ -85,6 +86,7 @@ export const main = async () => {
       const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
       const nearestEvent = t1 ? analytics.firstClickEvent : '';
       const nearestEventTime = t1 ? analytics.firstClick : '';
+      //if the an analytic is greater than this score created on, but is less than the next score id
       const dashboardProductEvent = analytics.dashboardProduct.find((event: string) => {
         const dte = new Date(event);
         return dte >= createdOn && dte < nextCreatedOn;
@@ -102,7 +104,6 @@ export const main = async () => {
         return dte >= createdOn && dte < nextCreatedOn;
       });
 
-      //if the an analytic is greater than this score created on, but is less than the next score id
       return {
         ...score,
         nearestEvent,
