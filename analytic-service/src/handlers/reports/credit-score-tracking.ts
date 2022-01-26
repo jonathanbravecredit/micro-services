@@ -124,8 +124,8 @@ export const main = async () => {
 
       return {
         ...score,
-        firstClickEvent: analytics.firstClickEvent,
-        firstClickTime: analytics.firstClick,
+        firstEvent: analytics.firstClickEvent,
+        firstEventTime: analytics.firstClick,
         nearestEvent,
         nearestEventTime,
         dashboardProductEvent,
