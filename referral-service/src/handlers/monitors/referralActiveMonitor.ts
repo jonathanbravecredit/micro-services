@@ -45,7 +45,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const pvs = counters.get(a.sessionId) || 0;
           counters.set(a.sessionId, pvs + (a.pageViews || 0));
         }, 0);
-        // count that there are more than two sessions with pageViews > 2
+        // count that there are more than one session with pageViews > 2
         const keyPageViews = Array.from(counters)
           .map(([_, pageViews]) => pageViews)
           .reduce((a, b) => {
