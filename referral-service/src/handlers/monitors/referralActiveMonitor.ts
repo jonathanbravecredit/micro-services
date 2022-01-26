@@ -80,12 +80,18 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const referral = await getReferral(message.userId);
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
-            await createReferral(newReferral);
+            await createReferral({
+              ...newReferral,
+              campaignActive: campaign!.campaign,
+              enrolled: true,
+              eligible: 1,
+            });
+          } else {
+            // 3. set the campaign to the current one
+            await updateReferralCampaign(message.userId, campaign!.campaign);
+            // 4. update the eligible flag to 1/true;
+            await updateReferralEligibility(message.userId, 1);
           }
-          // 3. set the campaign to the current one
-          await updateReferralCampaign(message.userId, campaign!.campaign);
-          // 4. update the eligible flag to 1/true;
-          await updateReferralEligibility(message.userId, 1);
         }
       }),
     );
@@ -98,7 +104,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   /*============================================*/
   const appdata = event.Records.filter((r) => {
     const t1 = r.Sns.Subject === 'transunionenrollment';
-    const { service } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
+    const { service } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: UpdateAppDataInput };
     const t2 = service === 'referralservice';
     return t1 && t2;
   });
@@ -118,10 +124,14 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const referral = await getReferral(message.id);
         if (!referral) {
           const newReferral = new ReferralMaker(message.id, uuid.v4());
-          await createReferral(newReferral);
+          await createReferral({
+            ...newReferral,
+            enrolled: true,
+          });
+        } else {
+          // 2. if a user enrolls update the enrolled flag
+          await updateEnrollment(id);
         }
-        // 2. if a user enrolls update the enrolled flag
-        await updateEnrollment(id);
       }),
     );
   } catch (err) {

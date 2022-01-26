@@ -21,9 +21,10 @@ export class Referral {
   enrolled: boolean = false;
   suspended: boolean = false;
 
-  baseEarned: number = 0;
-  bonusEarned: number = 0;
-  addOnEarned: number = 0;
+  totalReferred: number = 0;
+  totalEarned: number = 0;
+  totalBonus: number = 0;
+  totalAddOn: number = 0;
 
   @GSIPartitionKey(CAMPAIGNACTIVE_GSI)
   campaignActive: string = '';
@@ -31,14 +32,14 @@ export class Referral {
   campaignActiveEarned: number = 0;
   campaignActivePaid: number = 0;
   campaignActiveAddOn: number = 0;
-  campaignActiveBonus: boolean = false;
+  campaignActiveBonus: number = 0;
 
   campaignPrior: string = '';
   campaignPriorReferred: number = 0;
   campaignPriorEarned: number = 0;
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
-  campaignPriorBonus: boolean = false;
+  campaignPriorBonus: number = 0;
 
   nextPaymentDate: string = '';
   notified: boolean = false;
@@ -58,23 +59,24 @@ export class ReferralMaker implements Referral {
   enrolled: boolean = false;
   suspended: boolean = false;
 
-  baseEarned: number = 0;
-  bonusEarned: number = 0;
-  addOnEarned: number = 0;
+  totalReferred: number = 0;
+  totalEarned: number = 0;
+  totalBonus: number = 0;
+  totalAddOn: number = 0;
 
   campaignActive: string = 'NO_CAMPAIGN';
   campaignActiveReferred: number = 0;
   campaignActiveEarned: number = 0;
   campaignActivePaid: number = 0;
   campaignActiveAddOn: number = 0;
-  campaignActiveBonus: boolean = false;
+  campaignActiveBonus: number = 0;
 
   campaignPrior: string = '';
   campaignPriorReferred: number = 0;
   campaignPriorEarned: number = 0;
   campaignPriorPaid: number = 0;
   campaignPriorAddOn: number = 0;
-  campaignPriorBonus: boolean = false;
+  campaignPriorBonus: number = 0;
 
   nextPaymentDate: string = '';
   notified: boolean = false;
