@@ -65,6 +65,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
             const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
             const campaignActiveReferred = referrer.campaignActiveReferred + 1;
+            const totalReferred = referrer.totalReferred + 1;
             const totalEarned = referrer.totalEarned + denomination;
             const totalBonus = referrer.totalBonus + bonus;
             const bonusHit = bonus > 0;
@@ -74,6 +75,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               campaignActiveReferred,
               campaignActiveEarned,
               campaignActiveBonus,
+              totalReferred,
               totalEarned,
               totalBonus,
               nextPaymentDate,
