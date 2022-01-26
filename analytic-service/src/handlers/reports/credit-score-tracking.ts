@@ -77,23 +77,18 @@ export const main = async () => {
     //  flag scores as prior to click
     //  mark the score at click (go through the clicks and match up the score)
     //  mark all the scores after as being after the event
-
+    let trackedScore = -1;
     const scoreTracking = _.orderBy(scoresAndActions, ['sub', 'createdOn'], ['asc', 'asc']).map((a, i, arr) => {
       const changed = i > 0 ? arr[i - 1].sub !== a.sub : false;
-      let score = -1;
       if (a.event === 'score_update') {
-        score = a.value || -1;
+        trackedScore = a.value || -1;
       } else if (changed) {
-        score = -1;
-      } else if (i > 0) {
-        score = arr[i - 1].value || -1;
-      } else {
-        score = -1;
+        trackedScore = -1;
       }
 
       return {
         ...a,
-        trackedScore: score,
+        trackedScore,
       };
     });
 
