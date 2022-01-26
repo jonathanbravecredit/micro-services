@@ -62,23 +62,25 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             if (!referrer) return;
             // check if the bonus threshold is hit...wasn't and now would be
             const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
-            const campaignActiveBonus = referrer.campaignActiveBonus || bonus > 0 ? true : false;
-            const earned = referrer.campaignActiveEarned + denomination + bonus;
-            const referred = referrer.campaignActiveReferred + 1;
-            const baseEarned = referrer.baseEarned + denomination + bonus;
-            const bonusEarned = referrer.bonusEarned + bonus;
+            const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
+            const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
+            const campaignActiveReferred = referrer.campaignActiveReferred + 1;
+            const totalReferred = referrer.totalReferred + 1;
+            const totalEarned = referrer.totalEarned + denomination;
+            const totalBonus = referrer.totalBonus + bonus;
             const bonusHit = bonus > 0;
-            const paymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
+            const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
             const updated = {
               ...referrer,
-              campaignActiveReferred: referred,
-              campaignActiveEarned: earned,
-              campaignActiveBonus: campaignActiveBonus,
-              baseEarned: baseEarned,
-              bonusEarned: bonusEarned,
-              nextPaymentDate: paymentDate,
+              campaignActiveReferred,
+              campaignActiveEarned,
+              campaignActiveBonus,
+              totalReferred,
+              totalEarned,
+              totalBonus,
+              nextPaymentDate,
             };
-            if (referred > current.maxReferrals) return;
+            if (campaignActiveReferred > current.maxReferrals) return;
             await updateReferral(updated);
           }
 
@@ -87,13 +89,14 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const { denomination } = current;
             const referral = await getReferral(newImage.id);
             if (!referral) return;
-            const baseEarned = referral.baseEarned + denomination;
-            const paymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
+            const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
+            const totalAddOn = referral.totalAddOn + denomination;
+            const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
             const updated = {
               ...referral,
-              campaignActiveAddOn: denomination,
-              baseEarned: baseEarned,
-              nextPaymentDate: paymentDate,
+              campaignActiveAddOn,
+              totalAddOn,
+              nextPaymentDate,
             };
             await updateReferral(updated);
           }

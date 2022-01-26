@@ -39,14 +39,35 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const { message } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
         const sessions = await listUserSessions(message.userId, 20);
         console.log('sessions: ', JSON.stringify(sessions));
-        const keyPageViews = sessions.reduce((a, b) => {
-          return a + (b.pageViews || 0);
+        // count pageViews across sessions
+        const counters = new Map<string, number>();
+        sessions.forEach((a) => {
+          const pvs = counters.get(a.sessionId) || 0;
+          counters.set(a.sessionId, pvs + (a.pageViews || 0));
         }, 0);
+        // count that there is one session with > 1 pageViews and one session with > 0 pageViews
+        const uniqueSessions = Array.from(counters).map(([_, pageViews]) => pageViews);
+        let overOne = false;
+        let overZero = false;
+        for (let i = 0; i < uniqueSessions.length; i++) {
+          if (overOne && overZero) {
+            i = uniqueSessions.length;
+          } else {
+            if (uniqueSessions[i] >= 2 && !overOne) {
+              overOne = true;
+            } else if (uniqueSessions[i] >= 2 && !overZero) {
+              overZero = true;
+            } else if (uniqueSessions[i] >= 1) {
+              overZero = true;
+            }
+          }
+        }
+        // count up special click events
         const clickEvents = sessions.reduce((a, b) => {
           return a + (b.clickEvents || 0);
         }, 0);
-        console.log('pageViews: ', keyPageViews);
-        if ((keyPageViews > 2 && sessions.length > 1) || clickEvents > 0) {
+
+        if ((overOne && overZero) || clickEvents > 0) {
           // auto approve
           // 1. update the campaign to current...must be first
           //  - the campaign can't be expired...otherwise use the default
@@ -59,12 +80,18 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const referral = await getReferral(message.userId);
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
-            await createReferral(newReferral);
+            await createReferral({
+              ...newReferral,
+              campaignActive: campaign!.campaign,
+              enrolled: true,
+              eligible: 1,
+            });
+          } else {
+            // 3. set the campaign to the current one
+            await updateReferralCampaign(message.userId, campaign!.campaign);
+            // 4. update the eligible flag to 1/true;
+            await updateReferralEligibility(message.userId, 1);
           }
-          // 3. set the campaign to the current one
-          await updateReferralCampaign(message.userId, campaign!.campaign);
-          // 4. update the eligible flag to 1/true;
-          await updateReferralEligibility(message.userId, 1);
         }
       }),
     );
@@ -77,7 +104,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   /*============================================*/
   const appdata = event.Records.filter((r) => {
     const t1 = r.Sns.Subject === 'transunionenrollment';
-    const { service } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
+    const { service } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: UpdateAppDataInput };
     const t2 = service === 'referralservice';
     return t1 && t2;
   });
@@ -97,10 +124,14 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const referral = await getReferral(message.id);
         if (!referral) {
           const newReferral = new ReferralMaker(message.id, uuid.v4());
-          await createReferral(newReferral);
+          await createReferral({
+            ...newReferral,
+            enrolled: true,
+          });
+        } else {
+          // 2. if a user enrolls update the enrolled flag
+          await updateEnrollment(id);
         }
-        // 2. if a user enrolls update the enrolled flag
-        await updateEnrollment(id);
       }),
     );
   } catch (err) {
