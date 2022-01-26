@@ -23,7 +23,20 @@ interface IHashData {
 
 export const main = async () => {
   try {
-    const analytics = await listAnalytics();
+    const analytics = (await listAnalytics()).filter((a) => {
+      switch (a.event) {
+        case 'dashboard_product':
+          return true;
+        case 'creditmix_product_recommendation':
+          return true;
+        case 'dispute_sucessfully_submited':
+          return true;
+        case 'dispute_investigation_results':
+          return true;
+        default:
+          return false;
+      }
+    });
     // get all the analytics.
     // get the first click of investigate, or product click
     // then get the score history
@@ -87,7 +100,7 @@ export const main = async () => {
 
       const prior = i > 0 ? arr[i - 1] : null;
       const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
-      const t2 = firstClick < createdOn && prior !== null && score.id !== prior.id;
+      const t2 = firstClick < createdOn && score.id !== prior?.id;
       const nearestEvent = t1 ? analytics.firstClickEvent : t2 ? analytics.firstClickEvent : '';
       const nearestEventTime = t1 ? analytics.firstClick : t2 ? analytics.firstClick : '';
       //if the an analytic is greater than this score created on, but is less than the next score id
