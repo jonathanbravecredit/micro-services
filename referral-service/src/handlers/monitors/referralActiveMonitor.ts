@@ -39,9 +39,17 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const { message } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
         const sessions = await listUserSessions(message.userId, 20);
         console.log('sessions: ', JSON.stringify(sessions));
-        const keyPageViews = sessions.reduce((a, b) => {
-          return a + (b.pageViews || 0);
+        const counters = new Map<string, number>();
+        sessions.forEach((a) => {
+          const pvs = counters.get(a.sessionId) || 0;
+          counters.set(a.sessionId, pvs + (a.pageViews || 0));
         }, 0);
+
+        const keyPageViews = Array.from(counters)
+          .map(([_, pageViews]) => pageViews)
+          .reduce((a, b) => {
+            return b > 2 ? a + 1 : a + 0;
+          }, 0);
         const clickEvents = sessions.reduce((a, b) => {
           return a + (b.clickEvents || 0);
         }, 0);
