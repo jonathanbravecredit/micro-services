@@ -90,10 +90,12 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const referral = await getReferral(newImage.id);
             if (!referral) return;
             const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
+            const totalAddOn = referral.totalAddOn + denomination;
             const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
             const updated = {
               ...referral,
               campaignActiveAddOn,
+              totalAddOn,
               nextPaymentDate,
             };
             await updateReferral(updated);
