@@ -84,10 +84,14 @@ export const main = async () => {
       const firstClick = new Date(analytics.firstClick);
       const createdOn = new Date(score.createdOn || 0);
       const nextCreatedOn = !arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
+
+      const prior = i > 0 ? arr[i - 1] : null;
       const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
-      const nearestEvent = t1 ? analytics.firstClickEvent : '';
-      const nearestEventTime = t1 ? analytics.firstClick : '';
+      const t2 = firstClick < createdOn && prior !== null && score.id !== prior.id;
+      const nearestEvent = t1 ? analytics.firstClickEvent : t2 ? analytics.firstClickEvent : '';
+      const nearestEventTime = t1 ? analytics.firstClick : t2 ? analytics.firstClick : '';
       //if the an analytic is greater than this score created on, but is less than the next score id
+
       const dashboardProductEvent = analytics.dashboardProduct.find((event: string) => {
         const dte = new Date(event);
         return dte >= createdOn && dte < nextCreatedOn;
