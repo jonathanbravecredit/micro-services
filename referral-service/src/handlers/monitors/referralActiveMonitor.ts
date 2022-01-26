@@ -39,12 +39,13 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const { message } = JSON.parse(r.Sns.Message) as { service: string; command: string; message: ISession };
         const sessions = await listUserSessions(message.userId, 20);
         console.log('sessions: ', JSON.stringify(sessions));
+        // count pageViews across sessions
         const counters = new Map<string, number>();
         sessions.forEach((a) => {
           const pvs = counters.get(a.sessionId) || 0;
           counters.set(a.sessionId, pvs + (a.pageViews || 0));
         }, 0);
-
+        // count that there are more than two sessions with pageViews > 2
         const keyPageViews = Array.from(counters)
           .map(([_, pageViews]) => pageViews)
           .reduce((a, b) => {
@@ -54,7 +55,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           return a + (b.clickEvents || 0);
         }, 0);
         console.log('pageViews: ', keyPageViews);
-        if ((keyPageViews > 2 && sessions.length > 1) || clickEvents > 0) {
+        if ((keyPageViews >= 2 && sessions.length > 1) || clickEvents > 0) {
           // auto approve
           // 1. update the campaign to current...must be first
           //  - the campaign can't be expired...otherwise use the default
