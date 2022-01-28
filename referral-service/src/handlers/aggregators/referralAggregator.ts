@@ -41,64 +41,108 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
           // data coming from referral data base. inserts and modifications
           // only concerned with modifies...people going from unenrolled to enrolled
           const dynamo = r as DynamoDBRecord;
-          if (dynamo.eventName === 'INSERT') return;
-          const stream: StreamRecord = dynamo.dynamodb || {};
-          const { OldImage, NewImage } = stream;
-          if (!NewImage || !OldImage) return;
-          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
-          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
-          // the referred user needs to go from enrolled to not in rolled
-          // need to find if there is a referred by code
-          // if there is than we need to:
-          //  - get the current campaign attributes
-          //  - double check the current campaign is an active one
-          //  - increment up the count and the earnings...campaignActiveReferred
-          const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
-          if (newImage.referredByCode && enrollment) {
-            const { denomination, bonusThreshold, bonusAmount, campaign } = current;
-            if (campaign === 'NO_CAMPAIGN') return;
-            // get the record by referredByCode
-            const referrer = await getReferralByCode(newImage.referredByCode);
-            if (!referrer) return;
-            // check if the bonus threshold is hit...wasn't and now would be
-            const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
-            const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
-            const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
-            const campaignActiveReferred = referrer.campaignActiveReferred + 1;
-            const totalReferred = referrer.totalReferred + 1;
-            const totalEarned = referrer.totalEarned + denomination;
-            const totalBonus = referrer.totalBonus + bonus;
-            const bonusHit = bonus > 0;
-            const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
-            const updated = {
-              ...referrer,
-              campaignActiveReferred,
-              campaignActiveEarned,
-              campaignActiveBonus,
-              totalReferred,
-              totalEarned,
-              totalBonus,
-              nextPaymentDate,
-            };
-            if (campaignActiveReferred > current.maxReferrals) return;
-            await updateReferral(updated);
+          if (dynamo.eventName === 'MODIFY') {
+            const stream: StreamRecord = dynamo.dynamodb || {};
+            const { OldImage, NewImage } = stream;
+            if (!NewImage || !OldImage) return;
+            const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
+            const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
+            // the referred user needs to go from enrolled to not in rolled
+            // need to find if there is a referred by code
+            // if there is than we need to:
+            //  - get the current campaign attributes
+            //  - double check the current campaign is an active one
+            //  - increment up the count and the earnings...campaignActiveReferred
+            const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
+            if (newImage.referredByCode && enrollment) {
+              const { denomination, bonusThreshold, bonusAmount, campaign } = current;
+              if (campaign === 'NO_CAMPAIGN') return;
+              // get the record by referredByCode
+              const referrer = await getReferralByCode(newImage.referredByCode);
+              if (!referrer) return;
+              // check if the bonus threshold is hit...wasn't and now would be
+              const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
+              const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
+              const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
+              const campaignActiveReferred = referrer.campaignActiveReferred + 1;
+              const totalReferred = referrer.totalReferred + 1;
+              const totalEarned = referrer.totalEarned + denomination;
+              const totalBonus = referrer.totalBonus + bonus;
+              const bonusHit = bonus > 0;
+              const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
+              const updated = {
+                ...referrer,
+                campaignActiveReferred,
+                campaignActiveEarned,
+                campaignActiveBonus,
+                totalReferred,
+                totalEarned,
+                totalBonus,
+                nextPaymentDate,
+              };
+              if (campaignActiveReferred > current.maxReferrals) return;
+              await updateReferral(updated);
+            }
+
+            if (enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
+              // need to give the user credit for enrolling
+              const { denomination } = current;
+              const referral = await getReferral(newImage.id);
+              if (!referral) return;
+              const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
+              const totalAddOn = referral.totalAddOn + denomination;
+              const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
+              const updated = {
+                ...referral,
+                campaignActiveAddOn,
+                totalAddOn,
+                nextPaymentDate,
+              };
+              await updateReferral(updated);
+            }
           }
 
-          if (enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
-            // need to give the user credit for enrolling
-            const { denomination } = current;
-            const referral = await getReferral(newImage.id);
-            if (!referral) return;
-            const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
-            const totalAddOn = referral.totalAddOn + denomination;
-            const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
-            const updated = {
-              ...referral,
-              campaignActiveAddOn,
-              totalAddOn,
-              nextPaymentDate,
-            };
-            await updateReferral(updated);
+          if (dynamo.eventName === 'INSERT') {
+            const stream: StreamRecord = dynamo.dynamodb || {};
+            const { NewImage } = stream;
+            if (!NewImage) return;
+            const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
+            // the existing user comes in referred...this is the safe list
+            // need to find if there is a referred by code
+            // if there is than we need to:
+            //  - get the current campaign attributes
+            //  - double check the current campaign is an active one
+            //  - increment up the count and the earnings...campaignActiveReferred
+            const enrolled = newImage.enrolled;
+            if (newImage.referredByCode && enrolled) {
+              const { denomination, bonusThreshold, bonusAmount, campaign } = current;
+              if (campaign === 'NO_CAMPAIGN') return;
+              // get the record by referredByCode
+              const referrer = await getReferralByCode(newImage.referredByCode);
+              if (!referrer) return;
+              // check if the bonus threshold is hit...wasn't and now would be
+              const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
+              const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
+              const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
+              const campaignActiveReferred = referrer.campaignActiveReferred + 1;
+              const totalReferred = referrer.totalReferred + 1;
+              const totalEarned = referrer.totalEarned + denomination;
+              const totalBonus = referrer.totalBonus + bonus;
+              const bonusHit = bonus > 0;
+              const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusHit, current.endDate);
+              const updated = {
+                ...referrer,
+                campaignActiveReferred,
+                campaignActiveEarned,
+                campaignActiveBonus,
+                totalReferred,
+                totalEarned,
+                totalBonus,
+                nextPaymentDate,
+              };
+              if (campaignActiveReferred > current.maxReferrals) return;
+              await updateReferral(updated);
+            }
           }
         }
 
