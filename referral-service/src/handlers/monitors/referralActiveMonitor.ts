@@ -82,16 +82,13 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
             await createReferral({
               ...newReferral,
-              campaignActive: campaign!.campaign,
               enrolled: true,
-              eligible: 1,
             });
-          } else {
-            // 3. set the campaign to the current one
-            await updateReferralCampaign(message.userId, campaign!.campaign);
-            // 4. update the eligible flag to 1/true;
-            await updateReferralEligibility(message.userId, 1);
           }
+          // 3. set the campaign to the current one
+          await updateReferralCampaign(message.userId, campaign!.campaign);
+          // 4. update the eligible flag to 1/true;
+          await updateReferralEligibility(message.userId, 1);
         }
       }),
     );
