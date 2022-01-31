@@ -2,6 +2,7 @@ import 'reflect-metadata';
 const csvjson = require('csvjson');
 import * as _ from 'lodash';
 import * as nodemailer from 'nodemailer';
+import * as uuid from 'uuid';
 import { SES } from 'aws-sdk';
 import { listAnalytics, listCreditScores } from 'lib/queries';
 import { generateEmailParams } from 'lib/utils/helpers';
@@ -23,7 +24,51 @@ interface IHashData {
 
 export const main = async () => {
   try {
-    const analytics = await listAnalytics();
+    const hash: { [key: string]: boolean } = {}; // the first analytic click
+    const actions = (await listAnalytics()).filter((a) => {
+      if (!a.sub) return false;
+      switch (a.event) {
+        case 'dashboard_product':
+          hash[a.sub] = true;
+          return true;
+        case 'creditmix_product_recommendation':
+          hash[a.sub] = true;
+          return true;
+        case 'dispute_sucessfully_submited':
+          hash[a.sub] = true;
+          return true;
+        case 'dispute_investigation_results':
+          hash[a.sub] = true;
+          return true;
+        default:
+          return false;
+      }
+    });
+
+    const scores = (await listCreditScores())
+      .filter((s) => hash[s.id])
+      .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
+
+    // uniform map the fields together.
+    const scoresAndActions = [
+      ...actions,
+      ...scores.map((s) => {
+        return {
+          id: s.scoreId,
+          event: 'score_update',
+          sub: s.id,
+          session: 'none',
+          source: 'agency_service',
+          value: s.score,
+          createdOn: s.createdOn,
+          modifiedOn: s.modifiedOn,
+        };
+      }),
+    ];
+
+    // now find the prior score and attach to the action.
+    // create easy look up of scores
+
     // get all the analytics.
     // get the first click of investigate, or product click
     // then get the score history
@@ -32,30 +77,19 @@ export const main = async () => {
     //  flag scores as prior to click
     //  mark the score at click (go through the clicks and match up the score)
     //  mark all the scores after as being after the event
-    const hash: { [key: string]: IHashData } = {}; // the first analytic click
-    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic) => {
-      if (analytic.id) {
-        let dashboardProduct: string[] = hash[analytic.id]?.dashboardProduct || [];
-        let creditMixProduct: string[] = hash[analytic.id]?.creditMixProduct || [];
-        let disputeSubmitted: string[] = hash[analytic.id]?.disputeSubmitted || [];
-        let investigationResults: string[] = hash[analytic.id]?.investigationResults || [];
-
-        if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
-        if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_sucessfully_submited') disputeSubmitted.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
-
-        const data = {
-          ...hash[analytic.id],
-          firstClick: analytic.createdOn!,
-          firstClickEvent: analytic.event,
-          dashboardProduct,
-          creditMixProduct,
-          disputeSubmitted,
-          investigationResults,
-        };
-        hash[analytic.id] = data;
+    let trackedScore = -1;
+    const scoreTracking = _.orderBy(scoresAndActions, ['sub', 'createdOn'], ['asc', 'asc']).map((a, i, arr) => {
+      const changed = i > 0 ? arr[i - 1].sub !== a.sub : false;
+      if (a.event === 'score_update') {
+        trackedScore = a.value || -1;
+      } else if (changed) {
+        trackedScore = -1;
       }
+
+      return {
+        ...a,
+        trackedScore,
+      };
     });
 
     // find anyone that has self
@@ -75,44 +109,11 @@ export const main = async () => {
       }),
     );
 
-    const scores = (await listCreditScores())
-      .filter((s) => hash[s.id])
-      .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
-    const mapped = scores.map((score, i, arr) => {
-      const analytics = hash[score.id];
+    const mapped = scoreTracking.map((score, i, arr) => {
+      if (!score) return;
       const haveSelfLoan = selfLoanUsers.get(score.id);
-      const firstClick = new Date(analytics.firstClick);
-      const createdOn = new Date(score.createdOn || 0);
-      const nextCreatedOn = !arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
-      const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
-      const nearestEvent = t1 ? analytics.firstClickEvent : '';
-      const nearestEventTime = t1 ? analytics.firstClick : '';
-      //if the an analytic is greater than this score created on, but is less than the next score id
-      const dashboardProductEvent = analytics.dashboardProduct.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const creditMixProductEvent = analytics.creditMixProduct.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const disputeSubmittedEvent = analytics.disputeSubmitted.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const investigationResultsEvent = analytics.investigationResults.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-
       return {
         ...score,
-        nearestEvent,
-        nearestEventTime,
-        dashboardProductEvent,
-        creditMixProductEvent,
-        disputeSubmittedEvent,
-        investigationResultsEvent,
         haveSelfLoan: haveSelfLoan || false,
       };
     });
