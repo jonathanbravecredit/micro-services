@@ -54,7 +54,7 @@ export const main = async () => {
         // look up the users credit score and
         const item = await getItemsInDB(sub);
         const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
-        if (i < 4) JSON.stringify(data);
+        if (i < 4) console.log('data ===> ', JSON.stringify(data));
         if (!data) return null;
         const tu = data.agencies?.transunion;
         if (!tu) return null;
