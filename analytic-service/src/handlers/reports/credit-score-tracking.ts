@@ -58,10 +58,10 @@ export const main = async () => {
         const sub = val[0];
         if (i < 4) console.log('sub ==> ', sub);
         try {
-          const item = await getItemsInDB(sub);
-          if (i < 4) console.log('item ===> ', JSON.stringify(item));
-          const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
-          if (i < 4) console.log('data ===> ', JSON.stringify(data));
+          const data = await getItemsInDB(sub);
+          // if (i < 4) console.log('item ===> ', JSON.stringify(item));
+          // const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
+          // if (i < 4) console.log('data ===> ', JSON.stringify(data));
           if (!data) return null;
           const tu = data.agencies?.transunion;
           if (!tu) return null;
@@ -77,6 +77,8 @@ export const main = async () => {
         }
       }),
     );
+
+    console.log('selfLoanUsers ==> ', selfLoanUsers);
     // map if the user has a self loan by looking up the sub
     const mapped = scoreTracking.map((score) => {
       if (!score) return;
