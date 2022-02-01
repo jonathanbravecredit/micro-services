@@ -47,6 +47,9 @@ export const main = async () => {
       };
     });
 
+    console.log('hash', hash);
+    console.log('scoreTracking', scoreTracking);
+
     // find anyone that has self
     const selfLoanUsers = new Map();
     await Promise.all(
