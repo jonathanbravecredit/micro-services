@@ -52,16 +52,24 @@ export const main = async () => {
     await Promise.all(
       Object.keys(hash).map(async (sub, i) => {
         // look up the users credit score and
-        const item = await getItemsInDB(sub);
-        const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
-        if (i < 4) console.log('data ===> ', JSON.stringify(data));
-        if (!data) return null;
-        const tu = data.agencies?.transunion;
-        if (!tu) return null;
-        const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
-        const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
-        if (record.haveSelfLoans()) {
-          selfLoanUsers.set(data.id, true);
+        console.log('sub ==> ', sub);
+        try {
+          const item = await getItemsInDB(sub);
+          console.log('item ===> ', JSON.stringify(item));
+          const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
+          if (i < 4) console.log('data ===> ', JSON.stringify(data));
+          if (!data) return null;
+          const tu = data.agencies?.transunion;
+          if (!tu) return null;
+          const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
+          const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
+          if (record.haveSelfLoans()) {
+            selfLoanUsers.set(data.id, true);
+          }
+          return null;
+        } catch (err) {
+          console.log(err);
+          return null;
         }
       }),
     );
