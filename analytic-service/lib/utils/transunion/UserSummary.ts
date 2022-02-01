@@ -208,7 +208,7 @@ export class UserSummary {
         case 'sf/lead bank':
           found = true;
           break;
-        case 'atlantic cap bkselflender':
+        case 'atlantic cap bkselflendr':
           found = true;
           break;
         case 'atlantic capital bank self':

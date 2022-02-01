@@ -2,14 +2,16 @@ import 'reflect-metadata';
 const csvjson = require('csvjson');
 import * as _ from 'lodash';
 import * as nodemailer from 'nodemailer';
-import * as uuid from 'uuid';
-import { SES } from 'aws-sdk';
+import { SES, DynamoDB } from 'aws-sdk';
 import { listAnalytics, listCreditScores } from 'lib/queries';
 import { generateEmailParams } from 'lib/utils/helpers';
 import { getItemsInDB } from 'lib/queries/appdata/appdata';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { UserSummary } from 'lib/utils/transunion/UserSummary';
 import { getItemsInDisputeDB } from 'lib/queries/disputes/disputes.queries';
+import { Analytics } from 'lib/models/analytics.model';
+import { CreditScore } from 'lib/models/credit-scores.model';
+import { IScores } from 'lib/interfaces/api/creditscoretracking/creditscoretracking.interface';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -24,59 +26,13 @@ interface IHashData {
 
 export const main = async () => {
   try {
-    const hash: { [key: string]: boolean } = {}; // the first analytic click
-    const actions = (await listAnalytics()).filter((a) => {
-      if (!a.sub) return false;
-      switch (a.event) {
-        case 'dashboard_product':
-          hash[a.sub] = true;
-          return true;
-        case 'creditmix_product_recommendation':
-          hash[a.sub] = true;
-          return true;
-        case 'dispute_sucessfully_submited':
-          hash[a.sub] = true;
-          return true;
-        case 'dispute_investigation_results':
-          hash[a.sub] = true;
-          return true;
-        default:
-          return false;
-      }
-    });
-
-    const scores = (await listCreditScores())
-      .filter((s) => hash[s.id])
-      .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
-
+    // get a list of actions, scores, and create a list of unique user ids with actions
+    const actions = (await listAnalytics()).filter(filterAnalytics);
+    const hash = new Map(actions.map((a) => [a.sub, true]));
+    const scores = (await listCreditScores()).filter((s) => hash.get(s.id)).sort(sortCreditScore);
     // uniform map the fields together.
-    const scoresAndActions = [
-      ...actions,
-      ...scores.map((s) => {
-        return {
-          id: s.scoreId,
-          event: 'score_update',
-          sub: s.id,
-          session: 'none',
-          source: 'agency_service',
-          value: s.score,
-          createdOn: s.createdOn,
-          modifiedOn: s.modifiedOn,
-        };
-      }),
-    ];
-
-    // now find the prior score and attach to the action.
-    // create easy look up of scores
-
-    // get all the analytics.
-    // get the first click of investigate, or product click
-    // then get the score history
-    // filter by those that have clicked.
-    // then filter through the credit scores and
-    //  flag scores as prior to click
-    //  mark the score at click (go through the clicks and match up the score)
-    //  mark all the scores after as being after the event
+    const scoresAndActions = [...actions, ...scores.map(mapScores)];
+    // cascade down the score until it changes
     let trackedScore = -1;
     const scoreTracking = _.orderBy(scoresAndActions, ['sub', 'createdOn'], ['asc', 'asc']).map((a, i, arr) => {
       const changed = i > 0 ? arr[i - 1].sub !== a.sub : false;
@@ -85,7 +41,6 @@ export const main = async () => {
       } else if (changed) {
         trackedScore = -1;
       }
-
       return {
         ...a,
         trackedScore,
@@ -97,32 +52,34 @@ export const main = async () => {
     await Promise.all(
       Object.keys(hash).map(async (sub) => {
         // look up the users credit score and
-        const item = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
-        if (!item) return null;
-        const tu = item.agencies?.transunion;
+        const item = await getItemsInDB(sub);
+        const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
+        if (!data) return null;
+        const tu = data.agencies?.transunion;
         if (!tu) return null;
-        const disputed = (await getItemsInDisputeDB(item.id)) !== undefined;
-        const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
+        const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
+        const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
         if (record.haveSelfLoans()) {
-          selfLoanUsers.set(item.id, true);
+          selfLoanUsers.set(data.id, true);
         }
       }),
     );
-
-    const mapped = scoreTracking.map((score, i, arr) => {
+    // map if the user has a self loan by looking up the sub
+    const mapped = scoreTracking.map((score) => {
       if (!score) return;
-      const haveSelfLoan = selfLoanUsers.get(score.id);
+      const haveSelfLoan = selfLoanUsers.get(score.sub);
       return {
         ...score,
         haveSelfLoan: haveSelfLoan || false,
       };
     });
+    // generate the csv files and email them out
     const csvAnalytics = csvjson.toCSV(JSON.stringify(mapped), {
       headers: 'key',
     });
     const emails = STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit'];
-    let params = generateEmailParams('Your analytics report', emails);
 
+    let params = generateEmailParams('Your analytics report', emails);
     params.attachments = [
       {
         filename: 'credit-score-tracking.csv',
@@ -137,4 +94,39 @@ export const main = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const filterAnalytics = (a: Analytics) => {
+  if (!a.sub) return false;
+  switch (a.event) {
+    case 'dashboard_product':
+      return true;
+    case 'creditmix_product_recommendation':
+      return true;
+    case 'dispute_sucessfully_submited':
+      return true;
+    case 'dispute_investigation_results':
+      return true;
+    default:
+      return false;
+  }
+};
+
+export const sortCreditScore = (a: CreditScore, b: CreditScore) => {
+  const aDate = new Date(a.createdOn || 0).valueOf();
+  const bDate = new Date(b.createdOn || 0).valueOf();
+  return aDate - bDate;
+};
+
+export const mapScores = (score: CreditScore): IScores => {
+  return {
+    id: score.scoreId,
+    event: 'score_update',
+    sub: score.id,
+    session: 'none',
+    source: 'agency_service',
+    value: score.score,
+    createdOn: score.createdOn,
+    modifiedOn: score.modifiedOn,
+  };
 };
