@@ -59,9 +59,9 @@ export const main = async () => {
         if (i < 4) console.log('sub ==> ', sub);
         try {
           const item = await getItemsInDB(sub);
-          if (i < 4) console.log('item ===> ', JSON.stringify(item));
+          // if (i < 4) console.log('item ===> ', JSON.stringify(item));
           const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
-          if (i < 4) console.log('data ===> ', JSON.stringify(data));
+          // if (i < 4) console.log('data ===> ', JSON.stringify(data));
           if (!data) return null;
           const tu = data.agencies?.transunion;
           if (!tu) return null;
