@@ -11,7 +11,7 @@ import { UserSummary } from 'lib/utils/transunion/UserSummary';
 import { getItemsInDisputeDB } from 'lib/queries/disputes/disputes.queries';
 import { Analytics } from 'lib/models/analytics.model';
 import { CreditScore } from 'lib/models/credit-scores.model';
-import { IScores } from 'lib/interfaces/api/creditscoretracking/creditscoretracking.interface';
+import { IEnrollScores, IScores } from 'lib/interfaces/api/creditscoretracking/creditscoretracking.interface';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -30,8 +30,52 @@ export const main = async () => {
     const actions = (await listAnalytics()).filter(filterAnalytics);
     const hash = new Map(actions.map((a) => [a.sub, true]));
     const scores = (await listCreditScores()).filter((s) => hash.get(s.id)).sort(sortCreditScore);
+
+    // find anyone that has self
+    const selfLoanUsers = new Map();
+    let enrollmentScores: IEnrollScores[] = [];
+    await Promise.all(
+      [...hash].map(async (val, i) => {
+        // look up the users credit score and
+        const sub = val[0];
+        if (i < 4) console.log('sub ==> ', sub);
+        try {
+          const data = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
+          // if (i < 4) console.log('item ===> ', JSON.stringify(item));
+          // const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
+          // if (i < 4) console.log('data ===> ', JSON.stringify(data));
+          if (!data) return null;
+          const tu = data.agencies?.transunion;
+          if (!tu) return null;
+          const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
+          const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
+          const enrollReport = record.parseTransunionEnrollMergeReport(tu);
+          const score = enrollReport ? record.parseCreditScore(enrollReport) || -1 : -1;
+          const enrolledOn = record.enrolledOn;
+          if (enrolledOn !== '' || score !== -1) {
+            enrollmentScores = [
+              ...enrollmentScores,
+              {
+                sub: data.id,
+                score: score,
+                createdOn: enrolledOn,
+                modifiedOn: enrolledOn,
+              },
+            ];
+          }
+          if (record.haveSelfLoans()) {
+            selfLoanUsers.set(data.id, true);
+          }
+          return null;
+        } catch (err) {
+          console.log(err);
+          return null;
+        }
+      }),
+    );
+
     // uniform map the fields together.
-    const scoresAndActions = [...actions, ...scores.map(mapScores)];
+    const scoresAndActions = [...actions, ...scores.map(mapScores), ...enrollmentScores.map(mapEnrollScores)];
     // cascade down the score until it changes
     let trackedScore = -1;
     const scoreTracking = _.orderBy(scoresAndActions, ['sub', 'createdOn'], ['asc', 'asc']).map((a, i, arr) => {
@@ -49,34 +93,6 @@ export const main = async () => {
 
     console.log('hash', hash);
     console.log('scoreTracking', scoreTracking);
-
-    // find anyone that has self
-    const selfLoanUsers = new Map();
-    await Promise.all(
-      [...hash].map(async (val, i) => {
-        // look up the users credit score and
-        const sub = val[0];
-        if (i < 4) console.log('sub ==> ', sub);
-        try {
-          const data = await getItemsInDB(sub);
-          // if (i < 4) console.log('item ===> ', JSON.stringify(item));
-          // const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
-          // if (i < 4) console.log('data ===> ', JSON.stringify(data));
-          if (!data) return null;
-          const tu = data.agencies?.transunion;
-          if (!tu) return null;
-          const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
-          const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
-          if (record.haveSelfLoans()) {
-            selfLoanUsers.set(data.id, true);
-          }
-          return null;
-        } catch (err) {
-          console.log(err);
-          return null;
-        }
-      }),
-    );
 
     console.log('selfLoanUsers ==> ', selfLoanUsers);
     // map if the user has a self loan by looking up the sub
@@ -137,5 +153,18 @@ export const mapScores = (score: CreditScore): IScores => {
     value: score.score,
     createdOn: score.createdOn,
     modifiedOn: score.modifiedOn,
+  };
+};
+
+export const mapEnrollScores = (val: IEnrollScores): IScores => {
+  return {
+    id: val.sub,
+    event: 'score_update',
+    sub: val.sub,
+    session: 'none',
+    source: 'agency_service',
+    value: val.score,
+    createdOn: val.createdOn,
+    modifiedOn: val.modifiedOn,
   };
 };

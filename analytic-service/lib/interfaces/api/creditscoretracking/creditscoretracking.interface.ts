@@ -8,3 +8,10 @@ export interface IScores {
   createdOn: string | undefined;
   modifiedOn: string | undefined;
 }
+
+export interface IEnrollScores {
+  sub: string;
+  score: number;
+  createdOn: string;
+  modifiedOn: string;
+}
