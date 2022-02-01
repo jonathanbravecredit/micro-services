@@ -53,7 +53,7 @@ export const main = async () => {
     // find anyone that has self
     const selfLoanUsers = new Map();
     await Promise.all(
-      Object.keys(hash).map(async (sub, i) => {
+      [...hash].map(async (sub, i) => {
         // look up the users credit score and
         console.log('sub ==> ', sub);
         try {
