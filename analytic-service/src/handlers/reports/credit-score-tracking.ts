@@ -101,6 +101,11 @@ export const main = async () => {
       const haveSelfLoan = selfLoanUsers.get(score.sub);
       return {
         ...score,
+        sub: score.sub,
+        event: score.event,
+        source: score.source,
+        createdOn: score.createdOn,
+        trackedScore: score.trackedScore,
         haveSelfLoan: haveSelfLoan || false,
       };
     });
