@@ -100,7 +100,6 @@ export const main = async () => {
       if (!score) return;
       const haveSelfLoan = selfLoanUsers.get(score.sub);
       return {
-        ...score,
         sub: score.sub,
         event: score.event,
         source: score.source,
