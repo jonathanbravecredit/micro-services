@@ -21,6 +21,7 @@ export class UserSummary {
   publicRecords: IPublicPartition[];
   creditScore: number | null;
   disputedWithBrave: boolean = false;
+  data: TransunionInput;
 
   constructor(
     id: string,
@@ -30,6 +31,7 @@ export class UserSummary {
   ) {
     this.id = id;
     this.user = user;
+    this.data = data;
     this.report = this.parseTransunionMergeReport(data);
     this.creditScore = this.parseCreditScore(this.report);
     this.subscribers = this.parseSubscriberRecords(this.report);
@@ -123,6 +125,10 @@ export class UserSummary {
     return isNaN(value) ? 0 : value;
   }
 
+  get enrolledOn(): string {
+    return this.data.enrolledOn || '';
+  }
+
   parseTransunionMergeReport(transunion: TransunionInput | null | undefined): IMergeReport {
     if (!transunion) return JSON.parse('{}');
     const fulfillMergeReport = transunion.fulfillMergeReport;
@@ -130,6 +136,15 @@ export class UserSummary {
     const serviceProductString = fulfillMergeReport
       ? fulfillMergeReport?.serviceProductObject || '{}'
       : enrollMergeReport?.serviceProductObject || '{}';
+    const serviceProductObject: IMergeReport =
+      typeof serviceProductString === 'string' ? JSON.parse(serviceProductString) : serviceProductString;
+    return serviceProductObject ? serviceProductObject : ({} as IMergeReport);
+  }
+
+  parseTransunionEnrollMergeReport(transunion: TransunionInput | null | undefined): IMergeReport {
+    if (!transunion) return JSON.parse('{}');
+    const enrollMergeReport = transunion.enrollMergeReport;
+    const serviceProductString = enrollMergeReport ? enrollMergeReport?.serviceProductObject : '{}';
     const serviceProductObject: IMergeReport =
       typeof serviceProductString === 'string' ? JSON.parse(serviceProductString) : serviceProductString;
     return serviceProductObject ? serviceProductObject : ({} as IMergeReport);
@@ -208,7 +223,7 @@ export class UserSummary {
         case 'sf/lead bank':
           found = true;
           break;
-        case 'atlantic cap bkselflender':
+        case 'atlantic cap bkselflendr':
           found = true;
           break;
         case 'atlantic capital bank self':

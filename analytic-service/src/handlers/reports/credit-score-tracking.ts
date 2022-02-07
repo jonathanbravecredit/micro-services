@@ -2,12 +2,16 @@ import 'reflect-metadata';
 const csvjson = require('csvjson');
 import * as _ from 'lodash';
 import * as nodemailer from 'nodemailer';
-import { SES } from 'aws-sdk';
+import { SES, DynamoDB } from 'aws-sdk';
 import { listAnalytics, listCreditScores } from 'lib/queries';
 import { generateEmailParams } from 'lib/utils/helpers';
 import { getItemsInDB } from 'lib/queries/appdata/appdata';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { UserSummary } from 'lib/utils/transunion/UserSummary';
+import { getItemsInDisputeDB } from 'lib/queries/disputes/disputes.queries';
+import { Analytics } from 'lib/models/analytics.model';
+import { CreditScore } from 'lib/models/credit-scores.model';
+import { IEnrollScores, IScores } from 'lib/interfaces/api/creditscoretracking/creditscoretracking.interface';
 
 const ses = new SES({ region: 'us-east-1' });
 const STAGE = process.env.STAGE;
@@ -22,104 +26,96 @@ interface IHashData {
 
 export const main = async () => {
   try {
-    const analytics = await listAnalytics();
-    // get all the analytics.
-    // get the first click of investigate, or product click
-    // then get the score history
-    // filter by those that have clicked.
-    // then filter through the credit scores and
-    //  flag scores as prior to click
-    //  mark the score at click (go through the clicks and match up the score)
-    //  mark all the scores after as being after the event
-    const hash: { [key: string]: IHashData } = {}; // the first analytic click
-    _.orderBy(analytics, ['sub', 'createdOn'], ['asc', 'desc']).forEach((analytic) => {
-      if (analytic.sub) {
-        let dashboardProduct: string[] = hash[analytic.sub]?.dashboardProduct || [];
-        let creditMixProduct: string[] = hash[analytic.sub]?.creditMixProduct || [];
-        let disputeSubmitted: string[] = hash[analytic.sub]?.disputeSubmitted || [];
-        let investigationResults: string[] = hash[analytic.sub]?.investigationResults || [];
-
-        if (analytic.event === 'dashboard_product') dashboardProduct.push(analytic.createdOn!);
-        if (analytic.event === 'creditmix_product_recommendation') creditMixProduct.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_sucessfully_submited') disputeSubmitted.push(analytic.createdOn!);
-        if (analytic.event === 'dispute_investigation_results') investigationResults.push(analytic.createdOn!);
-
-        const data = {
-          ...hash[analytic.sub],
-          firstClick: analytic.createdOn!,
-          firstClickEvent: analytic.event,
-          dashboardProduct,
-          creditMixProduct,
-          disputeSubmitted,
-          investigationResults,
-        };
-        hash[analytic.sub] = data;
-      }
-    });
+    // get a list of actions, scores, and create a list of unique user ids with actions
+    const actions = (await listAnalytics()).filter(filterAnalytics);
+    const hash = new Map(actions.map((a) => [a.sub, true]));
+    const scores = (await listCreditScores()).filter((s) => hash.get(s.id)).sort(sortCreditScore);
 
     // find anyone that has self
     const selfLoanUsers = new Map();
+    let enrollmentScores: IEnrollScores[] = [];
     await Promise.all(
-      Object.keys(hash).map(async (sub) => {
+      [...hash].map(async (val, i) => {
         // look up the users credit score and
-        const item = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
-        const tu = item.agencies?.transunion;
-        if (!tu) return null;
-        const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
-        const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
-        if (record.haveSelfLoans()) {
-          selfLoanUsers.set(item.id, true);
+        const sub = val[0];
+        if (i < 4) console.log('sub ==> ', sub);
+        try {
+          const data = (await getItemsInDB(sub)) as unknown as UpdateAppDataInput;
+          // if (i < 4) console.log('item ===> ', JSON.stringify(item));
+          // const data = DynamoDB.Converter.unmarshall(item) as unknown as UpdateAppDataInput;
+          // if (i < 4) console.log('data ===> ', JSON.stringify(data));
+          if (!data) return null;
+          const tu = data.agencies?.transunion;
+          if (!tu) return null;
+          const disputed = (await getItemsInDisputeDB(data.id)) !== undefined;
+          const record = new UserSummary(data.id, data.user?.userAttributes, tu, disputed);
+          const enrollReport = record.parseTransunionEnrollMergeReport(tu);
+          const score = enrollReport ? record.parseCreditScore(enrollReport) || -1 : -1;
+          const enrolledOn = record.enrolledOn;
+          if (enrolledOn !== '' || score !== -1) {
+            enrollmentScores = [
+              ...enrollmentScores,
+              {
+                sub: data.id,
+                score: score,
+                createdOn: enrolledOn,
+                modifiedOn: enrolledOn,
+              },
+            ];
+          }
+          if (record.haveSelfLoans()) {
+            selfLoanUsers.set(data.id, true);
+          }
+          return null;
+        } catch (err) {
+          console.log(err);
+          return null;
         }
       }),
     );
 
-    const scores = (await listCreditScores())
-      .filter((s) => hash[s.id])
-      .sort((a, b) => new Date(a.createdOn || 0).valueOf() - new Date(b.createdOn || 0).valueOf());
-    const mapped = scores.map((score, i, arr) => {
-      const analytics = hash[score.id];
-      const haveSelfLoan = selfLoanUsers.get(score.id);
-      const firstClick = new Date(analytics.firstClick);
-      const createdOn = new Date(score.createdOn || 0);
-      const nextCreatedOn = !arr[i + 1] ? new Date() : new Date(arr[i + 1].createdOn || new Date());
-      const t1 = firstClick >= createdOn && firstClick < nextCreatedOn;
-      const nearestEvent = t1 ? analytics.firstClickEvent : '';
-      const nearestEventTime = t1 ? analytics.firstClick : '';
-      const dashboardProductEvent = analytics.dashboardProduct.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const creditMixProductEvent = analytics.creditMixProduct.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const disputeSubmittedEvent = analytics.disputeSubmitted.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
-      const investigationResultsEvent = analytics.investigationResults.find((event: string) => {
-        const dte = new Date(event);
-        return dte >= createdOn && dte < nextCreatedOn;
-      });
+    // uniform map the fields together.
+    const scoresAndActions = [...actions, ...scores.map(mapScores), ...enrollmentScores.map(mapEnrollScores)];
+    // cascade down the score until it changes
+    let trackedScore = -1;
+    const scoreTracking = _.orderBy(scoresAndActions, ['sub', 'createdOn'], ['asc', 'asc']).map((a, i, arr) => {
+      const changed = i > 0 ? arr[i - 1].sub !== a.sub : false;
+      if (a.event === 'score_update') {
+        trackedScore = a.value || -1;
+      } else if (changed) {
+        trackedScore = -1;
+      }
+      return {
+        ...a,
+        trackedScore,
+      };
+    });
 
-      //if the an analytic is greater than this score created on, but is less than the next score id
+    console.log('hash', hash);
+    console.log('scoreTracking', scoreTracking);
+
+    console.log('selfLoanUsers ==> ', selfLoanUsers);
+    // map if the user has a self loan by looking up the sub
+    const mapped = scoreTracking.map((score) => {
+      if (!score) return;
+      const haveSelfLoan = selfLoanUsers.get(score.sub);
       return {
         ...score,
-        nearestEvent,
-        nearestEventTime,
-        dashboardProductEvent,
-        creditMixProductEvent,
-        disputeSubmittedEvent,
-        investigationResultsEvent,
+        sub: score.sub,
+        event: score.event,
+        source: score.source,
+        createdOn: score.createdOn,
+        trackedScore: score.trackedScore,
         haveSelfLoan: haveSelfLoan || false,
       };
     });
+    // generate the csv files and email them out
     const csvAnalytics = csvjson.toCSV(JSON.stringify(mapped), {
       headers: 'key',
     });
     const emails = STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit'];
-    let params = generateEmailParams('Your analytics report', emails);
 
+    let params = generateEmailParams('Your analytics report', emails);
     params.attachments = [
       {
         filename: 'credit-score-tracking.csv',
@@ -134,4 +130,46 @@ export const main = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const filterAnalytics = (a: Analytics) => {
+  if (!a.sub) return false;
+  switch (a.event) {
+    case 'user_log_in':
+      return false;
+    default:
+      return true;
+  }
+};
+
+export const sortCreditScore = (a: CreditScore, b: CreditScore) => {
+  const aDate = new Date(a.createdOn || 0).valueOf();
+  const bDate = new Date(b.createdOn || 0).valueOf();
+  return aDate - bDate;
+};
+
+export const mapScores = (score: CreditScore): IScores => {
+  return {
+    id: score.scoreId,
+    event: 'score_update',
+    sub: score.id,
+    session: 'none',
+    source: 'agency_service',
+    value: score.score,
+    createdOn: score.createdOn,
+    modifiedOn: score.modifiedOn,
+  };
+};
+
+export const mapEnrollScores = (val: IEnrollScores): IScores => {
+  return {
+    id: val.sub,
+    event: 'score_update',
+    sub: val.sub,
+    session: 'none',
+    source: 'agency_service',
+    value: val.score,
+    createdOn: val.createdOn,
+    modifiedOn: val.modifiedOn,
+  };
 };

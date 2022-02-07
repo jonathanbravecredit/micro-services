@@ -96,3 +96,15 @@ export const updateReferralCampaign = (id: string, campaign: string): Promise<vo
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const batchDeleteReferrals = (records: Referral[]): Promise<any> => {
+  return store
+    .batchWrite()
+    .delete(records)
+    .exec()
+    .then((res) => res)
+    .catch((err) => {
+      console.log('batch delete error ==> ', err);
+      return err;
+    });
+};

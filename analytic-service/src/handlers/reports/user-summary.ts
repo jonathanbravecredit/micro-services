@@ -59,7 +59,6 @@ export const main: Handler = async (): Promise<void> => {
         sumOpenOtherBalances: record.sumOpenOtherBalances, //TODO make sure populated
       };
     });
-
     // transform the data to csv and send via simple mail
     const csv = csvjson.toCSV(JSON.stringify(mapped), {
       headers: 'key',
