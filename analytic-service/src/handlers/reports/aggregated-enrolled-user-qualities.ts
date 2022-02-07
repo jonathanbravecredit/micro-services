@@ -27,15 +27,10 @@ export const main: Handler = async (): Promise<void> => {
       let userDateOfBirth;
       let userAge;
       if (item.user?.userAttributes?.dob) {
-        let today = dayjs(new Date());
-        const { year, month, day } = {year: 1999, month: 'oct', day: 19};
-        userDateOfBirth = dayjs(`${year}-${month}-${day}`, 'YYYY-MMM-D');
-        userAge = today.year() - userDateOfBirth.year();
-        let m = today.month() - userDateOfBirth.month();
-        if (m < 0 || (m === 0 && today.day() < userDateOfBirth.day()))
-        {
-          userAge--;
-        }
+        let today = dayjs(new Date()).hour(0).minute(0).second(0).millisecond(0);
+        const { year, month, day } = item.user.userAttributes.dob;
+        userDateOfBirth = dayjs(`${year}-${month}-${day}`, 'YYYY-MMM-D').hour(0).minute(0).second(0).millisecond(0);
+        userAge = Math.floor(today.diff(userDateOfBirth, 'hour') / 8760);
       }
       const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
       const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
