@@ -11,7 +11,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!referralCode) return response(200, null);
   try {
     const referral = await getReferralByCode(referralCode);
-    return referral ? response(200, {valid: true}) : response(200, {valid: false});
+    if (referral?.suspended) return response(200, { valid: false });
+    return referral ? response(200, { valid: true }) : response(200, { valid: false });
   } catch (err) {
     return response(500, err);
   }

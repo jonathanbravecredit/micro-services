@@ -10,9 +10,11 @@ import {
   updateEnrollment,
   getReferral,
   createReferral,
+  getReferralByCode,
+  suspendReferral,
 } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 import * as uuid from 'uuid';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
@@ -74,10 +76,11 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const current = await getCampaign(1, 0);
           const defaultCamp = await getCampaign(1, 1);
           const now = new Date();
-          const campaign = moment(now).isAfter(current!.endDate) ? defaultCamp : current;
+          const campaign = dayjs(now).isAfter(current!.endDate) ? defaultCamp : current;
           // 2. double check there is a referral
           //   - if not create one
           const referral = await getReferral(message.userId);
+          if (referral?.suspended) return; // suspended users cannot become eligible again
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
             await createReferral({
@@ -125,8 +128,15 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
             ...newReferral,
             enrolled: true,
           });
+        } else if (referral.referredByCode) {
+          // 2. referred by code present...check if who referred them is suspended
+          const referrer = await getReferralByCode(referral.referredByCode);
+          if (referrer?.suspended) {
+            await suspendReferral(referral.id);
+          } else {
+            await updateEnrollment(id);
+          }
         } else {
-          // 2. if a user enrolls update the enrolled flag
           await updateEnrollment(id);
         }
       }),
