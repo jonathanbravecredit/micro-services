@@ -5,6 +5,7 @@ import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { getAllItemsInDB } from 'lib/queries/appdata/appdata';
 import { UserSummary } from 'lib/utils/transunion/UserSummary';
 import { generateReferralEmailParams } from 'lib/utils/cognito/helpers/helpers';
+import * as dayjs from 'dayjs';
 const csvjson = require('csvjson');
 const nodemailer = require('nodemailer');
 const ses = new SES({ region: 'us-east-1' });
@@ -23,12 +24,25 @@ export const main: Handler = async (): Promise<void> => {
       const tu = item.agencies?.transunion;
       const userData = item.user;
       if (!tu || !userData) return null;
-      const userDateOfBirth = `${userData.userAttributes?.dob?.year}-${userData.userAttributes?.dob?.month}-${userData.userAttributes?.dob?.day}`;
+      let userDateOfBirth;
+      let userAge;
+      if (item.user?.userAttributes?.dob) {
+        let today = dayjs(new Date());
+        const { year, month, day } = {year: 1999, month: 'oct', day: 19};
+        userDateOfBirth = dayjs(`${year}-${month}-${day}`, 'YYYY-MMM-D');
+        userAge = today.year() - userDateOfBirth.year();
+        let m = today.month() - userDateOfBirth.month();
+        if (m < 0 || (m === 0 && today.day() < userDateOfBirth.day()))
+        {
+          userAge--;
+        }
+      }
       const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
       const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
       return {
         userId: record.id,
-        userDOB: userDateOfBirth,
+        userAge,
+        userDOB: userDateOfBirth?.format('YYYY-MM-DD'),
         userState: userData.userAttributes?.address?.state,
         zipCode: record.user?.address?.zip,
         creditScore: record.creditScore,
