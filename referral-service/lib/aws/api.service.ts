@@ -74,6 +74,7 @@ export type CreateAppDataInput = {
   agencies: AgenciesInput;
   preferences: PreferencesInput;
   dashboard?: DashboardInput | null;
+  navBar?: NavBarInput | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -248,6 +249,17 @@ export type DataBreachCardInput = {
   paragraphs?: Array<string | null> | null;
 };
 
+export type NavBarInput = {
+  home?: NavBarConfigInput | null;
+  report?: NavBarConfigInput | null;
+  disputes?: NavBarConfigInput | null;
+  settings?: NavBarConfigInput | null;
+};
+
+export type NavBarConfigInput = {
+  badge?: boolean | null;
+};
+
 export type ModelAppDataConditionInput = {
   status?: ModelStringInput | null;
   statusReason?: ModelStringInput | null;
@@ -313,6 +325,7 @@ export type AppData = {
   agencies: Agencies;
   preferences: Preferences;
   dashboard?: Dashboard | null;
+  navBar?: NavBar | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -449,12 +462,26 @@ export type DataBreachCard = {
   paragraphs?: Array<string | null> | null;
 };
 
+export type NavBar = {
+  __typename: 'NavBar';
+  home?: NavBarConfig | null;
+  report?: NavBarConfig | null;
+  disputes?: NavBarConfig | null;
+  settings?: NavBarConfig | null;
+};
+
+export type NavBarConfig = {
+  __typename: 'NavBarConfig';
+  badge?: boolean | null;
+};
+
 export type UpdateAppDataInput = {
   id: string;
   user?: UserInput | null;
   agencies?: AgenciesInput | null;
   preferences?: PreferencesInput | null;
   dashboard?: DashboardInput | null;
+  navBar?: NavBarInput | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -854,6 +881,25 @@ export type CreateAppDataMutation = {
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
   } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+  } | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -1089,6 +1135,25 @@ export type UpdateAppDataMutation = {
     databreachCardStatus?: string | null;
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
+  } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
   } | null;
   status?: string | null;
   statusReason?: string | null;
@@ -1326,6 +1391,25 @@ export type DeleteAppDataMutation = {
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
   } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+  } | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -1561,6 +1645,25 @@ export type GetAppDataQuery = {
     databreachCardStatus?: string | null;
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
+  } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
   } | null;
   status?: string | null;
   statusReason?: string | null;
@@ -1800,6 +1903,25 @@ export type ListAppDatasQuery = {
       databreachReviewed?: boolean | null;
       databreachStatus?: string | null;
     } | null;
+    navBar?: {
+      __typename: 'NavBar';
+      home?: {
+        __typename: 'NavBarConfig';
+        badge?: boolean | null;
+      } | null;
+      report?: {
+        __typename: 'NavBarConfig';
+        badge?: boolean | null;
+      } | null;
+      disputes?: {
+        __typename: 'NavBarConfig';
+        badge?: boolean | null;
+      } | null;
+      settings?: {
+        __typename: 'NavBarConfig';
+        badge?: boolean | null;
+      } | null;
+    } | null;
     status?: string | null;
     statusReason?: string | null;
     statusReasonDescription?: string | null;
@@ -2038,6 +2160,25 @@ export type OnCreateAppDataSubscription = {
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
   } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+  } | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -2274,6 +2415,25 @@ export type OnUpdateAppDataSubscription = {
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
   } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+  } | null;
   status?: string | null;
   statusReason?: string | null;
   statusReasonDescription?: string | null;
@@ -2509,6 +2669,25 @@ export type OnDeleteAppDataSubscription = {
     databreachCardStatus?: string | null;
     databreachReviewed?: boolean | null;
     databreachStatus?: string | null;
+  } | null;
+  navBar?: {
+    __typename: 'NavBar';
+    home?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    report?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    disputes?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
+    settings?: {
+      __typename: 'NavBarConfig';
+      badge?: boolean | null;
+    } | null;
   } | null;
   status?: string | null;
   statusReason?: string | null;
