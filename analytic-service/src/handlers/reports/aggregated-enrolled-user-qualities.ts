@@ -32,8 +32,7 @@ export const main: Handler = async (): Promise<void> => {
         userDateOfBirth = dayjs(`${year}-${month}-${day}`, 'YYYY-MMM-D').hour(0).minute(0).second(0).millisecond(0);
         userAge = Math.floor(today.diff(userDateOfBirth, 'hour') / 8760);
       }
-      const disputed = (item.agencies?.transunion?.disputeStatus?.length || 0) > 0;
-      const record = new UserSummary(item.id, item.user?.userAttributes, tu, disputed);
+      const record = new UserSummary(item.id, item.user?.userAttributes, tu, false);
       return {
         userId: record.id,
         userAge,
