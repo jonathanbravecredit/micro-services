@@ -135,7 +135,7 @@ functions:
   userSummary:
     handler: src/handlers/reports/user-summary.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 300
+    timeout: 900
   manuallyCreateEvents:
     handler: src/handlers/manual/manuallyCreateEvents.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'

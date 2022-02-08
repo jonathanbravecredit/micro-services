@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import { ReferralMaker } from 'lib/models/referral.model';
+import { Referral, ReferralMaker } from 'lib/models/referral.model';
 import {
   getCampaign,
   updateReferralCampaign,
@@ -12,7 +12,7 @@ import {
   createReferral,
 } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 import * as uuid from 'uuid';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
@@ -74,10 +74,13 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const current = await getCampaign(1, 0);
           const defaultCamp = await getCampaign(1, 1);
           const now = new Date();
-          const campaign = moment(now).isAfter(current!.endDate) ? defaultCamp : current;
+          const campaign = dayjs(now).isAfter(current!.endDate) ? defaultCamp : current;
           // 2. double check there is a referral
-          //   - if not create one
           const referral = await getReferral(message.userId);
+          // 3. check if they or who referred them is suspended
+          const suspended = suspensionCheck(referral);
+          if (suspended) return;
+
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
             await createReferral({
@@ -126,7 +129,6 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
             enrolled: true,
           });
         } else {
-          // 2. if a user enrolls update the enrolled flag
           await updateEnrollment(id);
         }
       }),
@@ -134,4 +136,14 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   } catch (err) {
     console.log('error in referral active monitor: ', JSON.stringify(err));
   }
+};
+
+/**
+ * Helper method to return the suspension status.
+ * - was more complex but keep in place for now
+ * @param referral
+ * @returns
+ */
+export const suspensionCheck = (referral: Referral | null): boolean => {
+  return referral?.suspended || false;
 };

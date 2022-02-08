@@ -176,6 +176,16 @@ functions:
           topicName: ${self:provider.stage}-referral-sns-topic
           integration: lambda-proxy
 
+  referralSuspendedMonitor:
+    handler: src/handlers/monitors/referralSuspendedMonitor.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
+
   # aggregators
   referralAggregator:
     handler: src/handlers/aggregators/referralAggregator.main
