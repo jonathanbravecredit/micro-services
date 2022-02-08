@@ -47,6 +47,16 @@ export const updateEnrollment = (pkey: string): Promise<void> => {
     .catch((err) => err);
 };
 
+export const suspendReferral = (id: string): Promise<void> => {
+  return store
+    .update(id)
+    .updateAttribute('suspended')
+    .set(true)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
 export const getActiveCampaignReferrals = (campaign: string): Promise<Referral[]> => {
   return store
     .query()
