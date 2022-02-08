@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import { ReferralMaker } from 'lib/models/referral.model';
+import { Referral, ReferralMaker } from 'lib/models/referral.model';
 import {
   getCampaign,
   updateReferralCampaign,
@@ -78,9 +78,11 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           const now = new Date();
           const campaign = dayjs(now).isAfter(current!.endDate) ? defaultCamp : current;
           // 2. double check there is a referral
-          //   - if not create one
           const referral = await getReferral(message.userId);
-          if (referral?.suspended) return; // suspended users cannot become eligible again
+          // 3. check if they or who referred them is suspended
+          const suspended = await suspensionCheck(referral);
+          if (suspended) return;
+
           if (!referral) {
             const newReferral = new ReferralMaker(message.userId, uuid.v4());
             await createReferral({
@@ -128,14 +130,6 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
             ...newReferral,
             enrolled: true,
           });
-        } else if (referral.referredByCode) {
-          // 2. referred by code present...check if who referred them is suspended
-          const referrer = await getReferralByCode(referral.referredByCode);
-          if (referrer?.suspended) {
-            await suspendReferral(referral.id);
-          } else {
-            await updateEnrollment(id);
-          }
         } else {
           await updateEnrollment(id);
         }
@@ -143,5 +137,19 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
     );
   } catch (err) {
     console.log('error in referral active monitor: ', JSON.stringify(err));
+  }
+};
+
+export const suspensionCheck = async (referral: Referral | null): Promise<boolean> => {
+  if (!referral) {
+    // 1. no referral so no suspenson
+    return false;
+  } else if (!referral.referredByCode) {
+    // 2. no referred by code, so just check their status
+    return referral.suspended;
+  } else {
+    const referrer = await getReferralByCode(referral.referredByCode);
+    // 3. if they or their referrer are suspended, then no dice.
+    return referral.suspended || referrer?.suspended || false;
   }
 };
