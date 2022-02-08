@@ -27,7 +27,7 @@ export class PaymentDateCalculator {
     const now = dayjs(new Date()).tz();
     const campaignEnd = dayjs(endDate).tz();
     return bonusHit
-      ? now.add(7, 'days').day(payOn).toISOString()
+      ? now.hour(0).minute(0).second(0).millisecond(0).add(7, 'days').day(2).toISOString()
       : campaignEnd
           .startOf('month')
           .add(1, 'month')

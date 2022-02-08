@@ -1,6 +1,7 @@
 import { IEmailParams, IFormatDataResults } from 'lib/utils/cognito/helpers/helpers.interfaces';
 
 export const flattenUser = (user: any, key: string): string => {
+  if (!user) return '';
   const matches = user.filter((attr: { Name: string; Value: any }) => {
     return attr.Name === key;
   });
@@ -48,8 +49,7 @@ export const generateReferralEmailParams = (): IEmailParams => {
                     <h1>Your referral reports</h1>
             </body>
         </html>`;
-  const to =
-    process.env.STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jorge@brave.credit', 'jonathan@brave.credit'];
+  const to = process.env.STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jorge@brave.credit', 'jonathan@brave.credit'];
 
   return {
     from,
