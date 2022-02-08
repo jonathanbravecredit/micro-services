@@ -1,20 +1,38 @@
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
+import * as utc from 'dayjs/plugin/utc';
+import * as timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+dayjs.tz.setDefault('America/Los_Angeles');
+
 export class PaymentDateCalculator {
   constructor() {}
 
-  calcPaymentDate(bonusHit: boolean, endDate: string) {
-    const now = new Date().toISOString();
-    const earlyDate = new Date(now.substring(0, 10));
-    const campaignEnd = new Date(endDate);
+  /**
+   * Logic:
+   * 1. if in the bonus then next payOn day (ex: tuesday (gladly))
+   * 2. if NOT in the bonus then first payOn of next month
+   *   - move to start of month (avoids 30/31 and 28 misses)
+   *   - add one month to date
+   *   - add 6 - payOn to date
+   *      - 6 - payOn will move it to sunday (0) or later if curr day is after payOn dat and push the week over
+   *      - or, wll keep in the same week if on Sun, Mon, or Tues, etc if before payOn which is correct
+   *   - set the date to payOn (ex: Tuesday = 2)
+   * @param bonusHit
+   * @param endDate
+   * @returns
+   */
+  calcPaymentDate(bonusHit: boolean, endDate: string, payOn: number = 2) {
+    const now = dayjs(new Date()).tz();
+    const campaignEnd = dayjs(endDate).tz();
     return bonusHit
-      ? moment(now).add(7, 'days').add(12, 'hours').day(2).toISOString()
-      : moment(campaignEnd)
-          .add(1, 'month')
+      ? now.add(7, 'days').day(payOn).toISOString()
+      : campaignEnd
           .startOf('month')
-          .add(6 - moment().day('Tuesday').day(), 'days')
-          .startOf('week')
-          .day(2)
-          .add(12, 'hours')
+          .add(1, 'month')
+          .add(6 - payOn, 'days')
+          .day(payOn)
           .toISOString();
   }
 }
