@@ -10,8 +10,6 @@ import {
   updateEnrollment,
   getReferral,
   createReferral,
-  getReferralByCode,
-  suspendReferral,
 } from 'lib/queries';
 import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
 import * as dayjs from 'dayjs';
@@ -80,7 +78,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           // 2. double check there is a referral
           const referral = await getReferral(message.userId);
           // 3. check if they or who referred them is suspended
-          const suspended = await suspensionCheck(referral);
+          const suspended = suspensionCheck(referral);
           if (suspended) return;
 
           if (!referral) {
@@ -140,16 +138,12 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   }
 };
 
-export const suspensionCheck = async (referral: Referral | null): Promise<boolean> => {
-  if (!referral) {
-    // 1. no referral so no suspenson
-    return false;
-  } else if (!referral.referredByCode) {
-    // 2. no referred by code, so just check their status
-    return referral.suspended;
-  } else {
-    const referrer = await getReferralByCode(referral.referredByCode);
-    // 3. if they or their referrer are suspended, then no dice.
-    return referral.suspended || referrer?.suspended || false;
-  }
+/**
+ * Helper method to return the suspension status.
+ * - was more complex but keep in place for now
+ * @param referral
+ * @returns
+ */
+export const suspensionCheck = (referral: Referral | null): boolean => {
+  return referral?.suspended || false;
 };
