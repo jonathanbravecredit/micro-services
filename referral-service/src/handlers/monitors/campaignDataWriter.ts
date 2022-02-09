@@ -2,7 +2,13 @@ import 'reflect-metadata';
 import { DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { Campaign } from 'lib/models/campaign.model';
-import { getActiveCampaignReferrals, getCampaign, getEligibileReferrals, updateReferral } from 'lib/queries';
+import {
+  getActiveCampaignReferrals,
+  getCampaign,
+  getEligibileReferrals,
+  updateReferral,
+  updateReferralCampaign,
+} from 'lib/queries';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
@@ -80,14 +86,9 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
             await Promise.all(
               eligibleReferrals.map(async (r) => {
                 // 1. update the campaign to the current campaign active
-                const now = new Date().toISOString();
-                const updated = {
-                  ...r,
-                  campaignActive: newImage.campaign,
-                  modifiedOn: now,
-                };
                 try {
-                  await updateReferral(updated);
+                  const resp = await updateReferralCampaign(r.id, newImage.campaign);
+                  console.log('resp: ', JSON.stringify(resp));
                 } catch (err) {
                   console.log('error updating referral 2: ', JSON.stringify(err));
                 }

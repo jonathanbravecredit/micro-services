@@ -73,8 +73,14 @@ export const getEligibileReferrals = (): Promise<Referral[]> => {
     .index(ELIGIBLE_GSI)
     .wherePartitionKey(1)
     .execFetchAll()
-    .then((res) => res)
-    .catch((err) => err);
+    .then((res) => {
+      console.log('eligible referrals: ', JSON.stringify(res));
+      return res;
+    })
+    .catch((err) => {
+      console.log('eligible error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const getReferralByCode = (code: string): Promise<Referral | null> => {
@@ -98,13 +104,22 @@ export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promi
 };
 
 export const updateReferralCampaign = (id: string, campaign: string): Promise<void> => {
+  const now = new Date().toISOString();
   return store
     .update(id)
     .updateAttribute('campaignActive')
     .set(campaign)
+    .updateAttribute('modifiedOn')
+    .set(now)
     .exec()
-    .then((res) => res)
-    .catch((err) => err);
+    .then((res) => {
+      console.log('update campaing: ', JSON.stringify(res));
+      return res;
+    })
+    .catch((err) => {
+      console.log('update campaign error: ', JSON.stringify(err));
+      return err;
+    });
 };
 
 export const batchDeleteReferrals = (records: Referral[]): Promise<any> => {
