@@ -29,6 +29,7 @@
     "@shiftcoders/dynamo-easy": "*",
     "ajv": "7.0.2",
     "csvjson": "*",
+    "dayjs": "^1.10.7",
     "md5": "*",
     "nodemailer": "*",
     "reflect-metadata": "*",
