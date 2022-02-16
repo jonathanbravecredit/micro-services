@@ -13,7 +13,7 @@ import { DynamoDBorSNSRecord } from 'lib/interfaces';
 import { Referral } from 'lib/models/referral.model';
 import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
 import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
@@ -25,7 +25,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
 
   const current = await getCampaign(1, 0);
   const now = new Date();
-  const ended = moment(now).isAfter(current?.endDate);
+  const ended = dayjs(now).isAfter(current?.endDate);
   if (current && ended) return;
 
   console.log('current campaign: ', JSON.stringify(current));
@@ -88,7 +88,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               await updateReferral(updated);
             }
 
-            if (enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
+            if (newImage.referredByCode && enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
               // need to give the user credit for enrolling
               const { denomination } = current;
               const referral = await getReferral(newImage.id);
