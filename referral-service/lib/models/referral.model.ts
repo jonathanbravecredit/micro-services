@@ -95,4 +95,12 @@ export class ReferralMaker implements Referral {
   getReferredById() {
     // add in logic here to look up the referred by code
   }
+  setCampaign(campaign: string) {
+    this.campaignActive = campaign;
+  }
+
+  enable() {
+    this.eligible = 1;
+    this.enrolled = true;
+  }
 }
