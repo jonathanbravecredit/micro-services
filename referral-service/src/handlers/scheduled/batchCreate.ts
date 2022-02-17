@@ -18,6 +18,7 @@ export const main: Handler = async (event: { list: string[] }): Promise<void> =>
         const validate = ajv.getSchema<ICreateReferral>('referralCreate');
         if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
         const referral = new ReferralMaker(payload.id, uuid.v4());
+        referral.makeEligible();
         return await createReferral(referral);
       }),
     );

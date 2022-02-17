@@ -95,4 +95,9 @@ export class ReferralMaker implements Referral {
   getReferredById() {
     // add in logic here to look up the referred by code
   }
+
+  makeEligible() {
+    this.eligible = 1;
+    this.enrolled = true;
+  }
 }
