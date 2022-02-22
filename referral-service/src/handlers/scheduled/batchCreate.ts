@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import * as uuid from 'uuid';
 import { ajv } from 'lib/schema/validation';
 import { Handler } from 'aws-lambda';
-import { ReferralMaker } from 'lib/models/referral.model';
+import { Referral, ReferralMaker } from 'lib/models/referral.model';
 import { ICreateReferral } from 'lib/interfaces';
-import { createReferral, getCampaign, updateReferral } from 'lib/queries';
+import { createReferral, getCampaign, getReferral, updateReferral } from 'lib/queries';
 
 export const main: Handler = async (event: { list: string[] }): Promise<void> => {
   const { list } = event;
@@ -19,11 +19,22 @@ export const main: Handler = async (event: { list: string[] }): Promise<void> =>
         const validate = ajv.getSchema<ICreateReferral>('referralCreate');
         if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
         const referral = new ReferralMaker(payload.id, uuid.v4());
-        await createReferral(referral);
-        //update the eligibility and enrollment
-        referral.enable();
-        referral.setCampaign(campaign);
-        await updateReferral(referral);
+        // check if they already have a referral
+        const existing = await getReferral(payload.id);
+        if (existing) {
+          const enabled: Referral = {
+            ...existing,
+            eligible: 1,
+            enrolled: true,
+          };
+          await updateReferral(enabled);
+        } else {
+          await createReferral(referral);
+          //update the eligibility and enrollment
+          referral.enable();
+          referral.setCampaign(campaign);
+          await updateReferral(referral);
+        }
       }),
     );
   } catch (err) {
