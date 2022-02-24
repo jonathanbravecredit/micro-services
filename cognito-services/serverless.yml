@@ -1,0 +1,78 @@
+frameworkVersion: '2.3.0'
+service: cognito-services
+
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-plugin-warmup
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-2
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    EMAIL: 'support@brave.credit'
+    DOMAIN: 'brave.credit'
+    ACCOUNT_ID: '#{AWS::AccountId}'
+    REGION: ${self:provider.region}
+    SNS_PROXY_TOPIC: !Sub 'arn:aws:sns:us-east-2:${AWS::AccountId}:SnsProxyTopic'
+    DEVAPIURL: 'https://jokbs4tpn3.execute-api'
+    QAAPIURL: 'https://dotv7efpr0.execute-api'
+    PRODAPIURL: 'https://0h0d8u4rf7.execute-api'
+    QAPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://qa-app.brave.credit'
+    DEVPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://dev-app.brave.credit'
+    PRODPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://app.brave.credit'
+  timeout: 60
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': WebApiGateway-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': WebApiGateway-rootResourceId
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'cognito-identity:*'
+        - 'cognito-sync:*'
+        - 'cognito-idp:*'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - 'ses:*'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - 'sns:*'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: '*'
+
+functions:
+  presignup:
+    handler: handlers/presignup.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    warmup: false
+  postAuthentication:
+    handler: handlers/postAuthentication.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    warmup: false
+  confirmRedirect:
+    handler: handlers/confirmRedirect.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    warmup: false
+  welcomeUser:
+    handler: handlers/welcomeUser.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    warmup: true
+  validateUser:
+    handler: handlers/validateUser.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    warmup: true
+    events:
+      - http:
+          path: /redirect
+          method: get
+          cors: true
+          integration: lambda-proxy

@@ -1,0 +1,8 @@
+{
+  "service": "mailchimp",
+  "command": "POST",
+  "message": {
+    "email": "jpizzolato36@gmail.com",
+    "action": "nt-04-drop-out-of-onboarding"
+  }
+}

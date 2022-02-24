@@ -1,0 +1,421 @@
+frameworkVersion: '2.15.0'
+service: user-reporting
+
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-pseudo-parameters
+  - serverless-dotenv-plugin
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  bundle:
+    linting: false
+    externals:
+      - nodemailer
+  settings:
+    POOL:
+      dev: 'us-east-2_beTcykTM9'
+      prod: 'us-east-2_R22DawoAR'
+    APPDATA:
+      dev: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
+      prod: 'AppData-4tpaga7rzjayhk75opsmpeurme-prod'
+    GRAPHQL_APIENDPOINTOUTPUT: !ImportValue GraphQLAPIEndpointOutput
+    GRAPHQL_API:
+      dev: 'rr5wtr4ev5exlbutrkih3r5lhq'
+      qa: 'rr5wtr4ev5exlbutrkih3r5lhq'
+      prod: '4tpaga7rzjayhk75opsmpeurme'
+    GRAPHQL_ENDPOINT:
+      dev: '24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com'
+      qa: '24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com'
+      prod: 'krybm5pc3nbgdk4zwgcva2i4va.appsync-api.us-east-2.amazonaws.com'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  timeout: 900
+  environment:
+    ACCOUNT_ID: '#{AWS::AccountId}'
+    STAGE: ${opt:stage, self:provider.stage}
+    POOL: ${self:custom.settings.POOL.${opt:stage}}
+    APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
+    APPSYNC_API: '${self:custom.settings.GRAPHQL_API.${opt:stage}}'
+    APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
+    OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
+  iamRoleStatements:
+    - Effect: Allow
+      Resource:
+        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Query/*'
+        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Mutation/*'
+        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Subscription/*'
+      Action: 'appsync:GraphQL'
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:ListStreams
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchWriteItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Referrals'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Analytics'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditScores'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditReports'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Disputes'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports/index/*'
+    - Effect: 'Allow'
+      Action:
+        - cognito-idp:ListUsers
+        - cognito-idp:AdminDisableUser
+        - cognito-idp:AdminDeleteUser
+        - cognito-idp:AdminGetUser
+      Resource: 'arn:aws:cognito-idp:${self:provider.region}:#{AWS::AccountId}:userpool/*'
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+      Resource: '*'
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
+
+functions:
+  userRegistrations:
+    handler: src/handlers/compilers/reportRegisteredUsers.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 8 ? * MON *)
+  userEnrollments:
+    handler: src/handlers/compilers/reportEnrollments.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 8 * * ? *)
+  reportEnrollmentDisconnect:
+    handler: src/handlers/compilers/reportEnrollmentDisconnect.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 8 * * ? *)
+  userOnboardingErrors:
+    handler: src/handlers/compilers/reportOnboardingErrors.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 8 * * ? *)
+  userSuspensions:
+    handler: src/handlers/compilers/reportSuspendedUsers.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 8 * * ? *)
+  disableStaleUsers:
+    handler: src/handlers/compilers/disableStaleUsers.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 7 * * ? *) # run every night at 1:00 AM
+  reportFailedFulfills:
+    handler: src/handlers/compilers/reportFailedFulfills.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  reportAllDisputes:
+    handler: src/handlers/compilers/reportAllDisputes.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  reportFailedCancelEnrollments:
+    handler: src/handlers/compilers/reportFailedCancelEnrollments.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # no report report
+  triggerNoReportReport:
+    handler: src/triggers/triggerNoReportReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileNoReportReport:
+    handler: src/handlers/compilers/compileNoReportReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanUpNoReportReport:
+    handler: src/handlers/cleanup/cleanUpNoReportReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # failure reports
+  triggerFailuresYTD:
+    handler: src/triggers/triggerFailuresYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(30 8 * * ? *) # run every morning at 12:30 AM
+  reportFailuresYTD:
+    handler: src/handlers/compilers/reportFailuresYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM
+  cleanUpFailuresYTDReport:
+    handler: src/handlers/cleanup/cleanUpFailuresYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(30 12 * * ? *) # run every morning at 4:30 AM
+
+  # action reports
+  triggerActionsYTD:
+    handler: src/triggers/triggerActionsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  reportActionsYTD:
+    handler: src/handlers/compilers/reportActionsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanUpActionsYTDReport:
+    handler: src/handlers/cleanup/cleanUpActionsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # authentication log reports
+  triggerAuthenticationLogAll:
+    handler: src/triggers/triggerAuthenticationLogAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileAuthenticationLogReport:
+    handler: src/handlers/compilers/compileAuthenticationLogReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanupAuthenticationLogReport:
+    handler: src/handlers/cleanup/cleanupAuthenticationLogReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # monthly login reports
+  triggerMonthlyLogInReport:
+    handler: src/triggers/triggerMonthlyLogInReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileMonthlyLogInReport:
+    handler: src/handlers/compilers/compileMonthlyLogInReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanupMonthlyLogInReport:
+    handler: src/handlers/cleanup/cleanUpMonthlyLogInReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # user employer all
+  triggerUserEmployerAll:
+    handler: src/triggers/triggerUserEmployerAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileUserEmployerAll:
+    handler: src/handlers/compilers/compileUserEmployerAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanupUserEmployerAll:
+    handler: src/handlers/cleanup/cleanUpUserEmployerAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # failed fulfill reports
+  triggerFailedFulfill:
+    handler: src/triggers/triggerFailedFulfill.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileFailedFulfillReport:
+    handler: src/handlers/compilers/compileFailedFulfillReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanupFailedFulfillReport:
+    handler: src/handlers/cleanup/cleanupFailedFulfillReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # referral reports
+  triggerReferralsAll:
+    handler: src/triggers/triggerReferralsAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(15 8 * * ? *) # run every morning at 12:15 AM
+  compileReferralsReport:
+    handler: src/handlers/compilers/compileReferralsReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(15 9 * * ? *) # run every morning at 1:15 AM
+  cleanUpReferralReport:
+    handler: src/handlers/cleanup/cleanUpReferralReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(15 12 * * ? *) # run every morning at 4:00 AM
+
+  # enrollment reports
+  reportEnrollmentCount:
+    handler: src/handlers/compilers/reportEnrollmentCount.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  triggerEnrollmentsYTD:
+    handler: src/triggers/triggerEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 8 * * ? *) # run every morning at 12:0 AM
+  reportEnrollmentsYTD:
+    handler: src/handlers/compilers/reportEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM
+  cleanUpEnrollmentsYTDReport:
+    handler: src/handlers/cleanup/cleanUpEnrollmentsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 12 * * ? *) # run every morning at 4:00 AM
+
+  # registration reports
+  triggerRegistrationsYTDReport:
+    handler: src/triggers/triggerRegistrationsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 8 ? * MON *)
+  compileRegistrationsYTDReport:
+    handler: src/handlers/compilers/compileRegistrationsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 9 ? * MON *)
+  cleanUpRegistrationsYTDReport:
+    handler: src/handlers/cleanup/cleanUpRegistrationsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    # events:
+    #   - schedule: cron(0 12 ? * MON *) # run every morning at 4:00 AM
+
+  # dispute enrollment reports
+  reportDisputeEnrollmentsYTD:
+    handler: src/handlers/compilers/reportDisputeEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanUpDisputeEnrollmentsYTDReport:
+    handler: src/handlers/cleanup/cleanUpDisputeEnrollmentsYTDReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  triggerDisputeEnrollmentsYTD:
+    handler: src/triggers/triggerDisputeEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # user aggregated metrics report
+  triggerUserAggregatedMetricsReport:
+    handler: src/triggers/triggerUserAggregatedMetricsReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileUserAggregatedMetricsReport:
+    handler: src/handlers/compilers/compileUserAggregatedMetricsReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanUpUserAggregatedMetricsReport:
+    handler: src/handlers/cleanup/cleanUpUserAggregatedMetricsReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  reportFailedCount:
+    handler: src/handlers/compilers/reportFailedCount.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  disableCancelledUsers:
+    handler: src/handlers/compilers/disableCancelledUsers.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  # ops batch worker - handles the large reporting jobs
+  opsBatchWorker:
+    handler: src/subscriptions/opsBatchWorker.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 120
+    reservedConcurrency: 5
+    events:
+      - sqs:
+          arn: !GetAtt
+            - OpsBatchQueue
+            - Arn
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+resources:
+  Resources:
+    OpsBatchSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-ops-batch-topic
+
+    # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
+    OpsBatchQueueDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-ops-batch-dlq
+        ReceiveMessageWaitTimeSeconds: 20
+
+    # Create our 'MailchimpQueue' SQS queue
+    OpsBatchQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: ${self:provider.stage}-ops-batch-sqs
+        ReceiveMessageWaitTimeSeconds: 20
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt
+            - OpsBatchQueueDLQ
+            - Arn
+          maxReceiveCount: 3
+        VisibilityTimeout: 720
+
+    # Create our queue policy for the 'MailchimpQueue'
+    SnsToOpsBatchQueueSqsPolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: 'allow-sns-messages'
+              Effect: Allow
+              Principal: '*'
+              Resource: !GetAtt
+                - OpsBatchQueue
+                - Arn
+              Action: 'SQS:SendMessage'
+              Condition:
+                ArnEquals:
+                  'aws:SourceArn': ${self:provider.environment.OPSBATCH_SNS_ARN}
+        Queues:
+          - Ref: OpsBatchQueue
+
+    # Create the subscription to the 'queue
+    OpsBatchQueueSubscription:
+      Type: 'AWS::SNS::Subscription'
+      Properties:
+        TopicArn: ${self:provider.environment.OPSBATCH_SNS_ARN}
+        Endpoint: !GetAtt
+          - OpsBatchQueue
+          - Arn
+        Protocol: sqs
+        FilterPolicy:
+          service:
+            - opsbatch
+            - enrollmentreport
+            - noreportreport
+            - failurereport
+            - actionsreport
+            - disputeenrollmentreport
+            - authenticationcalls
+            - failedfulfillreport
+            - referralsreport
+            - monthlyloginreport
+            - registeredusersreport
+            - useremployerall
+            - usermetricsreport
+        RawMessageDelivery: 'true'
+
+    OpsReports:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'reportId'
+            AttributeType: 'S'
+          - AttributeName: 'recordId'
+            AttributeType: 'S'
+          - AttributeName: 'batchId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'reportId'
+            KeyType: 'HASH'
+          - AttributeName: 'recordId'
+            KeyType: 'RANGE'
+        GlobalSecondaryIndexes:
+          - IndexName: batchIdReportId-index
+            KeySchema:
+              - AttributeName: batchId
+                KeyType: 'HASH'
+              - AttributeName: reportId
+                KeyType: 'RANGE'
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+        TableName: OpsReports
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE

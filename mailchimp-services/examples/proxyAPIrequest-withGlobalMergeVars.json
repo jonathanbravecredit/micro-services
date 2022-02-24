@@ -1,0 +1,14 @@
+{
+  "service": "mailchimp",
+  "command": "POST",
+  "message": {
+    "email": "jpizzolato36@gmail.com",
+    "action": "nt-01-code-to-confirm-email",
+    "globalMergeVars": [
+      {
+        "name": "href",
+        "content": "https://app.brave.credit/auth/signin?code=test123"
+      }
+    ]
+  }
+}
