@@ -23,7 +23,7 @@ provider:
     STAGE: ${opt:stage, 'dev'}
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
-    restApiRootResourceId: !ImportValue web-api-resources-rootresource
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
