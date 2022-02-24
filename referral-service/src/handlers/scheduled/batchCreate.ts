@@ -26,6 +26,7 @@ export const main: Handler = async (event: { list: string[] }): Promise<void> =>
             ...existing,
             eligible: 1,
             enrolled: true,
+            campaignActive: campaign,
           };
           await updateReferral(enabled);
         } else {
