@@ -77,7 +77,7 @@ functions:
 
   # Initiative Programs
   createPrograms:
-    handler: src/subs/initiatives/post.main
+    handler: src/subs/initiatives/programs/post.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
@@ -89,7 +89,7 @@ functions:
           authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
   updateInitiatives:
-    handler: src/subs/initiatives/put.main
+    handler: src/subs/initiatives/programs/put.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
