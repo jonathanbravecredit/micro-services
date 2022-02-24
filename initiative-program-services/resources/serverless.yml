@@ -1,17 +1,6 @@
 # NOTE: update this with your service name
 service: initiative-program-resources
 
-custom:
-  settings:
-    IDENTITY_IDS:
-      dev: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      qa: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      prod: 'us-east-2:ea31caf7-0945-4607-a3c4-0c9942967a32'
-    POOL_IDS:
-      dev: 'us-east-2_beTcykTM9'
-      qa: 'us-east-2_beTcykTM9'
-      prod: 'us-east-2_R22DawoAR'
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -28,15 +17,15 @@ resources:
         AttributeDefinitions:
           - AttributeName: 'id'
             AttributeType: 'S'
-          - AttributeName: 'initiative'
+          - AttributeName: 'program'
             AttributeType: 'S'
         KeySchema:
           - AttributeName: 'id'
             KeyType: 'HASH'
-          - AttributeName: 'initiative'
+          - AttributeName: 'program'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
-        TableName: InitiativePrograms
+        TableName: InitiativePrograms_old
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 

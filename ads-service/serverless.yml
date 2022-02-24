@@ -13,6 +13,11 @@ plugins:
 custom:
   bundle:
     linting: false
+  settings:
+    POOL_IDS:
+      dev: 'us-east-2_beTcykTM9'
+      qa: 'us-east-2_beTcykTM9'
+      prod: 'us-east-2_R22DawoAR'
 
 provider:
   name: aws
@@ -21,6 +26,7 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     STAGE: ${opt:stage, 'dev'}
+    POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
