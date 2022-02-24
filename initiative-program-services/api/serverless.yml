@@ -24,10 +24,3 @@ provider:
 functions:
   hello:
     handler: handler.hello
-    events:
-      - http:
-          path: hello
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !ImportValue web-api-resources-apigw-authorizer
