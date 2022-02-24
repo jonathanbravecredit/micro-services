@@ -5,6 +5,10 @@ service: initiative-program-api
 package:
   individually: true
 
+custom:
+  bundle:
+    linting: false
+
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
