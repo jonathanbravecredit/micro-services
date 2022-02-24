@@ -20,7 +20,74 @@ provider:
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:ListStreams
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/InitiativePrograms'
 
 functions:
-  hello:
-    handler: handler.hello
+  # User tracked initiatives
+  getInitiatives:
+    handler: src/http/initiatives/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: initiatives
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  createInitiatives:
+    handler: src/subs/initiatives/post.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+  updateInitiatives:
+    handler: src/subs/initiatives/put.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+  # Initiative Programs
+  createInitiatives:
+    handler: src/subs/initiatives/post.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+  updateInitiatives:
+    handler: src/subs/initiatives/put.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5

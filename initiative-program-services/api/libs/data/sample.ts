@@ -1,4 +1,6 @@
-export const MOCKPROGRESSTRACKERDATA = {
+import { Initiative } from 'libs/interfaces/initiative.interfaces';
+
+export const MOCKPROGRESSTRACKERDATA: Initiative = {
   id: 'future_score',
   initiative: 'future_score',
   initiativeReason: 'credit_card',
