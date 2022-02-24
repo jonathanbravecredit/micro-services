@@ -1,56 +1,65 @@
-export class InitiativeProgram {
+import { InitiativeTask, InitiativeStatus } from 'libs/classes/Initiative';
+
+export class Program {
+  public createdOn: string | null = null;
+  public modifiedOn: string | null = null;
+
   constructor(
-    protected id: string,
-    protected reasons: InitiativeProgramReasons[],
-    protected primaryTasks: InitiativePrimaryTask[],
+    public id: string,
+    public program: string,
+    public initiative: string,
+    public programReasons: ProgramReasons[],
+    public programTasks: ProgramPrimaryTask[],
   ) {}
 }
 
-export class InitiativeProgramReasons {
-  constructor(protected reason: string, protected description: string) {}
+export class ProgramReasons {
+  constructor(public reason: string, public description: string) {}
 }
 
-export class InitiativePrimaryTask {
+export class ProgramPrimaryTask extends InitiativeTask {
+  public taskStatus: InitiativeStatus = 'not_started';
   constructor(
-    protected parentId: string,
-    protected taskId: string,
-    protected taskStatus: string,
-    protected taskOrder: number,
-    protected taskCard: InitiativeTaskCard,
-    protected taskLabel: string,
-    protected subTasks: SubTask[],
-  ) {}
-}
-
-export class SubTask extends InitiativePrimaryTask {
-  constructor(
-    protected parentId: string,
-    protected taskId: string,
-    protected taskStatus: string,
-    protected taskOrder: number,
-    protected taskCard: InitiativeExtendedTaskCard,
-    protected taskLabel: string,
-    protected subTasks: SubTask[],
+    public parentId: string,
+    public taskId: string,
+    public taskOrder: number,
+    public taskLabel: string,
+    public taskCard: TaskCard,
+    public subTasks: ProgramSubTask[],
   ) {
-    super(parentId, taskId, taskStatus, taskOrder, taskCard, taskLabel, subTasks);
+    super(parentId, taskId, taskOrder, subTasks);
   }
 }
 
-export class InitiativeTaskCard {
-  constructor(protected header: string, protected textOne: string) {}
+export class ProgramSubTask extends ProgramPrimaryTask {
+  public taskStatus: InitiativeStatus = 'not_started';
+  constructor(
+    public parentId: string,
+    public taskId: string,
+    public taskOrder: number,
+    public taskLabel: string,
+    public taskCard: ExtendedTaskCard,
+    public subTasks: ProgramSubTask[],
+  ) {
+    super(parentId, taskId, taskOrder, taskLabel, taskCard, subTasks);
+  }
 }
 
-export class InitiativeExtendedTaskCard extends InitiativeTaskCard {
+export class TaskCard {
+  constructor(public header: string, public textOne: string) {}
+}
+
+export class ExtendedTaskCard extends TaskCard {
   constructor(
-    protected header: string,
-    protected textOne: string,
-    protected textTwo: string | null,
-    protected textButton: string | null,
-    protected metric: string,
-    protected successHeader: string,
-    protected successText: string,
-    protected questionHeader: string,
-    protected link: string,
+    public header: string,
+    public textOne: string,
+    public textTwo: string | null,
+    public textButton: string | null,
+    public metric: string,
+    public successHeader: string,
+    public successText: string,
+    public questionHeader: string,
+    public link: string | null,
   ) {
     super(header, textOne);
   }

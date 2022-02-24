@@ -24,8 +24,8 @@ export const MOCKPROGRESSTRACKERDATA: Initiative = {
           taskId: 'review_report',
           taskStatus: 'complete',
           taskOrder: 0,
-          subTasks: null,
           taskLabel: 'Review your report',
+          subTasks: null,
           taskCard: {
             header: 'Review your credit report',
             textOne:
@@ -45,8 +45,8 @@ export const MOCKPROGRESSTRACKERDATA: Initiative = {
           taskId: 'claim_future_score',
           taskStatus: 'not_started',
           taskOrder: 1,
-          subTasks: null,
           taskLabel: 'Claim your FutureScore',
+          subTasks: null,
           taskCard: {
             header: 'Claim Your FutureScore to get your dream credit card',
             textOne:

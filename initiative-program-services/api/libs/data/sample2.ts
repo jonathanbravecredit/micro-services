@@ -1,0 +1,170 @@
+export const sample = {
+  id: '0',
+  program: '0',
+  reasons: [
+    { reason: 'credit_card', description: 'Your plan to get a credit card' },
+    { reason: 'buy_house', description: 'Your plan to buy a house' },
+  ],
+  primaryTasks: [
+    {
+      taskStatus: 'not_started',
+      parentId: 'future_score',
+      taskId: 'credit_card',
+      taskOrder: 0,
+      taskLabel: 'Obtained Credit Card',
+      taskCard: {
+        header: "Let's help you get a credit card!",
+        textOne:
+          "We've made it easy for you to reach your goal and claim your FutureScore. Follow these steps, and with healthy financial habits, you could get your credit card in not time!",
+      },
+      subTasks: [
+        {
+          taskStatus: 'not_started',
+          parentId: 'credit_card',
+          taskId: 'review_report',
+          taskOrder: 0,
+          taskLabel: 'Review your report',
+          taskCard: {
+            header: 'Review your credit report',
+            textOne:
+              "You could gain an average of 19 points on your score if there's an error on your report, or even up to 130*.",
+            textTwo:
+              "Look for accounts or personal information you don't recognize. Find an issue? Dispute it in our app to request it be removed which could help your score.",
+            textButton: 'Review my report',
+            metric: '+19',
+            successHeader: 'Greate job reviewing your credit report',
+            successText: 'Checking it on a monthly basis ensures the information on your reports remains yours',
+            questionHeader: 'Do you have at least $9,450 saved?',
+            link: null,
+          },
+          subTasks: [],
+        },
+        {
+          taskStatus: 'not_started',
+          parentId: 'credit_card',
+          taskId: 'claim_future_score',
+          taskOrder: 1,
+          taskLabel: 'Claim your FutureScore',
+          taskCard: {
+            header: 'Claim Your FutureScore to get your dream credit card',
+            textOne:
+              'Opening this account can help you grow score 53 points or more! It can also automatically unlock a secured credit card, to reach an unsecured card quicker.',
+            textTwo: 'With on-time payments, you can grow your score and also build up a nice savings account!',
+            textButton: 'Open my account',
+            metric: '+53',
+            successHeader: 'Good work opening the account!',
+            successText: 'Make on-time payments on this and your other accounts to get the full benefit',
+            questionHeader: 'Do you have at least $9,450 saved?',
+            link: null,
+          },
+          subTasks: [],
+        },
+      ],
+    },
+    {
+      taskStatus: 'not_started',
+      parentId: 'future_score',
+      taskId: 'buy_house',
+      taskOrder: 1,
+      taskLabel: 'Bought a House',
+      taskCard: {
+        header: "Let's help you buy a house!",
+        textOne:
+          "We've made it easy for you to reach your goal and claim your FutureScore. Follow these steps, and with healthy financial habits, you could own a home in no time!",
+      },
+      subTasks: [
+        {
+          taskStatus: 'not_started',
+          parentId: 'buy_house',
+          taskId: 'subtask_0',
+          taskOrder: 0,
+          taskLabel: 'Subtask 0 label',
+          taskCard: {
+            header: 'abc',
+            textOne: 'def',
+            textTwo: 'ghi',
+            textButton: 'jkl',
+            metric: 'mno',
+            successHeader: 'pqr',
+            successText: 'stu',
+            questionHeader: 'vwx',
+            link: null,
+          },
+          subTasks: [],
+        },
+        {
+          taskStatus: 'not_started',
+          parentId: 'buy_house',
+          taskId: 'subtask_1',
+          taskOrder: 1,
+          taskLabel: 'Subtask 1 label',
+          taskCard: {
+            header: '123',
+            textOne: '456',
+            textTwo: '789',
+            textButton: '101',
+            metric: '112',
+            successHeader: '131',
+            successText: '415',
+            questionHeader: '161',
+            link: null,
+          },
+          subTasks: [],
+        },
+        {
+          taskStatus: 'not_started',
+          parentId: 'buy_house',
+          taskId: 'subtask_2',
+          taskOrder: 2,
+          taskLabel: 'Subtask 2 label',
+          taskCard: {
+            header: 'abc123',
+            textOne: 'def456',
+            textTwo: 'ghi789',
+            textButton: 'jkl101',
+            metric: 'mno112',
+            successHeader: 'pqr131',
+            successText: 'stu415',
+            questionHeader: 'vwx161',
+            link: null,
+          },
+          subTasks: [],
+        },
+        {
+          taskStatus: 'not_started',
+          parentId: 'buy_house',
+          taskId: 'subtask_3',
+          taskOrder: 3,
+          taskLabel: 'Subtask 3 label',
+          taskCard: {
+            header: '123vwx',
+            textOne: '456stu',
+            textTwo: '789pqr',
+            textButton: '101mno',
+            metric: '112jkl',
+            successHeader: '131ghi',
+            successText: '415def',
+            questionHeader: '161abc',
+            link: null,
+          },
+          subTasks: [],
+        },
+      ],
+    },
+  ],
+};
+
+const mapping = [
+  {
+    one: 1,
+    two: 2,
+    three: 3,
+    subTasks: [
+      {
+        one: 1,
+        two: 2,
+        three: 3,
+      },
+    ],
+  },
+];

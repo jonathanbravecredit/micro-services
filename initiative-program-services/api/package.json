@@ -22,6 +22,7 @@
   "dependencies": {
     "ajv": "^8.10.0",
     "dynamo-easy": "^0.10.1",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13"
   }
 }
