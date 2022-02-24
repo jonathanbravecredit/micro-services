@@ -75,27 +75,27 @@ functions:
           batchSize: 1
           maximumBatchingWindow: 5
 
-  # Initiative Programs
-  createPrograms:
-    handler: src/http/initiatives/programs/post.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-        path: initiatives/programs
-        method: post
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId: !ImportValue web-api-resources-apigw-authorizer
+  # # Initiative Programs
+  # createPrograms:
+  #   handler: src/http/initiatives/programs/post.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - http:
+  #       path: initiatives/programs
+  #       method: post
+  #       cors: true
+  #       authorizer:
+  #         type: COGNITO_USER_POOLS
+  #         authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
-  updateInitiatives:
-    handler: src/http/initiatives/programs/put.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-        path: initiatives/programs
-        method: put
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId: !ImportValue web-api-resources-apigw-authorizer
+  # updateInitiatives:
+  #   handler: src/http/initiatives/programs/put.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - http:
+  #       path: initiatives/programs
+  #       method: put
+  #       cors: true
+  #       authorizer:
+  #         type: COGNITO_USER_POOLS
+  #         authorizerId: !ImportValue web-api-resources-apigw-authorizer
