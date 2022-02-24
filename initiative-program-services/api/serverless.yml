@@ -88,7 +88,7 @@ functions:
   #         type: COGNITO_USER_POOLS
   #         authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
-  # updateInitiatives:
+  # updatePrograms:
   #   handler: src/http/initiatives/programs/put.main
   #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   #   events:
