@@ -13,6 +13,11 @@ plugins:
 custom:
   bundle:
     linting: false
+  settings:
+    POOL_IDS:
+      dev: 'us-east-2_beTcykTM9'
+      qa: 'us-east-2_beTcykTM9'
+      prod: 'us-east-2_R22DawoAR'
 
 provider:
   name: aws
@@ -21,9 +26,7 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     STAGE: ${opt:stage, 'dev'}
-  apiGateway:
-    restApiId: !ImportValue web-api-resources-apigw-id
-    restApiRootResourceId: !ImportValue web-api-resources-rootresource
+    POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -63,6 +66,16 @@ resources:
         TableName: Ads
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: referral-authorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
 
 functions:
   getAds:
