@@ -27,6 +27,9 @@ provider:
   environment:
     STAGE: ${opt:stage, 'dev'}
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -88,5 +91,4 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer

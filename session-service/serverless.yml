@@ -28,6 +28,9 @@ provider:
     STAGE: ${opt:stage, 'dev'}
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
     REFERRAL_TOPIC_ARN: !ImportValue 'referral-service-referrals-sns-topic'
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -52,51 +55,47 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /
+          path: /sessions
           method: post
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
   getSessionData:
     handler: src/api/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /{sessionId}
+          path: /sessions/{sessionId}
           method: get
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
   updateSessionData:
     handler: src/api/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /{sessionId}
+          path: /sessions/{sessionId}
           method: put
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getAllSessionData:
     handler: src/api/getAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /
+          path: /sessions
           method: get
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
           request:
             parameters:
               querystrings:
@@ -150,17 +149,6 @@ resources:
         TableName: Sessions
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: referral-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
 
   Outputs:
     SessionTable:

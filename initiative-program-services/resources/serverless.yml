@@ -40,22 +40,6 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: ${self:provider.stage}-initiative-program-service-api
-
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: initiative-program-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
-
     InitiativeProgramSNSTopic:
       Type: AWS::SNS::Topic
       Properties:
@@ -117,7 +101,7 @@ resources:
 
   Outputs:
     InitiativeProgramTable:
-      Description: 'Credit reports table'
+      Description: 'Initiative program table'
       Value: !Ref InitiativePrograms
       Export:
         Name: !Sub '${self:service}-table'
@@ -125,28 +109,13 @@ resources:
       Value: { 'Fn::GetAtt': ['InitiativePrograms', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-stream'
-    ApiGatewayRestApiId:
-      Description: 'Initiative program API id'
-      Value: !Ref ApiGatewayRestApi
-      Export:
-        Name: !Sub '${self:service}-apigw-id'
-    ApiGatewayRestApiResourceId:
-      Description: 'Initiative program API root resource'
-      Value: !GetAtt ApiGatewayRestApi.RootResourceId
-      Export:
-        Name: !Sub '${self:service}-apigw-rootresource'
-    ApiGatewayAuthorizorId:
-      Description: 'Credit reports API gateway authorizer'
-      Value: !Ref ApiGatewayAuthorizer
-      Export:
-        Name: !Sub '${self:service}-authorizer'
     InitiativeProgramQueueArn:
-      Description: 'Credit reports queue ARN'
+      Description: 'Initiative program queue ARN'
       Value: !GetAtt InitiativeProgramQueue.Arn
       Export:
         Name: !Sub '${self:service}-sqs-arn'
-    CreditReportTopicArn:
-      Description: 'Credit reports SNS ARN'
+    InitiativeProgramTopicArn:
+      Description: 'Initiative program SNS ARN'
       Value: !Ref InitiativeProgramSNSTopic
       Export:
         Name: !Sub '${self:service}-sns-arn'

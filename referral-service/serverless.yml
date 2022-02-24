@@ -39,6 +39,9 @@ provider:
     IDENTITY_ID: '${self:custom.settings.IDENTITY_IDS.${opt:stage}}'
     POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
     REFERRAL_TOPIC_ARN: !Ref ReferralsSNSTopic
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -103,8 +106,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getReferralByCode:
     handler: src/api/referrals/getReferralByCode.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -115,8 +117,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getReferralValidation:
     handler: src/api/referrals/getReferralValidation.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -147,8 +148,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
   # monitors
   campaignActiveMonitor:
@@ -258,17 +258,6 @@ resources:
         TableName: Campaigns
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: referral-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
 
   Outputs:
     ReferralsTable:

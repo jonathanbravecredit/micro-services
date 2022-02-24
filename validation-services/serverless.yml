@@ -26,6 +26,9 @@ provider:
   environment:
     NEVERBOUNCE_SECRET_LOCATION: '${self:provider.stage}/neverbounce-services/neverbounce'
     REGION: ${self:provider.region}
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:

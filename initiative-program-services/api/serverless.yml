@@ -17,11 +17,10 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     OUR_ENV: ${self:provider.stage}
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
 
 functions:
   hello:
     handler: handler.hello
-    events:
-      - http:
-          path: hello
-          method: get

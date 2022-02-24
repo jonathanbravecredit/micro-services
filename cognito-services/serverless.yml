@@ -17,18 +17,14 @@ provider:
     ACCOUNT_ID: '#{AWS::AccountId}'
     REGION: ${self:provider.region}
     SNS_PROXY_TOPIC: !Sub 'arn:aws:sns:us-east-2:${AWS::AccountId}:SnsProxyTopic'
-    DEVAPIURL: 'https://jokbs4tpn3.execute-api'
-    QAAPIURL: 'https://dotv7efpr0.execute-api'
+    DEVAPIURL: 'https://yxd90lcrja.execute-api'
     PRODAPIURL: 'https://0h0d8u4rf7.execute-api'
-    QAPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://qa-app.brave.credit'
     DEVPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://dev-app.brave.credit'
     PRODPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://app.brave.credit'
   timeout: 60
   apiGateway:
-    restApiId:
-      'Fn::ImportValue': WebApiGateway-restApiId
-    restApiRootResourceId:
-      'Fn::ImportValue': WebApiGateway-rootResourceId
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
