@@ -55,7 +55,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /
+          path: /sessions
           method: post
           cors: true
           authorizer:
@@ -67,7 +67,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /{sessionId}
+          path: /sessions/{sessionId}
           method: get
           cors: true
           authorizer:
