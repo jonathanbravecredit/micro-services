@@ -43,22 +43,6 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: ${self:provider.stage}-credit-report-service-api
-
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: credit-reports-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
-
     CreditReportsSNSTopic:
       Type: AWS::SNS::Topic
       Properties:
@@ -128,21 +112,6 @@ resources:
       Value: { 'Fn::GetAtt': ['CreditReports', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-stream'
-    ApiGatewayRestApiId:
-      Description: 'Credit reports API id'
-      Value: !Ref ApiGatewayRestApi
-      Export:
-        Name: !Sub '${self:service}-apigw-id'
-    ApiGatewayRestApiResourceId:
-      Description: 'Credit reports API root resource'
-      Value: !GetAtt ApiGatewayRestApi.RootResourceId
-      Export:
-        Name: !Sub '${self:service}-apigw-rootresource'
-    ApiGatewayAuthorizorId:
-      Description: 'Credit reports API gateway authorizer'
-      Value: !Ref ApiGatewayAuthorizer
-      Export:
-        Name: !Sub '${self:service}-authorizer'
     CreditReportsQueueArn:
       Description: 'Credit reports queue ARN'
       Value: !GetAtt CreditReportsQueue.Arn
