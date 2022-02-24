@@ -11,7 +11,7 @@ provider:
 
 resources:
   Resources:
-    InitiativeProgramsOld:
+    InitiativePrograms:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
@@ -25,7 +25,7 @@ resources:
           - AttributeName: 'program'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
-        TableName: InitiativePrograms_DNU
+        TableName: InitiativePrograms
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
