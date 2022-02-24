@@ -72,22 +72,22 @@ functions:
           maximumBatchingWindow: 5
 
   # Initiative Programs
-  createInitiatives:
-    handler: src/subs/initiatives/post.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - sqs:
-          arn:
-            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
-          batchSize: 1
-          maximumBatchingWindow: 5
+  # createPrograms:
+  #   handler: src/subs/initiatives/post.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - sqs:
+  #         arn:
+  #           Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+  #         batchSize: 1
+  #         maximumBatchingWindow: 5
 
-  updateInitiatives:
-    handler: src/subs/initiatives/put.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - sqs:
-          arn:
-            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
-          batchSize: 1
-          maximumBatchingWindow: 5
+  # updateInitiatives:
+  #   handler: src/subs/initiatives/put.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - sqs:
+  #         arn:
+  #           Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+  #         batchSize: 1
+  #         maximumBatchingWindow: 5
