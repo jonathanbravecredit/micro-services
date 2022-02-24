@@ -1,0 +1,27 @@
+{
+  "EventSource": "aws:sns",
+  "EventVersion": "1.0",
+  "EventSubscriptionArn": "arn:aws:sns:us-east-2: 890995358345:SnsProxyTopic:bd3da3c0-aba2-4d39-a936-b708fde714e9",
+  "Sns": {
+    "Type": "Notification",
+    "MessageId": "e8bf46ee-4223-5eec-b3a4-1f2143cd4684",
+    "TopicArn": "arn:aws:sns:us-east-2: 890995358345:SnsProxyTopic",
+    "Subject": "SNS Proxy",
+    "Message": {
+      "service": "mailchimp",
+      "command": "POST",
+      "message": {
+        "email": "jpizzolato36@gmail.com",
+        "action": "t04-user-clicks-prepaid"
+      }
+    },
+    "Timestamp": "2021-09-30T00: 07: 10.390Z",
+    "SignatureVersion": "1",
+    "Signature": "KCrS3z09AO9bd18cebvSjmc8TfmJh9BL3Dxj8VU54qHl/uXYzFJgzS4Q1Agwzi6sNsKoklL1ppnxO/InwKDI0njDaXaE3BcQX/FV2wx/0L8xLtqCO6n1M2iL6LQpLQFudBmEB/SjIxnKGkjzdvEcdouqNXpDELM5yuEkRw9ctvo7Ft0YSreTCF9FkxjRAz3wOSt/NSJ6vlTx+sXvCFBySVQE //UHhOHTUSWI8XaLUvIsK208KAQyJEC8d1oKjIQo0idNXOQkvDAc8TtRvMR7Kh9g04CgUgW9Ro3IC5e52T0ENyrQFQOoDLNgbXWwgMqQSLtiWrviWDGChR8H2h/4ow==",
+    "SigningCertUrl": "https: //sns.us-east-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+    "UnsubscribeUrl": "https: //sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:890995358345:SnsProxyTopic:bd3da3c0-aba2-4d39-a936-b708fde714e9",
+    "MessageAttributes": {
+      "service": []
+    }
+  }
+}
