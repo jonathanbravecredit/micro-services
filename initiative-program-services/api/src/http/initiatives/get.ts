@@ -9,14 +9,18 @@ import { Program } from 'libs/classes/Program';
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const sub = event?.requestContext?.authorizer?.claims?.sub;
   const programId = '1';
-  const env = process.env.OUR_ENV;
-  if (!sub && env !== 'dev') return response(200, 'no id provided');
+  console.log('sub: ', sub);
+  console.log('programId: ', programId);
+  if (!sub) return response(200, 'no id provided');
   try {
     const item = await getInitiative(sub, programId);
+    console.log('item: ', JSON.stringify(item));
     const program = (await getPrograms(programId)) as Program;
+    console.log('item: ', JSON.stringify(item));
     if (!item || !program) return response(200, `No initiative: ${item}; or program: ${program} found`);
     // need to layer in the initiative from client with the context from program
     const enriched = createNewInitiative(item).addProgramTasks(program).filterProgramTasks().enrichWithContext();
+    console.log('enriched: ', JSON.stringify(enriched));
     // layer in the context
     return response(200, enriched);
   } catch (err) {
