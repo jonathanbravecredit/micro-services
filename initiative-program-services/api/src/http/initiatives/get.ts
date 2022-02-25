@@ -8,7 +8,7 @@ import { Program } from 'libs/classes/Program';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const sub = event?.requestContext?.authorizer?.claims?.sub;
-  const { programId } = JSON.parse(event.body) as { programId: string };
+  const programId = '1';
   const env = process.env.OUR_ENV;
   if (!sub && env !== 'dev') return response(200, 'no id provided');
   try {
