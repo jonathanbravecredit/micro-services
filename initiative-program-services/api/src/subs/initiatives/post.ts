@@ -16,11 +16,17 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
         requests.map(async (req) => {
           const message = req.message;
           const { userId, programId, reason } = message;
+          console.log('message: ', JSON.stringify(message));
           // get the program
           const program = (await getPrograms(programId)) as Program; // the only one right now is program 0
+          console.log('program: ', JSON.stringify(program));
           const { initiative: programInitiative } = program;
+
+          console.log('programInitiative: ', JSON.stringify(programInitiative));
           // create the initiaite for client
           const initiative = new InitiativeMaker(userId, programId, programInitiative, reason, program);
+          console.log('initiative: ', JSON.stringify(initiative));
+          console.log('initiative.output: ', JSON.stringify(initiative.output));
           // save the initiative
           await createInitiative(initiative.output);
         }),
