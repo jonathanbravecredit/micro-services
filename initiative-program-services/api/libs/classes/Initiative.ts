@@ -79,7 +79,7 @@ export class InitiativeMaker {
     const tasks = this.program.programTasks.filter((task) => {
       console.log('task: ', JSON.stringify(task));
       console.log('this.initiative: ', JSON.stringify(this.initiative));
-      return (task.parentId = this.initiative);
+      return task.parentId === this.initiative;
     });
     const now = new Date().toISOString();
     this.output = new Initiative(
