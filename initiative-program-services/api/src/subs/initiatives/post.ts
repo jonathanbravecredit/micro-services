@@ -6,6 +6,7 @@ import { InitiativeMaker } from 'libs/classes/Initiative';
 import { Program } from 'libs/classes/Program';
 
 export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
+  console.log('event: ', event);
   const requests = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IInitiativeProgramPayload>;
   });
