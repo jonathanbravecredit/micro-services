@@ -50,14 +50,14 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: ''
+          path: '/initiatives'
           method: get
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
-  createInitiatives:
+  createInitiativeSub:
     handler: src/subs/initiatives/post.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
@@ -67,7 +67,7 @@ functions:
           batchSize: 1
           maximumBatchingWindow: 5
 
-  updateInitiatives:
+  updateInitiativeSub:
     handler: src/subs/initiatives/put.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
