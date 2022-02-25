@@ -48,7 +48,20 @@ export class Initiative {
     const tasks = this.programTasks;
     console.log('enrich tasks: ', JSON.stringify(tasks));
     this.programContext = this.getOnlyContext(tasks);
+
     console.log('enrich this.programContext: ', JSON.stringify(this.programContext));
+    for (let i = 0; i <= this.initiativeTasks.length; i++) {
+      this.initiativeTasks[i] = {
+        ...this.programContext[i],
+        ...this.initiativeTasks[i],
+      };
+      for (let j = 0; j <= this.initiativeTasks[i].subTasks.length; j++) {
+        this.initiativeTasks[i].subTasks[j] = {
+          ...this.programContext[i].subTasks[j],
+          ...this.initiativeTasks[i].subTasks[j],
+        };
+      }
+    }
     this.initiativeTasks = merge(this.programContext, this.initiativeTasks);
     console.log('enrich this.initiativeTasks: ', JSON.stringify(this.initiativeTasks));
   }
