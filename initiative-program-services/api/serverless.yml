@@ -8,8 +8,6 @@ package:
 custom:
   bundle:
     linting: false
-    externals:
-      - dynamo-easy
 
 plugins:
   - serverless-bundle # Package our functions with Webpack
