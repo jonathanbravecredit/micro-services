@@ -25,7 +25,7 @@ provider:
     OUR_ENV: ${self:provider.stage}
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
-    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-initiativeresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action: 'sns:Publish'
@@ -50,7 +50,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: /CHANGE
+          path: ''
           method: get
           cors: true
           authorizer:
