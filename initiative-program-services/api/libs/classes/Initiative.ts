@@ -50,12 +50,12 @@ export class Initiative {
     this.programContext = this.getOnlyContext(tasks);
 
     console.log('enrich this.programContext: ', JSON.stringify(this.programContext));
-    for (let i = 0; i <= this.initiativeTasks.length; i++) {
+    for (let i = 0; i < this.initiativeTasks.length; i++) {
       this.initiativeTasks[i] = {
         ...this.programContext[i],
         ...this.initiativeTasks[i],
       };
-      for (let j = 0; j <= this.initiativeTasks[i].subTasks.length; j++) {
+      for (let j = 0; j < this.initiativeTasks[i].subTasks.length; j++) {
         this.initiativeTasks[i].subTasks[j] = {
           ...this.programContext[i].subTasks[j],
           ...this.initiativeTasks[i].subTasks[j],
