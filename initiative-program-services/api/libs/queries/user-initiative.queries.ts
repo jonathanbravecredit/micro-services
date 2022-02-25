@@ -38,15 +38,15 @@ export const createInitiative = (initiative: UserInitiative): Promise<PutItemOut
     });
 };
 
-// export const updateReport = (report: UserInitiative): Promise<PutItemOutput> => {
-//   const modifiedOn = new Date().toISOString();
-//   const newDispute = {
-//     ...report,
-//     modifiedOn,
-//   };
-//   return store
-//     .put(newDispute)
-//     .exec()
-//     .then((res) => res)
-//     .catch((err) => err);
-// };
+export const updateInitiative = (initiative: UserInitiative): Promise<PutItemOutput> => {
+  const modifiedOn = new Date().toISOString();
+  const newDispute = {
+    ...initiative,
+    modifiedOn,
+  };
+  return store
+    .put(newDispute)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
