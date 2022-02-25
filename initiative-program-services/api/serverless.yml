@@ -50,7 +50,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: initiatives
+          path: /CHANGE
           method: get
           cors: true
           authorizer:
