@@ -31,6 +31,7 @@ export class Initiative {
 
   filterProgramTasks(): Initiative {
     this.programTasks = this.programTasks.filter((t) => t.taskId === this.initiativeReason);
+    this.initiativeTasks = this.programTasks;
     return this;
   }
 
@@ -45,9 +46,10 @@ export class Initiative {
   }
 
   enrichWithContext() {
+    // get the context from the program tasks
     const tasks = this.programTasks;
-    console.log('enrich tasks: ', JSON.stringify(tasks));
     this.programContext = this.getOnlyContext(tasks);
+    console.log('enrich tasks: ', JSON.stringify(tasks));
     console.log('enrich initiativeTasks: ', JSON.stringify(this.initiativeTasks));
     console.log('enrich this.programContext: ', JSON.stringify(this.programContext));
     for (let i = 0; i < this.initiativeTasks.length; i++) {
