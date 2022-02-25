@@ -1,5 +1,6 @@
+import 'reflect-metadata';
+import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { PutItemOutput } from 'aws-sdk/clients/dynamodb';
-import { DynamoStore } from 'dynamo-easy';
 import { UserInitiative } from 'libs/models/UserInitiative.model';
 
 const store = new DynamoStore(UserInitiative);

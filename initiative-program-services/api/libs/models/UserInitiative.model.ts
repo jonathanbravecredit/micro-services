@@ -1,4 +1,4 @@
-import { Model, PartitionKey, SortKey } from 'dynamo-easy';
+import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import { ProgramPrimaryTask, ProgramReasons } from 'libs/classes/Program';
 import { InitiativeStatus, InitiativeTask } from 'libs/classes/Initiative';
 
