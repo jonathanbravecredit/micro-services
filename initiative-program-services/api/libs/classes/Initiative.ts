@@ -62,7 +62,6 @@ export class Initiative {
         };
       }
     }
-    this.initiativeTasks = merge(this.programContext, this.initiativeTasks);
     console.log('enrich this.initiativeTasks: ', JSON.stringify(this.initiativeTasks));
   }
 
