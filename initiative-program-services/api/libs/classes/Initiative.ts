@@ -31,7 +31,6 @@ export class Initiative {
 
   filterProgramTasks(): Initiative {
     this.programTasks = this.programTasks.filter((t) => t.taskId === this.initiativeReason);
-    this.initiativeTasks = this.programTasks;
     return this;
   }
 
@@ -87,7 +86,7 @@ export class InitiativeMaker {
     protected program: Program,
   ) {
     const tasks = this.program.programTasks.filter((task) => {
-      return task.parentId === this.initiative;
+      return task.taskId === this.initiativeReason;
     });
     const now = new Date().toISOString();
     this.output = new Initiative(
