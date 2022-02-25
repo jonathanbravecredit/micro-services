@@ -15,9 +15,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
       await Promise.all(
         requests.map(async (req) => {
           const message = req.message;
-          const { id, parentId, taskId, taskStatus } = message;
+          const { userId, parentId, taskId, taskStatus } = message;
           // get the initiative
-          const initiative = await getInitiative(id, '0'); // the only one right now is program 0
+          const initiative = await getInitiative(userId, '0'); // the only one right now is program 0
           // update the subtask status
           let updated = {
             ...initiative,

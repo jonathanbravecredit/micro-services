@@ -1,7 +1,7 @@
 import { InitiativeStatus } from 'libs/classes/Initiative';
 
 export interface InitiativePatchBody {
-  id: string;
+  userId: string;
   parentId: string;
   taskId: string;
   taskStatus: InitiativeStatus;
