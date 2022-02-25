@@ -48,7 +48,7 @@ export class Initiative {
     const tasks = this.programTasks;
     console.log('enrich tasks: ', JSON.stringify(tasks));
     this.programContext = this.getOnlyContext(tasks);
-
+    console.log('enrich initiativeTasks: ', JSON.stringify(this.initiativeTasks));
     console.log('enrich this.programContext: ', JSON.stringify(this.programContext));
     for (let i = 0; i < this.initiativeTasks.length; i++) {
       this.initiativeTasks[i] = {
