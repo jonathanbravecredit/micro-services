@@ -1,12 +1,5 @@
 import { merge } from 'lodash';
-import {
-  Program,
-  ProgramPrimaryTask,
-  ProgramSubTask,
-  ProgramReasons,
-  TaskCard,
-  ExtendedTaskCard,
-} from 'libs/classes/Program';
+import { Program, ProgramPrimaryTask, ProgramReasons, TaskCard, ExtendedTaskCard } from 'libs/classes/Program';
 
 export type InitiativeStatus = 'not_started' | 'in_progress' | 'complete';
 
@@ -37,7 +30,7 @@ export class Initiative {
   }
 
   filterProgramTasks(): Initiative {
-    this.programTasks = this.programTasks.filter((t) => t.parentId === this.initiative);
+    this.programTasks = this.programTasks.filter((t) => t.taskId === this.initiativeReason);
     return this;
   }
 
@@ -53,8 +46,11 @@ export class Initiative {
 
   enrichWithContext() {
     const tasks = this.programTasks;
+    console.log('enrich tasks: ', JSON.stringify(tasks));
     this.programContext = this.getOnlyContext(tasks);
+    console.log('enrich this.programContext: ', JSON.stringify(this.programContext));
     this.initiativeTasks = merge(this.programContext, this.initiativeTasks);
+    console.log('enrich this.initiativeTasks: ', JSON.stringify(this.initiativeTasks));
   }
 
   mapFields(task: ProgramPrimaryTask): { taskLabel: string; taskCard: TaskCard | ExtendedTaskCard } {
@@ -76,10 +72,7 @@ export class InitiativeMaker {
     protected initiativeReason: string,
     protected program: Program,
   ) {
-    console.log('this.program: ', this.program);
     const tasks = this.program.programTasks.filter((task) => {
-      console.log('task: ', JSON.stringify(task));
-      console.log('this.initiative: ', JSON.stringify(this.initiative));
       return task.parentId === this.initiative;
     });
     const now = new Date().toISOString();
