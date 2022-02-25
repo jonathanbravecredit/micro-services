@@ -9,7 +9,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
   console.log('event: ', JSON.stringify(event));
   const requests = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IInitiativeProgramPayload>;
-  });
+  }).filter((r) => r.command === 'POST');
   if (requests.length) {
     try {
       await Promise.all(
