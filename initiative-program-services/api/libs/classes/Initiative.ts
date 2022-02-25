@@ -76,6 +76,7 @@ export class InitiativeMaker {
     protected initiativeReason: string,
     protected program: Program,
   ) {
+    console.log('this.program: ', this.program);
     const tasks = this.program.programTasks.filter((task) => {
       console.log('task: ', JSON.stringify(task));
       console.log('this.initiative: ', JSON.stringify(this.initiative));
