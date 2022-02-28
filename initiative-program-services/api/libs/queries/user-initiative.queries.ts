@@ -14,7 +14,7 @@ export const getInitiative = (id: string, program: string): Promise<UserInitiati
 };
 
 export const getFutureScoreInitiative = (): Promise<UserInitiative> => {
-  return getInitiative('bravecredit', '0');
+  return getInitiative('bravecredit', '1');
 };
 
 export const getPrograms = (programId: string): Promise<UserInitiative> => {
@@ -30,7 +30,6 @@ export const createInitiative = (initiative: UserInitiative): Promise<PutItemOut
   };
   return store
     .put(UserInitiative)
-    .ifNotExists()
     .exec()
     .then((res) => res)
     .catch((err) => {
