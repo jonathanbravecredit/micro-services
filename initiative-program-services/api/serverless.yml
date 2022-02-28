@@ -57,6 +57,31 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
+  createInitiatives:
+    handler: src/http/initiatives/post.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /initiatives
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  updateInitiatives:
+    handler: src/http/initiatives/put.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /initiatives
+          method: put
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  # for future user to enable event driven arch
   createInitiativeSub:
     handler: src/subs/initiatives/post.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
