@@ -61,7 +61,7 @@ const checkThree = (
 ): { test: boolean; data?: ITransactionalData } => {
   return { test: false }; // turning off temporarily
   if (!oldImage) return { test: false };
-  if (newImage.eligible && oldImage.campaignActive === 'NO_CAMPAIGN' && newImage.campaignActive !== 'NO_CAMPAIGN') {
+  if (newImage.eligible && oldImage?.campaignActive === 'NO_CAMPAIGN' && newImage.campaignActive !== 'NO_CAMPAIGN') {
     return {
       test: true,
       data: {
