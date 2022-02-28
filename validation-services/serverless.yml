@@ -42,6 +42,11 @@ provider:
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: 'arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue'
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: '*'
 
 functions:
   getValidation:

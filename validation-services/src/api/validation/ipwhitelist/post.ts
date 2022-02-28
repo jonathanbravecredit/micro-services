@@ -1,8 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
-import { IIpStackResponse } from 'lib/interfaces/ipstack.interfaces';
+import { IIpStackError, IIpStackResponse } from 'lib/interfaces/ipstack.interfaces';
 import { response } from 'lib/utils/response';
-const axios = require('axios').default;
+import { SES } from 'aws-sdk';
+import * as nodemailer from 'nodemailer';
+import { generateEmailParams } from 'lib/utils/helpers';
 
+const axios = require('axios').default;
+const ses = new SES({ region: 'us-east-1' });
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
   // const { email } = safeParse(event, 'queryStringParameters');
   const ipaddress = event.requestContext.identity.sourceIp;
@@ -20,6 +24,17 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) 
         : { success: false, result: 'non-US country code' };
     return response(200, result);
   } catch (err) {
+    const { code } = err as IIpStackError;
+    if (err.code === 104) {
+      let params = generateEmailParams(`!!!! IPADDRESS AT QUOTA !!!!`, ['jonathan@brave.credit']);
+      let transporter = nodemailer.createTransport({ SES: ses });
+      try {
+        await transporter.sendMail(params);
+        return response(200, { success: true, result: err.info });
+      } catch {
+        return response(200, { success: true, result: err.info });
+      }
+    }
     return response(200, { success: false, result: err });
   }
 };
