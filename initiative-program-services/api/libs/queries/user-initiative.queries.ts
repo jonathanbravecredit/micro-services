@@ -23,15 +23,15 @@ export const getPrograms = (programId: string): Promise<UserInitiative> => {
 
 export const createInitiative = (initiative: UserInitiative): Promise<PutItemOutput> => {
   const createdOn = new Date().toISOString();
-  const UserInitiative = {
+  const userInitiative = {
     ...initiative,
     createdOn,
     modifiedOn: createdOn,
   };
   return store
-    .put(UserInitiative)
+    .put(userInitiative)
     .exec()
-    .then((res) => res)
+    .then((res) => userInitiative)
     .catch((err) => {
       console.log('error: ', err);
       return err;
@@ -40,13 +40,13 @@ export const createInitiative = (initiative: UserInitiative): Promise<PutItemOut
 
 export const updateInitiative = (initiative: UserInitiative): Promise<PutItemOutput> => {
   const modifiedOn = new Date().toISOString();
-  const newDispute = {
+  const userInitiative = {
     ...initiative,
     modifiedOn,
   };
   return store
-    .put(newDispute)
+    .put(userInitiative)
     .exec()
-    .then((res) => res)
+    .then((res) => userInitiative)
     .catch((err) => err);
 };
