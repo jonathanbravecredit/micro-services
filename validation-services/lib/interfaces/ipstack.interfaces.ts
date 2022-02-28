@@ -67,3 +67,8 @@ export interface IIpStackSecurity {
   threat_level: string;
   threat_types: any;
 }
+
+export interface IIpStackError {
+  code: number;
+  info: string;
+}
