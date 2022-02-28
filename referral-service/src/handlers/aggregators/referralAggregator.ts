@@ -88,8 +88,13 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               await updateReferral(updated);
             }
 
-            if (newImage.referredByCode && enrollment && current.campaign !== 'NO_CAMPAIGN' && current.addOnFlagOne === 'enrollment') {
-              // need to give the user credit for enrolling
+            // need to give the user credit for enrolling
+            if (
+              newImage.referredByCode &&
+              enrollment &&
+              current.campaign !== 'NO_CAMPAIGN' &&
+              current.addOnFlagOne === 'enrollment'
+            ) {
               const { denomination } = current;
               const referral = await getReferral(newImage.id);
               if (!referral) return;
