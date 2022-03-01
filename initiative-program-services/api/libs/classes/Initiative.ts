@@ -105,7 +105,7 @@ export class InitiativeMaker {
   // ensure there is a valid matching reason...what to do if there isn't?
   getReason(reason: string): { reason: string; description: string } {
     const match = this.program.programReasons.find((r: ProgramReasons) => {
-      return (r.reason = reason);
+      return r.reason === reason;
     });
     if (!match) throw 'No matching reason found';
     return match;
