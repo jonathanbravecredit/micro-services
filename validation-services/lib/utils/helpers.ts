@@ -1,6 +1,6 @@
 import { IEmailParams } from 'lib/interfaces/nodemailer.interfaces';
 
-export const generateEmailParams = (subj: string, emails: string[] = ['']): IEmailParams => {
+export const generateEmailParams = (subj: string, emails: string[], message: string): IEmailParams => {
   const from = 'support@brave.credit';
   const subject = subj || 'Your registered user reports';
   const html = `
@@ -8,7 +8,7 @@ export const generateEmailParams = (subj: string, emails: string[] = ['']): IEma
         <html lang="en">
             <head></head>
             <body>
-                    <h1>${subj || 'Your registered user reports'}</h1>
+                    <h1>${message || 'Your registered user reports'}</h1>
             </body>
         </html>`;
   const to = emails;

@@ -1,0 +1,15 @@
+{
+  "Records": [
+    {
+      "body": {
+        "service": "initiativeprogram",
+        "command": "post",
+        "message": {
+          "userId": "abc",
+          "reason": "buy_house",
+          "programId": "1"
+        }
+      }
+    }
+  ]
+}
