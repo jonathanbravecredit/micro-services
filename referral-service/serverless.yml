@@ -150,7 +150,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getCampaignPublic:
-    handler: src/api/campaigns/get-public.main
+    handler: src/api/campaigns/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
