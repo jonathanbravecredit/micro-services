@@ -149,6 +149,15 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
+  getCampaignPublic:
+    handler: src/api/campaigns/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /campaigns/public
+          method: get
+          cors: true
+          authorizer: aws_iam
 
   # monitors
   campaignActiveMonitor:
