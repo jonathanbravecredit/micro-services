@@ -208,6 +208,9 @@ functions:
   batchCreateReferrals:
     handler: src/handlers/scheduled/batchCreate.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  batchSuspendReferrals:
+    handler: src/handlers/scheduled/batchSuspend.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   appDataPub:
     handler: src/handlers/pubs/appDataPub.main
