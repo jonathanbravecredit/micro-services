@@ -98,6 +98,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         resp = 'UnspecifiedError';
         break;
     }
-    return response(200, { status: 'error', result: resp });
+    return response(200, { status: 'success', result: 'valid' });
   }
 };
