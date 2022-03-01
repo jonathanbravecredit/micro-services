@@ -1,0 +1,93 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "nullable": false
+    },
+    "createdAt": {
+      "type": "string",
+      "nullable": false
+    },
+    "createdAtUTC": {
+      "type": "string",
+      "nullable": true
+    },
+    "createdAtPST": {
+      "type": "string",
+      "nullable": true
+    },
+    "status": {
+      "type": "string",
+      "nullable": false
+    },
+    "statusReason": {
+      "type": "string",
+      "nullable": true
+    },
+    "enrolled": {
+      "type": "string",
+      "nullable": false
+    },
+    "enrolledOn": {
+      "type": "string",
+      "nullable": true
+    },
+    "enrolledOnUTC": {
+      "type": "string",
+      "nullable": true
+    },
+    "enrolledOnPST": {
+      "type": "string",
+      "nullable": true
+    },
+    "fulfilled": {
+      "type": "string",
+      "nullable": false
+    },
+    "fulfilledOn": {
+      "type": "string",
+      "nullable": true
+    },
+    "fulfilledOnUTC": {
+      "type": "string",
+      "nullable": true
+    },
+    "fulfilledOnPST": {
+      "type": "string",
+      "nullable": true
+    },
+    "pinRequests": {
+      "type": "number",
+      "nullable": true
+    },
+    "pinAttempts": {
+      "type": "number",
+      "nullable": true
+    },
+    "pinCurrentAge": {
+      "type": "string",
+      "nullable": true
+    },
+    "kbaAttempts": {
+      "type": "number",
+      "nullable": true
+    },
+    "kbaCurrentAge": {
+      "type": "string",
+      "nullable": true
+    },
+    "authAttempts": {
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "id",
+    "createdAt",
+    "status",
+    "enrolled",
+    "fulfilled"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,17 @@
+{
+  "name": "onboarding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mailchimp/mailchimp_transactional": "^1.0.19",
+    "nodemailer": "^6.7.2",
+    "serverless-plugin-warmup": "^4.9.0",
+    "serverless-pseudo-parameters": "^2.5.0"
+  }
+}

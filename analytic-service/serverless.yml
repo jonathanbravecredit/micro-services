@@ -33,6 +33,9 @@ provider:
     APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
     CREDIT_SCORE_TABLE: CreditScoreTrackings
     CREDIT_SCORE_STREAM: 'GetAtt:CreditScoreTrackings;StreamArn'
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
     - Effect: 'Allow'
       Action: 'sns:Publish'
@@ -73,8 +76,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getTracking:
     handler: src/api/tracking/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -85,8 +87,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   updateTracking:
     handler: src/api/tracking/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -97,8 +98,7 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
   deleteTracking:
     handler: src/api/tracking/update.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -109,8 +109,8 @@ functions:
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
   # triggers
   triggerScoreTracking:
     handler: src/triggers/scores/triggerScoreTracking.main
@@ -181,16 +181,6 @@ resources:
         TableName: CreditScores
         StreamSpecification:
           StreamViewType: NEW_IMAGE
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: analytics-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOLS.${opt:stage}}'
 
   Outputs:
     AnalyticsTable:

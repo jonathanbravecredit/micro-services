@@ -1,0 +1,69 @@
+# NOTE: update this with your service name
+service: validation-services
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-pseudo-parameters
+  - serverless-plugin-warmup
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  bundle:
+    linting: false
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  timeout: 30
+  environment:
+    NEVERBOUNCE_SECRET_LOCATION: '${self:provider.stage}/neverbounce-services/neverbounce'
+    REGION: ${self:provider.region}
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        - 'arn:aws:secretsmanager:${self:provider.region}:#{AWS::AccountId}:secret:${self:provider.stage}/neverbounce-services/neverbounce-*'
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: 'arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue'
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: '*'
+
+functions:
+  getValidation:
+    handler: src/api/validation/getValidation.main
+    onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
+    events:
+      - http:
+          path: /validation
+          method: post
+          cors: true
+          authorizer: aws_iam
+  postIpwhitelist:
+    handler: src/api/validation/ipwhitelist/post.main
+    onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
+    events:
+      - http:
+          path: /validation/ipwhitelist
+          method: post
+          cors: true
+          authorizer: aws_iam

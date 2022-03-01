@@ -1,0 +1,41 @@
+import 'reflect-metadata';
+import { Handler } from 'aws-lambda';
+import { SNS } from 'aws-sdk';
+import { PubSubUtil } from 'libs/pubsub/pubsub';
+import { IBatchCognitoMsg, IBatchMsg } from 'libs/interfaces/batch.interfaces';
+
+// request.debug = true; import * as request from 'request';
+const sns = new SNS({ region: 'us-east-2' });
+const pubsub = new PubSubUtil();
+
+/**
+ * Handler that processes single requests for Transunion services
+ * @param service Service invoked via the SNS Proxy 'transunion'
+ * @param command REST based command to invoke actions
+ * @param message Object containing service specific package for processing
+ * @returns Lambda proxy response
+ */
+export const main: Handler<any, any> = async (event: any): Promise<any> => {
+  try {
+    const segments = [];
+    for (let i = 0; i < 1; i++) {
+      segments.push(i);
+    }
+    await Promise.all(
+      segments.map(async (s) => {
+        const packet: IBatchCognitoMsg<string> = {
+          exclusiveStartKey: '',
+          segment: s,
+          totalSegments: segments.length,
+        };
+        const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>('opsbatch', packet, 'registeredusersreport');
+        await sns.publish(payload).promise();
+      }),
+    );
+    const results = { success: true, error: null, data: `Ops:batch queued ${segments.length} segments.` };
+    return JSON.stringify(results);
+  } catch (err) {
+    console.log('err ===> ', err);
+    return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+  }
+};

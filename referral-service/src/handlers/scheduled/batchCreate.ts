@@ -26,8 +26,17 @@ export const main: Handler = async (event: { list: string[] }): Promise<void> =>
             ...existing,
             eligible: 1,
             enrolled: true,
+            campaignActive: 'NO_CAMPAIGN',
           };
           await updateReferral(enabled);
+          // to trick the email to go out
+          const reenabled: Referral = {
+            ...existing,
+            eligible: 1,
+            enrolled: true,
+            campaignActive: campaign,
+          };
+          await updateReferral(reenabled);
         } else {
           await createReferral(referral);
           //update the eligibility and enrollment

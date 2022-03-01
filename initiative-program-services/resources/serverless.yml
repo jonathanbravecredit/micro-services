@@ -1,17 +1,6 @@
 # NOTE: update this with your service name
 service: initiative-program-resources
 
-custom:
-  settings:
-    IDENTITY_IDS:
-      dev: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      qa: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      prod: 'us-east-2:ea31caf7-0945-4607-a3c4-0c9942967a32'
-    POOL_IDS:
-      dev: 'us-east-2_beTcykTM9'
-      qa: 'us-east-2_beTcykTM9'
-      prod: 'us-east-2_R22DawoAR'
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -28,33 +17,17 @@ resources:
         AttributeDefinitions:
           - AttributeName: 'id'
             AttributeType: 'S'
-          - AttributeName: 'initiative'
+          - AttributeName: 'program'
             AttributeType: 'S'
         KeySchema:
           - AttributeName: 'id'
             KeyType: 'HASH'
-          - AttributeName: 'initiative'
+          - AttributeName: 'program'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
         TableName: InitiativePrograms
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: ${self:provider.stage}-initiative-program-service-api
-
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: initiative-program-authorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${self:custom.settings.POOL_IDS.${opt:stage}}'
 
     InitiativeProgramSNSTopic:
       Type: AWS::SNS::Topic
@@ -79,7 +52,6 @@ resources:
             - InitiativeProgramQueueDLQ
             - Arn
           maxReceiveCount: 3
-        VisibilityTimeout: 720
 
     # Create our queue policy for the 'MailchimpQueue'
     SnsToInitiativeProgramQueueSqsPolicy:
@@ -117,7 +89,7 @@ resources:
 
   Outputs:
     InitiativeProgramTable:
-      Description: 'Credit reports table'
+      Description: 'Initiative program table'
       Value: !Ref InitiativePrograms
       Export:
         Name: !Sub '${self:service}-table'
@@ -125,28 +97,13 @@ resources:
       Value: { 'Fn::GetAtt': ['InitiativePrograms', 'StreamArn'] }
       Export:
         Name: !Sub '${self:service}-stream'
-    ApiGatewayRestApiId:
-      Description: 'Initiative program API id'
-      Value: !Ref ApiGatewayRestApi
-      Export:
-        Name: !Sub '${self:service}-apigw-id'
-    ApiGatewayRestApiResourceId:
-      Description: 'Initiative program API root resource'
-      Value: !GetAtt ApiGatewayRestApi.RootResourceId
-      Export:
-        Name: !Sub '${self:service}-apigw-rootresource'
-    ApiGatewayAuthorizorId:
-      Description: 'Credit reports API gateway authorizer'
-      Value: !Ref ApiGatewayAuthorizer
-      Export:
-        Name: !Sub '${self:service}-authorizer'
     InitiativeProgramQueueArn:
-      Description: 'Credit reports queue ARN'
+      Description: 'Initiative program queue ARN'
       Value: !GetAtt InitiativeProgramQueue.Arn
       Export:
         Name: !Sub '${self:service}-sqs-arn'
-    CreditReportTopicArn:
-      Description: 'Credit reports SNS ARN'
+    InitiativeProgramTopicArn:
+      Description: 'Initiative program SNS ARN'
       Value: !Ref InitiativeProgramSNSTopic
       Export:
         Name: !Sub '${self:service}-sns-arn'

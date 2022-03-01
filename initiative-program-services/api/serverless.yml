@@ -5,6 +5,10 @@ service: initiative-program-api
 package:
   individually: true
 
+custom:
+  bundle:
+    linting: false
+
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
@@ -17,11 +21,108 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     OUR_ENV: ${self:provider.stage}
+  apiGateway:
+    restApiId: !ImportValue web-api-resources-apigw-id
+    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
+    restApiResources:
+      initiatives: !ImportValue web-api-resources-apigw-initiativeresource
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:ListStreams
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/InitiativePrograms'
 
 functions:
-  hello:
-    handler: handler.hello
+  # User tracked initiatives
+  getInitiatives:
+    handler: src/http/initiatives/get.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: hello
+          path: /initiatives
           method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  createInitiatives:
+    handler: src/http/initiatives/post.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /initiatives
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  updateInitiatives:
+    handler: src/http/initiatives/put.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - http:
+          path: /initiatives
+          method: put
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  # for future user to enable event driven arch
+  createInitiativeSub:
+    handler: src/subs/initiatives/post.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+  updateInitiativeSub:
+    handler: src/subs/initiatives/put.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'initiative-program-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
+
+  # # Initiative Programs
+  # createPrograms:
+  #   handler: src/http/initiatives/programs/post.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - http:
+  #       path: initiatives/programs
+  #       method: post
+  #       cors: true
+  #       authorizer:
+  #         type: COGNITO_USER_POOLS
+  #         authorizerId: !ImportValue web-api-resources-apigw-authorizer
+
+  # updatePrograms:
+  #   handler: src/http/initiatives/programs/put.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - http:
+  #       path: initiatives/programs
+  #       method: put
+  #       cors: true
+  #       authorizer:
+  #         type: COGNITO_USER_POOLS
+  #         authorizerId: !ImportValue web-api-resources-apigw-authorizer

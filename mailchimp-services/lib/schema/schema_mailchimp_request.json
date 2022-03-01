@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string",
+      "nullable": false
+    },
+    "command": {
+      "type": "string",
+      "nullable": false
+    },
+    "message": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "nullable": false
+        },
+        "action": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": [
+        "email",
+        "action"
+      ],
+      "additionalProperties": true,
+      "nullable": false
+    }
+  },
+  "required": [
+    "service",
+    "command",
+    "message"
+  ],
+  "additionalProperties": false
+}

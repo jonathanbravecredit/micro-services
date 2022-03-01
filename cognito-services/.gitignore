@@ -1,0 +1,8 @@
+# package directories
+# dispute-letters/node_modules
+/on-boarding/node_modules
+jspm_packages
+
+# Serverless directories
+dispute-letters/.serverless
+/on-boarding/.serverless
