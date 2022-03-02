@@ -136,8 +136,9 @@ functions:
           arn: !GetAtt
             - MailchimpQueue
             - Arn
-          batchSize: 100
-          maximumBatchingWindow: 5
+          # batchSize: 100
+          # maximumBatchingWindow: 5
+
     # events:
     # - schedule: cron(0 0 15 * ? *) # manual trigger for now
 
