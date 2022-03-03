@@ -26,6 +26,6 @@ export class IpStackErrorHandler {
   }
 
   handleResponse(): APIGatewayProxyResult {
-    return response(this.code, { sucess: true, result: this.info });
+    return response(this.code, { success: true, result: this.info });
   }
 }
