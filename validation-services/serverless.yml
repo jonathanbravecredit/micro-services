@@ -24,6 +24,7 @@ provider:
   region: ${opt:region, 'us-east-2'}
   timeout: 30
   environment:
+    OUR_ENV: ${opt:stage, 'dev'}
     NEVERBOUNCE_SECRET_LOCATION: '${self:provider.stage}/neverbounce-services/neverbounce'
     REGION: ${self:provider.region}
   apiGateway:

@@ -8,8 +8,8 @@ export class NeverBounceErrorHandler extends ValidationError {
 
   async sendNotification(): Promise<void> {
     let params = this.generateEmail(
-      `!!!! NEVERBOUNCE FAILED !!!!`,
-      ['jonathan@brave.credit'],
+      `!!!! [${process.env.OUR_ENV}] NEVERBOUNCE FAILED !!!!`,
+      ['jonathan@brave.credit', 'jorge@brave.credit'],
       `neverbounce failed with the following info: ${this.info}`,
     );
     super.sendNotifications(params);
