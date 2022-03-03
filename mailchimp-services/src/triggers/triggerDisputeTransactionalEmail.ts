@@ -3,7 +3,6 @@ import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecor
 import * as AWS from 'aws-sdk';
 import { IDispute } from 'lib/interfaces';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
-import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
 import { SecureMail } from 'lib/utils/securemail/securemail';
 
 const sns = new AWS.SNS();
@@ -13,91 +12,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   const records = event.Records;
   console.log('records ==> ', JSON.stringify(records));
   // mailchimp emails
-  try {
-    await Promise.all(
-      records.map(async (record: DynamoDBRecord) => {
-        const message = JSON.stringify(record, null, 2);
-        if (record.eventName == 'MODIFY') {
-          const stream: StreamRecord = record.dynamodb || {};
-          const { OldImage, NewImage } = stream;
-          if (!OldImage || !NewImage) return;
-          const oldImage = AWS.DynamoDB.Converter.unmarshall(OldImage) as unknown as IDispute;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
-          const { UserAttributes } = await getUsersBySub(pool, newImage.id);
-          const email =
-            UserAttributes?.find((attr) => {
-              return attr.Name === 'email';
-            })?.Value || '';
-          const mailchimpTriggers = Mailchimp.transactional.dispute.resolver(oldImage, newImage, record.eventName);
-          // now need to go through all the triggered emails and send them (immediately for now) when appropriately
-          console.log('triggers ===> ', mailchimpTriggers);
-          try {
-            await Promise.all(
-              mailchimpTriggers?.map(async (trigger) => {
-                const { data, template } = trigger;
-                if (data?.api !== 'transactional') return;
-                const message = Mailchimp.createMailMessage(email, template);
-                const payload = Mailchimp.createSNSPayload('transactional', message, 'mailchimp');
-                console.log('SNS payload ===> ', payload);
-                await sns
-                  .publish(payload)
-                  .promise()
-                  .then((data: any) => {
-                    console.log('Results from sending message: ', JSON.stringify(data, null, 2));
-                  })
-                  .catch((err: any) => {
-                    console.error('Unable to send message. Error JSON:', JSON.stringify(err, null, 2));
-                  });
-              }),
-            );
-          } catch (err) {
-            console.log('sns error ==> ', err);
-          }
-        }
-
-        // new record checks
-        if (record.eventName == 'INSERT') {
-          const stream: StreamRecord = record.dynamodb || {};
-          const { NewImage } = stream;
-          if (!NewImage) return;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
-          const { UserAttributes } = await getUsersBySub(pool, newImage.id);
-          const email =
-            UserAttributes?.find((attr) => {
-              return attr.Name === 'email';
-            })?.Value || '';
-
-          const mailchimpTriggers = Mailchimp.transactional.dispute.resolver(null, newImage, record.eventName);
-          // now need to go through all the triggered emails and send them (immediately for now) when appropriately
-          console.log('triggers ===> ', mailchimpTriggers);
-          try {
-            await Promise.all(
-              mailchimpTriggers?.map(async (trigger) => {
-                const { data, template } = trigger;
-                if (data?.api !== 'transactional') return;
-                const message = Mailchimp.createMailMessage(email, template);
-                const payload = Mailchimp.createSNSPayload('transactional', message, 'mailchimp');
-                console.log('SNS payload ===> ', payload);
-                await sns
-                  .publish(payload)
-                  .promise()
-                  .then((data: any) => {
-                    console.log('Results from sending message: ', JSON.stringify(data, null, 2));
-                  })
-                  .catch((err: any) => {
-                    console.error('Unable to send message. Error JSON:', JSON.stringify(err, null, 2));
-                  });
-              }),
-            );
-          } catch (err) {
-            console.log('sns error ==> ', err);
-          }
-        }
-      }),
-    );
-  } catch (err) {
-    console.log('dynamodb error ===> ', err);
-  }
+  // no emails currently going through Mailchimp, even transactional ones
 
   // secure emails
   try {
@@ -116,7 +31,50 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
               return attr.Name === 'email';
             })?.Value || '';
 
-          const securemailTriggers = SecureMail.triggers.resolver(oldImage, newImage);
+          const securemailTriggers = SecureMail.triggers.resolver(oldImage, newImage, record.eventName);
+          // add secure triggers here
+          console.log('triggers ===> ', securemailTriggers);
+          try {
+            await Promise.all(
+              securemailTriggers?.map(async (trigger) => {
+                // this is the result from generator
+                //...only one generator right now
+                //...TODO, need to make it handle different types of generators
+                const params = {
+                  from: SecureMail.from,
+                  subject: SecureMail.subject,
+                  html: trigger,
+                  to: [email],
+                };
+                await SecureMail.sendMail(params);
+              }),
+            );
+          } catch (err) {
+            console.log('secure mail error ==> ', err);
+          }
+        }
+      }),
+    );
+  } catch (err) {
+    console.log('fall through err ==> ', err);
+  }
+
+  try {
+    await Promise.all(
+      records.map(async (record: DynamoDBRecord) => {
+        const message = JSON.stringify(record, null, 2);
+        if (record.eventName == 'INSERT') {
+          const stream: StreamRecord = record.dynamodb || {};
+          const { NewImage } = stream;
+          if (!NewImage) return;
+          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
+          const { UserAttributes } = await getUsersBySub(pool, newImage.id);
+          const email =
+            UserAttributes?.find((attr) => {
+              return attr.Name === 'email';
+            })?.Value || '';
+
+          const securemailTriggers = SecureMail.triggers.resolver(null, newImage, record.eventName);
           // add secure triggers here
           console.log('triggers ===> ', securemailTriggers);
           try {
