@@ -6,12 +6,12 @@ export class SecureMailTriggers {
   constructor() {}
 
   // add different scenarios and a resolver
-  static resolver(oldImage: IDispute, newImage: IDispute, event: 'INSERT' | 'MODIFY'): string[] {
+  static resolver(oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): string[] {
     let triggers: string[] = [];
-    let letterContent = newImage.disputeLetterContent;
+    let letterContent = newImage.disputeLetterContent || '';
     for (let key in triggerLibrary) {
       if (triggerLibrary[key](oldImage, newImage, event)) {
-        triggers = [...triggers, SecureMailTriggerGenerators[key](letterContent)];
+        triggers = [...triggers, SecureMailTriggerGenerators[key](key, letterContent)];
       }
     }
     this.currTriggers = triggers; // store for reference
@@ -25,8 +25,10 @@ export class SecureMailTriggers {
  * @param newImage
  * @returns
  */
-const checkOne = (oldImage: IDispute, newImage: IDispute): boolean => {
+const checkOne = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): boolean => {
   // return true;
+  if (event !== 'MODIFY') return false;
+  if (!oldImage) return false;
   const priorLetterCode = oldImage.disputeLetterCode || '';
   const currLetterCode = newImage.disputeLetterCode || '';
   const t1 = priorLetterCode.toLowerCase().indexOf('pvc');
@@ -63,11 +65,12 @@ const checkTwo = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT'
 const checkThree = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): boolean => {
   // return { test: false };
   if (event !== 'MODIFY') return false;
+  if (!oldImage || !newImage) return false;
   console.log('oldImage ==> ', JSON.stringify(oldImage));
   console.log('newImage ==> ', JSON.stringify(newImage));
   const currStatus = newImage.disputeStatus || '';
-  const oldIR = oldImage?.disputeInvestigationResults;
-  const newIR = newImage?.disputeInvestigationResults;
+  const oldIR = oldImage.disputeInvestigationResults;
+  const newIR = newImage.disputeInvestigationResults;
   console.log('oldIR: ', oldIR);
   console.log('newIR: ', newIR);
   // const t3 = currStatus !== priorStatus; // The status has changed
@@ -79,9 +82,11 @@ const checkThree = (oldImage: IDispute | null, newImage: IDispute, event: 'INSER
   return t4 && t5;
 };
 
-const triggerLibrary: Record<string, (oldImage: IDispute, newImage: IDispute, event: 'INSERT' | 'MODIFY') => boolean> =
-  {
-    [SecuremailTriggerEmails.PVItems]: checkOne,
-    [SecuremailTriggerEmails.DisputeSubmitted]: checkTwo,
-    [SecuremailTriggerEmails.DisputeResultsReady]: checkThree,
-  };
+const triggerLibrary: Record<
+  string,
+  (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY') => boolean
+> = {
+  [SecuremailTriggerEmails.PVItems]: checkOne,
+  [SecuremailTriggerEmails.DisputeSubmitted]: checkTwo,
+  [SecuremailTriggerEmails.DisputeResultsReady]: checkThree,
+};

@@ -3,7 +3,6 @@ import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecor
 import * as AWS from 'aws-sdk';
 import { IDispute } from 'lib/interfaces';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
-import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
 import { SecureMail } from 'lib/utils/securemail/securemail';
 
 const sns = new AWS.SNS();
@@ -33,6 +32,49 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
             })?.Value || '';
 
           const securemailTriggers = SecureMail.triggers.resolver(oldImage, newImage, record.eventName);
+          // add secure triggers here
+          console.log('triggers ===> ', securemailTriggers);
+          try {
+            await Promise.all(
+              securemailTriggers?.map(async (trigger) => {
+                // this is the result from generator
+                //...only one generator right now
+                //...TODO, need to make it handle different types of generators
+                const params = {
+                  from: SecureMail.from,
+                  subject: SecureMail.subject,
+                  html: trigger,
+                  to: [email],
+                };
+                await SecureMail.sendMail(params);
+              }),
+            );
+          } catch (err) {
+            console.log('secure mail error ==> ', err);
+          }
+        }
+      }),
+    );
+  } catch (err) {
+    console.log('fall through err ==> ', err);
+  }
+
+  try {
+    await Promise.all(
+      records.map(async (record: DynamoDBRecord) => {
+        const message = JSON.stringify(record, null, 2);
+        if (record.eventName == 'INSERT') {
+          const stream: StreamRecord = record.dynamodb || {};
+          const { NewImage } = stream;
+          if (!NewImage) return;
+          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
+          const { UserAttributes } = await getUsersBySub(pool, newImage.id);
+          const email =
+            UserAttributes?.find((attr) => {
+              return attr.Name === 'email';
+            })?.Value || '';
+
+          const securemailTriggers = SecureMail.triggers.resolver(null, newImage, record.eventName);
           // add secure triggers here
           console.log('triggers ===> ', securemailTriggers);
           try {
