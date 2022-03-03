@@ -6,4 +6,6 @@ export const SecureMailTriggerGenerators: Record<string, (arg0?: any) => any> = 
 
 export enum SecuremailTriggerEmails {
   PVItems = 'pvItems',
+  DisputeSubmitted = 'd01-dispute-submitted',
+  DisputeResultsReady = 'd02-dispute-results-ready',
 }
