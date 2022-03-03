@@ -5,7 +5,6 @@ import { previouslyVerifiedItems } from 'lib/utils/securemail/templates/pv-item'
 
 export class SecureMailGenerators {
   constructor() {}
-
   static generateEmailTemplate(template: string, content: string): string {
     return templateLibrary[template](content);
   }
