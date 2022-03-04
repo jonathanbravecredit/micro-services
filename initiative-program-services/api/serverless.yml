@@ -109,7 +109,7 @@ functions:
       - sns:
           arn:
             Fn::ImportValue: 'credit-report-service-resources-metrics-sns-arn'
-          batchSize: 1
+          topicName: credit-report-service-resources-metrics-sns-arn
 
   # # Initiative Programs
   # createPrograms:

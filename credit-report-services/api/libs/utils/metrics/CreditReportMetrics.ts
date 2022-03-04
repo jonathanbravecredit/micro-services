@@ -72,6 +72,7 @@ export class CreditReportMetrics {
       sumOpenStudentLoanBalances: 0,
       countOpenOtherAccounts: 0,
       sumOpenOtherBalances: 0,
+      haveSelfLoan: false,
     };
     this.tradelineRecords.forEach((trade) => {
       data.countAllAccounts++;
@@ -111,7 +112,11 @@ export class CreditReportMetrics {
         data.sumOpenOtherBalances += this.getAccountBalance(trade);
       }
     });
-    this.metrics = data;
+
+    this.metrics = {
+      ...data,
+      haveSelfLoan: this.haveSelfLoans(),
+    };
   }
 
   getAccountBalance(trade: ITradeLinePartition): number {

@@ -4,6 +4,7 @@ import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecor
 import { CreditReport } from 'libs/models/CreditReport.model';
 import { CreditReportMetrics } from 'libs/utils/metrics/CreditReportMetrics';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
+import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
 
 const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC;
 
@@ -18,9 +19,15 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { NewImage } = stream;
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
-          const metrics = new CreditReportMetrics(newImage);
+          const { id, metrics } = new CreditReportMetrics(newImage);
           const pub = new PubSubUtil();
-          pub.createSNSPayload<CreditReportMetrics>('creditreports', 'PUT', metrics, arn, 'creditreportmetrics');
+          pub.createSNSPayload<{ id: string; metrics: ICreditReportMetrics }>(
+            'creditreports',
+            'PUT',
+            { id, metrics },
+            arn,
+            'creditreportmetrics',
+          );
           await pub.publishSNSPayload();
         }
       }),
