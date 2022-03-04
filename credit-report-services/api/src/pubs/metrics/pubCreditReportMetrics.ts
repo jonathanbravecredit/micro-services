@@ -20,7 +20,11 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { NewImage } = stream;
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
-          const { id, metrics } = new CreditReportMetrics(newImage);
+          const analysis = new CreditReportMetrics(newImage);
+          analysis.aggregate();
+          const { id, metrics } = analysis;
+          console.log('id: ', id);
+          console.log('metrics: ', metrics);
           const pub = new PubSubUtil();
           pub.createSNSPayload<{ id: string; metrics: ICreditReportMetrics }>(
             'creditreports',
