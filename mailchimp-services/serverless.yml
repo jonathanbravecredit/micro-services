@@ -202,6 +202,17 @@ functions:
           arn: !ImportValue agency-services-transunion-creditscoretrackings-stream
 
   # credit report table triggers
+  triggerCreditReportEmail:
+    handler: src/triggers/triggerCreditReportEmail.main
+    description: Monitors credit report table for events that trigger marketing tags or emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue credit-report-service-resources-stream
+
   triggerCreditReportForMarketing:
     handler: src/triggers/triggerCreditReportForMarketing.main
     description: Monitors credit report table for events that trigger marketing tags or emails
