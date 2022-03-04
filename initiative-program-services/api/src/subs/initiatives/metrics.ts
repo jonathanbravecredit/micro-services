@@ -7,6 +7,7 @@ import { TasksUtil } from 'libs/utils/helpers/Tasks';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   // I am currently only concerned if they have a self loan...filter for these
+  console.log('event: ', JSON.stringify(event));
   const loans = event.Records.map((r) => {
     return (JSON.parse(r.Sns.Message) as IBatchPayload<{ id: string; metrics: ICreditReportMetrics }>).message;
   }).filter((r) => r.metrics.haveSelfLoan);
