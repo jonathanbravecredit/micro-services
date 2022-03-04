@@ -5,7 +5,6 @@ import { IDispute } from 'lib/interfaces';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { SecureMail } from 'lib/utils/securemail/securemail';
 
-const sns = new AWS.SNS();
 const pool = process.env.POOL || '';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {

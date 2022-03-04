@@ -1,6 +1,6 @@
 import { IDispute } from 'lib/interfaces';
 import { SecuremailTriggerEmails } from 'lib/utils/securemail/constants';
-import { SecureMailGenerators } from 'lib/utils/securemail/generators';
+import { TEMPLATE_LIBRARY } from 'lib/utils/securemail/generators';
 import { ISecureMailData, ISecureMailPacket } from 'lib/utils/securemail/interfaces';
 
 export class SecureMailTriggers {
@@ -42,7 +42,8 @@ const checkOne = (
   const t1 = priorLetterCode.toLowerCase().indexOf('pvc');
   const t2 = currLetterCode.toLowerCase().indexOf('pvc');
   const content = newImage.disputeLetterContent || '';
-  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.PVItems, content);
+  console.log('check one: ', t1, ' ', t2);
+  const payload = TEMPLATE_LIBRARY[SecuremailTriggerEmails.PVItems].replace('####', content || '');
   if (!(t1 >= 0) && t2 >= 0) {
     return {
       test: true,
@@ -73,7 +74,8 @@ const checkTwo = (
   const currOpenedOn = newImage.openedOn;
   const currDate = new Date(currOpenedOn);
   const t2 = currDate.toString().toLowerCase() !== 'invalid date';
-  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.DisputeSubmitted, '');
+  console.log('check two: ', t2);
+  const payload = TEMPLATE_LIBRARY[SecuremailTriggerEmails.DisputeSubmitted];
   if (t2) {
     return {
       test: true,
@@ -117,7 +119,8 @@ const checkThree = (
   // console.log('t3: ', t3);
   console.log('t4: ', t4);
   console.log('t5: ', t5);
-  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.DisputeResultsReady, '');
+  const payload = TEMPLATE_LIBRARY[SecuremailTriggerEmails.DisputeResultsReady];
+  console.log('check three: ', t4, ' ', t5);
   if (t4 && t5) {
     return {
       test: true,
