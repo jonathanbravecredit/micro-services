@@ -35,6 +35,28 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           );
           await pub.publishSNSPayload();
         }
+
+        if (record.eventName == 'INSERT') {
+          const stream: StreamRecord = record.dynamodb || {};
+          const { NewImage } = stream;
+          if (!NewImage) return;
+          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
+          if (newImage.version !== 0) return;
+          const analysis = new CreditReportMetrics(newImage);
+          analysis.aggregate();
+          const { id, metrics } = analysis;
+          console.log('id: ', id);
+          console.log('metrics: ', metrics);
+          const pub = new PubSubUtil();
+          pub.createSNSPayload<{ id: string; metrics: ICreditReportMetrics }>(
+            'creditreports',
+            'POST',
+            { id, metrics },
+            'creditreportmetrics',
+            arn,
+          );
+          await pub.publishSNSPayload();
+        }
       }),
     );
   } catch (err) {
