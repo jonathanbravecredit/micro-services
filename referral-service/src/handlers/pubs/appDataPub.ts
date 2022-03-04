@@ -10,9 +10,6 @@ const pubsub = new PubSubUtil();
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
-  records.forEach((r) => {
-    console.log('app data pub records: ', JSON.stringify(r));
-  });
   try {
     await Promise.all(
       records.map(async (record: DynamoDBRecord) => {

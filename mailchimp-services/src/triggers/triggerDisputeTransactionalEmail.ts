@@ -9,7 +9,6 @@ const pool = process.env.POOL || '';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
-  console.log('records ==> ', JSON.stringify(records));
   // mailchimp emails
   // no emails currently going through Mailchimp, even transactional ones
 
