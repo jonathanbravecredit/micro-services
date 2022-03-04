@@ -11,6 +11,7 @@ const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC;
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
   // mailchimp emails
+  console.log('arn', arn);
   try {
     await Promise.all(
       records.map(async (record: DynamoDBRecord) => {
@@ -25,8 +26,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
             'creditreports',
             'PUT',
             { id, metrics },
-            arn,
             'creditreportmetrics',
+            arn,
           );
           await pub.publishSNSPayload();
         }
