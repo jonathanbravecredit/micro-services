@@ -48,6 +48,11 @@ resources:
       Properties:
         TopicName: ${self:provider.stage}-credit-reports-topic
 
+    CreditReportMetricsSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-credit-reports-metrics-topic
+
     # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
     CreditReportsQueueDLQ:
       Type: AWS::SQS::Queue
@@ -121,3 +126,8 @@ resources:
       Value: !Ref CreditReportsSNSTopic
       Export:
         Name: !Sub '${self:service}-sns-arn'
+    CreditReportMetricsTopicArn:
+      Description: 'Credit report metrics SNS ARN'
+      Value: !Ref CreditReportMetricsSNSTopic
+      Export:
+        Name: !Sub '${self:service}-metrics-sns-arn'

@@ -6,7 +6,6 @@ import { InitiativePatchBody } from 'libs/interfaces/initiative.interfaces';
 import { getInitiative, updateInitiative } from 'libs/queries/user-initiative.queries';
 
 export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
-  console.log('event: ', JSON.stringify(event));
   const requests = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<InitiativePatchBody>;
   }).filter((r) => r.command === 'PUT');

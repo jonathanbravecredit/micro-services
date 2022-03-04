@@ -1,7 +1,7 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { ICreditScoreTrackings } from 'lib/interfaces/credit-score-trackings.interfaces';
+import { CreditReport } from 'lib/interfaces/credit-report.interface';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
 
@@ -15,27 +15,26 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
     await Promise.all(
       records.map(async (record: DynamoDBRecord) => {
         const message = JSON.stringify(record, null, 2);
-        if (record.eventName == 'MODIFY') {
+        if (record.eventName == 'INSERT') {
           const stream: StreamRecord = record.dynamodb || {};
-          const { OldImage, NewImage } = stream;
-          if (!OldImage || !NewImage) return;
-          const oldImage = AWS.DynamoDB.Converter.unmarshall(OldImage) as unknown as ICreditScoreTrackings;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as ICreditScoreTrackings;
+          const { NewImage } = stream;
+          if (!NewImage) return;
+          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
           const { UserAttributes } = await getUsersBySub(pool, newImage.userId);
           const email =
             UserAttributes?.find((attr) => {
               return attr.Name === 'email';
             })?.Value || '';
-          const mailchimpTriggers = Mailchimp.marketing.creditScore.resolver(oldImage, newImage, record.eventName);
+          const mailchimpTriggers = Mailchimp.transactional.report.resolver(null, newImage, record.eventName);
           // now need to go through all the triggered emails and send them (immediately for now) when appropriately
           console.log('triggers ===> ', mailchimpTriggers);
           try {
             await Promise.all(
               mailchimpTriggers?.map(async (trigger) => {
-                const { data } = trigger;
-                if (data?.api !== 'marketing') return;
-                const message = Mailchimp.createMailMessage(email, 'tag_user', undefined, data.tag);
-                const payload = Mailchimp.createSNSPayload('marketing', message, 'marketing');
+                const { data, template } = trigger;
+                if (data?.api !== 'transactional') return;
+                const message = Mailchimp.createMailMessage(email, template);
+                const payload = Mailchimp.createSNSPayload('transactional', message, 'mailchimp');
                 console.log('SNS payload ===> ', payload);
                 await sns
                   .publish(payload)

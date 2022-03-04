@@ -11,7 +11,6 @@ const stage = process.env.STAGE;
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
-  console.log('records ==> ', JSON.stringify(records));
   // mailchimp emails
   try {
     await Promise.all(
