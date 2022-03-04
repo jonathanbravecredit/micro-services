@@ -1,18 +1,22 @@
 import { IDispute } from 'lib/interfaces';
-import { SecuremailTriggerEmails, SecureMailTriggerGenerators } from 'lib/utils/securemail/constants';
+import { SecuremailTriggerEmails } from 'lib/utils/securemail/constants';
+import { SecureMailGenerators } from 'lib/utils/securemail/generators';
+import { ISecureMailData, ISecureMailPacket } from 'lib/utils/securemail/interfaces';
 
 export class SecureMailTriggers {
-  static currTriggers: string[];
+  static currTriggers: ISecureMailPacket<ISecureMailData>[];
   constructor() {}
 
   // add different scenarios and a resolver
-  static resolver(oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): string[] {
-    let triggers: string[] = [];
-    let letterContent = newImage.disputeLetterContent || '';
+  static resolver(
+    oldImage: IDispute | null,
+    newImage: IDispute,
+    event: 'INSERT' | 'MODIFY',
+  ): ISecureMailPacket<ISecureMailData>[] {
+    let triggers: ISecureMailPacket<ISecureMailData>[] = [];
     for (let key in triggerLibrary) {
-      if (triggerLibrary[key](oldImage, newImage, event)) {
-        triggers = [...triggers, SecureMailTriggerGenerators[key](key, letterContent)];
-      }
+      const { data, test } = triggerLibrary[key](oldImage, newImage, event);
+      triggers = test && data ? (triggers = [...triggers, { template: key, data: data }]) : triggers;
     }
     this.currTriggers = triggers; // store for reference
     return triggers;
@@ -25,18 +29,32 @@ export class SecureMailTriggers {
  * @param newImage
  * @returns
  */
-const checkOne = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): boolean => {
+const checkOne = (
+  oldImage: IDispute | null,
+  newImage: IDispute,
+  event: 'INSERT' | 'MODIFY',
+): { test: boolean; data?: ISecureMailData } => {
   // return true;
-  if (event !== 'MODIFY') return false;
-  if (!oldImage) return false;
+  if (event !== 'MODIFY') return { test: false };
+  if (!oldImage) return { test: false };
   const priorLetterCode = oldImage.disputeLetterCode || '';
   const currLetterCode = newImage.disputeLetterCode || '';
   const t1 = priorLetterCode.toLowerCase().indexOf('pvc');
   const t2 = currLetterCode.toLowerCase().indexOf('pvc');
+  const content = newImage.disputeLetterContent || '';
+  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.PVItems, content);
   if (!(t1 >= 0) && t2 >= 0) {
-    return true; // might need to return a generator;
+    return {
+      test: true,
+      data: {
+        api: 'securemail',
+        payload: payload,
+        from: 'support@brave.credit',
+        subject: 'Dispute Status Update',
+      },
+    }; // might need to return a generator;
   }
-  return false;
+  return { test: false };
 };
 
 /**
@@ -45,13 +63,29 @@ const checkOne = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT'
  * @param newImage
  * @returns
  */
-const checkTwo = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): boolean => {
-  if (event !== 'INSERT') return false;
+const checkTwo = (
+  oldImage: IDispute | null,
+  newImage: IDispute,
+  event: 'INSERT' | 'MODIFY',
+): { test: boolean; data?: ISecureMailData } => {
+  if (event !== 'INSERT') return { test: false };
   console.log('CheckTwo newImage: ', JSON.stringify(newImage));
   const currOpenedOn = newImage.openedOn;
   const currDate = new Date(currOpenedOn);
   const t2 = currDate.toString().toLowerCase() !== 'invalid date';
-  return t2;
+  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.DisputeSubmitted, '');
+  if (t2) {
+    return {
+      test: true,
+      data: {
+        api: 'securemail',
+        payload: payload,
+        from: 'support@brave.credit',
+        subject: 'Your Dispute Is On Its Way!',
+      },
+    };
+  }
+  return { test: false };
 };
 
 /**
@@ -62,10 +96,14 @@ const checkTwo = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT'
  * @param newImage
  * @returns
  */
-const checkThree = (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY'): boolean => {
+const checkThree = (
+  oldImage: IDispute | null,
+  newImage: IDispute,
+  event: 'INSERT' | 'MODIFY',
+): { test: boolean; data?: ISecureMailData } => {
   // return { test: false };
-  if (event !== 'MODIFY') return false;
-  if (!oldImage || !newImage) return false;
+  if (event !== 'MODIFY') return { test: false };
+  if (!oldImage || !newImage) return { test: false };
   console.log('oldImage ==> ', JSON.stringify(oldImage));
   console.log('newImage ==> ', JSON.stringify(newImage));
   const currStatus = newImage.disputeStatus || '';
@@ -79,12 +117,28 @@ const checkThree = (oldImage: IDispute | null, newImage: IDispute, event: 'INSER
   // console.log('t3: ', t3);
   console.log('t4: ', t4);
   console.log('t5: ', t5);
-  return t4 && t5;
+  const payload = SecureMailGenerators.generateEmailTemplate(SecuremailTriggerEmails.DisputeResultsReady, '');
+  if (t4 && t5) {
+    return {
+      test: true,
+      data: {
+        api: 'securemail',
+        payload: payload,
+        from: 'support@brave.credit',
+        subject: 'Dispute Investigation Results Now Available at Brave Credit',
+      },
+    };
+  }
+  return { test: false };
 };
 
 const triggerLibrary: Record<
   string,
-  (oldImage: IDispute | null, newImage: IDispute, event: 'INSERT' | 'MODIFY') => boolean
+  (
+    oldImage: IDispute | null,
+    newImage: IDispute,
+    event: 'INSERT' | 'MODIFY',
+  ) => { test: boolean; data?: ISecureMailData }
 > = {
   [SecuremailTriggerEmails.PVItems]: checkOne,
   [SecuremailTriggerEmails.DisputeSubmitted]: checkTwo,

@@ -41,9 +41,9 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                 //...only one generator right now
                 //...TODO, need to make it handle different types of generators
                 const params = {
-                  from: SecureMail.from,
-                  subject: SecureMail.subject,
-                  html: trigger,
+                  from: trigger.data.from,
+                  subject: trigger.data.subject,
+                  html: trigger.data.payload,
                   to: [email],
                 };
                 await SecureMail.sendMail(params);
@@ -84,9 +84,9 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                 //...only one generator right now
                 //...TODO, need to make it handle different types of generators
                 const params = {
-                  from: SecureMail.from,
-                  subject: SecureMail.subject,
-                  html: trigger,
+                  from: trigger.data.from,
+                  subject: trigger.data.subject,
+                  html: trigger.data.payload,
                   to: [email],
                 };
                 await SecureMail.sendMail(params);

@@ -10,8 +10,8 @@ export class SecureMailGenerators {
   }
 }
 
-const templateLibrary: Record<string, (content: string) => string> = {
-  [SecuremailTriggerEmails.PVItems]: (content: string) => previouslyVerifiedItems.replace('####', content),
-  [SecuremailTriggerEmails.DisputeSubmitted]: (content: string) => disputeSubmitted,
-  [SecuremailTriggerEmails.DisputeResultsReady]: (content: string) => disputeResultsReady,
+const templateLibrary: Record<string, (content?: string) => string> = {
+  [SecuremailTriggerEmails.PVItems]: (content?: string) => previouslyVerifiedItems.replace('####', content || ''),
+  [SecuremailTriggerEmails.DisputeSubmitted]: (content?: string) => disputeSubmitted,
+  [SecuremailTriggerEmails.DisputeResultsReady]: (content?: string) => disputeResultsReady,
 };
