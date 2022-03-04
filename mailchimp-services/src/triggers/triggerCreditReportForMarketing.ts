@@ -1,7 +1,6 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { CreditReport } from 'lib/interfaces/credit-report.interface';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';

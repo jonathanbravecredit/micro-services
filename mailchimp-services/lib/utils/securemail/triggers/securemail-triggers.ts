@@ -70,7 +70,6 @@ const checkTwo = (
   event: 'INSERT' | 'MODIFY',
 ): { test: boolean; data?: ISecureMailData } => {
   if (event !== 'INSERT') return { test: false };
-  console.log('CheckTwo newImage: ', JSON.stringify(newImage));
   const currOpenedOn = newImage.openedOn;
   const currDate = new Date(currOpenedOn);
   const t2 = currDate.toString().toLowerCase() !== 'invalid date';
@@ -106,13 +105,9 @@ const checkThree = (
   // return { test: false };
   if (event !== 'MODIFY') return { test: false };
   if (!oldImage || !newImage) return { test: false };
-  console.log('oldImage ==> ', JSON.stringify(oldImage));
-  console.log('newImage ==> ', JSON.stringify(newImage));
   const currStatus = newImage.disputeStatus || '';
   const oldIR = oldImage.disputeInvestigationResults;
   const newIR = newImage.disputeInvestigationResults;
-  console.log('oldIR: ', oldIR);
-  console.log('newIR: ', newIR);
   // const t3 = currStatus !== priorStatus; // The status has changed
   const t4 = currStatus.toLowerCase() === 'completedispute' || currStatus.toLowerCase() === 'cancelleddispute'; // status has to be complete or cancelled
   const t5 = oldIR !== newIR;

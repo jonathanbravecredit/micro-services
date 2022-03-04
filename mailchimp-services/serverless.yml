@@ -154,7 +154,7 @@ functions:
           startingPosition: LATEST
           arn:
             Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
-
+  # marketing tags such as setting defaults and whether enrolled
   triggerAppDataForMarketing:
     handler: src/triggers/triggerAppDataForMarketing.main
     description: Monitors app database for events that trigger marketing emails
@@ -201,6 +201,18 @@ functions:
           startingPosition: LATEST
           arn: !ImportValue agency-services-transunion-creditscoretrackings-stream
 
+  # credit report table triggers
+  triggerCreditReportForMarketing:
+    handler: src/triggers/triggerCreditReportForMarketing.main
+    description: Monitors credit report table for events that trigger marketing tags or emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue credit-report-service-resources-stream
+
   # referral table triggers
   triggerReferralEmail:
     handler: src/triggers/triggerReferralEmail.main
@@ -223,6 +235,8 @@ functions:
           startingPosition: LATEST
           arn: !ImportValue referral-service-referrals-stream
 
+  # when changes to specific accounts occur, trigger the badge on the notification bar
+  #  this should be moved to the credit report service
   monitorForNotifications:
     handler: src/monitors/monitorForNotifications.main
     description: Monitors marketing tags to turn on and off badges in nav bar
