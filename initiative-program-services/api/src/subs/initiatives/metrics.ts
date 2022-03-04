@@ -10,6 +10,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
   const loans = event.Records.map((r) => {
     return (JSON.parse(r.Sns.Message) as IBatchPayload<{ id: string; metrics: ICreditReportMetrics }>).message;
   }).filter((r) => r.metrics.haveSelfLoan);
+  console.log('loans', JSON.stringify(loans));
 
   // find the program that has a self loan component to it, and then add it
   // get the program the person is enrolled in.
@@ -24,6 +25,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
     await Promise.all(
       loans.map(async (l) => {
         const { id } = l;
+        console.log('id', id);
         const initiative = await getInitiative(id, '1');
         const { initiativeTasks: primary } = initiative;
         const selfTask = TasksUtil.findTaskByTaskId(primary, 'open_self_loan');
@@ -33,6 +35,9 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         }
         const { parentId, taskId } = selfTask;
         const taskStatus = 'complete';
+        console.log('parentId', parentId);
+        console.log('taskId', taskId);
+        console.log('taskStatus', taskStatus);
         // update the subtask initiatives and status
         const updatedTasks = TasksUtil.mapTaskStatus(initiative.initiativeTasks, parentId, taskId, taskStatus);
         const updatedStatus = TasksUtil.getInitiativeStatus(updatedTasks);
