@@ -102,6 +102,15 @@ functions:
           batchSize: 1
           maximumBatchingWindow: 5
 
+  metricsSub:
+    handler: src/subs/initiatives/metrics.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - sns:
+          arn:
+            Fn::ImportValue: 'credit-report-service-resources-metrics-sns-arn'
+          batchSize: 1
+
   # # Initiative Programs
   # createPrograms:
   #   handler: src/http/initiatives/programs/post.main
