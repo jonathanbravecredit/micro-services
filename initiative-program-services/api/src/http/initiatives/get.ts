@@ -14,10 +14,11 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!sub) return response(400, `no id`);
   try {
     const item = await getInitiative(sub, programId);
+    if (!item) return response(200, null);
     console.log('item: ', JSON.stringify(item));
     const program = (await getPrograms(programId)) as Program;
     console.log('program: ', JSON.stringify(program));
-    if (!item || !program) return response(400, `no initiative:${item} or program:${program}`);
+    if (!program) return response(400, `no program:${program} found`);
     // need to layer in the initiative from client with the context from program
     const initiative = createNewInitiative(item);
     initiative.addProgramTasks(program).filterProgramTasks().enrichWithContext();
