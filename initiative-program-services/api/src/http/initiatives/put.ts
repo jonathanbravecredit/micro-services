@@ -8,10 +8,10 @@ import { TasksUtil } from 'libs/utils/helpers/Tasks';
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event: ', JSON.stringify(event));
   const userId = event?.requestContext?.authorizer?.claims?.sub;
-  if (!userId) return response(200, 'no id found');
+  if (!userId) return response(400, 'no id found');
   const { parentId, taskId, taskStatus } = JSON.parse(event.body) as IInitiativePutRequest;
   if (!parentId || !taskId || !taskStatus)
-    return response(200, `no parentId: ${parentId}; or taskId:${taskId}; or taskStatus: ${taskStatus} provided`);
+    return response(400, `no parentId: ${parentId}; or taskId:${taskId}; or taskStatus: ${taskStatus} provided`);
   try {
     const initiative = await getInitiative(userId, '1'); // the only one right now is program 0
     // update the subtask initiatives and status
@@ -26,6 +26,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     // layer in the context
     return response(200, res);
   } catch (err) {
-    return response(400, err);
+    return response(500, err);
   }
 };
