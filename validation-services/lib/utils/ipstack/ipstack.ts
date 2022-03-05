@@ -17,8 +17,8 @@ export class IpStackErrorHandler {
 
   async sendNotifications(): Promise<void> {
     let params = generateEmailParams(
-      `!!!! IPADDRESS AT QUOTA !!!!`,
-      ['jonathan@brave.credit'],
+      `!!!! [${process.env.OUR_ENV}] IPADDRESS AT QUOTA !!!!`,
+      ['jonathan@brave.credit', 'jorge@brave.credit'],
       `ipaddress: ${this.ipaddress}; failed for reason: ${JSON.stringify(this.err)}`,
     );
     let transporter = nodemailer.createTransport({ SES: ses });
@@ -26,6 +26,6 @@ export class IpStackErrorHandler {
   }
 
   handleResponse(): APIGatewayProxyResult {
-    return response(this.code, { sucess: true, result: this.info });
+    return response(this.code, { success: true, result: this.info });
   }
 }

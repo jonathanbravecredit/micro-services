@@ -1,15 +1,15 @@
-import { IDispute } from 'lib/interfaces';
+import { CreditReport } from 'lib/interfaces/credit-report.interface';
 import { MailchimpTriggerEmails } from 'lib/utils/mailchimp/constants';
 import { IMailchimpPacket, ITransactionalData } from 'lib/utils/mailchimp/interfaces';
 
-export class MailchimpDisputeTriggers {
+export class MailchimpCreditReportTriggers {
   static currTriggers: IMailchimpPacket<ITransactionalData>[];
   constructor() {}
 
   // add different scenarios and a resolver
   static resolver(
-    oldImage: IDispute | null,
-    newImage: IDispute,
+    oldImage: CreditReport | null,
+    newImage: CreditReport,
     event: 'INSERT' | 'MODIFY',
   ): IMailchimpPacket<ITransactionalData>[] {
     let triggers: IMailchimpPacket<ITransactionalData>[] = [];
@@ -22,15 +22,33 @@ export class MailchimpDisputeTriggers {
   }
 }
 
-// No dispute emails currently going through mailchimp (even informational ones)
+/**
+ * Check for new disputes started
+ * @param oldImage
+ * @param newImage
+ * @returns
+ */
+const checkOne = (
+  oldImage: CreditReport | null,
+  newImage: CreditReport,
+  event: 'INSERT' | 'MODIFY',
+): { test: boolean; data?: ITransactionalData } => {
+  if (event !== 'INSERT') return { test: false };
+  return {
+    test: true,
+    data: {
+      api: 'transactional',
+    },
+  };
+};
+
 const triggerLibrary: Record<
   string,
   (
-    oldImage: IDispute | null,
-    newImage: IDispute,
+    oldImage: CreditReport | null,
+    newImage: CreditReport,
     event: 'INSERT' | 'MODIFY',
   ) => { test: boolean; data?: ITransactionalData }
 > = {
-  // [MailchimpTriggerEmails.DisputeSubmitted]: checkTwo,
-  // [MailchimpTriggerEmails.DisputeResultsReady]: checkThreeFour,
+  [MailchimpTriggerEmails.ReportRefreshed]: checkOne,
 };

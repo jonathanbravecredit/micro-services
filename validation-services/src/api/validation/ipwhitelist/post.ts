@@ -24,7 +24,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     return response(200, result);
   } catch (err) {
     const errHandler = new IpStackErrorHandler(err, ipaddress);
-    errHandler.sendNotifications();
+    await errHandler.sendNotifications();
     return errHandler.handleResponse();
   }
 };
