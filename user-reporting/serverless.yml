@@ -389,6 +389,7 @@ resources:
             - registeredusersreport
             - useremployerall
             - usermetricsreport
+            - missingdisputekeys
         RawMessageDelivery: 'true'
 
     OpsReports:

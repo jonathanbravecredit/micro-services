@@ -731,6 +731,26 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
     }
   }
+
+  /*===================================*/
+  //    missing dispute keys
+  /*===================================*/
+  const missingDisputeKeys = event.Records.map((r) => {
+    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
+  }).filter((b) => {
+    return b.service === ReportNames.MissingDisputeKeys;
+  });
+
+  if (missingDisputeKeys.length) {
+    const report = new NoReportReport(noReportReport);
+    try {
+      const results = await report.run();
+      return results;
+    } catch (err) {
+      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+    }
+  }
+
   /*===================================*/
   //    registration report
   //  !!!DISABLED!!!
