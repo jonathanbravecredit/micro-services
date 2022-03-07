@@ -428,3 +428,46 @@ export const mapSuspendedFields = (item: any) => {
       : verifyAuthenticationQuestionsKBAStatus,
   };
 };
+
+export const mapAcknowledgedFields = (item: any) => {
+  const {
+    agencies: { transunion: transunion },
+  } = item;
+  // console.log('transunion ===> ', transunion);
+  const { id, createdAt, status, statusReason, statusReasonDescription } = item;
+  const {
+    enrolled,
+    enrolledOn,
+    disputeEnrolled,
+    disputeEnrolledOn,
+    acknowledgedDisputeTerms,
+    acknowledgedDisputeTermsOn,
+  } = transunion;
+
+  const createdDate = new Date(createdAt).toString() === 'Invalid Date' ? 0 : createdAt;
+  const enrolledDate = new Date(enrolledOn).toString() === 'Invalid Date' ? 0 : enrolledOn;
+  const ackDate = new Date(acknowledgedDisputeTermsOn).toString() === 'Invalid Date' ? 0 : acknowledgedDisputeTermsOn;
+  // Also add a formatted date for UTC yyyy-mm-dddd hh-mm-ss [TRAN-1698]
+  return {
+    id,
+    createdAt: createdDate,
+    createdAtUTC: new Date(createdDate).toISOString(),
+    createdAtPST: dayjs(createdDate).tz().format('YYYY-MM-DD HH:mm:ss'),
+    sortKey: dayjs(createdDate).format('YYYY-MM-DD HH-mm-ss'),
+    status,
+    statusReason,
+    statusReasonDescription,
+    enrolled,
+    enrolledOn: enrolledDate,
+    enrolledOnUTC: new Date(enrolledDate).toISOString(),
+    enrolledOnPST: dayjs(enrolledDate).tz().format('YYYY-MM-DD HH:mm:ss'),
+    disputeEnrolled,
+    disputeEnrolledOn: disputeEnrolledOn,
+    disputeEnrolledOnUTC: new Date(disputeEnrolledOn).toISOString(),
+    disputeEnrolledOnPST: dayjs(disputeEnrolledOn).tz().format('YYYY-MM-DD HH:mm:ss'),
+    acknowledgedDisputeTerms: acknowledgedDisputeTerms,
+    acknowledgedDisputeTermsOn: acknowledgedDisputeTermsOn,
+    acknowledgedDisputeTermsOnUTC: new Date(acknowledgedDisputeTermsOn).toISOString(),
+    acknowledgedDisputeTermsOnPST: dayjs(acknowledgedDisputeTermsOn).tz().format('YYYY-MM-DD HH:mm:ss'),
+  };
+};

@@ -31,6 +31,7 @@ import { MonthlyLogins } from 'libs/reports/MonthlyLogin/MonthlyLogin';
 import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggregateMetrics';
 import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
+import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
 
 // request.debug = true; import * as request from 'request';
 // const errorLogger = new ErrorLogger();
@@ -742,7 +743,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   });
 
   if (missingDisputeKeys.length) {
-    const report = new NoReportReport(noReportReport);
+    const report = new MissingDisputeKeysReport(missingDisputeKeys);
     try {
       const results = await report.run();
       return results;
