@@ -199,6 +199,17 @@ functions:
     handler: src/handlers/cleanup/cleanUpMonthlyLogInReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
+  # missing dispute keys
+  triggerMissingDisputeKeyReport:
+    handler: src/triggers/triggerMissingDisputeKeyReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileMissingDisputeKeysReport:
+    handler: src/handlers/compilers/compileMissingDisputeKeysReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  cleanUpMissingDisputeKeysReport:
+    handler: src/handlers/cleanup/cleanUpMissingDisputeKeysReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
   # user employer all
   triggerUserEmployerAll:
     handler: src/triggers/triggerUserEmployerAll.main
@@ -389,6 +400,7 @@ resources:
             - registeredusersreport
             - useremployerall
             - usermetricsreport
+            - missingdisputekeys
         RawMessageDelivery: 'true'
 
     OpsReports:
