@@ -33,7 +33,9 @@ const checkOne = (
   newImage: CreditReport,
   event: 'INSERT' | 'MODIFY',
 ): { test: boolean; data?: ITransactionalData } => {
-  if (event !== 'INSERT') return { test: false };
+  if (event !== 'MODIFY') return { test: false };
+  const t1 = newImage.version === 0 && newImage.modifiedOn !== oldImage?.modifiedOn;
+  if (!t1) return { test: false };
   return {
     test: true,
     data: {
