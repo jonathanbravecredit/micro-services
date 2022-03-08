@@ -36,7 +36,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           newImage.campaign === noCampaign?.campaign
         ) {
           try {
-            const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
+            // const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
+            const activeReferrals = await getEligibileReferrals();
             await Promise.all(
               activeReferrals.map(async (r) => {
                 // 1. update the campaign to the default
