@@ -45,7 +45,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                 const now = new Date().toISOString();
                 const updated = {
                   ...r,
-                  // campaignActive: newImage.campaign,
+                  campaignActive: newImage.campaign,
                   // campaignActiveReferred: 0,
                   // campaignActiveEarned: 0,
                   // campaignActivePaid: 0,
@@ -59,7 +59,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                   // campaignPriorBonus: r.campaignActiveBonus,
                   // nextPaymentDate: '',
                   // notified: false,
-                  // modifiedOn: now,
+                  modifiedOn: now,
                 };
                 try {
                   await updateReferral(updated);
