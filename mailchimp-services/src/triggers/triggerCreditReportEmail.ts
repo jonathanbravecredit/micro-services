@@ -15,7 +15,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
     await Promise.all(
       records.map(async (record: DynamoDBRecord) => {
         const message = JSON.stringify(record, null, 2);
-        if (record.eventName == 'INSERT') {
+        if (record.eventName == 'MODIFY') {
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
