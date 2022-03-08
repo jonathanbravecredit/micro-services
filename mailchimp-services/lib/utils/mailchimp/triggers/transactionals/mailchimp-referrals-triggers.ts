@@ -59,7 +59,7 @@ const checkThree = (
   oldImage: IReferrals | null,
   newImage: IReferrals,
 ): { test: boolean; data?: ITransactionalData } => {
-  return { test: false }; // turning off temporarily
+  // return { test: false }; // turning off temporarily
   if (!oldImage) return { test: false };
   if (newImage.eligible && oldImage?.campaignActive === 'NO_CAMPAIGN' && newImage.campaignActive !== 'NO_CAMPAIGN') {
     return {
@@ -84,7 +84,7 @@ const checkTwoThree = (
   oldImage: IReferrals | null,
   newImage: IReferrals,
 ): { test: boolean; data?: ITransactionalData } => {
-  return { test: false }; // turning off temporarily
+  // return { test: false }; // turning off temporarily
   const t1 = checkTwo(oldImage, newImage);
   const t2 = checkThree(oldImage, newImage);
   if (t1.test || t2.test) {
