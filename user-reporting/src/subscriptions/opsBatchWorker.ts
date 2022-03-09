@@ -771,15 +771,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           console.log('message ==> ', message);
-          const scan = await getCognitoUsers(esk as string, 60);
+          const scan: CognitoIdentityServiceProvider.ListUsersResponse = await getCognitoUsers(esk || '', 60);
           if (scan && scan.Users) {
             await Promise.all(
               scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
                 const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
                 const newYear = dayjs('2022-01-01');
                 const created = dayjs(item.UserCreateDate);
-                const test = newYear.isBefore(created);
-                console.log('test ==> ', test);
+                const test = created.isAfter(newYear);
                 if (!test) return false;
                 const schema = {};
                 const attrs = {
@@ -815,6 +814,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               segment: 0,
               totalSegments: 1,
             };
+            console.log('packet: ', packet);
             const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
               'opsbatch',
               packet,

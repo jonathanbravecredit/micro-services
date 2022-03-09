@@ -226,6 +226,12 @@ functions:
   batchResetPay:
     handler: src/handlers/scheduled/batchResetPay.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  batchResetPaymentDate:
+    handler: src/handlers/scheduled/batchResetPaymentDate.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  batchUpdateAddOn:
+    handler: src/handlers/scheduled/batchUpdateAddOn.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   appDataPub:
     handler: src/handlers/pubs/appDataPub.main

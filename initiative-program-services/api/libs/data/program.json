@@ -1,0 +1,159 @@
+{
+  "id": "bravecredit",
+  "program": "1",
+  "programReasons": [
+    {
+      "reason": "credit_card",
+      "description": "Your plan to get a credit card"
+    },
+    {
+      "reason": "buy_house",
+      "description": "Your plan to buy a house"
+    }
+  ],
+  "createdOn": "2022-02-24T22:43:14.878Z",
+  "modifiedOn": "2022-02-24T22:43:14.878Z",
+  "programTasks": [
+    {
+      "taskCard": {
+        "textOne": "We've made it easy for you to reach your goal and claim your FutureScore. Follow these steps, and with healthy financial habits, you could get your credit card in not time!",
+        "header": "Let's help you get a credit card!"
+      },
+      "subTasks": [
+        {
+          "taskCard": {
+            "textButton": "Review my report",
+            "successHeader": "Greate job reviewing your credit report",
+            "textTwo": "Look for accounts or personal information you don't recognize. Find an issue? Dispute it in our app to request it be removed which could help your score.",
+            "textOne": "You could gain an average of 19 points on your score if there's an error on your report, or even up to 130*.",
+            "metric": "19",
+            "successText": "Checking it on a monthly basis ensures the information on your reports remains yours",
+            "link": "/dashboard/report",
+            "header": "Review your credit report",
+            "questionHeader": null
+          },
+          "subTasks": [],
+          "taskLabel": "Review your report",
+          "taskStatus": "not_started",
+          "parentId": "credit_card",
+          "taskId": "review_report",
+          "taskOrder": 0
+        },
+        {
+          "taskCard": {
+            "textButton": "Open my account",
+            "successHeader": "Good work opening the account!",
+            "textTwo": "With on-time payments, you can grow your score and also build up a nice savings account!",
+            "textOne": "Opening this account can help you grow score 53 points or more! It can also automatically unlock a secured credit card, to reach an unsecured card quicker.",
+            "metric": "53",
+            "successText": "Make on-time payments on this and your other accounts to get the full benefit",
+            "link": "https://cstrk.net/clk.aspx?l=30689&c=19805",
+            "header": "Claim Your FutureScore to get your dream credit card",
+            "questionHeader": null
+          },
+          "subTasks": [],
+          "taskLabel": "Claim your FutureScore",
+          "taskStatus": "not_started",
+          "parentId": "credit_card",
+          "taskId": "open_self_loan",
+          "taskOrder": 1
+        }
+      ],
+      "taskLabel": "Obtained Credit Card",
+      "taskStatus": "not_started",
+      "parentId": "future_score",
+      "taskId": "credit_card",
+      "taskOrder": 0
+    },
+    {
+      "taskCard": {
+        "textOne": "We've made it easy for you to reach your goal and claim your FutureScore. Follow these steps, and with healthy financial habits, you could own a home in no time!",
+        "header": "Let's help you buy a house!"
+      },
+      "subTasks": [
+        {
+          "taskCard": {
+            "textButton": "Review my report",
+            "successHeader": "Great job reviewing your credit report",
+            "textTwo": "Look for accounts or personal information you don't recognize. Find an issue? Dispute it in our app to request it be removed, which could help your score.",
+            "textOne": "You could gain an average of 19 points on your score if there's an error on your report, or even up to 130*.",
+            "metric": "19",
+            "successText": "Checking it on a monthly basis ensures the information on your reports remains yours",
+            "link": "/dashboard/report",
+            "header": "Review your credit report",
+            "questionHeader": null
+          },
+          "subTasks": [],
+          "taskLabel": "Review your report",
+          "taskStatus": "not_started",
+          "parentId": "buy_house",
+          "taskId": "review_report",
+          "taskOrder": 0
+        },
+        {
+          "taskCard": {
+            "textButton": "Open my account",
+            "successHeader": "Good work opening the account",
+            "textTwo": "With on-time payments, you can grow your score with a goal of opening a <a href='https://www.fha.com/fha_loan_requirements' target='_blank' style='text-decoration: underline; color: blue;'>Federal Housing Administration (FHA) loan</a> that requires credit scores of around 580 with down payments of only 3.5%!",
+            "textOne": "Opening this account can help you grow your score 53 points or more while helping you build a savings for a down payment!",
+            "metric": "53",
+            "successText": "Make on-time payments on this and your other accounts to get the full benefit",
+            "link": "https://cstrk.net/clk.aspx?l=30689&c=19805",
+            "header": "Claim your FutureScore to prequalify for a mortgage",
+            "questionHeader": null
+          },
+          "subTasks": [],
+          "taskLabel": "Claim your FutureScore",
+          "taskStatus": "not_started",
+          "parentId": "buy_house",
+          "taskId": "open_self_loan",
+          "taskOrder": 1
+        },
+        {
+          "taskCard": {
+            "textButton": null,
+            "successHeader": "Congratulations on having $9,450 saved!",
+            "textTwo": "With the account you can use to claim your FutureScore, you could create a savings account to grow your credit and your savings!",
+            "textOne": "The United States average home price is $270,000. This means a down payment of 3.5% would be:<br><p style='font-size: 2rem; font-weight: 800; line-height: 4.5rem; text-align: center; margin-top: 1.5rem'>$9,450</p>",
+            "metric": null,
+            "successText": "Take action on the other suggestions to reach your goals!",
+            "link": null,
+            "header": "Build your savings for a down payment of around $9,450",
+            "questionHeader": "Do you have at least $9,450 saved?"
+          },
+          "subTasks": [],
+          "taskLabel": "Build savings",
+          "taskStatus": "not_started",
+          "parentId": "buy_house",
+          "taskId": "build_savings",
+          "taskOrder": 2
+        },
+        {
+          "taskCard": {
+            "textButton": null,
+            "successHeader": "Congratulations on reaching a good ratio!",
+            "textTwo": "To calculate this, <strong>sum up</strong> all of your monthly expenses (including rent and debts), then <strong>divide</strong> that by your pre-tax monthly income.",
+            "textOne": "Lenders like to know you'll be able to pay off your house with the income you generate.<br>This is why they look at the amount of debt compared to your salary on a monthly basis.",
+            "metric": null,
+            "successText": "Take action on the other suggestions to reach your goals!",
+            "link": null,
+            "header": "Get a Debt-to-Income Ratio under 50%",
+            "questionHeader": "Is your debt to income under 50%?"
+          },
+          "subTasks": [],
+          "taskLabel": "Manage debts",
+          "taskStatus": "not_started",
+          "parentId": "buy_house",
+          "taskId": "manage_debts",
+          "taskOrder": 3
+        }
+      ],
+      "taskLabel": "Bought a House",
+      "taskStatus": "not_started",
+      "parentId": "future_score",
+      "taskId": "buy_house",
+      "taskOrder": 1
+    }
+  ],
+  "initiative": "future_score"
+}
