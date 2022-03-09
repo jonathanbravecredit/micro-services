@@ -6,7 +6,6 @@ import { listUsersByEmail } from 'libs/db/cognito';
 import { getAllItemsInDB } from 'libs/db/referrals';
 import { flattenUser, generateEmailParams } from 'libs/helpers';
 import { Handler } from 'aws-lambda';
-s;
 const pool = process.env.POOL || '';
 const ses = new SES({ region: 'us-east-1' });
 
