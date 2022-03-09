@@ -36,8 +36,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           newImage.campaign === noCampaign?.campaign
         ) {
           try {
-            // const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
-            const activeReferrals = await getEligibileReferrals();
+            const activeReferrals = await getActiveCampaignReferrals(oldImage.campaign);
             await Promise.all(
               activeReferrals.map(async (r) => {
                 // 1. update the campaign to the default
@@ -47,19 +46,19 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
                 const updated = {
                   ...r,
                   campaignActive: newImage.campaign,
-                  // campaignActiveReferred: 0,
-                  // campaignActiveEarned: 0,
-                  // campaignActivePaid: 0,
-                  // campaignActiveAddOn: 0,
-                  // campaignActiveBonus: 0,
-                  // campaignPrior: oldImage.campaign,
-                  // campaignPriorReferred: r.campaignActiveReferred,
-                  // campaignPriorEarned: r.campaignActiveEarned,
-                  // campaignPriorPaid: r.campaignActivePaid,
-                  // campaignPriorAddOn: r.campaignActiveAddOn,
-                  // campaignPriorBonus: r.campaignActiveBonus,
-                  // nextPaymentDate: '',
-                  // notified: false,
+                  campaignActiveReferred: 0,
+                  campaignActiveEarned: 0,
+                  campaignActivePaid: 0,
+                  campaignActiveAddOn: 0,
+                  campaignActiveBonus: 0,
+                  campaignPrior: oldImage.campaign,
+                  campaignPriorReferred: r.campaignActiveReferred,
+                  campaignPriorEarned: r.campaignActiveEarned,
+                  campaignPriorPaid: r.campaignActivePaid,
+                  campaignPriorAddOn: r.campaignActiveAddOn,
+                  campaignPriorBonus: r.campaignActiveBonus,
+                  nextPaymentDate: '',
+                  notified: false,
                   modifiedOn: now,
                 };
                 try {
