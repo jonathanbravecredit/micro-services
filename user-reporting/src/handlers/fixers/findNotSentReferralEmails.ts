@@ -31,29 +31,30 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     // map the attributes
     const userTypes = users
       .map((u) => {
-        return u.Users ? u.Users[0] : null;
+        const valid = u.Users?.filter((u) => !u.Username?.startsWith('google')) || null;
+        return valid ? valid[0] : null;
       })
       .filter(Boolean) as CognitoIdentityServiceProvider.UserType[];
 
     console.log('userTypes ==> ', JSON.stringify(userTypes.slice(0, 2)));
     // find the ones that were sent
-    const wasSent = new Set();
+    const wasSent = new Map();
     const subs = userTypes.map((u) => {
       const sub = flattenUser(u.Attributes as { Name: string; Value: string }[] | undefined, 'sub');
-      wasSent.add(sub);
+      wasSent.set(sub, true);
       return sub;
     });
     console.log('subs ==> ', JSON.stringify(subs.slice(0, 2)));
     console.log('wasSent ==> ', JSON.stringify([...wasSent].slice(0, 2)));
     // if the id is in referral an not in subs, then they have not been sent.
-    const notSent = new Set();
+    const notSent = new Map();
     active.forEach((r) => {
-      const t1 = wasSent.has(r.id);
-      if (!t1) notSent.add(r.id);
+      const t1 = wasSent.get(r.id);
+      if (!t1) notSent.set(r.id, true);
     });
     console.log('notSent ==> ', JSON.stringify([...notSent].slice(0, 2)));
 
-    const content = csvjson.toCSV(JSON.stringify({ notSent: [...notSent] }), {
+    const content = csvjson.toCSV(JSON.stringify([...notSent]), {
       headers: 'key',
     });
 
