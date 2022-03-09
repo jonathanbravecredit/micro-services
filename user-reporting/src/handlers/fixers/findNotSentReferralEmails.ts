@@ -7,7 +7,7 @@ import { getAllItemsInDB } from 'libs/db/referrals';
 import { flattenUser, generateEmailParams } from 'libs/helpers';
 import { Handler } from 'aws-lambda';
 const knowSent: string[] = ['jpizzolato36@gmail.com', 'jonathan@brave.credit'];
-const pool = '';
+const pool = process.env.POOL || '';
 const ses = new SES({ region: 'us-east-1' });
 
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
