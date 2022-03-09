@@ -56,8 +56,8 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
       'notSent ==> ',
       JSON.stringify(
         Array.from(notSent)
-          .map(([key, value]) => {
-            id: value;
+          .map(([k, v]) => {
+            id: v;
           })
           .slice(0, 2),
       ),
@@ -65,8 +65,8 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
 
     const content = csvjson.toCSV(
       JSON.stringify(
-        Array.from(notSent).map(([key, value]) => {
-          id: value;
+        Array.from(notSent).map(([k, v]) => {
+          id: v;
         }),
       ),
       {
