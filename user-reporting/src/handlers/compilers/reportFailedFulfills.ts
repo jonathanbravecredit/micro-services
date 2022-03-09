@@ -1,6 +1,6 @@
 const csvjson = require('csvjson');
 import * as nodemailer from 'nodemailer';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { SES } from 'aws-sdk';
 import { getAllItemsInDB } from 'libs/db/appdata';
 import { generateEmailParams, mapEnrollmentFields } from 'libs/helpers';

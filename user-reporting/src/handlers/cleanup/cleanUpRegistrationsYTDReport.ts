@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { Handler } from 'aws-lambda';
 import { batchDeleteOpsReport, listOpsReportsByBatch } from 'libs/queries/ops-report.queries';
 import { ReportNames } from 'libs/data/reports';

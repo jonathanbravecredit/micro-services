@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 const csvjson = require('csvjson');
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
