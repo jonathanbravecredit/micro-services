@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 const csvjson = require('csvjson');
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
@@ -90,7 +90,10 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     });
 
     // config the emails transporter
-    const emails = STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit', 'noah@brave.credit', 'jorge@brave.credit'];
+    const emails =
+      STAGE === 'dev'
+        ? ['jonathan@brave.credit']
+        : ['jonathan@brave.credit', 'noah@brave.credit', 'jorge@brave.credit'];
     let params = generateEmailParams(`Referrals Report(s)`, emails);
     params.attachments = [
       {

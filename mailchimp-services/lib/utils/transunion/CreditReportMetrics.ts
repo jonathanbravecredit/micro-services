@@ -8,9 +8,9 @@ import {
   ITradeLinePartition,
   ITradelineSummary,
 } from 'lib/interfaces/mergereport.interface';
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { ICreditReportMetrics } from 'lib/interfaces/credit-report-metrics.interface';
 import { NEGATIVE_PAY_STATUS_CODES } from 'lib/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'lib/data/account-types';

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as nodemailer from 'nodemailer';
 import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { safeParse } from 'libs/safeJson';
 import { SNS, SES, DynamoDB, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { SQSEvent, SQSHandler } from 'aws-lambda';

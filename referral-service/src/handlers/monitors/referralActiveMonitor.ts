@@ -51,7 +51,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         }, 0);
 
         // changing to require only 1 unique session
-        if (pvs > 1 || clickEvents > 0) {
+        if (pvs > 0 || clickEvents > 0) {
           // auto approve
           // 1. update the campaign to current...must be first
           //  - the campaign can't be expired...otherwise use the default

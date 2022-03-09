@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { mapEnrollmentFields } from 'libs/helpers';
-import * as moment from 'moment';
+import dayjs from 'dayjs';
 const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const tableName = process.env.APPDATA || '';
 
@@ -86,7 +86,7 @@ export const countAllEnrollmentsInDB = async () => {
     items = await db.scan(params).promise();
     items.Items?.forEach((item) => {
       const enrolled = item.agencies.transunion.enrolled;
-      const inJan = moment(item.createdOn).isSame(new Date(), 'month');
+      const inJan = dayjs(item.createdOn).isSame(new Date(), 'month');
       if (enrolled && inJan) {
         count++;
       }
@@ -109,7 +109,7 @@ export const countAllFailedInDB = async () => {
     items = await db.scan(params).promise();
     items.Items?.forEach((item) => {
       const failed = item.agencies.transunion.status === 'suspended';
-      const inJan = moment(item.createdOn).isSame(new Date(), 'month');
+      const inJan = dayjs(item.createdOn).isSame(new Date(), 'month');
       if (failed && inJan) {
         count++;
       }
