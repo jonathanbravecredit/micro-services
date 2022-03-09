@@ -1,5 +1,6 @@
 import { AttributeValue } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
+import { DisputeKeys } from 'libs/interfaces/disputekeys.interfaces';
 import { IEnrollUserBatchMsg } from 'libs/interfaces/enrolled-user-report.interface';
 const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const tableName = process.env.APPDATA || '';
@@ -60,4 +61,30 @@ export const getItemInDB = (id: any): Promise<DynamoDB.DocumentClient.GetItemOut
     .promise()
     .then((res) => res)
     .catch((err) => err);
+};
+
+export const updateDisputeKeys = (id: any, keys: DisputeKeys): Promise<DynamoDB.DocumentClient.GetItemOutput> => {
+  const params: DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: tableName,
+    Key: {
+      customerId: id,
+    },
+    // ConditionExpression: 'attribute_exists(queryParam.tableId)',
+    UpdateExpression: 'set #ag.#tu.#eo = :eo, #ag.#tu.#ek = :ek, #ag.#tu.#fk = :fk',
+    ExpressionAttributeNames: {
+      '#ag': 'agencies',
+      '#tu': 'transunion',
+      '#eo': 'disputeEnrolledOn',
+      '#ek': 'disputeEnrollmentKey',
+      '#fk': 'disputeServiceBundleFulfillmentKey',
+    },
+    ExpressionAttributeValues: {
+      ':eo': keys.disputeEnrolledOn,
+      ':ek': keys.disputeEnrollmentKey,
+      ':fk': keys.disputeServiceBundleFulfillmentKey,
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return db.update(params).promise();
 };

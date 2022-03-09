@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { parallelScanActionData } from 'libs/db/actions';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';

@@ -9,9 +9,9 @@ import {
   ITradelineSummary,
 } from 'libs/interfaces/merge-report.interfaces';
 import { IAddress, IAppDataInput, IDob, IUser } from 'libs/interfaces/appdata.interfaces';
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { IUserSummaryMappedValues } from 'libs/interfaces/user-summary.interfaces';
 import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
