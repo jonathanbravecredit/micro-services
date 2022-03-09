@@ -47,6 +47,26 @@ export const updateEnrollment = (pkey: string): Promise<void> => {
     .catch((err) => err);
 };
 
+export const updatePaidOut = (pkey: string, paidOut: number): Promise<void> => {
+  return store
+    .update(pkey)
+    .updateAttribute('campaignActivePaid')
+    .set(paidOut)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
+  return store
+    .update(pkey)
+    .updateAttribute('campaignActiveAddOn')
+    .set(addOn)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
 export const suspendReferral = (id: string): Promise<void> => {
   return store
     .update(id)

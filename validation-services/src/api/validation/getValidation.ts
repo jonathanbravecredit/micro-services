@@ -6,6 +6,7 @@ import { BLACKLIST, TLDBLACKLIST } from 'lib/data/blacklist';
 import { BraveUtil } from 'lib/utils/brave';
 import { safeParse } from 'lib/utils/safeJson';
 import { WHITELIST } from 'lib/data/whitelist';
+import { NeverBounceErrorHandler } from 'lib/utils/neverbounce/neverbounce';
 
 let client;
 const neverSKLoc = process.env.NEVERBOUNCE_SECRET_LOCATION;
@@ -62,13 +63,13 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
 
     switch (resp.response.result) {
       case 'invalid':
-        return response(200, { status: 'success', result: 'invalid' })
+        return response(200, { status: 'success', result: 'invalid' });
       case 'disposable':
-        return response(200, { status: 'success', result: 'invalid' })
+        return response(200, { status: 'success', result: 'invalid' });
       case 'unknown':
-        return response(200, { status: 'success', result: 'invalid' })
+        return response(200, { status: 'success', result: 'invalid' });
       case 'catchall':
-        return response(200, { status: 'success', result: 'invalid' })
+        return response(200, { status: 'success', result: 'invalid' });
       default:
         return response(200, resp.response);
     }
@@ -98,6 +99,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         resp = 'UnspecifiedError';
         break;
     }
-    return response(200, { status: 'success', result: 'valid' });
+    const errHandler = new NeverBounceErrorHandler(401, JSON.stringify({ email, resp }));
+    await errHandler.sendNotification();
+    return errHandler.handleResponse('success', 'valid');
   }
 };

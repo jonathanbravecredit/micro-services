@@ -31,6 +31,7 @@ import { MonthlyLogins } from 'libs/reports/MonthlyLogin/MonthlyLogin';
 import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggregateMetrics';
 import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
+import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
 
 // request.debug = true; import * as request from 'request';
 // const errorLogger = new ErrorLogger();
@@ -554,7 +555,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   if (failedFulfillReport.length) {
     try {
       let counter = 0;
-      const fulfillCalledOn = new Date('2022-01-19');
+      const fulfillCalledOn = new Date('2022-03-05');
       await Promise.all(
         failedFulfillReport.map(async (rec) => {
           const message = rec.message;
@@ -731,6 +732,26 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
     }
   }
+
+  /*===================================*/
+  //    missing dispute keys
+  /*===================================*/
+  const missingDisputeKeys = event.Records.map((r) => {
+    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
+  }).filter((b) => {
+    return b.service === ReportNames.MissingDisputeKeys;
+  });
+
+  if (missingDisputeKeys.length) {
+    const report = new MissingDisputeKeysReport(missingDisputeKeys);
+    try {
+      const results = await report.run();
+      return results;
+    } catch (err) {
+      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+    }
+  }
+
   /*===================================*/
   //    registration report
   //  !!!DISABLED!!!

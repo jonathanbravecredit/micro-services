@@ -10,7 +10,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const userId = event?.requestContext?.authorizer?.claims?.sub;
   if (!userId) return response(200, 'no id found');
   const { reason, programId } = JSON.parse(event.body) as IInitiativePostRequest;
-  if (!reason || !programId) return response(200, `no reason: ${reason}; or programId:${programId} provided`);
+  if (!reason || !programId) return response(400, `no reason: ${reason}; or programId:${programId} provided`);
   try {
     const program = (await getPrograms(programId)) as Program; // the only one right now is program 0
     console.log('program: ', JSON.stringify(program));
@@ -26,6 +26,6 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     return response(200, res);
   } catch (err) {
     console.log('error: ', JSON.stringify(err));
-    return response(400, err);
+    return response(500, err);
   }
 };
