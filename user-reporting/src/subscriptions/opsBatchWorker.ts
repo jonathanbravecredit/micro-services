@@ -555,7 +555,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   if (failedFulfillReport.length) {
     try {
       let counter = 0;
-      const fulfillCalledOn = new Date('2022-01-19');
+      const fulfillCalledOn = new Date('2022-03-05');
       await Promise.all(
         failedFulfillReport.map(async (rec) => {
           const message = rec.message;

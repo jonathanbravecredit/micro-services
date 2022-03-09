@@ -24,7 +24,7 @@ export const getUsersBySub = async (
     UserPoolId: userPoolId,
     Username: sub,
   };
-  console.log('list users by emails params ===> ', params);
+  console.log('get users by sub params ===> ', params);
   return congito.adminGetUser(params).promise();
 };
 

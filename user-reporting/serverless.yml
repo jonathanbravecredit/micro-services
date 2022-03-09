@@ -315,6 +315,11 @@ functions:
     handler: src/handlers/compilers/disableCancelledUsers.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
+  # fixers
+  findNotSentReferralEmails:
+    handler: src/handlers/fixers/findNotSentReferralEmails.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
   # ops batch worker - handles the large reporting jobs
   opsBatchWorker:
     handler: src/subscriptions/opsBatchWorker.main

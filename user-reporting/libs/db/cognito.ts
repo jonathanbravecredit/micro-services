@@ -61,3 +61,58 @@ export const getCognitoUsers = async (
   const resp: CognitoIdentityServiceProvider.ListUsersResponse = await cognito.listUsers(params).promise();
   return resp;
 };
+
+export const listUsersByEmail = async (
+  userPoolId: string,
+  email: string,
+): Promise<AWS.CognitoIdentityServiceProvider.ListUsersResponse> => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: `email = "${email}"`,
+  };
+  return await cognito.listUsers(params).promise();
+};
+
+export const listAllUsers = async (
+  token: string | null | undefined,
+  limit: number,
+): Promise<
+  {
+    userName: any;
+    userCreateDate: any;
+    enabled: any;
+    userStatus: any;
+    sub: string;
+    email_verified: string;
+    email: string;
+  }[]
+> => {
+  let results: any[] = [];
+
+  const getUsersRecurse = async (token: string | null | undefined, limit = 60) => {
+    if (token === null || token === undefined) {
+      // Finish operations
+      return;
+    }
+    let params = {
+      UserPoolId: USER_POOL_ID /* required */,
+      Limit: 60,
+    } as AWS.CognitoIdentityServiceProvider.ListUsersRequest;
+
+    if (token) {
+      params = Object.assign(params, { PaginationToken: token });
+    }
+
+    try {
+      let data = await cognito.listUsers(params).promise();
+      results = [...results, ...(data.Users as any[])];
+      await getUsersRecurse(data.PaginationToken, 60);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  await getUsersRecurse(token, limit);
+  results = formatData(results);
+  return results;
+};
