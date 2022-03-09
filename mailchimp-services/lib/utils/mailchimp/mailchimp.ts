@@ -11,7 +11,7 @@ import { GlobalMergeVar, IMarketingTag, MailMessage, TemplateMailMessage } from 
 // import { MailchimpAppDataMarketingTriggers } from 'lib/utils/mailchimp/triggers/mailchimp-app-data-marketing';
 import { ProxyRequest } from 'lib/interfaces';
 import { IMailChimp, IMailchimpBatchPayload, IMailchimpBatchResponse } from 'lib/interfaces/mailchimp.interfaces';
-import * as md5 from 'md5';
+import md5 from 'md5';
 import { Tagger } from 'lib/utils/mailchimp/triggers/taggers/Tagger';
 import { Sender } from 'lib/utils/mailchimp/triggers/transactionals/Sender';
 
