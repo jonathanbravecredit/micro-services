@@ -2,7 +2,7 @@
 const csvjson = require('csvjson');
 import * as nodemailer from 'nodemailer';
 import { CognitoIdentityServiceProvider, SES } from 'aws-sdk';
-import { listUsersByEmail } from 'libs/db/cognito';
+import { listAllUsers, listUsersByEmail } from 'libs/db/cognito';
 import { getAllItemsInDB } from 'libs/db/referrals';
 import { flattenUser, generateEmailParams } from 'libs/helpers';
 import { Handler } from 'aws-lambda';
@@ -20,67 +20,31 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     });
     console.log('active ==> ', JSON.stringify(active.slice(0, 2)));
     console.log('active count ==> ', active.length);
-    // then I need to check against the emails I sent and find the ones that are active but not sent
-    // I don't have the user Ids only the emails.
-    // const knowSentUser: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
-    //   list.map(async (s: string) => {
-    //     return await listUsersByEmail(pool, s);
-    //   }),
-    // );
-
     // throttling the cognito requests
-    const knownSent = list as Array<string>;
-    let knownSentUsers: Array<CognitoIdentityServiceProvider.ListUsersResponse | undefined> = [];
-    try {
-      while (knownSent.length) {
-        const queue = knownSent.splice(0, 10);
-        await new Promise((resolve) => {
-          setTimeout(async () => {
-            const users = await Promise.all(
-              queue.map(async (email) => {
-                if (!email) return;
-                return await listUsersByEmail(pool, email);
-              }),
-            );
-            knownSentUsers = [...knownSentUsers, ...users];
-            resolve(knownSentUsers);
-          }, 101);
-        });
-        console.log('knownSent length: ', knownSent.length);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    // get every email from cognito
+    const allUsers = await listAllUsers('', 60);
+    console.log('allusers count', allUsers.length);
+    // map the email and sub to map
+    const userEmailSub = new Map();
+    allUsers.forEach((u) => userEmailSub.set(u.email, u.sub));
+    console.log('userEmailSub sample ', Array.from(userEmailSub).slice(0, 1));
+    console.log('userEmailSub count', userEmailSub.size);
 
-    console.log('users ==> ', JSON.stringify(knownSentUsers.slice(0, 2)));
-    console.log('known sent users count ==> ', knownSentUsers.length);
-    // map the attributes
-    const knowSentUserTypes = knownSentUsers
-      .map((u) => {
-        const valid = u?.Users?.filter((u) => !u.Username?.startsWith('google')) || null;
-        return valid ? valid[0] : null;
-      })
-      .filter(Boolean) as CognitoIdentityServiceProvider.UserType[];
-
-    console.log('userTypes ==> ', JSON.stringify(knowSentUserTypes.slice(0, 2)));
-    console.log('userTpyes count: ', knowSentUserTypes.length);
-    // find the ones that were sent
-    const wasSent = new Map();
-    const subs = knowSentUserTypes.map((u) => {
-      const sub = flattenUser(u.Attributes as { Name: string; Value: string }[] | undefined, 'sub');
-      wasSent.set(sub, true);
-      return sub;
+    const knownSent = list as Array<string>; // only emails
+    // map the id and email of known sent
+    const knownSentIds = new Map();
+    knownSent.map((email) => {
+      const sub = userEmailSub.get(email);
+      if (sub) knownSentIds.set(sub, email);
     });
-    console.log('subs ==> ', JSON.stringify(subs.slice(0, 2)));
-    console.log('wasSent ==> ', JSON.stringify([...wasSent].slice(0, 2)));
-    console.log('wasSent size ', wasSent.size);
-    console.log('wasSent length ', [...wasSent].length);
-
-    // if the id is in referral an not in subs, then they have not been sent.
+    console.log('knownSentIds sample ', Array.from(knownSentIds).slice(0, 1));
+    console.log('knownSentIds count', knownSentIds.size);
+    // we have the ids now mapped, so compare to the list of active referrals.
+    // if in list of all referrals but not in list of knownSent IDs
     const notSent = new Map();
-    active.forEach((r) => {
-      const t1 = wasSent.has(r.id);
-      if (!t1) notSent.set(r.id, true);
+    active.forEach((referral) => {
+      const t1 = knownSentIds.has(referral.id);
+      if (!t1) notSent.set(referral.id, true);
     });
     console.log(
       'notSent ==> ',
@@ -89,7 +53,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
           .map(([k, v]) => {
             return { id: k };
           })
-          .slice(0, 2),
+          .slice(0, 1),
       ),
     );
 

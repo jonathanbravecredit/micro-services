@@ -76,13 +76,22 @@ export const getUsers = async (token: string, limit: number) => {
   return results;
 };
 
-export const formatData = (data: any[]) => {
+export const formatData = (
+  data: any[],
+): {
+  userName: any;
+  userCreateDate: any;
+  enabled: any;
+  userStatus: any;
+  sub: string;
+  email_verified: string;
+  email: string;
+}[] => {
   let timeStamp = new Date();
   let fileArr = data.map((user) => {
     let attrs = {
       sub: flattenUser(user.Attributes, 'sub'),
       email_verified: flattenUser(user.Attributes, 'email_verified'),
-      // fullName: flattenUser(user.Attributes, 'custom:fullName'),
       email: flattenUser(user.Attributes, 'email'),
     };
 
@@ -94,7 +103,7 @@ export const formatData = (data: any[]) => {
       ...attrs,
     };
   });
-  return JSON.parse(JSON.stringify(fileArr));
+  return fileArr;
 };
 
 export const generateEmailParams = (subj: string, emails: string[] = ['']): IEmailParams => {
