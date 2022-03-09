@@ -20,36 +20,41 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
       return i.campaignActive === 'mar2022';
     });
     console.log('active ==> ', JSON.stringify(active.slice(0, 2)));
+    console.log('active count ==> ', JSON.stringify(active.slice(0, 2)));
     // then I need to check against the emails I sent and find the ones that are active but not sent
     // I don't have the user Ids only the emails.
-    const users: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
+    const knowSentUser: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
       knowSent.map(async (s) => {
         return await listUsersByEmail(pool, s);
       }),
     );
-    console.log('users ==> ', JSON.stringify(users.slice(0, 2)));
+    console.log('users ==> ', JSON.stringify(knowSentUser.slice(0, 2)));
     // map the attributes
-    const userTypes = users
+    const knowSentUserTypes = knowSentUser
       .map((u) => {
         const valid = u.Users?.filter((u) => !u.Username?.startsWith('google')) || null;
         return valid ? valid[0] : null;
       })
       .filter(Boolean) as CognitoIdentityServiceProvider.UserType[];
 
-    console.log('userTypes ==> ', JSON.stringify(userTypes.slice(0, 2)));
+    console.log('userTypes ==> ', JSON.stringify(knowSentUserTypes.slice(0, 2)));
+    console.log('userTpyes count: ', knowSentUserTypes.length);
     // find the ones that were sent
     const wasSent = new Map();
-    const subs = userTypes.map((u) => {
+    const subs = knowSentUserTypes.map((u) => {
       const sub = flattenUser(u.Attributes as { Name: string; Value: string }[] | undefined, 'sub');
       wasSent.set(sub, true);
       return sub;
     });
     console.log('subs ==> ', JSON.stringify(subs.slice(0, 2)));
     console.log('wasSent ==> ', JSON.stringify([...wasSent].slice(0, 2)));
+    console.log('wasSent size ', wasSent.size);
+    console.log('wasSent length ', [...wasSent].length);
+
     // if the id is in referral an not in subs, then they have not been sent.
     const notSent = new Map();
     active.forEach((r) => {
-      const t1 = wasSent.get(r.id);
+      const t1 = wasSent.has(r.id);
       if (!t1) notSent.set(r.id, true);
     });
     console.log(
