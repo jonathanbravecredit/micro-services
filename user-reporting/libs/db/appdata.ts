@@ -67,7 +67,7 @@ export const updateDisputeKeys = (id: any, keys: DisputeKeys): Promise<DynamoDB.
   const params: DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: tableName,
     Key: {
-      customerId: id,
+      id: id,
     },
     // ConditionExpression: 'attribute_exists(queryParam.tableId)',
     UpdateExpression: 'set #ag.#tu.#eo = :eo, #ag.#tu.#ek = :ek, #ag.#tu.#fk = :fk',
