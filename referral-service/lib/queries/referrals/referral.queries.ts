@@ -62,6 +62,8 @@ export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
     .update(pkey)
     .updateAttribute('campaignActiveAddOn')
     .set(addOn)
+    .updateAttribute('totalAddOn')
+    .incrementBy(addOn)
     .exec()
     .then((res) => res)
     .catch((err) => err);
