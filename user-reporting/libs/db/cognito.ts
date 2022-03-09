@@ -70,6 +70,5 @@ export const listUsersByEmail = async (
     UserPoolId: userPoolId,
     Filter: `email = "${email}"`,
   };
-  console.log('list users by emails params ===> ', params);
   return await cognito.listUsers(params).promise();
 };
