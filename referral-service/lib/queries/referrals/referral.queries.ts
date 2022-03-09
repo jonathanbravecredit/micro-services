@@ -67,6 +67,16 @@ export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
     .catch((err) => err);
 };
 
+export const updateNextPaymentDate = (pkey: string, paymentDate: string): Promise<void> => {
+  return store
+    .update(pkey)
+    .updateAttribute('nextPaymentDate')
+    .set(paymentDate)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
 export const suspendReferral = (id: string): Promise<void> => {
   return store
     .update(id)
