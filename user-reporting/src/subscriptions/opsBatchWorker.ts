@@ -771,7 +771,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           console.log('message ==> ', message);
-          const scan = await getCognitoUsers(esk as string, 60);
+          const scan = await getCognitoUsers(esk || null, 60);
           if (scan && scan.Users) {
             await Promise.all(
               scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
