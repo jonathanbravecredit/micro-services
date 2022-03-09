@@ -22,17 +22,42 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     console.log('active count ==> ', active.length);
     // then I need to check against the emails I sent and find the ones that are active but not sent
     // I don't have the user Ids only the emails.
-    const knowSentUser: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
-      list.map(async (s: string) => {
-        return await listUsersByEmail(pool, s);
-      }),
-    );
-    console.log('users ==> ', JSON.stringify(knowSentUser.slice(0, 2)));
-    console.log('known sent users count ==> ', knowSentUser.length);
+    // const knowSentUser: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
+    //   list.map(async (s: string) => {
+    //     return await listUsersByEmail(pool, s);
+    //   }),
+    // );
+
+    // throttling the cognito requests
+    const knownSent = list as Array<string>;
+    let knownSentUsers: Array<CognitoIdentityServiceProvider.ListUsersResponse | undefined> = [];
+    try {
+      while (knownSent.length) {
+        const queue = knownSent.splice(0, 10);
+        await new Promise((resolve) => {
+          setTimeout(async () => {
+            const users = await Promise.all(
+              queue.map(async (email) => {
+                if (!email) return;
+                return await listUsersByEmail(pool, email);
+              }),
+            );
+            knownSentUsers = [...knownSentUsers, ...users];
+            resolve(knownSentUsers);
+          }, 101);
+        });
+        console.log('knownSent length: ', knownSent.length);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    console.log('users ==> ', JSON.stringify(knownSentUsers.slice(0, 2)));
+    console.log('known sent users count ==> ', knownSentUsers.length);
     // map the attributes
-    const knowSentUserTypes = knowSentUser
+    const knowSentUserTypes = knownSentUsers
       .map((u) => {
-        const valid = u.Users?.filter((u) => !u.Username?.startsWith('google')) || null;
+        const valid = u?.Users?.filter((u) => !u.Username?.startsWith('google')) || null;
         return valid ? valid[0] : null;
       })
       .filter(Boolean) as CognitoIdentityServiceProvider.UserType[];
