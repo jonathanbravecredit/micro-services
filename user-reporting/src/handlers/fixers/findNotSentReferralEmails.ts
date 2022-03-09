@@ -6,7 +6,7 @@ import { listUsersByEmail } from 'libs/db/cognito';
 import { getAllItemsInDB } from 'libs/db/referrals';
 import { flattenUser, generateEmailParams } from 'libs/helpers';
 import { Handler } from 'aws-lambda';
-const knowSent: string[] = ['jpizzolato36@gmail.com', 'jonathan@brave.credit'];
+s;
 const pool = process.env.POOL || '';
 const ses = new SES({ region: 'us-east-1' });
 
@@ -20,15 +20,16 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
       return i.campaignActive === 'mar2022';
     });
     console.log('active ==> ', JSON.stringify(active.slice(0, 2)));
-    console.log('active count ==> ', JSON.stringify(active.slice(0, 2)));
+    console.log('active count ==> ', active.length);
     // then I need to check against the emails I sent and find the ones that are active but not sent
     // I don't have the user Ids only the emails.
     const knowSentUser: CognitoIdentityServiceProvider.ListUsersResponse[] = await Promise.all(
-      knowSent.map(async (s) => {
+      list.map(async (s: string) => {
         return await listUsersByEmail(pool, s);
       }),
     );
     console.log('users ==> ', JSON.stringify(knowSentUser.slice(0, 2)));
+    console.log('known sent users count ==> ', knowSentUser.length);
     // map the attributes
     const knowSentUserTypes = knowSentUser
       .map((u) => {
@@ -62,7 +63,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
       JSON.stringify(
         Array.from(notSent)
           .map(([k, v]) => {
-            return { id: v };
+            return { id: k };
           })
           .slice(0, 2),
       ),
@@ -71,7 +72,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     const content = csvjson.toCSV(
       JSON.stringify(
         Array.from(notSent).map(([k, v]) => {
-          return { id: v };
+          return { id: k };
         }),
       ),
       {
