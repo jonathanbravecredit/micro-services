@@ -233,7 +233,7 @@ functions:
     events:
       - stream:
           type: dynamodb
-          batchSize: 100
+          batchSize: 10
           startingPosition: LATEST
           arn: !ImportValue referral-service-referrals-stream
   triggerReferralMarketingEmail:
