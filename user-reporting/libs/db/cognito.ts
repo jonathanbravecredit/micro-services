@@ -61,3 +61,15 @@ export const getCognitoUsers = async (
   const resp: CognitoIdentityServiceProvider.ListUsersResponse = await cognito.listUsers(params).promise();
   return resp;
 };
+
+export const listUsersByEmail = async (
+  userPoolId: string,
+  email: string,
+): Promise<AWS.CognitoIdentityServiceProvider.ListUsersResponse> => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: `email = "${email}"`,
+  };
+  console.log('list users by emails params ===> ', params);
+  return await cognito.listUsers(params).promise();
+};
