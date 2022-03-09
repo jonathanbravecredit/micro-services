@@ -809,20 +809,20 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           }
           // send the data to the query
           // get the next start key.
-          if (scan?.PaginationToken != undefined && scan?.PaginationToken !== null) {
-            const packet: IBatchCognitoMsg<string> = {
-              exclusiveStartKey: scan.PaginationToken,
-              segment: 0,
-              totalSegments: 1,
-            };
-            const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
-              'opsbatch',
-              packet,
-              'registeredusersreport',
-            );
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
+          // if (scan?.PaginationToken != undefined && scan?.PaginationToken !== null) {
+          //   const packet: IBatchCognitoMsg<string> = {
+          //     exclusiveStartKey: scan.PaginationToken,
+          //     segment: 0,
+          //     totalSegments: 1,
+          //   };
+          //   const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
+          //     'opsbatch',
+          //     packet,
+          //     'registeredusersreport',
+          //   );
+          //   const res = await sns.publish(payload).promise();
+          //   console.log('sns resp ==> ', res);
+          // }
         }),
       );
       const results = {
