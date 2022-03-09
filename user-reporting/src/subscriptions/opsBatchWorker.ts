@@ -771,15 +771,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           console.log('message ==> ', message);
-          const scan = await getCognitoUsers(esk || null, 60);
+          const scan: CognitoIdentityServiceProvider.ListUsersResponse = await getCognitoUsers(esk || '', 60);
           if (scan && scan.Users) {
             await Promise.all(
               scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
                 const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
                 const newYear = dayjs('2022-01-01');
                 const created = dayjs(item.UserCreateDate);
-                const test = newYear.isBefore(created);
-                console.log('test ==> ', test);
+                const test = created.isAfter(newYear);
                 if (!test) return false;
                 const schema = {};
                 const attrs = {
@@ -809,20 +808,21 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           }
           // send the data to the query
           // get the next start key.
-          // if (scan?.PaginationToken != undefined && scan?.PaginationToken !== null) {
-          //   const packet: IBatchCognitoMsg<string> = {
-          //     exclusiveStartKey: scan.PaginationToken,
-          //     segment: 0,
-          //     totalSegments: 1,
-          //   };
-          //   const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
-          //     'opsbatch',
-          //     packet,
-          //     'registeredusersreport',
-          //   );
-          //   const res = await sns.publish(payload).promise();
-          //   console.log('sns resp ==> ', res);
-          // }
+          if (scan?.PaginationToken != undefined && scan?.PaginationToken !== null) {
+            const packet: IBatchCognitoMsg<string> = {
+              exclusiveStartKey: scan.PaginationToken,
+              segment: 0,
+              totalSegments: 1,
+            };
+            console.log('packet: ', packet);
+            const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
+              'opsbatch',
+              packet,
+              'registeredusersreport',
+            );
+            const res = await sns.publish(payload).promise();
+            console.log('sns resp ==> ', res);
+          }
         }),
       );
       const results = {
