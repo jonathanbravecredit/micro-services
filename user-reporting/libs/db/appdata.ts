@@ -70,15 +70,17 @@ export const updateDisputeKeys = (id: any, keys: DisputeKeys): Promise<DynamoDB.
       id: id,
     },
     // ConditionExpression: 'attribute_exists(queryParam.tableId)',
-    UpdateExpression: 'set #ag.#tu.#eo = :eo, #ag.#tu.#ek = :ek, #ag.#tu.#fk = :fk',
+    UpdateExpression: 'set #ag.#tu.#de = :de, #ag.#tu.#eo = :eo, #ag.#tu.#ek = :ek, #ag.#tu.#fk = :fk',
     ExpressionAttributeNames: {
       '#ag': 'agencies',
       '#tu': 'transunion',
+      '#de': 'disputeEnrolled',
       '#eo': 'disputeEnrolledOn',
       '#ek': 'disputeEnrollmentKey',
       '#fk': 'disputeServiceBundleFulfillmentKey',
     },
     ExpressionAttributeValues: {
+      ':de': true,
       ':eo': keys.disputeEnrolledOn,
       ':ek': keys.disputeEnrollmentKey,
       ':fk': keys.disputeServiceBundleFulfillmentKey,
