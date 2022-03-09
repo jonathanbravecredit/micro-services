@@ -52,11 +52,27 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
       const t1 = wasSent.get(r.id);
       if (!t1) notSent.set(r.id, true);
     });
-    console.log('notSent ==> ', JSON.stringify([...notSent].slice(0, 2)));
+    console.log(
+      'notSent ==> ',
+      JSON.stringify(
+        Array.from(notSent)
+          .map(([key, value]) => {
+            id: value;
+          })
+          .slice(0, 2),
+      ),
+    );
 
-    const content = csvjson.toCSV(JSON.stringify([...notSent]), {
-      headers: 'key',
-    });
+    const content = csvjson.toCSV(
+      JSON.stringify(
+        Array.from(notSent).map(([key, value]) => {
+          id: value;
+        }),
+      ),
+      {
+        headers: 'key',
+      },
+    );
 
     // config the emails transporter
     const emails = ['jonathan@brave.credit'];
