@@ -643,31 +643,31 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               // 1. only referred users
               if (!record.enrolled) return;
               // 2. if a referredByCode is present, get the id and email of the person
-              if (record.referredByCode && record.referredById) {
-                try {
-                  const user = await getUser(record.referredById);
-                  console.log('user: ', JSON.stringify(user));
-                  if (!user || !user.UserAttributes) return;
-                  const email = flattenUser(user.UserAttributes, 'email');
-                  record = {
-                    ...record,
-                    referredByEmail: email || '',
-                  };
-                } catch (err) {
-                  console.log('get reffered by error: ', JSON.stringify(err));
-                  // do nothing
-                }
-              }
+              // if (record.referredByCode && record.referredById) {
+              //   try {
+              //     const user = await getUser(record.referredById);
+              //     console.log('user: ', JSON.stringify(user));
+              //     if (!user || !user.UserAttributes) return;
+              //     const email = flattenUser(user.UserAttributes, 'email');
+              //     record = {
+              //       ...record,
+              //       referredByEmail: email || '',
+              //     };
+              //   } catch (err) {
+              //     console.log('get reffered by error: ', JSON.stringify(err));
+              //     // do nothing
+              //   }
+              // }
 
               // 3. get the user emails to add to report
-              let email: string = '';
-              try {
-                const user = await getUser(record.id);
-                if (!user || !user.UserAttributes) return;
-                email = flattenUser(user.UserAttributes, 'email');
-              } catch (err) {
-                // do nothing
-              }
+              // let email: string = '';
+              // try {
+              //   const user = await getUser(record.id);
+              //   if (!user || !user.UserAttributes) return;
+              //   email = flattenUser(user.UserAttributes, 'email');
+              // } catch (err) {
+              //   // do nothing
+              // }
 
               // 4. write batch record to opsReport table
               const ops = new OpsReportMaker(
@@ -676,7 +676,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                 JSON.stringify(schema),
                 JSON.stringify({
                   ...record,
-                  referralEmail: email,
+                  referralEmail: '',
                   referredById: record.referredById || '',
                   referredByEmail: record.referredByEmail || '',
                 }),
