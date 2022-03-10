@@ -32,7 +32,7 @@ export const main = async () => {
       headers: 'key',
     });
 
-    const emails = STAGE === 'dev' ? [''] : ['jonathan@brave.credit', 'jorge@brave.credit'];
+    const emails = STAGE === 'dev' ? [''] : ['jonathan@brave.credit', 'jorge@brave.credit', 'noah@brave.credit'];
     let params = generateEmailParams('Your registered user reports', emails);
 
     params.attachments = [
