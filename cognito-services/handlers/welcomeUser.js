@@ -21,7 +21,7 @@ module.exports.main = async (event, context, callback) => {
     const { email } = event.request.userAttributes;
     const to = email;
     const from = 'support@brave.credit';
-    const subject = 'Your New Brave Credit Account!';
+    const subject = "You've Almost Got Your New Brave Credit Account!";
 
     if (!(to && from && subject)) {
       console.log(
