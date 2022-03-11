@@ -11,6 +11,7 @@ import { createReferral, getReferralByCode } from 'lib/queries';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event: ', JSON.stringify(event));
   const body: { id: string; referredByCode?: string } = safeParse(event, 'body'); // referredByCode;
   const payload: ICreateReferral = { ...body, campaign: CURRENT_CAMPAIGN };
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
