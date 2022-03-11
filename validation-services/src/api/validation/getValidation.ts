@@ -31,21 +31,27 @@ const getSecretKey = async () => {
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // const { email } = safeParse(event, 'queryStringParameters');
   const { email } = safeParse(event, 'body');
+  console.log('email: ', email);
 
   if (!email || email.length === 0) {
     return response(400, `no email provided - value:${email}`);
   }
   const domain = email.substring(email.lastIndexOf('@') + 1);
+  console.log('domain: ', domain);
 
   if (WHITELIST[domain]) {
+    console.log('whitelist: success ');
     return response(200, { status: 'success', result: 'valid' });
   }
 
   if (BLACKLIST[domain] || !BraveUtil.isEmailValid(email)) {
+    console.log('blacklist: invalid 1', BLACKLIST[domain]);
+    console.log('blacklist: invalid 2', !BraveUtil.isEmailValid(email));
     return response(200, { status: 'success', result: 'invalid' });
   }
 
   if (TLDBLACKLIST[domain.substring(domain.lastIndexOf('.') + 1)]) {
+    console.log('tldblacklist: invalid ', TLDBLACKLIST[domain.substring(domain.lastIndexOf('.') + 1)]);
     return response(200, { status: 'success', result: 'invalid' });
   }
 
@@ -54,6 +60,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const { neverbounce: secret } = JSON.parse(secretJSON);
     client = new NeverBounce({ apiKey: secret });
   } catch (err) {
+    console.log('erro getting secret: ', err);
     return response(500, { status: 'error', result: err.code });
   }
 
@@ -74,6 +81,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
         return response(200, resp.response);
     }
   } catch (err) {
+    console.log('neverbounce err', err);
     let resp;
     switch (err.type) {
       case NeverBounce.errors.AuthError:
