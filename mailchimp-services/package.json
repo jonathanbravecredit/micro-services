@@ -4,7 +4,8 @@
   "description": "A TypeScript starter for Serverless Framework",
   "main": "handler.js",
   "scripts": {
-    "test": "serverless-bundle test",
+    "testOld": "serverless-bundle test",
+    "test": "jest --watchAll --verbose",
     "lint": "eslint . --ext .js,.ts"
   },
   "author": "",
@@ -22,9 +23,11 @@
     "@types/nodemailer": "^6.4.4",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
+    "jest": "^27.5.1",
     "serverless-bundle": "5.3.0",
     "serverless-dotenv-plugin": "^3.12.2",
-    "serverless-offline": "^6.8.0"
+    "serverless-offline": "^6.8.0",
+    "ts-jest": "^27.1.3"
   },
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.72",

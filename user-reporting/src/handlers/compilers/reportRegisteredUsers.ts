@@ -2,9 +2,9 @@ const csvjson = require('csvjson');
 import { SES } from 'aws-sdk';
 import { getUsers, generateEmailParams, mapRegistrationFields } from 'libs/helpers';
 import * as nodemailer from 'nodemailer';
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -32,7 +32,7 @@ export const main = async () => {
       headers: 'key',
     });
 
-    const emails = STAGE === 'dev' ? [''] : ['jonathan@brave.credit', 'jorge@brave.credit'];
+    const emails = STAGE === 'dev' ? [''] : ['jonathan@brave.credit', 'jorge@brave.credit', 'noah@brave.credit'];
     let params = generateEmailParams('Your registered user reports', emails);
 
     params.attachments = [

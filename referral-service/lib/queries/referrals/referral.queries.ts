@@ -62,6 +62,18 @@ export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
     .update(pkey)
     .updateAttribute('campaignActiveAddOn')
     .set(addOn)
+    .updateAttribute('totalAddOn')
+    .incrementBy(addOn)
+    .exec()
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const updateNextPaymentDate = (pkey: string, paymentDate: string): Promise<void> => {
+  return store
+    .update(pkey)
+    .updateAttribute('nextPaymentDate')
+    .set(paymentDate)
     .exec()
     .then((res) => res)
     .catch((err) => err);

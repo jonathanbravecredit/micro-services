@@ -50,14 +50,14 @@ export const getUser = async (id: string): Promise<IAdminGetUserData> => {
 };
 
 export const getCognitoUsers = async (
-  token: string,
+  token: string | null | undefined,
   limit: number = 60,
 ): Promise<CognitoIdentityServiceProvider.ListUsersResponse> => {
-  const params: CognitoIdentityServiceProvider.ListUsersRequest = {
+  const temp: CognitoIdentityServiceProvider.ListUsersRequest = {
     UserPoolId: USER_POOL_ID /* required */,
-    Limit: 60,
-    PaginationToken: token,
+    Limit: limit,
   };
+  const params: CognitoIdentityServiceProvider.ListUsersRequest = token ? { ...temp, PaginationToken: token } : temp;
   const resp: CognitoIdentityServiceProvider.ListUsersResponse = await cognito.listUsers(params).promise();
   return resp;
 };

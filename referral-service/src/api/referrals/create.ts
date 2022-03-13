@@ -15,6 +15,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const payload: ICreateReferral = { ...body, campaign: CURRENT_CAMPAIGN };
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
   if (!validate || !validate(payload)) throw `Malformed message=${JSON.stringify(payload)}`;
+  console.log('payload ', JSON.stringify(payload));
   try {
     // determine eligibility
     // const approved = await eligible(payload);

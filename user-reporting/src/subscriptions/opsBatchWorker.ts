@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as nodemailer from 'nodemailer';
 import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { safeParse } from 'libs/safeJson';
 import { SNS, SES, DynamoDB, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
@@ -643,31 +643,31 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               // 1. only referred users
               if (!record.enrolled) return;
               // 2. if a referredByCode is present, get the id and email of the person
-              if (record.referredByCode && record.referredById) {
-                try {
-                  const user = await getUser(record.referredById);
-                  console.log('user: ', JSON.stringify(user));
-                  if (!user || !user.UserAttributes) return;
-                  const email = flattenUser(user.UserAttributes, 'email');
-                  record = {
-                    ...record,
-                    referredByEmail: email || '',
-                  };
-                } catch (err) {
-                  console.log('get reffered by error: ', JSON.stringify(err));
-                  // do nothing
-                }
-              }
+              // if (record.referredByCode && record.referredById) {
+              //   try {
+              //     const user = await getUser(record.referredById);
+              //     console.log('user: ', JSON.stringify(user));
+              //     if (!user || !user.UserAttributes) return;
+              //     const email = flattenUser(user.UserAttributes, 'email');
+              //     record = {
+              //       ...record,
+              //       referredByEmail: email || '',
+              //     };
+              //   } catch (err) {
+              //     console.log('get reffered by error: ', JSON.stringify(err));
+              //     // do nothing
+              //   }
+              // }
 
               // 3. get the user emails to add to report
-              let email: string = '';
-              try {
-                const user = await getUser(record.id);
-                if (!user || !user.UserAttributes) return;
-                email = flattenUser(user.UserAttributes, 'email');
-              } catch (err) {
-                // do nothing
-              }
+              // let email: string = '';
+              // try {
+              //   const user = await getUser(record.id);
+              //   if (!user || !user.UserAttributes) return;
+              //   email = flattenUser(user.UserAttributes, 'email');
+              // } catch (err) {
+              //   // do nothing
+              // }
 
               // 4. write batch record to opsReport table
               const ops = new OpsReportMaker(
@@ -676,7 +676,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                 JSON.stringify(schema),
                 JSON.stringify({
                   ...record,
-                  referralEmail: email,
+                  referralEmail: '',
                   referredById: record.referredById || '',
                   referredByEmail: record.referredByEmail || '',
                 }),
@@ -771,15 +771,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           console.log('message ==> ', message);
-          const scan = await getCognitoUsers(esk as string, 60);
+          const scan: CognitoIdentityServiceProvider.ListUsersResponse = await getCognitoUsers(esk || '', 60);
           if (scan && scan.Users) {
             await Promise.all(
               scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
                 const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
                 const newYear = dayjs('2022-01-01');
                 const created = dayjs(item.UserCreateDate);
-                const test = newYear.isBefore(created);
-                console.log('test ==> ', test);
+                const test = created.isAfter(newYear);
                 if (!test) return false;
                 const schema = {};
                 const attrs = {
@@ -815,6 +814,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               segment: 0,
               totalSegments: 1,
             };
+            console.log('packet: ', packet);
             const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
               'opsbatch',
               packet,

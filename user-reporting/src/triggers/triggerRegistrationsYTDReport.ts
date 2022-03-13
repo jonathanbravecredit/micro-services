@@ -23,12 +23,12 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     }
     await Promise.all(
       segments.map(async (s) => {
-        const packet: IBatchCognitoMsg<string> = {
-          exclusiveStartKey: '',
+        const packet: IBatchCognitoMsg<null> = {
+          exclusiveStartKey: null,
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>('opsbatch', packet, 'registeredusersreport');
+        const payload = pubsub.createSNSPayload<IBatchCognitoMsg<null>>('opsbatch', packet, 'registeredusersreport');
         await sns.publish(payload).promise();
       }),
     );

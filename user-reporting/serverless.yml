@@ -102,7 +102,7 @@ functions:
     handler: src/handlers/compilers/reportRegisteredUsers.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(0 8 ? * MON *)
+      - schedule: cron(0 8 * * ? *)
   userEnrollments:
     handler: src/handlers/compilers/reportEnrollments.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -318,6 +318,10 @@ functions:
   # fixers
   findNotSentReferralEmails:
     handler: src/handlers/fixers/findNotSentReferralEmails.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+
+  fixDisputeEnrollmentKeys:
+    handler: src/handlers/fixers/fixDisputeEnrollmentKeys.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # ops batch worker - handles the large reporting jobs
