@@ -41,6 +41,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         if (referral?.eligible) return; // already eligible
         const sessions = await listUserSessions(message.userId, 20);
         console.log('sessions: ', JSON.stringify(sessions));
+        // count pageViews across sessions
         const counters = new Map<string, number>();
         sessions.forEach((a) => {
           const pvs = counters.get(a.sessionId) || 0;
