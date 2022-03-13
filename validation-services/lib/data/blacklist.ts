@@ -110,4 +110,5 @@ export const FILTERS = {
   midiharmonica: true,
   afarek: true,
   vintomaper: true,
+  cutradition: true,
 };
