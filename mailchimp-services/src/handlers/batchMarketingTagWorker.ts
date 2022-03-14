@@ -119,6 +119,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
     });
 
     if (payloads.length) {
+      console.log('payloads to send: ', JSON.stringify(payloads));
       const batch = Mailchimp.createBatchPayload(payloads);
       const resp = await Mailchimp.processBatchPayload(batch, mrktConfig);
     }

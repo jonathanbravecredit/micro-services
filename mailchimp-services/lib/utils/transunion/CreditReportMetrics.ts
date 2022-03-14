@@ -40,7 +40,6 @@ export class CreditReportMetrics {
     const { report } = creditReport;
     const mergeReport = new MergeReport(report); // clean up any inconsitent formats;
     this.userReport = mergeReport;
-    console.log('this');
     this.creditScore = this.parseCreditScore(mergeReport);
     this.subscribers = _nest.find<ISubscriber[]>(mergeReport, 'Subscriber') || [];
     this.borrowerRecords = _nest.find<IBorrower>(mergeReport, 'Borrower') || ({} as IBorrower);
