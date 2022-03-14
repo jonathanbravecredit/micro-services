@@ -52,6 +52,16 @@ export const BLACKLIST = {
   'midiharmonica.com': true,
   'afarek.com': true,
   'vintomaper.com': true,
+  'cutraition.com': true,
+  'songsign.com': true,
+  'tourcc.com': true,
+  'tonaeto.com': true,
+  'shopxda.com': true,
+  'sofrge.com': true,
+  'snece.com': true,
+  'siberpay.com': true,
+  'inbox.eu': true,
+  'cutradition.com': true,
 };
 
 export const TLDBLACKLIST = {
@@ -110,5 +120,14 @@ export const FILTERS = {
   midiharmonica: true,
   afarek: true,
   vintomaper: true,
+  cutraition: true,
+  songsign: true,
+  tourcc: true,
+  tonaeto: true,
+  shopxda: true,
+  sofrge: true,
+  snece: true,
+  siberpay: true,
   cutradition: true,
+  inbox: true,
 };
