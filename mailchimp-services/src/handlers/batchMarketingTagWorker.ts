@@ -119,9 +119,12 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
     });
 
     if (payloads.length) {
-      console.log('payloads to send: ', JSON.stringify(payloads));
+      for (let i = 0; i < 2; i++) {
+        console.log('payload samples: ', JSON.stringify(payloads[i]));
+      }
       const batch = Mailchimp.createBatchPayload(payloads);
       const resp = await Mailchimp.processBatchPayload(batch, mrktConfig);
+      console.log('mailchimp resp: ', resp);
     }
   } catch (error) {
     console.log('merketing error ==> ', error);
