@@ -1,19 +1,23 @@
 export interface ICodeRef {
-  abbreviation?: string;
-  description?: string;
-  symbol?: number | string;
-  rank?: number | string;
+  abbreviation: string | null;
+  description: string | null;
+  symbol: number | string | null;
+  rank: number | string | null;
 }
 
 export interface ISourceSummary {
   Source: ISource;
 }
-
 export interface ISource {
-  BorrowerKey?: string;
-  Bureau?: ICodeRef;
-  InquiryDate?: string;
-  Reference?: string;
+  BorrowerKey: string | null;
+  Bureau: ICodeRef;
+  InquiryDate: string | null;
+  Reference: string | null;
+}
+
+export interface IRemark {
+  RemarkCode: ICodeRef;
+  customRemark: string | null;
 }
 
 export interface IDate {
@@ -22,17 +26,12 @@ export interface IDate {
   day: string | number | null;
 }
 
-export interface IRemark {
-  RemarkCode?: ICodeRef;
-  customRemark?: string;
-}
-
 export interface IPartitionSet {
-  partitionSet?: number | string;
+  partitionSet: number | string | null;
 }
 export interface IPartitionElements extends IPartitionSet {
-  dateReported?: string;
-  dateUpdated?: string;
+  dateReported: string | null;
+  dateUpdated: string | null;
 }
 
 export interface ITUServiceResponse<T> {

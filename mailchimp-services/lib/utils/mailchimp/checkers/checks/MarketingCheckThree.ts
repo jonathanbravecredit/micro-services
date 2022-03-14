@@ -9,14 +9,13 @@ export class MarketingCheckThree extends CreditReportChecker {
   }
 
   check(): IMarketingCheckerResults {
-    if (this.event !== 'MODIFY') return this.generateResults(false);
     if (!this.currCreditReport) return this.generateResults(false);
 
     const current = new CreditReportMetrics(this.currCreditReport);
     const autoloans = current.countAutoLoan();
     const tags = autoloans
-      ? [this.generateTag('auto_loan(s)', 'active'), this.generateTag('auto_loan(s)', 'inactive')]
-      : [this.generateTag('auto_loan(s)', 'inactive'), this.generateTag('auto_loan(s)', 'active')];
+      ? [this.generateTag('auto_loan(s)', 'active'), this.generateTag('no_auto_loan(s)', 'inactive')]
+      : [this.generateTag('auto_loan(s)', 'inactive'), this.generateTag('no_auto_loan(s)', 'active')];
     return this.generateResults(true, tags);
   }
 }

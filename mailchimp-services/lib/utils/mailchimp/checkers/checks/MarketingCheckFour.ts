@@ -9,13 +9,12 @@ export class MarketingCheckFour extends CreditReportChecker {
   }
 
   check(): IMarketingCheckerResults {
-    if (this.event !== 'MODIFY') return this.generateResults(false);
     if (!this.currCreditReport) return this.generateResults(false);
     const current = new CreditReportMetrics(this.currCreditReport);
     const collections = current.countCollectionAccounts();
     const tags = collections
-      ? [this.generateTag('collections(s)', 'active'), this.generateTag('collections(s)', 'inactive')]
-      : [this.generateTag('collections(s)', 'inactive'), this.generateTag('collections(s)', 'active')];
+      ? [this.generateTag('collections(s)', 'active'), this.generateTag('no_collections(s)', 'inactive')]
+      : [this.generateTag('collections(s)', 'inactive'), this.generateTag('no_collections(s)', 'active')];
     return this.generateResults(true, tags);
   }
 }

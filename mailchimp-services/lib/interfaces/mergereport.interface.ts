@@ -131,7 +131,7 @@ export interface ICreditScore {
 export interface ICreditScoreFactor {
   Factor: ICodeRef;
   FactorText: string[];
-  FactorType: 'Negative' | 'Positive';
+  FactorType: 'Negative' | 'Positive' | null;
   bureauCode: number | null;
 }
 export interface IEmployer extends IPartitionElements {
