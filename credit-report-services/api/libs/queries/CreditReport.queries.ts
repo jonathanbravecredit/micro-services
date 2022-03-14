@@ -50,3 +50,11 @@ export const updateReport = (report: CreditReport): Promise<PutItemOutput> => {
     .then((res) => res)
     .catch((err) => err);
 };
+
+export const listReports = (sub: string): Promise<CreditReport[]> => {
+  return store.query().wherePartitionKey(sub).descending().execFetchAll();
+};
+
+export const getLastTwoReports = (sub: string): Promise<CreditReport[]> => {
+  return store.query().wherePartitionKey(sub).descending().limit(2).execFetchAll();
+};

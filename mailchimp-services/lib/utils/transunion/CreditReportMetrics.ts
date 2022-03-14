@@ -16,6 +16,7 @@ import { NEGATIVE_PAY_STATUS_CODES } from 'lib/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'lib/data/account-types';
 import { CreditReport } from 'lib/interfaces/credit-report.interface';
 import { Nested as _nest } from 'lib/utils/helpers/Nested';
+import { MergeReport } from 'lib/utils/mergereport/MergeReport/MergeReport';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -37,16 +38,18 @@ export class CreditReportMetrics {
   constructor(creditReport: CreditReport) {
     this.id = creditReport.userId;
     const { report } = creditReport;
-    this.userReport = report;
-    this.creditScore = this.parseCreditScore(report);
-    this.subscribers = _nest.find<ISubscriber[]>(report, 'Subscriber') || [];
-    this.borrowerRecords = _nest.find<IBorrower>(report, 'Borrower') || ({} as IBorrower);
+    const mergeReport = new MergeReport(report); // clean up any inconsitent formats;
+    this.userReport = mergeReport;
+    console.log('this');
+    this.creditScore = this.parseCreditScore(mergeReport);
+    this.subscribers = _nest.find<ISubscriber[]>(mergeReport, 'Subscriber') || [];
+    this.borrowerRecords = _nest.find<IBorrower>(mergeReport, 'Borrower') || ({} as IBorrower);
     this.tradelineRecordsSummary =
-      _nest.find<ITradelineSummary>(report, 'TradelineSummary') || ({} as ITradelineSummary);
-    this.tradelineRecords = _nest.find<ITradeLinePartition[]>(report, 'TradeLinePartition') || [];
+      _nest.find<ITradelineSummary>(mergeReport, 'TradelineSummary') || ({} as ITradelineSummary);
+    this.tradelineRecords = _nest.find<ITradeLinePartition[]>(mergeReport, 'TradeLinePartition') || [];
     this.publicRecordsSummary =
-      _nest.find<IPublicRecordSummary>(report, 'PublicRecordSummary') || ({} as IPublicRecordSummary);
-    this.publicRecords = _nest.find<IPublicPartition[]>(report, 'PulblicRecordPartition') || [];
+      _nest.find<IPublicRecordSummary>(mergeReport, 'PublicRecordSummary') || ({} as IPublicRecordSummary);
+    this.publicRecords = _nest.find<IPublicPartition[]>(mergeReport, 'PulblicRecordPartition') || [];
     // this.aggregate(); // creates the report ready data on this.report
   }
 
