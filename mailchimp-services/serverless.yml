@@ -77,10 +77,12 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScoreTrackings'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditReports'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.settings.APPTABLES.${opt:stage}}'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Disputes/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScoreTrackings/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.settings.APPTABLES.${opt:stage}}/*'
     - Effect: 'Allow'
       Action:
