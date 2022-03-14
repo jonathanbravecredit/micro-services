@@ -14,6 +14,7 @@ import { MarketingCheckThirteen } from 'lib/utils/mailchimp/checkers/checks/Mark
 import { MailchimpTriggerEmails } from 'lib/utils/mailchimp/constants';
 import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'lib/utils/mailchimp/interfaces';
 import { CreditReport } from 'lib/interfaces/credit-report.interface';
+import { MarketingCheckFourteen } from 'lib/utils/mailchimp/checkers/checks/MarketingCheckFourteen';
 
 export class MailchimpCreditReportMarketingTags {
   static currTriggers: IMailchimpPacket<IMarketingData>[];
@@ -33,6 +34,7 @@ export class MailchimpCreditReportMarketingTags {
     [MailchimpTriggerEmails.ChangeCollections]: (p, c, e) => new MarketingCheckEleven(e, c, p).check(),
     [MailchimpTriggerEmails.ChangeNegatives]: (p, c, e) => new MarketingCheckTwelve(e, c, p).check(),
     [MailchimpTriggerEmails.ChangeCreditScore]: (p, c, e) => new MarketingCheckThirteen(e, c, p).check(),
+    [MailchimpTriggerEmails.Over650Score]: (p, c, e) => new MarketingCheckFourteen(e, c, p).check(),
   };
 
   constructor() {}
