@@ -25,8 +25,10 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as IReferrals;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const campaign = await getCampaign(1, 0);
-          if (campaign?.campaign === 'NO_CAMPAIGN' || dayjs(new Date()).isAfter(new Date(campaign?.endDate || 0)))
+          if (campaign?.campaign === 'NO_CAMPAIGN' || dayjs(new Date()).isAfter(new Date(campaign?.endDate || 0))) {
+            console.log('blocking');
             return; // campaign ended don't send email
+          }
           const email =
             UserAttributes?.find((attr) => {
               return attr.Name === 'email';
