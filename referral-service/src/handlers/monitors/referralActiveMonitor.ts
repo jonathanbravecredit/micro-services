@@ -40,7 +40,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const referral = await getReferral(message.userId);
         if (referral?.eligible) return; // already eligible
         const sessions = await listUserSessions(message.userId, 20);
-        // count up special click events
+        // count up special click events...i.e. opening a dispute
         const clickEvents = sessions.reduce((a, b) => {
           return a + (b.clickEvents || 0);
         }, 0);
