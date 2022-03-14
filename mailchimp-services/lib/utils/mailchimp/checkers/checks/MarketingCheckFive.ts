@@ -14,8 +14,8 @@ export class MarketingCheckFive extends CreditReportChecker {
     current.aggregate();
     const negatives = current.metrics.countDerogatoryAccounts;
     const tags = negatives
-      ? [this.generateTag('negative_account(s)', 'active'), this.generateTag('negative_account(s)', 'inactive')]
-      : [this.generateTag('negative_account(s)', 'inactive'), this.generateTag('negative_account(s)', 'active')];
+      ? [this.generateTag('negative_account(s)', 'active'), this.generateTag('no_negative_account(s)', 'inactive')]
+      : [this.generateTag('negative_account(s)', 'inactive'), this.generateTag('no_negative_account(s)', 'active')];
     return this.generateResults(true, tags);
   }
 }

@@ -13,8 +13,8 @@ export class MarketingCheckSix extends CreditReportChecker {
     const current = new CreditReportMetrics(this.currCreditReport);
     const studentloans = current.countStudenLoans();
     const tags = studentloans
-      ? [this.generateTag('student_loan(s)', 'active'), this.generateTag('student_loan(s)', 'inactive')]
-      : [this.generateTag('student_loan(s)', 'inactive'), this.generateTag('student_loan(s)', 'active')];
+      ? [this.generateTag('student_loan(s)', 'active'), this.generateTag('no_student_loan(s)', 'inactive')]
+      : [this.generateTag('student_loan(s)', 'inactive'), this.generateTag('no_student_loan(s)', 'active')];
     return this.generateResults(true, tags);
   }
 }

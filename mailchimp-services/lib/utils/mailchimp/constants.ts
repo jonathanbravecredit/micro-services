@@ -20,4 +20,5 @@ export enum MailchimpTriggerEmails {
   ChangeCollections = 'change-collections',
   ChangeNegatives = 'change-negatives',
   ChangeCreditScore = 'change-credit-score',
+  Over650Score = 'over-650-score',
 }
