@@ -2,8 +2,10 @@
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB, SNS } from 'aws-sdk';
 import { IReferrals } from 'lib/interfaces/referrals.interfaces';
+import { getCampaign } from 'lib/queries/campaigns.queries';
 import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
+import dayjs from 'dayjs';
 
 const sns = new SNS();
 const pool = process.env.POOL || '';
@@ -22,10 +24,14 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as IReferrals;
           const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as IReferrals;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
+          const campaign = await getCampaign(1, 0);
+          if (campaign?.campaign === 'NO_CAMPAIGN' || dayjs(new Date()).isAfter(new Date(campaign?.endDate || 0)))
+            return; // campaign ended don't send email
           const email =
             UserAttributes?.find((attr) => {
               return attr.Name === 'email';
             })?.Value || '';
+
           const mailchimpTriggers = Mailchimp.transactional.referral.resolver(oldImage, newImage);
           // now need to go through all the triggered emails and send them (immediately for now) when appropriately
           console.log('triggers ===> ', mailchimpTriggers);
