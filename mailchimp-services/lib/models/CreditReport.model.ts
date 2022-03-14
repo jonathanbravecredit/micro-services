@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import { IMergeReport } from 'lib/interfaces/mergereport.interface';
 

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { ISNSBody } from 'lib/interfaces';

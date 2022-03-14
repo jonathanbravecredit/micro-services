@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
 import { getUsers } from 'lib/queries/cognito.queries';
