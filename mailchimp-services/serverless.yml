@@ -166,7 +166,7 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn:
-            Fn::ImportValue: credit-report-service-resources-stream
+            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
 
   # dispute table triggers
   triggerDisputeTransactionalEmail:

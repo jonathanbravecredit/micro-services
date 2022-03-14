@@ -15,8 +15,6 @@ export const main: Handler = async (): Promise<void> => {
   try {
     const users = await getUsers(paginationToken, limit, POOL);
     if (!users.length) throw 'no users';
-    // create the payload with out the auth and agent
-    // step 2. going through each record, call fulfill (regardless of last time that the user called fulfill in the app)
     await Promise.all(
       users.map(async (user) => {
         // step 2b. query for the users credit score record

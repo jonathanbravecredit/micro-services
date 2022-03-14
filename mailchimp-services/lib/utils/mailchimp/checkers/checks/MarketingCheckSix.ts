@@ -9,7 +9,6 @@ export class MarketingCheckSix extends CreditReportChecker {
   }
 
   check(): IMarketingCheckerResults {
-    if (this.event !== 'MODIFY') return this.generateResults(false);
     if (!this.currCreditReport) return this.generateResults(false);
     const current = new CreditReportMetrics(this.currCreditReport);
     const studentloans = current.countStudenLoans();

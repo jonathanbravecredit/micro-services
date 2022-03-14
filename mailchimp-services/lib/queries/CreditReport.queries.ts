@@ -1,6 +1,6 @@
 import { PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { CreditReport } from 'libs/models/CreditReport.model';
+import { CreditReport } from 'lib/models/CreditReport.model';
 
 const store = new DynamoStore(CreditReport);
 
