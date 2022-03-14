@@ -40,36 +40,12 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
         const referral = await getReferral(message.userId);
         if (referral?.eligible) return; // already eligible
         const sessions = await listUserSessions(message.userId, 20);
-        console.log('sessions: ', JSON.stringify(sessions));
-        // count pageViews across sessions
-        const counters = new Map<string, number>();
-        sessions.forEach((a) => {
-          const pvs = counters.get(a.sessionId) || 0;
-          counters.set(a.sessionId, pvs + (a.pageViews || 0));
-        }, 0);
-        // count that there is one session with > 1 pageViews and one session with > 0 pageViews
-        const uniqueSessions = Array.from(counters).map(([_, pageViews]) => pageViews);
-        let overOne = false;
-        let overZero = false;
-        for (let i = 0; i < uniqueSessions.length; i++) {
-          if (overOne && overZero) {
-            i = uniqueSessions.length;
-          } else {
-            if (uniqueSessions[i] >= 2 && !overOne) {
-              overOne = true;
-            } else if (uniqueSessions[i] >= 2 && !overZero) {
-              overZero = true;
-            } else if (uniqueSessions[i] >= 1) {
-              overZero = true;
-            }
-          }
-        }
-        // count up special click events
+        // count up special click events...i.e. opening a dispute
         const clickEvents = sessions.reduce((a, b) => {
           return a + (b.clickEvents || 0);
         }, 0);
 
-        if ((overOne && overZero) || clickEvents > 0) {
+        if (clickEvents > 0) {
           // auto approve
           // 1. update the campaign to current...must be first
           //  - the campaign can't be expired...otherwise use the default
