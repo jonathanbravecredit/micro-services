@@ -12,4 +12,5 @@ export enum ReportNames {
   UserAggregatedMetrics = 'useraggregatedmetricsYTD',
   NoReportReport = 'noreportreport',
   MissingDisputeKeys = 'missingdisputekeys',
+  DisputeErrors = 'disputeerrors',
 }

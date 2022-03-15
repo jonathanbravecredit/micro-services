@@ -10,7 +10,11 @@ export abstract class ReportBase<B> {
   protected scan: B | undefined;
   protected counter: number = 0;
 
-  abstract query(arg0: IAttributeValue | string | undefined, arg1: number | null, arg2: number | null): Promise<B>;
+  abstract parallelScan(
+    arg0: IAttributeValue | string | undefined,
+    arg1: number | null,
+    arg2: number | null,
+  ): Promise<B>;
 
   abstract processScan(): Promise<void>;
 
@@ -37,6 +41,17 @@ export abstract class ReportBase<B> {
     } catch (err) {
       return this.onError(err);
     }
+  }
+
+  async query(
+    esk: IAttributeValue | string | undefined,
+    segment: number | null,
+    totalSegments: number | null,
+  ): Promise<B> {
+    if (typeof esk == 'string') throw 'esk cannot be a string';
+    if (segment === null || totalSegments === null)
+      throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
+    return await this.parallelScan(esk, segment, totalSegments);
   }
 
   onSuccess(): string {

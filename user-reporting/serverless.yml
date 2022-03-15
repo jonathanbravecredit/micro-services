@@ -138,15 +138,25 @@ functions:
     handler: src/handlers/compilers/reportFailedCancelEnrollments.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
+  cleanUpAllReports:
+    handler: src/handlers/cleanup/cleanUpReportsAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 12 * * ? *) # run every morning at 4:00 AM (PST)
+      - schedule: cron(15 12 * * ? *) # run every morning at 4:15 AM (PST)
+      - schedule: cron(30 12 * * ? *) # run every morning at 4:30 AM (PST)
+
+  compileAllReports:
+    handler: src/handlers/cleanup/compileAllReports.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM (PST)
+      - schedule: cron(15 9 * * ? *) # run every morning at 1:15 AM (PST)
+      - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM (PST)
+
   # no report report
   triggerNoReportReport:
     handler: src/triggers/triggerNoReportReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileNoReportReport:
-    handler: src/handlers/compilers/compileNoReportReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanUpNoReportReport:
-    handler: src/handlers/cleanup/cleanUpNoReportReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # failure reports
@@ -184,9 +194,6 @@ functions:
   compileAuthenticationLogReport:
     handler: src/handlers/compilers/compileAuthenticationLogReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanupAuthenticationLogReport:
-    handler: src/handlers/cleanup/cleanupAuthenticationLogReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # monthly login reports
   triggerMonthlyLogInReport:
@@ -194,9 +201,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   compileMonthlyLogInReport:
     handler: src/handlers/compilers/compileMonthlyLogInReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanupMonthlyLogInReport:
-    handler: src/handlers/cleanup/cleanUpMonthlyLogInReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # missing dispute keys
@@ -206,8 +210,13 @@ functions:
   compileMissingDisputeKeysReport:
     handler: src/handlers/compilers/compileMissingDisputeKeysReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanUpMissingDisputeKeysReport:
-    handler: src/handlers/cleanup/cleanUpMissingDisputeKeysReport.main
+
+  # dispute errors
+  triggerDisputeErrors:
+    handler: src/triggers/triggerDisputeErrors.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  compileDisputeErrorsReport:
+    handler: src/handlers/compilers/compileDisputeErrorsReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # user employer all
@@ -217,9 +226,6 @@ functions:
   compileUserEmployerAll:
     handler: src/handlers/compilers/compileUserEmployerAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanupUserEmployerAll:
-    handler: src/handlers/cleanup/cleanUpUserEmployerAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # failed fulfill reports
   triggerFailedFulfill:
@@ -227,9 +233,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   compileFailedFulfillReport:
     handler: src/handlers/compilers/compileFailedFulfillReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanupFailedFulfillReport:
-    handler: src/handlers/cleanup/cleanupFailedFulfillReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # referral reports
@@ -247,7 +250,7 @@ functions:
     handler: src/handlers/cleanup/cleanUpReferralReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(15 12 * * ? *) # run every morning at 4:00 AM
+      - schedule: cron(15 12 * * ? *) # run every morning at 4:15 AM
 
   # enrollment reports
   reportEnrollmentCount:
@@ -287,14 +290,11 @@ functions:
     #   - schedule: cron(0 12 ? * MON *) # run every morning at 4:00 AM
 
   # dispute enrollment reports
-  reportDisputeEnrollmentsYTD:
-    handler: src/handlers/compilers/reportDisputeEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanUpDisputeEnrollmentsYTDReport:
-    handler: src/handlers/cleanup/cleanUpDisputeEnrollmentsYTDReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   triggerDisputeEnrollmentsYTD:
     handler: src/triggers/triggerDisputeEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  reportDisputeEnrollmentsYTD:
+    handler: src/handlers/compilers/reportDisputeEnrollmentsYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # user aggregated metrics report
@@ -303,9 +303,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   compileUserAggregatedMetricsReport:
     handler: src/handlers/compilers/compileUserAggregatedMetricsReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanUpUserAggregatedMetricsReport:
-    handler: src/handlers/cleanup/cleanUpUserAggregatedMetricsReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   reportFailedCount:
@@ -410,6 +407,7 @@ resources:
             - useremployerall
             - usermetricsreport
             - missingdisputekeys
+            - disputeerrors
         RawMessageDelivery: 'true'
 
     OpsReports:
