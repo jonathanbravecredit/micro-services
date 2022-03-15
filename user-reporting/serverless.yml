@@ -1,4 +1,4 @@
-frameworkVersion: '2.15.0'
+# frameworkVersion: '2.15.0'
 service: user-reporting
 
 package:
@@ -107,7 +107,7 @@ functions:
       - schedule: cron(15 12 * * ? *) # run every morning at 4:15 AM (PST)
       - schedule: cron(30 12 * * ? *) # run every morning at 4:30 AM (PST)
   compileAllReports:
-    handler: src/handlers/cleanup/compileAllReports.main
+    handler: src/handlers/compilers/compileAllReports.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM (PST)
