@@ -138,6 +138,7 @@ functions:
     handler: src/handlers/compilers/reportFailedCancelEnrollments.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
+  # scheduled jobs
   cleanUpAllReports:
     handler: src/handlers/cleanup/cleanUpReportsAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -154,123 +155,71 @@ functions:
       - schedule: cron(15 9 * * ? *) # run every morning at 1:15 AM (PST)
       - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM (PST)
 
-  # no report report
-  triggerNoReportReport:
-    handler: src/triggers/triggerNoReportReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-
-  # failure reports
+  # scheduled report
+  # failure report
   triggerFailuresYTD:
     handler: src/triggers/triggerFailuresYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(30 8 * * ? *) # run every morning at 12:30 AM
-  reportFailuresYTD:
-    handler: src/handlers/compilers/reportFailuresYTD.main
+
+  # referral report
+  triggerReferralsAll:
+    handler: src/triggers/triggerReferralsAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM
-  cleanUpFailuresYTDReport:
-    handler: src/handlers/cleanup/cleanUpFailuresYTDReport.main
+      - schedule: cron(15 8 * * ? *) # run every morning at 12:15 AM
+  # enrollment report
+  triggerEnrollmentsYTD:
+    handler: src/triggers/triggerEnrollmentsYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(30 12 * * ? *) # run every morning at 4:30 AM
+      - schedule: cron(0 8 * * ? *) # run every morning at 12:0 AM
+
+  # no report report
+  triggerNoReportReport:
+    handler: src/triggers/triggerNoReportReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # action reports
   triggerActionsYTD:
     handler: src/triggers/triggerActionsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportActionsYTD:
-    handler: src/handlers/compilers/reportActionsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  cleanUpActionsYTDReport:
-    handler: src/handlers/cleanup/cleanUpActionsYTDReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # authentication log reports
   triggerAuthenticationLogAll:
     handler: src/triggers/triggerAuthenticationLogAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileAuthenticationLogReport:
-    handler: src/handlers/compilers/compileAuthenticationLogReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # monthly login reports
   triggerMonthlyLogInReport:
     handler: src/triggers/triggerMonthlyLogInReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileMonthlyLogInReport:
-    handler: src/handlers/compilers/compileMonthlyLogInReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # missing dispute keys
   triggerMissingDisputeKeyReport:
     handler: src/triggers/triggerMissingDisputeKeyReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileMissingDisputeKeysReport:
-    handler: src/handlers/compilers/compileMissingDisputeKeysReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # dispute errors
   triggerDisputeErrors:
     handler: src/triggers/triggerDisputeErrors.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileDisputeErrorsReport:
-    handler: src/handlers/compilers/compileDisputeErrorsReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # user employer all
   triggerUserEmployerAll:
     handler: src/triggers/triggerUserEmployerAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileUserEmployerAll:
-    handler: src/handlers/compilers/compileUserEmployerAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # failed fulfill reports
   triggerFailedFulfill:
     handler: src/triggers/triggerFailedFulfill.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileFailedFulfillReport:
-    handler: src/handlers/compilers/compileFailedFulfillReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-
-  # referral reports
-  triggerReferralsAll:
-    handler: src/triggers/triggerReferralsAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(15 8 * * ? *) # run every morning at 12:15 AM
-  compileReferralsReport:
-    handler: src/handlers/compilers/compileReferralsReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(15 9 * * ? *) # run every morning at 1:15 AM
-  cleanUpReferralReport:
-    handler: src/handlers/cleanup/cleanUpReferralReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(15 12 * * ? *) # run every morning at 4:15 AM
 
   # enrollment reports
   reportEnrollmentCount:
     handler: src/handlers/compilers/reportEnrollmentCount.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerEnrollmentsYTD:
-    handler: src/triggers/triggerEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 8 * * ? *) # run every morning at 12:0 AM
-  reportEnrollmentsYTD:
-    handler: src/handlers/compilers/reportEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM
-  cleanUpEnrollmentsYTDReport:
-    handler: src/handlers/cleanup/cleanUpEnrollmentsYTDReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 12 * * ? *) # run every morning at 4:00 AM
 
   # registration reports
   triggerRegistrationsYTDReport:
@@ -278,31 +227,15 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     # events:
     #   - schedule: cron(0 8 ? * MON *)
-  compileRegistrationsYTDReport:
-    handler: src/handlers/compilers/compileRegistrationsYTDReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    # events:
-    #   - schedule: cron(0 9 ? * MON *)
-  cleanUpRegistrationsYTDReport:
-    handler: src/handlers/cleanup/cleanUpRegistrationsYTDReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    # events:
-    #   - schedule: cron(0 12 ? * MON *) # run every morning at 4:00 AM
 
   # dispute enrollment reports
   triggerDisputeEnrollmentsYTD:
     handler: src/triggers/triggerDisputeEnrollmentsYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportDisputeEnrollmentsYTD:
-    handler: src/handlers/compilers/reportDisputeEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # user aggregated metrics report
   triggerUserAggregatedMetricsReport:
     handler: src/triggers/triggerUserAggregatedMetricsReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  compileUserAggregatedMetricsReport:
-    handler: src/handlers/compilers/compileUserAggregatedMetricsReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   reportFailedCount:
