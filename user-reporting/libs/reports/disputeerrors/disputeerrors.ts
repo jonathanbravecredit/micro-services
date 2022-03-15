@@ -23,15 +23,13 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       table: 'APITransactionLog',
       index: 'action-createdOn-index',
       key: {
-        '#a': ':a',
+        action: 'StartDispute:error',
       },
       filter: '#t <> :t',
       attributes: {
-        '#a': 'action',
         '#t': 'transaction',
       },
       values: {
-        ':a': 'StartDispute:error',
         ':t': '{"nil":true}',
       },
     };
