@@ -13,7 +13,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
     super(records);
   }
 
-  async parallelScan(
+  async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
     totalSegments: number,

@@ -5,6 +5,7 @@ import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/pubsub/pubsub';
 import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
+import { ReportNames } from 'libs/data/reports';
 
 // request.debug = true; import * as request from 'request';
 const sns = new SNS({ region: 'us-east-2' });
@@ -21,7 +22,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   try {
     let counter = 0;
     const segments = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 1; i++) {
       segments.push(i);
     }
     await Promise.all(
@@ -31,7 +32,11 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'disputeerrors');
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
+          'opsbatch',
+          packet,
+          ReportNames.DisputeErrors,
+        );
         await sns.publish(payload).promise();
       }),
     );

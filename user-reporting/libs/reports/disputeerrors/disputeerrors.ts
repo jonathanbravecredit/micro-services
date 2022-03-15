@@ -6,7 +6,7 @@ import { createOpReport } from 'libs/queries/ops-report.queries';
 import { mapAcknowledgedFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
-import { pScan } from 'libs/db/generic';
+import { pScan, query } from 'libs/db/generic';
 import { ParallelScanParams } from 'libs/interfaces/generic-db.interfaces';
 
 export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
@@ -14,7 +14,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
     super(records);
   }
 
-  async parallelScan(
+  async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
     totalSegments: number,
@@ -22,7 +22,9 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
     const params: ParallelScanParams = {
       table: 'APITransactionLog',
       index: 'action-createdOn-index',
-      condition: '#a = :a',
+      key: {
+        '#a': ':a',
+      },
       filter: '#t <> :t',
       attributes: {
         '#a': 'action',
@@ -33,30 +35,24 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
         ':t': '{"nil":true}',
       },
     };
-    return await pScan(esk, segment, totalSegments, params);
+    return await query(esk, params);
   }
 
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
-        const acked = item?.agencies?.transunion?.acknowledgedDisputeTerms;
-        const keys = item?.agencies?.transunion?.disputeEnrollmentKey;
-        if (acked && !keys) {
-          const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
-          const schema = {};
-          const record = mapAcknowledgedFields(item);
-          const ops = new OpsReportMaker(
-            ReportNames.MissingDisputeKeys,
-            batchId,
-            JSON.stringify(schema),
-            JSON.stringify(record),
-          );
-          await createOpReport(ops);
-          this.counter++;
-          return true;
-        } else {
-          return false;
-        }
+        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        const schema = {};
+        const record = mapAcknowledgedFields(item);
+        const ops = new OpsReportMaker(
+          ReportNames.MissingDisputeKeys,
+          batchId,
+          JSON.stringify(schema),
+          JSON.stringify(record),
+        );
+        await createOpReport(ops);
+        this.counter++;
+        return true;
       }),
     );
   }

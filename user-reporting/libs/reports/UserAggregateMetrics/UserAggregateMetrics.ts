@@ -13,7 +13,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
     super(records);
   }
 
-  async parallelScan(
+  async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
     totalSegments: number,

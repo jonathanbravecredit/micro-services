@@ -13,7 +13,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
     super(records);
   }
 
-  async parallelScan(
+  async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
     totalSegments: number,

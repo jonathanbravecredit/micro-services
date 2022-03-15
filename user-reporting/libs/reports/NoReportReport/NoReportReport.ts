@@ -14,7 +14,7 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
     super(records);
   }
 
-  async parallelScan(
+  async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
     totalSegments: number,

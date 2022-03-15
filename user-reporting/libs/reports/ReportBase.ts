@@ -10,7 +10,7 @@ export abstract class ReportBase<B> {
   protected scan: B | undefined;
   protected counter: number = 0;
 
-  abstract parallelScan(
+  abstract processQuery(
     arg0: IAttributeValue | string | undefined,
     arg1: number | null,
     arg2: number | null,
@@ -51,7 +51,7 @@ export abstract class ReportBase<B> {
     if (typeof esk == 'string') throw 'esk cannot be a string';
     if (segment === null || totalSegments === null)
       throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
-    return await this.parallelScan(esk, segment, totalSegments);
+    return await this.processQuery(esk, segment, totalSegments);
   }
 
   onSuccess(): string {

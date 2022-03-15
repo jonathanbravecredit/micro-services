@@ -70,20 +70,25 @@ export const pScan = async (
 
 export const query = async (
   esk: { [key: string]: AttributeValue } | undefined,
-  table: string,
-  index?: string,
-): Promise<IDynamoOutputs<IAttributeValue> | undefined> => {
-  let params: DynamoDB.DocumentClient.QueryInput = {
-    TableName: table, // I need a big table for testing
+  params: ParallelScanParams,
+): Promise<IBatchMsg<IAttributeValue> | undefined> => {
+  if (!params.table) throw 'no table provided';
+  let input: DynamoDB.DocumentClient.QueryInput = {
+    TableName: params.table, // I need a big table for testing
     ExclusiveStartKey: esk,
   };
-  params = index ? Object.assign(params, { IndexName: index }) : params;
+  Object.entries(params).forEach(([k, v]) => {
+    Object.assign(input, { [parallelScanParamMap[k]]: v });
+  });
+  console.log('input: ', input);
   try {
-    const items: DynamoDB.DocumentClient.QueryOutput = await db.query(params).promise();
+    const items: DynamoDB.DocumentClient.QueryOutput = await db.query(input).promise();
     const { LastEvaluatedKey, Items } = items;
     return {
       lastEvaluatedKey: LastEvaluatedKey,
       items: Items,
+      segment: 0,
+      totalSegments: 1,
     };
   } catch (err) {
     console.log('err ==> ', err);
@@ -93,7 +98,8 @@ export const query = async (
 export const parallelScanParamMap: Record<string, string> = {
   table: 'TableName',
   index: 'IndexName',
-  condition: 'KeyConditionExpression',
+  key: 'Key',
+  condition: 'KeyConditions',
   filter: 'FilterExpression',
   attributes: 'ExpressionAttributeNames',
   values: 'ExpressionAttributeValues',
