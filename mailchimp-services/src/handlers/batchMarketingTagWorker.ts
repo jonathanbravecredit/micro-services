@@ -61,7 +61,9 @@ const recordMap = async (
   const { exclusiveStartKey: esk, segment, totalSegments } = message;
   console.log('message ==> ', message);
   const scan = await parallelScanAppData(esk, segment, totalSegments);
-  const data = (await Promise.all(scan?.items.map(async (i: UpdateAppDataInput) => scanMap(i, lookup)))) as Data[];
+  const data = (await Promise.all(
+    scan?.items.map(async (i: UpdateAppDataInput) => scanMap(i, lookup)),
+  )) as (Data | null)[];
   const inserts = data.map(mapInserts).filter(Boolean) as Inserts[];
   const modifies = data.map(mapModifies).filter(Boolean) as Modifies[];
   const insertPayloads = createInsertPayloads(inserts, lookup);
@@ -82,8 +84,9 @@ const recordMap = async (
  * @param lookup
  * @returns
  */
-const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>): Promise<Data> => {
-  const { id: sub } = appData;
+const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>): Promise<Data | null> => {
+  const { id: sub, status } = appData;
+  if (status?.toLowerCase() !== 'active') return null;
   const email = await getUsersBySub(sub, POOL);
   lookup.set(sub, email);
   const disputesArr = await getRandomDisputesById(sub);
@@ -102,9 +105,8 @@ const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>): Prom
  * @param data
  * @returns
  */
-const mapInserts = (data: Data) => {
+const mapInserts = (data: Data | null) => {
   if (!data) return null;
-  // don't need appdata
   const disputeTriggers = data.dispute ? Mailchimp.marketing.dispute.resolver(null, data.dispute, 'INSERT') : [];
   const reportTriggers = data.currReport
     ? Mailchimp.marketing.creditReport.resolver(null, data.currReport, 'INSERT')
@@ -121,7 +123,7 @@ const mapInserts = (data: Data) => {
  * @param data
  * @returns
  */
-const mapModifies = (data: Data) => {
+const mapModifies = (data: Data | null) => {
   if (!data) return null;
   const appDataTriggers = data.appData ? Mailchimp.marketing.app.resolver(null, data.appData, 'MODIFY') : [];
   const { currReport, priorReport } = data;
