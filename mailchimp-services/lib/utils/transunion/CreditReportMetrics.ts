@@ -287,7 +287,6 @@ export class CreditReportMetrics {
     const { riskScore: score } = riskScore;
     if (!score) return 0;
     const value = +`${score}`;
-    console.log('value: ', value);
     if (isNaN(value)) return 0;
     return +value || 0;
   }
