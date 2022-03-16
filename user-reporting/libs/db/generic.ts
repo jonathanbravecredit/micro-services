@@ -1,6 +1,6 @@
 import { AttributeValue } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { IAttributeValue, IBatchMsg, IDynamoOutputs } from 'libs/interfaces/batch.interfaces';
+import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
 import { ParallelScanParams } from 'libs/interfaces/generic-db.interfaces';
 
 const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
@@ -69,20 +69,10 @@ export const pScan = async (
 };
 
 export const query = async (
-  esk: { [key: string]: AttributeValue } | undefined,
-  params: ParallelScanParams,
+  params: DynamoDB.DocumentClient.QueryInput,
 ): Promise<IBatchMsg<IAttributeValue> | undefined> => {
-  if (!params.table) throw 'no table provided';
-  let input: DynamoDB.DocumentClient.QueryInput = {
-    TableName: params.table, // I need a big table for testing
-    ExclusiveStartKey: esk,
-  };
-  Object.entries(params).forEach(([k, v]) => {
-    Object.assign(input, { [parallelScanParamMap[k]]: v });
-  });
-  console.log('input: ', input);
   try {
-    const items: DynamoDB.DocumentClient.QueryOutput = await db.query(input).promise();
+    const items: DynamoDB.DocumentClient.QueryOutput = await db.query(params).promise();
     const { LastEvaluatedKey, Items } = items;
     return {
       lastEvaluatedKey: LastEvaluatedKey,
@@ -99,7 +89,7 @@ export const parallelScanParamMap: Record<string, string> = {
   table: 'TableName',
   index: 'IndexName',
   key: 'Key',
-  condition: 'KeyConditions',
+  keyExpression: 'KeyConditionExpression',
   filter: 'FilterExpression',
   attributes: 'ExpressionAttributeNames',
   values: 'ExpressionAttributeValues',

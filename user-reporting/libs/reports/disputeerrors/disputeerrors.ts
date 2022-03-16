@@ -6,8 +6,7 @@ import { createOpReport } from 'libs/queries/ops-report.queries';
 import { mapAcknowledgedFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
-import { pScan, query } from 'libs/db/generic';
-import { ParallelScanParams } from 'libs/interfaces/generic-db.interfaces';
+import { query } from 'libs/db/generic';
 
 export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -19,21 +18,11 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    const params: ParallelScanParams = {
-      table: 'APITransactionLog',
-      index: 'action-createdOn-index',
-      key: {
-        action: 'StartDispute:error',
-      },
-      filter: '#t <> :t',
-      attributes: {
-        '#t': 'transaction',
-      },
-      values: {
-        ':t': '{"nil":true}',
-      },
+    const params = {
+      ...this.createQueryInput(),
+      ExclusiveStartKey: esk,
     };
-    return await query(esk, params);
+    return await query(params);
   }
 
   async processScan(): Promise<void> {
@@ -71,5 +60,27 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }
+  }
+
+  createQueryInput() {
+    return {
+      TableName: 'APITransactionLog',
+      ScanIndexForward: false,
+      IndexName: 'action-createdOn-index',
+      KeyConditionExpression: '#a = :a',
+      FilterExpression: '#t <> :t',
+      ExpressionAttributeValues: {
+        ':a': {
+          S: 'StartDispute:error',
+        },
+        ':t': {
+          S: '\'{"nil":true}\'',
+        },
+      },
+      ExpressionAttributeNames: {
+        '#a': 'action',
+        '#t': 'transaction',
+      },
+    };
   }
 }
