@@ -70,12 +70,8 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       KeyConditionExpression: '#a = :a',
       FilterExpression: '#t <> :t',
       ExpressionAttributeValues: {
-        ':a': {
-          S: 'StartDispute:error',
-        },
-        ':t': {
-          S: '{"nil":true}',
-        },
+        ':a': 'StartDispute:error',
+        ':t': '{"nil":true}',
       },
       ExpressionAttributeNames: {
         '#a': 'action',
