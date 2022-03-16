@@ -105,7 +105,7 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {
           await createReferral({
             ...newReferral,
             enrolled: true,
-          });
+          }); // this will miss
         } else {
           await updateEnrollment(id);
         }

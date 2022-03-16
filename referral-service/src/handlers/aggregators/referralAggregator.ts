@@ -48,7 +48,8 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
             const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
             // the referred user needs to go from enrolled to not in rolled
-            // need to find if there is a referred by code
+            // need to find if there is a referred by code.
+            //  - !!! because we don't want to give to people who organically sign up !!!
             // if there is than we need to:
             //  - get the current campaign attributes
             //  - double check the current campaign is an active one
@@ -89,6 +90,8 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             }
 
             // need to give the user credit for enrolling
+            // need a referredByCode
+            //  - !!! because we don't want to give to people who organically sign up !!!
             if (
               newImage.referredByCode &&
               enrollment &&

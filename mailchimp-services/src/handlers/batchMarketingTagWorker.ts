@@ -14,21 +14,20 @@ import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { Dispute } from 'lib/models/dispute.model';
 import { CreditReport } from 'lib/models/CreditReport.model';
 import { PubSubUtil } from 'lib/utils/pubsub/pubsub';
+import { BatchTagWorker } from 'lib/utils/batchworker/batchworker';
 // import * as NodeMailMessage from 'nodemailer/lib/mailer/mail-message';
 const mailchimpMarketingSKLoc = process.env.MAILCHIMP_MRKT_SECRET_LOCATION || '';
-const POOL = (process.env.POOL = '');
+const POOL = process.env.POOL || '';
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 
 export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
-  const userEmailLookup = new Map();
-  let mrktConfig: { apiKey: string; server: string };
-
+  let config: { apiKey: string; server: string };
   try {
     const secretJSON = await getSecretKey(mailchimpMarketingSKLoc);
     if (!secretJSON) throw `Cannot retrieve marketing secret key`;
     const { mailchimpMrkt: secret } = JSON.parse(secretJSON);
-    mrktConfig = { apiKey: secret, server: 'us18' };
+    config = { apiKey: secret, server: 'us18' };
   } catch (err: any) {
     console.log('marketing secrets errors ===> ', err);
     return;
@@ -39,193 +38,13 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
       return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
     });
     if (!records.length) throw 'no records';
-    console.log('pool: ', POOL);
-    const props = {
-      lookup: userEmailLookup,
-      config: mrktConfig,
-      pool: POOL,
-    };
+    const worker = new BatchTagWorker(POOL, sns, pubsub, config);
     await Promise.all(
       records.map(async (rec) => {
-        return recordMap.bind(props)(rec);
+        return worker.recordMap(rec);
       }),
     );
   } catch (error) {
     console.log('merketing error ==> ', error);
   }
 };
-
-/**
- * Helper function to map the record
- * @param rec
- * @param lookup
- * @param config
- * @returns
- */
-const recordMap = async (rec: IBatchPayload<IBatchMsg<IAttributeValue>>): Promise<void> => {
-  const message = rec.message;
-  const { lookup, pool, config } = this as unknown as Props;
-  console.log('lookup: ', lookup);
-  console.log('pool: ', pool);
-  console.log('config: ', config);
-  const { exclusiveStartKey: esk, segment, totalSegments } = message;
-  console.log('message ==> ', message);
-  const scan = await parallelScanAppData(esk, segment, totalSegments);
-  const data = (await Promise.all(
-    scan?.items.map(async (i: UpdateAppDataInput) => scanMap.bind(this)(i)),
-  )) as (Data | null)[];
-  const inserts = data.map(mapInserts).filter(Boolean) as Inserts[];
-  const modifies = data.map(mapModifies).filter(Boolean) as Modifies[];
-  const insertPayloads = createInsertPayloads.bind(this)(inserts);
-  const modifyPayloads = createModifyPayloads.bind(this)(modifies);
-  const payloads: MailMessage[] = [...insertPayloads, ...modifyPayloads];
-  if (payloads.length) {
-    for (let i = 0; i < 2; i++) console.log('payload samples: ', JSON.stringify(payloads[i]));
-    const batch = Mailchimp.createBatchPayload(payloads);
-    const resp = await Mailchimp.processBatchPayload(batch, config);
-    console.log('mailchimp resp: ', resp);
-  }
-  await processNext(scan);
-  return;
-};
-
-/**
- * Helper function to map the scan result
- * @param appData
- * @param lookup
- * @returns
- */
-const scanMap = async (appData: UpdateAppDataInput): Promise<Data | null> => {
-  const { id: sub, status } = appData;
-  const { lookup, pool } = this as unknown as Props;
-  if (status?.toLowerCase() !== 'active') return null;
-  const email = await getUsersBySub(pool, sub);
-  lookup.set(sub, email);
-  const disputesArr = await getRandomDisputesById(sub);
-  const dispute = disputesArr.pop() || null;
-  const [currReport, priorReport] = await getLastTwoReports(sub);
-  return {
-    appData,
-    dispute,
-    currReport,
-    priorReport,
-  };
-};
-
-/**
- * Helper function to map the insert records
- * @param data
- * @returns
- */
-const mapInserts = (data: Data | null) => {
-  if (!data) return null;
-  const disputeTriggers = data.dispute ? Mailchimp.marketing.dispute.resolver(null, data.dispute, 'INSERT') : [];
-  const reportTriggers = data.currReport
-    ? Mailchimp.marketing.creditReport.resolver(null, data.currReport, 'INSERT')
-    : [];
-  return {
-    sub: data.appData.id,
-    disputeTriggers,
-    reportTriggers,
-  };
-};
-
-/**
- * Helper function to map the modify records
- * @param data
- * @returns
- */
-const mapModifies = (data: Data | null) => {
-  if (!data) return null;
-  const appDataTriggers = data.appData ? Mailchimp.marketing.app.resolver(null, data.appData, 'MODIFY') : [];
-  const { currReport, priorReport } = data;
-  const reportTriggers =
-    currReport && priorReport ? Mailchimp.marketing.creditReport.resolver(priorReport, currReport, 'MODIFY') : [];
-
-  return {
-    sub: data.appData.id,
-    appDataTriggers,
-    reportTriggers,
-  };
-};
-
-/**
- * Helper function to flatten the nested arrays and create insert payloads
- * @param inserts
- * @param lookup
- * @returns
- */
-const createInsertPayloads = (inserts: Inserts[]): MailMessage[] => {
-  const { lookup } = this as unknown as Props;
-  return _.flattenDeep(
-    inserts.map((i) => {
-      const email = lookup.get(i.sub);
-      return i.disputeTriggers.map((t) => {
-        const { data } = t;
-        if (data?.api !== 'marketing') return;
-        return Mailchimp.createMailMessage(email, 'tag_user', undefined, data.tag);
-      });
-    }),
-  ).filter(Boolean) as MailMessage[];
-};
-
-/**
- * * Helper function to flatten the nested arrays and create modify payloads
- * @param modifies
- * @param lookup
- * @returns
- */
-const createModifyPayloads = (modifies: Modifies[]): MailMessage[] => {
-  const { lookup } = this as unknown as Props;
-  return _.flattenDeep(
-    modifies.map((m) => {
-      const email = lookup.get(m.sub);
-      return [...m.appDataTriggers, ...m.reportTriggers].map((t) => {
-        const { data } = t;
-        if (data?.api !== 'marketing') return;
-        return Mailchimp.createMailMessage(email, 'tag_user', undefined, data.tag);
-      });
-    }),
-  ).filter(Boolean) as MailMessage[];
-};
-
-const processNext = async (scan: any): Promise<void> => {
-  if (scan?.lastEvaluatedKey != undefined) {
-    const packet: IBatchMsg<IAttributeValue> = {
-      exclusiveStartKey: scan.lastEvaluatedKey,
-      segment: scan.segment,
-      totalSegments: scan.totalSegments,
-    };
-    const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('mailchimpbatch', packet);
-    const res = await sns.publish(payload).promise();
-    console.log('sns resp ==> ', res);
-  }
-};
-
-interface Data {
-  appData: UpdateAppDataInput;
-  dispute: Dispute | null;
-  currReport: CreditReport;
-  priorReport: CreditReport;
-}
-
-interface Inserts {
-  sub: string;
-  disputeTriggers: IMailchimpPacket<IMarketingData>[];
-  reportTriggers: IMailchimpPacket<IMarketingData>[];
-}
-
-interface Modifies {
-  sub: string;
-  appDataTriggers: IMailchimpPacket<IMarketingData>[];
-  reportTriggers: IMailchimpPacket<IMarketingData>[];
-}
-
-interface Props {
-  lookup: Map<any, any>;
-  config: {
-    apiKey: string;
-    server: string;
-  };
-  pool: string;
-}
