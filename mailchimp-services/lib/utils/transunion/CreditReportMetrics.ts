@@ -282,10 +282,12 @@ export class CreditReportMetrics {
   parseCreditScore(report: IMergeReport): number | null {
     if (!report) return null;
     const creditScore = _nest.find<ICreditScore[]>(report, 'CreditScore') || [];
-    console.log('creditScore:', creditScore);
     const riskScore = creditScore.find((s) => s.scoreName?.toLowerCase() === 'vantagescore3');
-    console.log('riskScore:', riskScore);
-    const value = +`${riskScore}`;
+    if (!riskScore) return 0;
+    const { riskScore: score } = riskScore;
+    if (!score) return 0;
+    const value = +`${score}`;
+    console.log('value: ', value);
     if (isNaN(value)) return 0;
     return +value || 0;
   }
