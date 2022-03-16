@@ -14,7 +14,6 @@ export class MarketingCheckFourteen extends CreditReportChecker {
     const score = current.creditScore;
     console.log('score', score);
     console.log('currCreditReport', this.currCreditReport);
-
     const tags =
       (score || 0) > 650
         ? [this.generateTag('over_650', 'active'), this.generateTag('under_650', 'inactive')]
