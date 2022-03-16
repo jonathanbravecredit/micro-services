@@ -3,7 +3,7 @@ import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { OpsReportMaker } from 'libs/models/ops-reports';
 import { createOpReport } from 'libs/queries/ops-report.queries';
-import { mapAcknowledgedFields } from 'libs/helpers';
+import { mapAcknowledgedFields, mapTransactionFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
 import { query } from 'libs/db/generic';
@@ -30,7 +30,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       this.scan?.items.map(async (item: IAppDataInput) => {
         const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
         const schema = {};
-        const record = mapAcknowledgedFields(item);
+        const record = mapTransactionFields(item);
         const ops = new OpsReportMaker(
           ReportNames.MissingDisputeKeys,
           batchId,

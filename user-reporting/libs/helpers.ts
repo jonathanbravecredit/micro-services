@@ -480,3 +480,13 @@ export const mapAcknowledgedFields = (item: any) => {
     acknowledgedDisputeTermsOnPST: dayjs(acknowledgedDisputeTermsOn).tz().format('YYYY-MM-DD HH:mm:ss'),
   };
 };
+
+export const mapTransactionFields = (item: any) => {
+  return {
+    userId: item?.userId,
+    transactionId: item?.transactionId,
+    action: item?.action,
+    createdOn: item?.createdOn,
+    transaction: item?.transaction,
+  };
+};
