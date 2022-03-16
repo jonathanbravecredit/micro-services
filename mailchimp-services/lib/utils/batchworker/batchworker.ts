@@ -69,7 +69,7 @@ export class BatchTagWorker {
   async scanMap(appData: UpdateAppDataInput): Promise<Data | null> {
     const { id: sub, status } = appData;
     const { lookup, pool } = this as unknown as Props;
-    if (status?.toLowerCase() !== 'active') return null;
+    if (!status || status?.toLowerCase() !== 'active') return null;
     try {
       const email = await getUsersBySub(pool, sub);
       lookup.set(sub, email);
