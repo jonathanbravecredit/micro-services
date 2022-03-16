@@ -13,7 +13,7 @@ import { getLastTwoReports } from 'lib/queries/CreditReport.queries';
 import { getRandomDisputesById } from 'lib/queries/disputes.queries';
 
 export class BatchTagWorker {
-  lookup: Map<any, any> = new Map();
+  lookup: Map<string, string> = new Map();
   constructor(
     protected pool: string,
     protected sns: SNS,
