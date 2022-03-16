@@ -35,6 +35,6 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
       }),
     );
   } catch (error) {
-    console.log('merketing error ==> ', error);
+    console.log('marketing error ==> ', error);
   }
 };

@@ -36,23 +36,28 @@ export class BatchTagWorker {
     console.log('config: ', config);
     const { exclusiveStartKey: esk, segment, totalSegments } = message;
     console.log('message ==> ', message);
-    const scan = await parallelScanAppData(esk, segment, totalSegments);
-    const data = (await Promise.all(
-      scan?.items.map(async (i: UpdateAppDataInput) => this.scanMap(i)),
-    )) as (Data | null)[];
-    const inserts = data.map(this.mapInserts).filter(Boolean) as Inserts[];
-    const modifies = data.map(this.mapModifies).filter(Boolean) as Modifies[];
-    const insertPayloads = this.createInsertPayloads(inserts);
-    const modifyPayloads = this.createModifyPayloads(modifies);
-    const payloads: MailMessage[] = [...insertPayloads, ...modifyPayloads];
-    if (payloads.length) {
-      for (let i = 0; i < 2; i++) console.log('payload samples: ', JSON.stringify(payloads[i]));
-      const batch = Mailchimp.createBatchPayload(payloads);
-      const resp = await Mailchimp.processBatchPayload(batch, config);
-      console.log('mailchimp resp: ', resp);
+    try {
+      const scan = await parallelScanAppData(esk, segment, totalSegments);
+      const data = (await Promise.all(
+        scan?.items.map(async (i: UpdateAppDataInput) => this.scanMap(i)),
+      )) as (Data | null)[];
+      const inserts = data.map(this.mapInserts).filter(Boolean) as Inserts[];
+      const modifies = data.map(this.mapModifies).filter(Boolean) as Modifies[];
+      const insertPayloads = this.createInsertPayloads(inserts);
+      const modifyPayloads = this.createModifyPayloads(modifies);
+      const payloads: MailMessage[] = [...insertPayloads, ...modifyPayloads];
+      if (payloads.length) {
+        for (let i = 0; i < 2; i++) console.log('payload samples: ', JSON.stringify(payloads[i]));
+        const batch = Mailchimp.createBatchPayload(payloads);
+        const resp = await Mailchimp.processBatchPayload(batch, config);
+        console.log('mailchimp resp: ', resp);
+      }
+      await this.processNext(scan);
+      return;
+    } catch (err) {
+      console.error(`uncaught exception in recordMap: ${err}`);
+      return;
     }
-    await this.processNext(scan);
-    return;
   }
 
   /**
@@ -65,17 +70,22 @@ export class BatchTagWorker {
     const { id: sub, status } = appData;
     const { lookup, pool } = this as unknown as Props;
     if (status?.toLowerCase() !== 'active') return null;
-    const email = await getUsersBySub(pool, sub);
-    lookup.set(sub, email);
-    const disputesArr = await getRandomDisputesById(sub);
-    const dispute = disputesArr.pop() || null;
-    const [currReport, priorReport] = await getLastTwoReports(sub);
-    return {
-      appData,
-      dispute,
-      currReport,
-      priorReport,
-    };
+    try {
+      const email = await getUsersBySub(pool, sub);
+      lookup.set(sub, email);
+      const disputesArr = await getRandomDisputesById(sub);
+      const dispute = disputesArr.pop() || null;
+      const [currReport, priorReport] = await getLastTwoReports(sub);
+      return {
+        appData,
+        dispute,
+        currReport,
+        priorReport,
+      };
+    } catch (err) {
+      console.error(`uncaught exception in scanMap: ${err}`);
+      return null;
+    }
   }
 
   /**
@@ -163,8 +173,12 @@ export class BatchTagWorker {
         totalSegments: scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('mailchimpbatch', packet);
-      const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      try {
+        const res = await this.sns.publish(payload).promise();
+      } catch (err) {
+        console.error(`uncaught exception in processNext: ${err}`);
+        return;
+      }
     }
   }
 }
