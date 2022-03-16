@@ -1,4 +1,3 @@
-import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { MarketingCheckTwo } from 'lib/utils/mailchimp/checkers/checks/MarketingCheckTwo';
 import { MarketingCheckThree } from 'lib/utils/mailchimp/checkers/checks/MarketingCheckThree';
 import { MarketingCheckFour } from 'lib/utils/mailchimp/checkers/checks/MarketingCheckFour';
