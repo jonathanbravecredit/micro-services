@@ -1,14 +1,5 @@
 const mailchimpMrkt = require('@mailchimp/mailchimp_marketing');
 import { GlobalMergeVar, IMarketingTag, MailMessage, TemplateMailMessage } from './interfaces';
-// import { MailchimpTriggers } from 'lib/utils/mailchimp/triggers';
-// import { MailchimpDisputeTriggers } from 'lib/utils/mailchimp/triggers/transactionals/mailchimp-dispute-triggers';
-// import { MailchimpReferralTriggers } from 'lib/utils/mailchimp/triggers/transactionals/mailchimp-referrals-triggers';
-// import { MailchimpMarketingTriggers } from 'lib/utils/mailchimp/triggers/mailchimp-marketing-triggers';
-// import { MailchimpScoreMarketingTriggers } from 'lib/utils/mailchimp/triggers/mailchimp-credit-score-marketing';
-// // import { MailchimpDisputeMarketingTriggers } from 'lib/utils/mailchimp/triggers/taggers/mailchimp-dispute-tags';
-// import { MailchimpReferralMarketingTriggers } from 'lib/utils/mailchimp/triggers/mailchimp-referrals-marketing-triggers';
-// import { MailchimpNotificationTrigger } from 'lib/utils/mailchimp/triggers/taggers/mailchimp-notification-tags';
-// import { MailchimpAppDataMarketingTriggers } from 'lib/utils/mailchimp/triggers/mailchimp-app-data-marketing';
 import { ProxyRequest } from 'lib/interfaces';
 import { IMailChimp, IMailchimpBatchPayload, IMailchimpBatchResponse } from 'lib/interfaces/mailchimp.interfaces';
 import md5 from 'md5';
@@ -17,21 +8,8 @@ import { Sender } from 'lib/utils/mailchimp/triggers/transactionals/Sender';
 
 export class Mailchimp {
   static marketingListId: string = '1f041d6e21';
-  // app table tracking
-  // static triggers = MailchimpTriggers;
-
   static marketing = Tagger;
   static transactional = Sender;
-  // dispute table tracking
-  // static disputeTriggers = MailchimpDisputeTriggers;
-  // static disputeMarketingTriggers = MailchimpDisputeMarketingTriggers;
-  //  score table tracking
-  // static scoreMarketingTriggers = MailchimpScoreMarketingTriggers;
-  // // referral table tracking
-  // static referralTriggers = MailchimpReferralTriggers;
-  // static referralMarketingTriggers = MailchimpReferralMarketingTriggers;
-  // // notification monitor
-  // static notificationMonitor = MailchimpNotificationTrigger;
 
   constructor() {}
 
@@ -100,8 +78,8 @@ export class Mailchimp {
       const {
         message: { email },
       } = req;
-      if (!email) return;
-      const hash = md5(email.toLowerCase());
+      if (!email || typeof email !== 'string') return;
+      const hash = md5(email?.toLowerCase());
       const resp = await mailchimpMrkt.lists.setListMember(this.marketingListId, hash, {
         email_address: req.message.email,
         status_if_new: 'subscribed',
@@ -114,8 +92,8 @@ export class Mailchimp {
       const {
         message: { tag, email },
       } = req;
-      if (!tag || !email) return;
-      const hash = md5(email.toLowerCase());
+      if (!tag || !email || typeof email !== 'string') return;
+      const hash = md5(email?.toLowerCase());
       const resp = await mailchimpMrkt.lists.updateListMemberTags(this.marketingListId, hash, {
         tags: tag,
       });
@@ -128,8 +106,8 @@ export class Mailchimp {
     const payload: IMailchimpBatchPayload[] = reqs
       .map((req) => {
         const { tag, email } = req;
-        if (!tag || !email) return false;
-        const hash = md5(email.toLowerCase());
+        if (!tag || !email || typeof email !== 'string') return false;
+        const hash = md5(email?.toLowerCase());
         return {
           method: 'POST',
           path: `/lists/${this.marketingListId}/members/${hash}/tags`,
