@@ -32,7 +32,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
         const schema = {};
         const record = mapTransactionFields(item);
         const ops = new OpsReportMaker(
-          ReportNames.MissingDisputeKeys,
+          ReportNames.DisputeErrors,
           batchId,
           JSON.stringify(schema),
           JSON.stringify(record),
@@ -55,7 +55,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        ReportNames.MissingDisputeKeys,
+        ReportNames.DisputeErrors,
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
