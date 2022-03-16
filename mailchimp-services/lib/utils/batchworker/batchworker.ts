@@ -8,12 +8,12 @@ import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
 import { CreditReport } from 'lib/interfaces/credit-report.interface';
 import { Dispute } from 'lib/models/dispute.model';
 import { IMailchimpPacket, IMarketingData, MailMessage } from 'lib/utils/mailchimp/interfaces';
-import { getUsersBySub } from 'lib/queries/cognito.queries';
+import { flattenUser, getUsersBySub } from 'lib/queries/cognito.queries';
 import { getLastTwoReports } from 'lib/queries/CreditReport.queries';
 import { getRandomDisputesById } from 'lib/queries/disputes.queries';
 
 export class BatchTagWorker {
-  lookup: Map<any, any> = new Map();
+  lookup: Map<string, string> = new Map();
   constructor(
     protected pool: string,
     protected sns: SNS,
@@ -72,7 +72,9 @@ export class BatchTagWorker {
     console.log('status', status);
     if (!status || status !== 'active') return null;
     try {
-      const email = await getUsersBySub(pool, sub);
+      const { UserAttributes: attrs } = await getUsersBySub(pool, sub);
+      const email = flattenUser(attrs || [], 'email');
+      if (!email) return null;
       lookup.set(sub, email);
       const disputesArr = await getRandomDisputesById(sub);
       const dispute = disputesArr.pop() || null;
