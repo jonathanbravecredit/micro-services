@@ -74,7 +74,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
           S: 'StartDispute:error',
         },
         ':t': {
-          S: '\'{"nil":true}\'',
+          S: '{"nil":true}',
         },
       },
       ExpressionAttributeNames: {
