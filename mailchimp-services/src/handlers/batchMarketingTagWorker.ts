@@ -41,7 +41,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
     if (!records.length) throw 'no records';
     await Promise.all(
       records.map(async (rec) => {
-        return recordMap(rec, userEmailLookup, mrktConfig);
+        return recordMap(rec, userEmailLookup, mrktConfig, POOL);
       }),
     );
   } catch (error) {
@@ -60,13 +60,14 @@ const recordMap = async (
   rec: IBatchPayload<IBatchMsg<IAttributeValue>>,
   lookup: Map<any, any>,
   config: { apiKey: string; server: string },
+  pool: string,
 ): Promise<void> => {
   const message = rec.message;
   const { exclusiveStartKey: esk, segment, totalSegments } = message;
   console.log('message ==> ', message);
   const scan = await parallelScanAppData(esk, segment, totalSegments);
   const data = (await Promise.all(
-    scan?.items.map(async (i: UpdateAppDataInput) => scanMap(i, lookup)),
+    scan?.items.map(async (i: UpdateAppDataInput) => scanMap(i, lookup, pool)),
   )) as (Data | null)[];
   const inserts = data.map(mapInserts).filter(Boolean) as Inserts[];
   const modifies = data.map(mapModifies).filter(Boolean) as Modifies[];
@@ -89,10 +90,10 @@ const recordMap = async (
  * @param lookup
  * @returns
  */
-const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>): Promise<Data | null> => {
+const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>, pool: string): Promise<Data | null> => {
   const { id: sub, status } = appData;
   if (status?.toLowerCase() !== 'active') return null;
-  const email = await getUsersBySub(sub, POOL);
+  const email = await getUsersBySub(pool, sub);
   lookup.set(sub, email);
   const disputesArr = await getRandomDisputesById(sub);
   const dispute = disputesArr.pop() || null;
