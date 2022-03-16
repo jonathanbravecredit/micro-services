@@ -39,9 +39,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
       return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
     });
     if (!records.length) throw 'no records';
+    console.log('pool: ', POOL);
+    const props = {
+      lookup: userEmailLookup,
+      config: mrktConfig,
+      pool: POOL,
+    };
     await Promise.all(
       records.map(async (rec) => {
-        return recordMap(rec, userEmailLookup, mrktConfig, POOL);
+        return recordMap.bind(props)(rec);
       }),
     );
   } catch (error) {
@@ -56,23 +62,22 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
  * @param config
  * @returns
  */
-const recordMap = async (
-  rec: IBatchPayload<IBatchMsg<IAttributeValue>>,
-  lookup: Map<any, any>,
-  config: { apiKey: string; server: string },
-  pool: string,
-): Promise<void> => {
+const recordMap = async (rec: IBatchPayload<IBatchMsg<IAttributeValue>>): Promise<void> => {
   const message = rec.message;
+  const { lookup, pool, config } = this as unknown as Props;
+  console.log('lookup: ', lookup);
+  console.log('pool: ', pool);
+  console.log('config: ', config);
   const { exclusiveStartKey: esk, segment, totalSegments } = message;
   console.log('message ==> ', message);
   const scan = await parallelScanAppData(esk, segment, totalSegments);
   const data = (await Promise.all(
-    scan?.items.map(async (i: UpdateAppDataInput) => scanMap(i, lookup, pool)),
+    scan?.items.map(async (i: UpdateAppDataInput) => scanMap.bind(this)(i)),
   )) as (Data | null)[];
   const inserts = data.map(mapInserts).filter(Boolean) as Inserts[];
   const modifies = data.map(mapModifies).filter(Boolean) as Modifies[];
-  const insertPayloads = createInsertPayloads(inserts, lookup);
-  const modifyPayloads = createModifyPayloads(modifies, lookup);
+  const insertPayloads = createInsertPayloads.bind(this)(inserts);
+  const modifyPayloads = createModifyPayloads.bind(this)(modifies);
   const payloads: MailMessage[] = [...insertPayloads, ...modifyPayloads];
   if (payloads.length) {
     for (let i = 0; i < 2; i++) console.log('payload samples: ', JSON.stringify(payloads[i]));
@@ -90,8 +95,9 @@ const recordMap = async (
  * @param lookup
  * @returns
  */
-const scanMap = async (appData: UpdateAppDataInput, lookup: Map<any, any>, pool: string): Promise<Data | null> => {
+const scanMap = async (appData: UpdateAppDataInput): Promise<Data | null> => {
   const { id: sub, status } = appData;
+  const { lookup, pool } = this as unknown as Props;
   if (status?.toLowerCase() !== 'active') return null;
   const email = await getUsersBySub(pool, sub);
   lookup.set(sub, email);
@@ -149,7 +155,8 @@ const mapModifies = (data: Data | null) => {
  * @param lookup
  * @returns
  */
-const createInsertPayloads = (inserts: Inserts[], lookup: Map<any, any>): MailMessage[] => {
+const createInsertPayloads = (inserts: Inserts[]): MailMessage[] => {
+  const { lookup } = this as unknown as Props;
   return _.flattenDeep(
     inserts.map((i) => {
       const email = lookup.get(i.sub);
@@ -168,7 +175,8 @@ const createInsertPayloads = (inserts: Inserts[], lookup: Map<any, any>): MailMe
  * @param lookup
  * @returns
  */
-const createModifyPayloads = (modifies: Modifies[], lookup: Map<any, any>): MailMessage[] => {
+const createModifyPayloads = (modifies: Modifies[]): MailMessage[] => {
+  const { lookup } = this as unknown as Props;
   return _.flattenDeep(
     modifies.map((m) => {
       const email = lookup.get(m.sub);
@@ -211,4 +219,13 @@ interface Modifies {
   sub: string;
   appDataTriggers: IMailchimpPacket<IMarketingData>[];
   reportTriggers: IMailchimpPacket<IMarketingData>[];
+}
+
+interface Props {
+  lookup: Map<any, any>;
+  config: {
+    apiKey: string;
+    server: string;
+  };
+  pool: string;
 }
