@@ -32,6 +32,7 @@ import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggr
 import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
 import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
+import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
 
 // request.debug = true; import * as request from 'request';
 // const errorLogger = new ErrorLogger();
@@ -744,6 +745,25 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
 
   if (missingDisputeKeys.length) {
     const report = new MissingDisputeKeysReport(missingDisputeKeys);
+    try {
+      const results = await report.run();
+      return results;
+    } catch (err) {
+      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+    }
+  }
+
+  /*===================================*/
+  //    disputeErrors
+  /*===================================*/
+  const disputeErrors = event.Records.map((r) => {
+    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
+  }).filter((b) => {
+    return b.service === ReportNames.DisputeErrors;
+  });
+
+  if (disputeErrors.length) {
+    const report = new DisputeErrorsReport(disputeErrors);
     try {
       const results = await report.run();
       return results;

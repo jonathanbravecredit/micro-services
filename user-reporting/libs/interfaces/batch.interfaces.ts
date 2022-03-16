@@ -9,10 +9,12 @@ export interface IBatchPayload<T> {
 export interface IAttributeValue {
   [key: string]: AttributeValue;
 }
-export interface IBatchMsg<T> {
+export interface IDynamoOutputs<T> {
   exclusiveStartKey?: T | undefined;
   lastEvaluatedKey?: T | undefined;
   items?: any;
+}
+export interface IBatchMsg<T> extends IDynamoOutputs<T> {
   segment: number;
   totalSegments: number;
 }

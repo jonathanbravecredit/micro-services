@@ -3,13 +3,12 @@ import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { OpsReportMaker } from 'libs/models/ops-reports';
 import { createOpReport } from 'libs/queries/ops-report.queries';
-import { parallelScanAppData } from 'libs/db/appdata';
-import { getCurrentReport } from 'libs/queries/CreditReport.queries';
-import { mapEnrollmentFields } from 'libs/helpers';
+import { mapAcknowledgedFields, mapTransactionFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
+import { query } from 'libs/db/generic';
 
-export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
+export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
   }
@@ -19,36 +18,28 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    const params = {
+      ...this.createQueryInput(),
+      ExclusiveStartKey: esk,
+    };
+    return await query(params);
   }
 
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
-        const enrolled = item?.agencies?.transunion?.enrolled;
-        const active = item?.status === 'active';
-        if (enrolled && active) {
-          const userId = item.id;
-          const report = await getCurrentReport(userId);
-          if (!report) {
-            const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
-            const schema = {};
-            const record = mapEnrollmentFields(item);
-            const ops = new OpsReportMaker(
-              ReportNames.NoReportReport,
-              batchId,
-              JSON.stringify(schema),
-              JSON.stringify(record),
-            );
-            await createOpReport(ops);
-            this.counter++;
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
+        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        const schema = {};
+        const record = mapTransactionFields(item);
+        const ops = new OpsReportMaker(
+          ReportNames.DisputeErrors,
+          batchId,
+          JSON.stringify(schema),
+          JSON.stringify(record),
+        );
+        await createOpReport(ops);
+        this.counter++;
+        return true;
       }),
     );
   }
@@ -64,10 +55,28 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        ReportNames.NoReportReport,
+        ReportNames.DisputeErrors,
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }
+  }
+
+  createQueryInput() {
+    return {
+      TableName: 'APITransactionLog',
+      ScanIndexForward: false,
+      IndexName: 'action-createdOn-index',
+      KeyConditionExpression: '#a = :a',
+      FilterExpression: '#t <> :t',
+      ExpressionAttributeValues: {
+        ':a': 'StartDispute:error',
+        ':t': '{"nil":true}',
+      },
+      ExpressionAttributeNames: {
+        '#a': 'action',
+        '#t': 'transaction',
+      },
+    };
   }
 }

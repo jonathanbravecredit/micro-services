@@ -15,14 +15,18 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   const { batch } = event;
   const batchId = batch ? batch : dayjs(new Date()).add(-7, 'hours').format('YYYY-MM-DD');
   try {
-    const reportId = ReportNames.RegistrationsYTD;
-    const opsreports = await listOpsReportsByBatch(batchId, reportId);
-    if (!opsreports?.length) return;
-    let queue = opsreports;
-    while (queue.length) {
-      const next = queue.splice(0, 24);
-      await batchDeleteOpsReport(next);
-    }
+    await Promise.all(
+      Object.values(ReportNames).map(async (reportId) => {
+        const opsreports = await listOpsReportsByBatch(batchId, reportId);
+        if (!opsreports?.length) return;
+        let queue = opsreports;
+        while (queue.length) {
+          const next = queue.splice(0, 24);
+          await batchDeleteOpsReport(next);
+        }
+        return;
+      }),
+    );
     return;
   } catch (err) {
     console.log('general err ===> ', err);
