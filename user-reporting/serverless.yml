@@ -73,6 +73,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditReports'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Disputes'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog/index/*'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports/index/*'
     - Effect: 'Allow'
