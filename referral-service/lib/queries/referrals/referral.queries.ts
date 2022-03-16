@@ -115,7 +115,8 @@ export const getEligibileReferrals = (): Promise<Referral[]> => {
     });
 };
 
-export const getReferralByCode = (code: string): Promise<Referral | null> => {
+export const getReferralByCode = (code: string | null): Promise<Referral | null> => {
+  if (!code) return Promise.resolve(null);
   return store
     .query()
     .index(REFERRAL_CODE_GSI)

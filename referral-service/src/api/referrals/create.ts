@@ -11,6 +11,7 @@ import { createReferral, getReferralByCode } from 'lib/queries';
 import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('event: ', JSON.stringify(event));
   const body: { id: string; referredByCode?: string } = safeParse(event, 'body'); // referredByCode;
   const payload: ICreateReferral = { ...body, campaign: CURRENT_CAMPAIGN };
   const validate = ajv.getSchema<ICreateReferral>('referralCreate');
@@ -21,13 +22,17 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     // const approved = await eligible(payload);
     const referredBy = payload.referredByCode ? await getReferralByCode(payload.referredByCode) : null;
     if (referredBy && payload.referredByCode) {
+      console.log('here 1: ', referredBy, payload.referredByCode);
       const referral = new ReferralMaker(payload.id, uuid.v4(), payload.referredByCode, referredBy.id);
-      await createReferral(referral);
+      const res = await createReferral(referral);
+      console.log('res 1: ', res);
     } else {
       const referral = new ReferralMaker(payload.id, uuid.v4());
-      await createReferral(referral);
+      const res = await createReferral(referral);
+      console.log('res 2: ', res);
     }
   } catch (err) {
+    console.log('error 2: ', err);
     return response(500, err);
   }
 
@@ -35,6 +40,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     // await createReferral(referral);
     return response(200, `success`);
   } catch (err) {
+    console.log('error 2: ', err);
     return response(500, err);
   }
 };
