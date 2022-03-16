@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import * as _ from 'lodash';
+import { SNS } from 'aws-sdk';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
 import { UpdateAppDataInput } from 'lib/aws/api.service';
 import { parallelScanAppData } from 'lib/queries/appdata.queries';
@@ -12,9 +13,12 @@ import { IBatchPayload, IBatchMsg, IAttributeValue } from 'lib/interfaces/batch.
 import { getUsersBySub } from 'lib/queries/cognito.queries';
 import { Dispute } from 'lib/models/dispute.model';
 import { CreditReport } from 'lib/models/CreditReport.model';
+import { PubSubUtil } from 'lib/utils/pubsub/pubsub';
 // import * as NodeMailMessage from 'nodemailer/lib/mailer/mail-message';
 const mailchimpMarketingSKLoc = process.env.MAILCHIMP_MRKT_SECRET_LOCATION || '';
 const POOL = (process.env.POOL = '');
+const sns = new SNS({ region: 'us-east-2' });
+const pubsub = new PubSubUtil();
 
 export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
   const userEmailLookup = new Map();
@@ -75,6 +79,7 @@ const recordMap = async (
     const resp = await Mailchimp.processBatchPayload(batch, config);
     console.log('mailchimp resp: ', resp);
   }
+  await processNext(scan);
   return;
 };
 
@@ -173,6 +178,19 @@ const createModifyPayloads = (modifies: Modifies[], lookup: Map<any, any>): Mail
       });
     }),
   ).filter(Boolean) as MailMessage[];
+};
+
+const processNext = async (scan: any): Promise<void> => {
+  if (scan?.lastEvaluatedKey != undefined) {
+    const packet: IBatchMsg<IAttributeValue> = {
+      exclusiveStartKey: scan.lastEvaluatedKey,
+      segment: scan.segment,
+      totalSegments: scan.totalSegments,
+    };
+    const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('mailchimpbatch', packet);
+    const res = await sns.publish(payload).promise();
+    console.log('sns resp ==> ', res);
+  }
 };
 
 interface Data {
