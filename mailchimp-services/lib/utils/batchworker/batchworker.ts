@@ -70,7 +70,7 @@ export class BatchTagWorker {
     const { id: sub, status } = appData;
     const { lookup, pool } = this as unknown as Props;
     console.log('status', status);
-    if (!status || status?.toLowerCase() !== 'active') return null;
+    if (!status || status !== 'active') return null;
     try {
       const email = await getUsersBySub(pool, sub);
       lookup.set(sub, email);
