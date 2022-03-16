@@ -148,8 +148,9 @@ export class Mailchimp {
     mailchimpMrkt.setConfig(config);
     const operations = { operations: payloads };
     try {
-      const resp = await mailchimpMrkt.batches.start(operations);
-      return resp;
+      console.log('mailchimp operations: ', operations); // turning off for testing
+      // const resp = await mailchimpMrkt.batches.start(operations);
+      // return resp;
     } catch (err) {
       console.log('error ===> ', err);
     }
