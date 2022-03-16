@@ -10,7 +10,7 @@ export const main: Handler = async (): Promise<any> => {
   try {
     let counter = 0;
     const segments = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 10; i++) {
       segments.push(i);
     }
     await Promise.all(

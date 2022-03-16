@@ -46,8 +46,8 @@ export class BatchTagWorker {
       const insertPayloads = this.createInsertPayloads(inserts);
       const modifyPayloads = this.createModifyPayloads(modifies);
       const payloads: MailMessage[] = [...insertPayloads, ...modifyPayloads];
+      console.log('payload samples: ', JSON.stringify(payloads));
       if (payloads.length) {
-        for (let i = 0; i < 2; i++) console.log('payload samples: ', JSON.stringify(payloads[i]));
         const batch = Mailchimp.createBatchPayload(payloads);
         const resp = await Mailchimp.processBatchPayload(batch, config);
         console.log('mailchimp resp: ', resp);

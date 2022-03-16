@@ -283,7 +283,10 @@ export class CreditReportMetrics {
     if (!report) return null;
     const creditScore = _nest.find<ICreditScore[]>(report, 'CreditScore') || [];
     const riskScore = creditScore.find((s) => s.scoreName?.toLowerCase() === 'vantagescore3');
-    const value = +`${riskScore}`;
+    if (!riskScore) return 0;
+    const { riskScore: score } = riskScore;
+    if (!score) return 0;
+    const value = +`${score}`;
     if (isNaN(value)) return 0;
     return +value || 0;
   }
