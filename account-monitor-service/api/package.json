@@ -4,7 +4,13 @@
   "description": "A TypeScript starter for Serverless Framework",
   "main": "handler.js",
   "scripts": {
-    "test": "serverless-bundle test"
+    "test": "serverless-bundle test",
+    "testWatch": "jest --watchAll --verbose"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "Libs(.*)$": "<rootDir>/api/src/libs/$1"
+    }
   },
   "author": "",
   "license": "MIT",

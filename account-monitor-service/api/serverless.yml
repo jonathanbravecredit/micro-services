@@ -8,6 +8,8 @@ package:
 custom:
   bundle:
     linting: false
+    aliases:
+      - 'Libs': api/src/libs
 
 plugins:
   - serverless-bundle # Package our functions with Webpack
