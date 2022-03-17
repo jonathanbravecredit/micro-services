@@ -1,6 +1,7 @@
 import { AttributeValue } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { IBatchMsg } from 'libs/interfaces/batch.interfaces';
+import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
+import { DynamoDBUtil } from 'libs/utils/dynamodb/dynamodbutil';
 const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const tableName = process.env.APPTABLE || '';
 
@@ -77,5 +78,34 @@ export const parallelScanAppData = async (
     };
   } catch (err) {
     console.log('err ==> ', err);
+  }
+};
+
+export const getReactivationAccount = async (): Promise<DynamoDB.DocumentClient.AttributeMap[] | null> => {
+  const now = new Date().toISOString();
+  const params = {
+    TableName: tableName,
+    ScanIndexForward: false,
+    IndexName: 'status-index',
+    KeyConditionExpression: '#341f0 = :341f0',
+    FilterExpression: '#341f1 <= :341f1',
+    ExpressionAttributeValues: {
+      ':341f0': 'suspended',
+      ':341f1': now,
+    },
+    ExpressionAttributeNames: {
+      '#341f0': 'status',
+      '#341f1': 'nextStatusModifiedOn',
+    },
+  };
+
+  const db = new DynamoDBUtil(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params, 'QUERY');
+
+  try {
+    await db.execute();
+    const { output } = db;
+    return output;
+  } catch (err) {
+    return null;
   }
 };
