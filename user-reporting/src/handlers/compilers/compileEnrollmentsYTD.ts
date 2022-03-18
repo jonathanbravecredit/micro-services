@@ -24,7 +24,7 @@ export const main: Handler<any, any> = async (event: { batchId: string }): Promi
   const { batchId } = event;
   try {
     // get the data from the results table
-    const batch = batchId ? batchId : dayjs(new Date()).add(-7, 'hours').format('YYYY-MM-DD');
+    const batch = batchId ? batchId : dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
     const reportId = ReportNames.EnrollmentYTD;
     const opsreports = await listOpsReportsByBatch(batchId, reportId);
     if (!opsreports?.length) return;
