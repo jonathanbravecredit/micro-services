@@ -6,7 +6,7 @@ export const main: Handler<any, any> = async (event: ScheduledHandler): Promise<
   let counter = 0;
   try {
     const suspended = await getSuspendedAccounts();
-    if (suspended == null) return;
+    if (suspended == null || !suspended.length) return;
     await Promise.all(
       suspended.map(async (s) => {
         try {
