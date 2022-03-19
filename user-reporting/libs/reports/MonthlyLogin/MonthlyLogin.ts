@@ -24,7 +24,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: Analytics) => {
-        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = item;
         if (dayjs(item.createdOn).format('YYYY-MM') === this.month && item.event === 'user_log_in') {

@@ -27,7 +27,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
         const acked = item?.agencies?.transunion?.acknowledgedDisputeTerms;
         const keys = item?.agencies?.transunion?.disputeEnrollmentKey;
         if (acked && !keys) {
-          const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = {};
           const record = mapAcknowledgedFields(item);
           const ops = new OpsReportMaker(
