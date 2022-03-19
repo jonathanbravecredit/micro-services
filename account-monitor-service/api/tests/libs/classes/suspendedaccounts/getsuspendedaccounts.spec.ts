@@ -56,9 +56,25 @@ describe('GetSuspendedAccounts class', () => {
         query: mockQuery,
       } as unknown as DynamoDB.DocumentClient;
       const getAccounts2 = new GetSuspendedAccounts(client, params);
-      await getAccounts2.execute();
       const spy = jest.spyOn(client, 'query');
+      await getAccounts2.execute();
       expect(spy).toHaveBeenCalledTimes(2);
+    });
+    it('should call handleQueryError when error thrown', async () => {
+      const mockPromise = jest.fn().mockImplementation(() => {
+        throw 'I am an error';
+      });
+      const mockQuery = jest.fn().mockImplementation((param: DynamoDB.DocumentClient.QueryInput) => ({
+        promise: mockPromise,
+      }));
+      const client = {
+        query: mockQuery,
+      } as unknown as DynamoDB.DocumentClient;
+      const getAccounts3 = new GetSuspendedAccounts(client, params);
+      const spy = jest.spyOn(getAccounts3, 'handleQueryError');
+      await getAccounts3.execute();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('I am an error');
     });
   });
 });

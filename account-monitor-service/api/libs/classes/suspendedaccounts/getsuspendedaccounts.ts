@@ -11,7 +11,6 @@ export class GetSuspendedAccounts extends DynamoDBUtil {
       let output: AWS.DynamoDB.DocumentClient.QueryOutput;
       do {
         output = await this.client.query(this.params).promise();
-        console.log('output: ===> ', output);
         this.output = [...this.output, ...(output.Items || [])];
         this.params.ExclusiveStartKey = output.LastEvaluatedKey;
       } while (typeof output.LastEvaluatedKey != 'undefined');
