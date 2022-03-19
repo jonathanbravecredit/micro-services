@@ -15,7 +15,7 @@ export class GetSuspendedAccounts extends DynamoDBUtil {
         this.params.ExclusiveStartKey = output.LastEvaluatedKey;
       } while (typeof output.LastEvaluatedKey != 'undefined');
     } catch (err) {
-      this.handleQueryError(err);
+      this.handleQueryError(err as { code: string; message: string });
     }
   }
 }

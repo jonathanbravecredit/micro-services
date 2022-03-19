@@ -10,7 +10,7 @@ export class UpdateSuspendedAccount extends DynamoDBUtil {
     try {
       this.output = await this.client.update(this.params).promise();
     } catch (err) {
-      this.handleQueryError(err);
+      this.handleQueryError(err as { code: string; message: string });
     }
   }
 }

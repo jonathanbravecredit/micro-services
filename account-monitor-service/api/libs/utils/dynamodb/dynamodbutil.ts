@@ -1,7 +1,7 @@
 export class DynamoDBUtil {
   constructor() {}
 
-  handleQueryError(err) {
+  handleQueryError(err: { code: string; message: string }) {
     if (!err) {
       console.error('Encountered error object was empty');
       return;
@@ -13,7 +13,7 @@ export class DynamoDBUtil {
     this.handleCommonErrors(err);
   }
 
-  handleCommonErrors(err) {
+  handleCommonErrors(err: { code: string; message: string }) {
     switch (err.code) {
       case 'InternalServerError':
         console.error(
