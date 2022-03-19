@@ -1,12 +1,10 @@
 import { DynamoDB } from 'aws-sdk';
 import { GetSuspendedAccounts } from 'libs/classes/suspendedaccounts/getsuspendedaccounts';
 
-const tableName = process.env.APPTABLE || '';
-
 export const getSuspendedAccounts = async (): Promise<DynamoDB.DocumentClient.AttributeMap[] | null> => {
   const now = new Date().toISOString();
   const params = {
-    TableName: tableName,
+    TableName: process.env.APPDATA || '',
     ScanIndexForward: false,
     IndexName: 'status-index',
     KeyConditionExpression: '#341f0 = :341f0',
@@ -20,7 +18,6 @@ export const getSuspendedAccounts = async (): Promise<DynamoDB.DocumentClient.At
       '#341f1': 'nextStatusModifiedOn',
     },
   };
-
   const db = new GetSuspendedAccounts(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {

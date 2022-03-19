@@ -7,6 +7,7 @@ export class GetSuspendedAccounts extends DynamoDBUtil {
   }
 
   async execute(): Promise<void> {
+    console.log('params in class: ==> ', this.params);
     try {
       let output: AWS.DynamoDB.DocumentClient.QueryOutput;
       do {

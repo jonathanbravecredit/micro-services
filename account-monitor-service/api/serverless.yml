@@ -12,6 +12,10 @@ custom:
       - 'libs': libs
       - 'src': src
       - 'tests': tests
+  settings:
+    APPDATA:
+      dev: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
+      prod: 'AppData-4tpaga7rzjayhk75opsmpeurme-prod'
 
 plugins:
   - serverless-bundle # Package our functions with Webpack
@@ -25,6 +29,21 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     OUR_ENV: ${self:provider.stage}
+    APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+      Resource:
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}/index/*'
+    - Effect: 'Allow'
+      Action: 'sns:Publish'
+      Resource: '*'
 
 functions:
   # User tracked initiatives
