@@ -21,6 +21,7 @@ export const getSuspendedAccounts = async (): Promise<DynamoDB.DocumentClient.At
     },
   };
   console.log('params: ==> ', params);
+  console.log('process.env: ==> ', JSON.stringify(process.env));
   const db = new GetSuspendedAccounts(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {
