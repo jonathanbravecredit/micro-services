@@ -55,12 +55,13 @@ describe('GetSuspendedAccounts class', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
     xit('should call client.query 2 times when LastEvaluatedKey defined', async () => {
+      const mockPromise = jest.fn().mockReturnValueOnce({ LastEvaluatedKey: 'abc' }).mockReturnValueOnce({});
+      const mockQuery = jest.fn().mockImplementation((param: DynamoDB.DocumentClient.QueryInput) => ({
+        promise: mockPromise,
+      }));
       const client = {
-        query: jest.fn().mockImplementation((param: DynamoDB.DocumentClient.QueryInput) => ({
-          promise: jest.fn().mockResolvedValueOnce({ LastEvaluatedKey: 'abc' }).mockResolvedValueOnce({}),
-        })),
+        query: mockQuery,
       } as unknown as DynamoDB.DocumentClient;
-      const params = {} as DynamoDB.DocumentClient.QueryInput;
       const getAccounts = new GetSuspendedAccounts(client, params);
       await getAccounts.execute();
       const spy = jest.spyOn(client, 'query');
