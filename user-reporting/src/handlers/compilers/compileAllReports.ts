@@ -21,7 +21,7 @@ const STAGE = process.env.STAGE;
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
   const { batch } = event;
-  const batchId = batch ? batch : dayjs(new Date()).add(-7, 'hours').format('YYYY-MM-DD');
+  const batchId = batch ? batch : dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
   try {
     await Promise.all(
       Object.values(ReportNames).map(async (reportId) => {

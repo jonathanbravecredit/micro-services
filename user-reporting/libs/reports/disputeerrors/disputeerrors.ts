@@ -28,7 +28,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
-        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = mapTransactionFields(item);
         const ops = new OpsReportMaker(

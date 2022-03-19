@@ -1,0 +1,10 @@
+# NOTE: update this with your service name
+service: account-monitor-resources
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  environment:
+    OUR_ENV: ${self:provider.stage}
