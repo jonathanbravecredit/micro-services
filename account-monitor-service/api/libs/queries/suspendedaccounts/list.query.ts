@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
-import { GetSuspendedAccounts } from 'libs/classes/getsuspendedusers';
+import { GetSuspendedAccounts } from 'libs/classes/suspendedaccounts/getsuspendedaccounts';
 
 const tableName = process.env.APPTABLE || '';
 

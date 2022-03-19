@@ -1,10 +1,10 @@
 import { mocked } from 'ts-jest/utils';
 import { DynamoDB } from 'aws-sdk';
-import { GetSuspendedAccounts } from 'libs/classes/getsuspendedusers';
-import { getSuspendedAccounts } from 'libs/queries/getsuspendedusers';
+import { GetSuspendedAccounts } from 'libs/classes/suspendedaccounts/getsuspendedaccounts';
+import { getSuspendedAccounts } from 'libs/queries/suspendedaccounts/list.query';
 
 const mockExecute = jest.fn();
-jest.mock('../../libs/classes/getsuspendedusers', () => {
+jest.mock('../../../libs/classes/suspendedaccounts/getsuspendedaccounts', () => {
   return {
     GetSuspendedAccounts: jest.fn().mockImplementation(() => {
       return {
@@ -15,7 +15,7 @@ jest.mock('../../libs/classes/getsuspendedusers', () => {
   };
 });
 
-describe('getSuspendedUsers query', () => {
+describe('getSuspendedAccounts query', () => {
   const client = {} as DynamoDB.DocumentClient;
   const params = {} as DynamoDB.DocumentClient.QueryInput;
   const mockedClass = mocked(new GetSuspendedAccounts(client, params));

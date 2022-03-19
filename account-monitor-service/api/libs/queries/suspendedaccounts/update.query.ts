@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
-import { UpdateReactivationAccounts } from 'libs/classes/updatesuspendedusers';
+import { UpdateSuspendedAccount } from 'libs/classes/suspendedaccounts/updatesuspendedaccount';
 
 const tableName = process.env.APPTABLE || '';
 
@@ -25,7 +25,7 @@ export const updateSuspendedAccount = async (
     },
   };
 
-  const db = new UpdateReactivationAccounts(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
+  const db = new UpdateSuspendedAccount(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {
     await db.execute();

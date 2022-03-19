@@ -1,6 +1,6 @@
 import { Handler, ScheduledHandler } from 'aws-lambda';
-import { getSuspendedAccounts } from 'libs/queries/getsuspendedusers';
-import { updateSuspendedAccount } from 'libs/queries/updatesuspendedusers';
+import { getSuspendedAccounts } from 'libs/queries/suspendedaccounts/list.query';
+import { updateSuspendedAccount } from 'libs/queries/suspendedaccounts/update.query';
 
 export const main: Handler<any, any> = async (event: ScheduledHandler): Promise<void> => {
   let counter = 0;

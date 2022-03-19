@@ -11,6 +11,7 @@ custom:
     aliases:
       - 'libs': libs
       - 'src': src
+      - 'tests': tests
 
 plugins:
   - serverless-bundle # Package our functions with Webpack

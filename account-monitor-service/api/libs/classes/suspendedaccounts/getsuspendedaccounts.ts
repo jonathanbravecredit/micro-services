@@ -8,13 +8,13 @@ export class GetSuspendedAccounts extends DynamoDBUtil {
 
   async execute(): Promise<void> {
     try {
-      let items: AWS.DynamoDB.DocumentClient.QueryOutput;
-      this.params = this.params as AWS.DynamoDB.DocumentClient.QueryInput;
+      let output: AWS.DynamoDB.DocumentClient.QueryOutput;
       do {
-        items = await this.client.query(this.params).promise();
-        this.output = [...this.output, ...(items.Items || [])];
-        this.params.ExclusiveStartKey = items.LastEvaluatedKey;
-      } while (typeof items.LastEvaluatedKey != 'undefined');
+        output = await this.client.query(this.params).promise();
+        console.log('output: ===> ', output);
+        this.output = [...this.output, ...(output.Items || [])];
+        this.params.ExclusiveStartKey = output.LastEvaluatedKey;
+      } while (typeof output.LastEvaluatedKey != 'undefined');
     } catch (err) {
       this.handleQueryError(err);
     }

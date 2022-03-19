@@ -2,11 +2,11 @@ import * as lambda from 'src/scheduled/reactivateAccounts';
 import dayjs from 'dayjs';
 import { v4 } from 'uuid';
 import { mocked } from 'ts-jest/utils';
-import { getSuspendedAccounts } from 'libs/queries/getsuspendedusers';
-import { updateSuspendedAccount } from 'libs/queries/updatesuspendedusers';
+import { getSuspendedAccounts } from 'libs/queries/suspendedaccounts/list.query';
+import { updateSuspendedAccount } from 'libs/queries/suspendedaccounts/update.query';
 
-jest.mock('../../libs/queries/getsuspendedusers');
-jest.mock('../../libs/queries/updatesuspendedusers');
+jest.mock('../../libs/queries/suspendedaccounts/list.query');
+jest.mock('../../libs/queries/suspendedaccounts/update.query');
 const mockedGet = mocked(getSuspendedAccounts);
 const mockedUpdate = mocked(updateSuspendedAccount);
 mockedGet.mockImplementation(() => {
