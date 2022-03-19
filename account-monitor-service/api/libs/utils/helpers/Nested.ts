@@ -6,7 +6,7 @@ export class Nested {
    * @param {string} k the key you want to search for
    */
   static find<T>(o: any, k: string): T {
-    let value;
+    let value: any;
     const _returnNestedObject = (obj: any) => {
       Object.keys(obj).forEach((key) => {
         if (key === k && value === undefined) value = obj[k];
@@ -26,7 +26,7 @@ export class Nested {
    * @param {string} k the key you want to search for
    */
   static findAll<T>(o: any, k: string): T[] {
-    let value = [];
+    let value: any[] = [];
     const _returnNestedObject = (obj: any) => {
       Object.keys(obj).forEach((key) => {
         if (key === k) value.push(obj[k]);
