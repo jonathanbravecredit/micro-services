@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
-import GetSuspendedAccounts from 'libs/classes/suspendedaccounts/getsuspendedaccounts';
 import { Helper } from 'tests/helpers/test-helper';
+import GetSuspendedAccounts from 'libs/classes/suspendedaccounts/getsuspendedaccounts';
 
 describe('GetSuspendedAccounts class', () => {
   const mockPromise = jest.fn().mockReturnValue({});
@@ -46,6 +46,7 @@ describe('GetSuspendedAccounts class', () => {
       await getAccounts.execute();
       const spy = jest.spyOn(client, 'query');
       expect(spy).toHaveBeenCalledTimes(1);
+      expect(getAccounts.params.ExclusiveStartKey).toBeUndefined();
     });
     it('should call client.query 2 times when LastEvaluatedKey defined', async () => {
       const mockPromise = jest.fn().mockReturnValueOnce({ LastEvaluatedKey: 'abc' }).mockReturnValueOnce({});
@@ -75,6 +76,21 @@ describe('GetSuspendedAccounts class', () => {
       await getAccounts3.execute();
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('I am an error');
+    });
+    it('should set the output to the Items returned from client', async () => {
+      const mockPromise = jest
+        .fn()
+        .mockReturnValueOnce({ LastEvaluatedKey: 'abc', Items: [0] })
+        .mockReturnValueOnce({ Items: [1] });
+      const mockQuery = jest.fn().mockImplementation((param: DynamoDB.DocumentClient.QueryInput) => ({
+        promise: mockPromise,
+      }));
+      const client = {
+        query: mockQuery,
+      } as unknown as DynamoDB.DocumentClient;
+      const getAccounts4 = new GetSuspendedAccounts(client, params);
+      await getAccounts4.execute();
+      expect(getAccounts4.output).toEqual([0, 1]);
     });
   });
 });

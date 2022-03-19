@@ -9,7 +9,7 @@ jest.mock('../../../libs/classes/suspendedaccounts/updatesuspendedaccount', () =
     UpdateSuspendedAccount: jest.fn().mockImplementation(() => {
       return {
         execute: mockExecute,
-        output: [],
+        output: {},
       };
     }),
   };
@@ -29,7 +29,7 @@ describe('updateSuspendedAccount query', () => {
     expect(mockedClass.execute).toHaveBeenCalled();
   });
   it('should output the default', async () => {
-    const test = [];
+    const test: DynamoDB.DocumentClient.UpdateItemOutput = {};
     const res = await updateSuspendedAccount('abc');
     expect(res).toEqual(test);
   });

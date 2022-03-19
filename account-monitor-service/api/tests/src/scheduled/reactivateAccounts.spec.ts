@@ -23,7 +23,7 @@ mockedUpdate.mockImplementation((id: string) => {
 describe('Reactivate Accounts Handler', () => {
   it('Should call "getReactivationAccount"', () => {
     mockedGet.mockClear();
-    lambda.main(null, null, null);
+    lambda.main(null, {} as any, {} as any);
     expect(getSuspendedAccounts).toHaveBeenCalled();
   });
 
@@ -31,12 +31,12 @@ describe('Reactivate Accounts Handler', () => {
     mockedGet.mockImplementationOnce(() => {
       return Promise.resolve(null);
     });
-    const res = await lambda.main(null, null, null);
+    const res = await lambda.main(null, {} as any, {} as any);
     expect(res).toBeUndefined();
   });
   it('should iterate thru results and update their status to active', async () => {
     mockedUpdate.mockClear();
-    await lambda.main(null, null, null);
+    await lambda.main(null, {} as any, {} as any);
     expect(updateSuspendedAccount).toHaveBeenCalledTimes(3);
   });
   it('should NOT iterate thru when GET errors', async () => {
@@ -44,7 +44,7 @@ describe('Reactivate Accounts Handler', () => {
     mockedGet.mockImplementationOnce(() => {
       throw 'Mock get error';
     });
-    await lambda.main(null, null, null);
+    await lambda.main(null, {} as any, {} as any);
     expect(updateSuspendedAccount).not.toHaveBeenCalled();
   });
 });
@@ -52,10 +52,10 @@ describe('Reactivate Accounts Handler', () => {
 type MockStatus = 'active' | 'suspended' | 'cancelled';
 class MockAccount {
   id: string;
-  status: string;
-  nextStatusModifiedOn: string;
-  statusReasonDescription: string;
-  lastStatusModifiedOn: string;
+  status!: string;
+  nextStatusModifiedOn!: string;
+  statusReasonDescription!: string;
+  lastStatusModifiedOn!: string;
   constructor(private mockType: MockStatus) {
     this.id = v4();
     if (mockType === 'active') this.createActive();

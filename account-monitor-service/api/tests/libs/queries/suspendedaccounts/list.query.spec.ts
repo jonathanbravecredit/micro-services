@@ -29,7 +29,7 @@ describe('getSuspendedAccounts query', () => {
     expect(mockedClass.execute).toHaveBeenCalled();
   });
   it('should output the default', async () => {
-    const test = [];
+    const test: DynamoDB.DocumentClient.AttributeMap[] = [];
     const res = await getSuspendedAccounts();
     expect(res).toEqual(test);
   });

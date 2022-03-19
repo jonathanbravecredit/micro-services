@@ -5,7 +5,7 @@ export class Helper<T> {
     return Object.keys(object).filter((key) => key === prop).length > 0;
   }
 
-  hasMethod(object: T, method: string): boolean {
+  hasMethod(object: { [key: string]: any }, method: string): boolean {
     return typeof object[method] == 'function';
   }
 }
