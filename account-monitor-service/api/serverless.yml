@@ -9,7 +9,8 @@ custom:
   bundle:
     linting: false
     aliases:
-      - 'Libs': api/src/libs
+      - 'libs': libs
+      - 'src': src
 
 plugins:
   - serverless-bundle # Package our functions with Webpack

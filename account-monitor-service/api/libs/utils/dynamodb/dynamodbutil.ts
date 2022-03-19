@@ -1,34 +1,5 @@
 export class DynamoDBUtil {
-  public output: AWS.DynamoDB.DocumentClient.AttributeMap[] = [];
-  constructor(
-    private client: AWS.DynamoDB.DocumentClient,
-    private params: AWS.DynamoDB.DocumentClient.ScanInput | AWS.DynamoDB.DocumentClient.QueryInput,
-    private type: 'QUERY' | 'SCAN',
-  ) {}
-
-  async execute(): Promise<void> {
-    // Call DynamoDB's query API
-    try {
-      if (this.type === 'QUERY') {
-        let items: AWS.DynamoDB.DocumentClient.QueryOutput;
-        do {
-          items = await this.client.query(this.params).promise();
-          this.output = [...this.output, ...(items.Items || [])];
-          this.params.ExclusiveStartKey = items.LastEvaluatedKey;
-        } while (typeof items.LastEvaluatedKey != 'undefined');
-      }
-      if (this.type === 'SCAN') {
-        let items: AWS.DynamoDB.DocumentClient.ScanOutput;
-        do {
-          items = await this.client.scan(this.params).promise();
-          this.output = [...this.output, ...(items.Items || [])];
-          this.params.ExclusiveStartKey = items.LastEvaluatedKey;
-        } while (typeof items.LastEvaluatedKey != 'undefined');
-      }
-    } catch (err) {
-      this.handleQueryError(err);
-    }
-  }
+  constructor() {}
 
   handleQueryError(err) {
     if (!err) {
@@ -92,3 +63,5 @@ export class DynamoDBUtil {
     }
   }
 }
+
+export default DynamoDBUtil;

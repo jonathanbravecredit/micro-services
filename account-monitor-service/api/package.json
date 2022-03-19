@@ -5,11 +5,12 @@
   "main": "handler.js",
   "scripts": {
     "test": "serverless-bundle test",
-    "testWatch": "jest --watchAll --verbose"
+    "testWatch": "serverless-bundle test --watchAll --verbose"
   },
   "jest": {
     "moduleNameMapper": {
-      "Libs(.*)$": "<rootDir>/api/src/libs/$1"
+      "libs(.*)$": "<rootDir>/libs/$1",
+      "src(.*)$": "<rootDir>/src/$1"
     }
   },
   "author": "",
@@ -28,6 +29,7 @@
   "dependencies": {
     "@shiftcoders/dynamo-easy": "^7.1.0",
     "ajv": "^8.10.0",
+    "dayjs": "^1.11.0",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13"
   }
