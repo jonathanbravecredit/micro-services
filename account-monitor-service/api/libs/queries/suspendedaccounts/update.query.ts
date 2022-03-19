@@ -24,7 +24,7 @@ export const updateSuspendedAccount = async (
       '#bdd22': 'statusReasonDescription',
     },
   };
-
+  console.log('params: ==> ', params);
   const db = new UpdateSuspendedAccount(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {

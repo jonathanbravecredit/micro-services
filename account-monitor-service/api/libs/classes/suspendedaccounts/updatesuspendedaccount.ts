@@ -7,6 +7,7 @@ export class UpdateSuspendedAccount extends DynamoDBUtil {
   }
 
   async execute(): Promise<void> {
+    console.log('params in class: ==> ', this.params);
     try {
       this.output = await this.client.update(this.params).promise();
     } catch (err) {

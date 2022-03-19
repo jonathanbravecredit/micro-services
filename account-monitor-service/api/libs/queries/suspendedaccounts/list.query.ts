@@ -20,7 +20,7 @@ export const getSuspendedAccounts = async (): Promise<DynamoDB.DocumentClient.At
       '#341f1': 'nextStatusModifiedOn',
     },
   };
-
+  console.log('params: ==> ', params);
   const db = new GetSuspendedAccounts(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {
