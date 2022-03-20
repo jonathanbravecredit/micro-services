@@ -102,7 +102,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
         content: csvAllData,
       },
       {
-        filename: `${ReportNames.ReferralsAll}-daily-${batchId}.csv`,
+        filename: `${ReportNames.ReferralsAll}-daily-${batch}.csv`,
         content: csvNewData,
       },
     ];

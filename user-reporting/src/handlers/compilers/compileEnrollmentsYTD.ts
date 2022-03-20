@@ -26,7 +26,7 @@ export const main: Handler<any, any> = async (event: { batchId: string }): Promi
     // get the data from the results table
     const batch = batchId ? batchId : dayjs(new Date()).format('YYYY-MM-DD');
     const reportId = ReportNames.EnrollmentYTD;
-    const opsreports = await listOpsReportsByBatch(batchId, reportId);
+    const opsreports = await listOpsReportsByBatch(batch, reportId);
     if (!opsreports?.length) return;
     console.log(`grabbed ${opsreports.length} records`);
 
@@ -83,11 +83,11 @@ export const main: Handler<any, any> = async (event: { batchId: string }): Promi
     let params = generateEmailParams(`Report: ${ReportNames.EnrollmentYTD}`, emails);
     params.attachments = [
       {
-        filename: `${ReportNames.EnrollmentYTD}-${batchId}.csv`,
+        filename: `${ReportNames.EnrollmentYTD}-${batch}.csv`,
         content: csvAllData,
       },
       {
-        filename: `${ReportNames.EnrollmentYTD}-daily-${batchId}.csv`,
+        filename: `${ReportNames.EnrollmentYTD}-daily-${batch}.csv`,
         content: csvNewData,
       },
     ];
