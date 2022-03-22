@@ -1,10 +1,10 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB, SNS } from 'aws-sdk';
-import { IReferrals } from 'lib/interfaces/referrals.interfaces';
-import { getCampaign } from 'lib/queries/campaigns.queries';
-import { getUsersBySub } from 'lib/queries/cognito.queries';
-import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
+import { IReferrals } from 'libs/interfaces/referrals.interfaces';
+import { getCampaign } from 'libs/queries/campaigns.queries';
+import { getUsersBySub } from 'libs/queries/cognito.queries';
+import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 import dayjs from 'dayjs';
 
 const sns = new SNS();

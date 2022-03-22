@@ -14,9 +14,14 @@ custom:
   bundle:
     external: all
     linting: false
+    aliases:
+      - 'libs': libs
+      - 'src': src
+      - 'tests': tests
     sourcemaps: true
     fixPackages: # Include fixes for specific packages
       - 'formidable@1.x'
+
   snsProxy: !Sub '${self:provider.stage}-api-endpoints-sns-proxy'
   settings:
     POOL:
