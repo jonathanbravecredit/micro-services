@@ -88,6 +88,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/CreditScoreTrackings/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/InitiativePrograms/*'
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.settings.APPTABLES.${opt:stage}}/*'
     - Effect: 'Allow'
       Action:
@@ -241,6 +242,17 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn: !ImportValue referral-service-referrals-stream
+  # initiative program table triggers
+  triggerInitiativeProgramMarketing:
+    handler: src/triggers/triggerInitiativeProgramMarketing.main
+    description: Monitors initiative program system tables to add user tags
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 10
+          startingPosition: LATEST
+          arn: !ImportValue initiative-program-resources-stream
 
   # when changes to specific accounts occur, trigger the badge on the notification bar
   #  this should be moved to the credit report service
