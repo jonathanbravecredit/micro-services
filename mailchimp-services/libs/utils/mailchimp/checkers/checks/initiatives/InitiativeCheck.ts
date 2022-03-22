@@ -7,7 +7,6 @@ import * as _ from 'lodash';
 export class InitiativeCheck extends MailchimpMarketingChecker<UserInitiative> {
   constructor(public event: 'INSERT' | 'MODIFY', public current: UserInitiative, public prior: UserInitiative | null) {
     super(event, current, prior);
-    this.setId(current.id);
   }
 
   checkOne(): IMarketingCheckerResults {
@@ -20,14 +19,21 @@ export class InitiativeCheck extends MailchimpMarketingChecker<UserInitiative> {
 
   checkTwo(): IMarketingCheckerResults {
     if (this.event !== 'MODIFY') return this.generateResults(false);
-    const tasks: InitiativeTask[] = _.flattenDeep(this.current.initiativeTasks || []);
+    const tasks: Partial<InitiativeTask>[] = [];
+    this.current.initiativeTasks?.forEach((t) => {
+      const { taskId, taskStatus } = t;
+      tasks.push({ taskId, taskStatus });
+      t.subTasks.forEach((t) => {
+        const { taskId, taskStatus } = t;
+        tasks.push({ taskId, taskStatus });
+      });
+    });
     if (!tasks.length) return this.generateResults(false);
     const tags = tasks.map((c) => this.generateTag(`task_${c.taskId}_${c.taskStatus}`, 'active'));
     return this.generateResults(true, tags);
   }
 
   checkThree(): IMarketingCheckerResults {
-    if (!this.current) return this.generateResults(false);
     const status = this.current.initiativeStatus || '';
     if (status == '') return this.generateResults(false);
     if (status == 'not_started') {

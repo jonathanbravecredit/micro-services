@@ -1,10 +1,4 @@
-import { TransunionInput, UpdateAppDataInput } from 'libs/aws/api.service';
-import {
-  IAppChecker,
-  IMarketingChecker,
-  IMarketingCheckerResults,
-  IMarketingTag,
-} from 'libs/utils/mailchimp/interfaces';
+import { IMarketingChecker, IMarketingCheckerResults, IMarketingTag } from 'libs/utils/mailchimp/interfaces';
 
 export class MailchimpMarketingChecker<T> implements IMarketingChecker {
   id: string | undefined;
