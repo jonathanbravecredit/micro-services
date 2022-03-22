@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 export class InitiativeCheck extends MailchimpMarketingChecker<UserInitiative> {
   constructor(public event: 'INSERT' | 'MODIFY', public current: UserInitiative, public prior: UserInitiative | null) {
     super(event, current, prior);
+    this.setId(current.id);
   }
 
   checkOne(): IMarketingCheckerResults {
@@ -62,3 +63,5 @@ export class InitiativeCheck extends MailchimpMarketingChecker<UserInitiative> {
     }
   }
 }
+
+export default InitiativeCheck;

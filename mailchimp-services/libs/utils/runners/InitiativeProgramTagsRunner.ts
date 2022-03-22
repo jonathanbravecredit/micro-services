@@ -1,43 +1,72 @@
 import { DynamoDBRecord } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
+import { SNS, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { UserInitiative } from 'libs/models/UserInitiative.model';
+import { CognitoUtil } from 'libs/utils/cognito/cognito';
 import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
 import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'libs/utils/mailchimp/interfaces';
+import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
 
 export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> {
-  checker!: InitiativeCheck;
-  triggers: IMailchimpPacket<IMarketingData>[] = [];
-  triggerLibrary: Record<string, () => IMarketingCheckerResults> = {
-    [MailchimpTriggerEmails.GoalChosen]: () => this.checker.checkOne(),
-    [MailchimpTriggerEmails.GoalTaskStatus]: () => this.checker.checkTwo(),
-    [MailchimpTriggerEmails.GoalProgress]: () => this.checker.checkThree(),
+  email: string = '';
+  packets!: IMailchimpPacket<IMarketingData>[];
+  triggerLibrary: Record<
+    string,
+    (prior: UserInitiative | null, curr: UserInitiative, event: 'INSERT' | 'MODIFY') => IMarketingCheckerResults
+  > = {
+    [MailchimpTriggerEmails.GoalChosen]: (p, c, e) => new InitiativeCheck(e, c, p).checkOne(),
+    [MailchimpTriggerEmails.GoalTaskStatus]: (p, c, e) => new InitiativeCheck(e, c, p).checkTwo(),
+    [MailchimpTriggerEmails.GoalProgress]: (p, c, e) => new InitiativeCheck(e, c, p).checkThree(),
   };
 
-  constructor(public event: 'MODIFY' | 'INSERT', public record: DynamoDBRecord, public sns: SNS) {
+  constructor(
+    public event: 'MODIFY' | 'INSERT',
+    public record: DynamoDBRecord,
+    public sns: SNS,
+    public provider: CognitoIdentityServiceProvider,
+    public pool: string,
+  ) {
     super(record);
     this.init();
   }
 
   init(): void {
     super.init();
-    this.checker = new InitiativeCheck(this.event, this.currImage, this.priorImage);
-    this.triggers = this.resolver();
+    this.getEmail();
+    this.getPackets();
+  }
+
+  async getEmail(): Promise<void> {
+    const { provider, pool } = this;
+    const cognito = new CognitoUtil(provider, pool);
+    await cognito.getUserBySub(this.currImage.id);
+    this.email = cognito.email;
   }
 
   // add different scenarios and a resolver
-  resolver(): IMailchimpPacket<IMarketingData>[] {
-    let triggers: IMailchimpPacket<IMarketingData>[] = [];
+  getPackets(): void {
+    this.packets = [];
     for (let key in this.triggerLibrary) {
-      if (this.triggerLibrary[key]().valid) {
-        const { data } = this.triggerLibrary[key]();
+      const { priorImage: p, currImage: c, event: e } = this;
+      const { valid, data } = this.triggerLibrary[key](p, c, e);
+      if (valid) {
         const packet = { template: key, data: data } as IMailchimpPacket<IMarketingData>;
-        triggers = [...triggers, packet];
+        this.packets = [...this.packets, packet];
       }
     }
-    return triggers;
   }
 
-  async publish(): Promise<void> {}
+  async publish(): Promise<void> {
+    if (!this.email) return;
+    await Promise.all(
+      this.packets.map(async (pack) => {
+        const { data, template } = pack;
+        if (data?.api !== 'marketing') return;
+        const message = Mailchimp.createMailMessage(this.email, 'tag_user', undefined, data.tag);
+        const payload = Mailchimp.createSNSPayload('marketing', message, 'marketing');
+        await this.sns.publish(payload).promise();
+      }),
+    );
+  }
 }

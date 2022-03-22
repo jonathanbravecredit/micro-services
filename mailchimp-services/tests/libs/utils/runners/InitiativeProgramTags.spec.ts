@@ -1,15 +1,49 @@
 import { DynamoDBRecord } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
+import { SNS, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
+import { CognitoUtil } from 'libs/utils/cognito/cognito';
+import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
+import { IMailchimpPacket, IMarketingData } from 'libs/utils/mailchimp/interfaces';
+import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
 import { InitiativeProgramTagsRunner } from 'libs/utils/runners/InitiativeProgramTagsRunner';
 import { Helper } from 'tests/helpers/test-helper';
+import { mocked } from 'ts-jest/utils';
+import { BUY_HOUSE_MOCK, CC_MOCK } from 'tests/mocks/initiative.mocks';
 
 interface MockInterface {
   id: string;
   program: number;
   initiative: string;
 }
+const mockCheckOne = jest.fn().mockReturnValue({ valid: true, data: {} });
+const mockCheckTwo = jest.fn().mockReturnValue({ valid: true, data: {} });
+const mockCheckThr = jest.fn().mockReturnValue({ valid: true, data: {} });
+const mockGetUser = jest.fn().mockReturnValue('sample@test.com');
+jest.mock('libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck', () => {
+  return {
+    InitiativeCheck: jest.fn().mockImplementation(() => {
+      return {
+        checkOne: mockCheckOne,
+        checkTwo: mockCheckTwo,
+        checkThree: mockCheckThr,
+      };
+    }),
+  };
+});
+
+jest.mock('libs/utils/cognito/cognito', () => {
+  return {
+    CognitoUtil: jest.fn().mockImplementation(() => {
+      return {
+        email: 'sample@test.com',
+        getUserBySub: mockGetUser,
+      };
+    }),
+  };
+});
+
+jest.mock('libs/utils/mailchimp/mailchimp');
 
 describe('InitiativeProgramTagsRunner', () => {
   const mockPromise = jest.fn().mockReturnValue({});
@@ -21,36 +55,38 @@ describe('InitiativeProgramTagsRunner', () => {
   } as unknown as SNS;
   const mockRecord: DynamoDBRecord = {
     dynamodb: {
-      OldImage: {
-        id: {
-          S: 'abc',
-        },
-        program: {
-          N: '1',
-        },
-        initiative: {
-          S: 'original value',
-        },
-      },
-      NewImage: {
-        id: {
-          S: 'abc',
-        },
-        program: {
-          N: '1',
-        },
-        initiative: {
-          S: 'new value',
-        },
-      },
+      OldImage: BUY_HOUSE_MOCK,
+      NewImage: BUY_HOUSE_MOCK,
     },
   } as DynamoDBRecord;
-  const modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, mockSNS);
+  const mockRecordCC: DynamoDBRecord = {
+    dynamodb: {
+      OldImage: CC_MOCK,
+      NewImage: CC_MOCK,
+    },
+  } as DynamoDBRecord;
+  const mockProvider = {} as CognitoIdentityServiceProvider;
+  let modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, mockSNS, mockProvider, 'pool');
   // const insRunner = new InitiativeProgramTagsRunner('INSERT', mockRecord, mockSNS);
-  const modh = new Helper<InitiativeProgramTagsRunner>(modRunner);
-
-  afterEach(() => {});
-  describe('Inheritied methods and props', () => {
+  let modh = new Helper<InitiativeProgramTagsRunner>(modRunner);
+  const { priorImage: p, currImage: c, event: e } = modRunner;
+  const mockedCheckClass = mocked(new InitiativeCheck(e, c, p));
+  const mockedCogClass = mocked(new CognitoUtil(mockProvider, 'pool'));
+  const mockedMailchimp = mocked(Mailchimp);
+  beforeEach(() => {
+    mockedCheckClass.checkOne.mockClear();
+    mockedCheckClass.checkTwo.mockClear();
+    mockedCheckClass.checkThree.mockClear();
+    mockedCogClass.getUserBySub.mockClear();
+    mockedMailchimp.createMailMessage.mockClear();
+    mockedMailchimp.createSNSPayload.mockClear();
+  });
+  afterEach(() => {
+    // rest the runners
+    modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, mockSNS, mockProvider, 'pool');
+    modh = new Helper<InitiativeProgramTagsRunner>(modRunner);
+  });
+  describe('Inherited methods and props', () => {
     it('should contain init method', () => {
       const test = modh.hasMethod(modRunner, 'init');
       expect(test).toEqual(true);
@@ -78,48 +114,95 @@ describe('InitiativeProgramTagsRunner', () => {
       const test = modh.hasMethod(modRunner, 'init');
       expect(test).toEqual(true);
     });
-    it('should contain a resolver method', () => {
-      const test = modh.hasMethod(modRunner, 'resolver');
+    it('should contain a getEmail method', () => {
+      const test = modh.hasMethod(modRunner, 'getEmail');
+      expect(test).toEqual(true);
+    });
+    it('should contain a getPackets method', () => {
+      const test = modh.hasMethod(modRunner, 'getPackets');
       expect(test).toEqual(true);
     });
     it('should contain a publish method', () => {
       const test = modh.hasMethod(modRunner, 'publish');
       expect(test).toEqual(true);
     });
-    it('should contain a checker property', () => {
-      const test = modh.hasProperty(modRunner, 'checker');
-      const { event, currImage, priorImage } = modRunner;
-      const mockChecker = new InitiativeCheck(event, currImage, priorImage);
+    it('should contain a packets property', () => {
+      const test = modh.hasProperty(modRunner, 'packets');
       expect(test).toEqual(true);
-      expect(modRunner.checker).toEqual(mockChecker);
-    });
-    it('should contain a triggers property with default', () => {
-      const test = modh.hasProperty(modRunner, 'triggers');
-      expect(test).toEqual(true);
-      expect(modRunner.triggers).toEqual([]);
     });
     it('should contain a triggerLibrary property with default', () => {
       const test = modh.hasProperty(modRunner, 'triggerLibrary');
-      const { event, currImage, priorImage } = modRunner;
-      const mockChecker = new InitiativeCheck(event, currImage, priorImage);
       const mockLibrary = {
-        [MailchimpTriggerEmails.GoalChosen]: () => mockChecker.checkOne(),
-        [MailchimpTriggerEmails.GoalTaskStatus]: () => mockChecker.checkTwo(),
-        [MailchimpTriggerEmails.GoalProgress]: () => mockChecker.checkThree(),
+        [MailchimpTriggerEmails.GoalChosen]: mockedCheckClass.checkOne,
+        [MailchimpTriggerEmails.GoalTaskStatus]: mockedCheckClass.checkTwo,
+        [MailchimpTriggerEmails.GoalProgress]: mockedCheckClass.checkThree,
       };
       expect(test).toEqual(true);
-      expect(modRunner.triggerLibrary).toEqual(mockLibrary);
+      expect(Object.keys(modRunner.triggerLibrary)).toMatchObject(Object.keys(mockLibrary));
     });
   });
 
-  xdescribe('init method', () => {});
+  describe('init method', () => {
+    it('should call the DBStreamRunner init method', () => {
+      const spy = jest.spyOn(DBStreamRunner.prototype, 'init');
+      modRunner.init();
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should call the getPackets method', () => {
+      const spy = jest.spyOn(modRunner, 'getPackets');
+      modRunner.init();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 
-  xdescribe('resolver method', () => {});
+  describe('getEmail method', () => {
+    it('should call cognito.getUserBySub method', async () => {
+      await modRunner.getEmail();
+      expect(mockedCogClass.getUserBySub).toHaveBeenCalled();
+    });
+    it('should call set the email prop method', async () => {
+      await modRunner.getEmail();
+      expect(modRunner.email).toEqual('sample@test.com');
+    });
+  });
+
+  describe('getPackets method', () => {
+    it('should call the InitiativeCheck methods', () => {
+      modRunner.getPackets();
+      expect(mockedCheckClass.checkOne).toHaveBeenCalledTimes(1);
+      expect(mockedCheckClass.checkTwo).toHaveBeenCalledTimes(1);
+      expect(mockedCheckClass.checkThree).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('publish method', () => {
     it('should return undefined', async () => {
       const res = await modRunner.publish();
       expect(res).toBeUndefined();
+    });
+
+    it('should should call mailchimp methods', async () => {
+      modRunner.packets = [{ data: { api: 'marketing' }, template: 'some_template' }];
+      await modRunner.publish();
+      expect(mockedMailchimp.createMailMessage).toHaveBeenCalled();
+      expect(mockedMailchimp.createSNSPayload).toHaveBeenCalled();
+    });
+
+    it('should call sns.publish', async () => {
+      modRunner.packets = [{ data: { api: 'marketing' }, template: 'some_template' }];
+      const spy = jest.spyOn(modRunner.sns, 'publish');
+      await modRunner.publish();
+      expect(spy).toHaveBeenCalled();
+      spy.mockClear();
+    });
+
+    it('should NOT call mailchimp methods nor sns if not a marketing packet', async () => {
+      modRunner.packets = [{ data: { api: 'not_marketing' as 'marketing' }, template: 'some_template' }];
+      const spy = jest.spyOn(modRunner.sns, 'publish');
+      await modRunner.publish();
+      expect(mockedMailchimp.createMailMessage).not.toHaveBeenCalled();
+      expect(mockedMailchimp.createSNSPayload).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });
