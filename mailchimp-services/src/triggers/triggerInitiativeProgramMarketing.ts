@@ -16,6 +16,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
         const { eventName } = record;
         if (eventName != 'INSERT' && eventName != 'MODIFY') return;
         const runner = new InitiativeProgramTagsRunner(eventName, record, pool);
+        await runner.getEmail();
+        await runner.getPackets();
         try {
           await runner.publish();
         } catch (err) {

@@ -28,8 +28,6 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
 
   init(): void {
     super.init();
-    this.getEmail();
-    this.getPackets();
   }
 
   async getEmail(): Promise<void> {
