@@ -1,14 +1,12 @@
 import { DynamoDB } from 'aws-sdk';
 import { UpdateSuspendedAccount } from 'libs/classes/suspendedaccounts/updatesuspendedaccount';
 
-const tableName = process.env.APPTABLE || '';
-
 export const updateSuspendedAccount = async (
   id: string,
 ): Promise<AWS.DynamoDB.DocumentClient.UpdateItemOutput | null> => {
   const now = new Date().toISOString();
   const params = {
-    TableName: tableName,
+    TableName: process.env.APPDATA || '',
     Key: {
       id: id,
     },
@@ -24,7 +22,6 @@ export const updateSuspendedAccount = async (
       '#bdd22': 'statusReasonDescription',
     },
   };
-
   const db = new UpdateSuspendedAccount(new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' }), params);
 
   try {

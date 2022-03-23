@@ -19,12 +19,13 @@ const STAGE = process.env.STAGE;
  * @param message Object containing service specific package for processing
  * @returns Lambda proxy response
  */
-export const main: Handler<any, any> = async (event: any): Promise<any> => {
+export const main: Handler<{ batchId: string }, any> = async (event: { batchId: string }): Promise<any> => {
+  const { batchId } = event;
   try {
     // get the data from the results table
-    const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+    const batch = batchId ? batchId : dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
     const reportId = ReportNames.ReferralsAll;
-    const opsreports = await listOpsReportsByBatch(batchId, reportId);
+    const opsreports = await listOpsReportsByBatch(batch, reportId);
     if (!opsreports?.length) return;
 
     // create the YTD and new (based on cutoff) data sets
@@ -97,7 +98,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
     let params = generateEmailParams(`Report: ${ReportNames.ReferralsAll}`, emails);
     params.attachments = [
       {
-        filename: `${ReportNames.ReferralsAll}-${batchId}.csv`,
+        filename: `${ReportNames.ReferralsAll}-${batch}.csv`,
         content: csvAllData,
       },
       {

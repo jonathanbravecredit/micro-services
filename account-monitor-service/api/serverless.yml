@@ -42,13 +42,6 @@ provider:
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}/index/*'
     - Effect: 'Allow'
-      Action:
-        - cognito-idp:ListUsers
-        - cognito-idp:AdminDisableUser
-        - cognito-idp:AdminDeleteUser
-        - cognito-idp:AdminGetUser
-      Resource: 'arn:aws:cognito-idp:${self:provider.region}:#{AWS::AccountId}:userpool/*'
-    - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'
 
