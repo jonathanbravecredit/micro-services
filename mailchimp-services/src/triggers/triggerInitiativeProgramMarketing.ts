@@ -2,12 +2,15 @@ import { SNS, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { DynamoDBStreamHandler, DynamoDBStreamEvent, DynamoDBRecord } from 'aws-lambda';
 import { InitiativeProgramTagsRunner } from 'libs/utils/runners/InitiativeProgramTagsRunner';
 
-const sns = new SNS();
-const pool = process.env.POOL || '';
-const cognito = new CognitoIdentityServiceProvider();
-
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
+  const sns = new SNS();
+  const pool = process.env.POOL || '';
+  const cognito = new CognitoIdentityServiceProvider();
+  console.log('sns', sns);
+  console.log('pool', pool);
+  console.log('cognito', cognito);
+  console.log('records', JSON.stringify(records));
 
   try {
     await Promise.all(
