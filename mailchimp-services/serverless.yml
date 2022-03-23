@@ -257,12 +257,6 @@ functions:
     handler: src/handlers/batchInitiativeTags.main
     description: Monitors initiative program system tables to add user tags
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 10
-          startingPosition: LATEST
-          arn: !ImportValue initiative-program-resources-stream
 
   # when changes to specific accounts occur, trigger the badge on the notification bar
   #  this should be moved to the credit report service
