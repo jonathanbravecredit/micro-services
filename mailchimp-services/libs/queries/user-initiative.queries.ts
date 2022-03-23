@@ -6,11 +6,7 @@ import { UserInitiative } from 'libs/models/UserInitiative.model';
 const store = new DynamoStore(UserInitiative);
 
 export const listInitiatives = (): Promise<UserInitiative[]> => {
-  return store
-    .scan()
-    .execFetchAll()
-    .then((res) => res)
-    .catch((err) => err);
+  return store.scan().execFetchAll();
 };
 
 export const getInitiative = (id: string, program: string): Promise<UserInitiative> => {
