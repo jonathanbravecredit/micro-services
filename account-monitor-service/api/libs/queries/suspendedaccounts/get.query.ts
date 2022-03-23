@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import GetSuspendedAccount from 'libs/classes/suspendedaccounts/getsuspendedaccount';
 
-export const getSuspendedAccount = async (id: string): Promise<AWS.DynamoDB.DocumentClient.UpdateItemOutput | null> => {
+export const getSuspendedAccount = async (id: string): Promise<AWS.DynamoDB.DocumentClient.AttributeMap | null> => {
   const now = new Date().toISOString();
   const params = {
     TableName: process.env.APPDATA || '',

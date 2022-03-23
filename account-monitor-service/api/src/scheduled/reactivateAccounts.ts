@@ -15,7 +15,13 @@ export const main: Handler<ListOrScheduled, void> = async (event: ListOrSchedule
     try {
       await Promise.all(
         list.map(async (id) => {
-          await getSuspendedAccount(id);
+          try {
+            const suspended = await getSuspendedAccount(id);
+            if (suspended == null || !suspended.id) return;
+            await updateSuspendedAccount(suspended.id);
+          } catch (err) {
+            console.error(err);
+          }
         }),
       );
     } catch (err) {

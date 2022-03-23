@@ -2,13 +2,20 @@ import * as lambda from 'src/scheduled/reactivateAccounts';
 import dayjs from 'dayjs';
 import { v4 } from 'uuid';
 import { mocked } from 'ts-jest/utils';
+import { getSuspendedAccount } from 'libs/queries/suspendedaccounts/get.query';
 import { getSuspendedAccounts } from 'libs/queries/suspendedaccounts/list.query';
 import { updateSuspendedAccount } from 'libs/queries/suspendedaccounts/update.query';
 
+jest.mock('../../libs/queries/suspendedaccounts/get.query');
 jest.mock('../../libs/queries/suspendedaccounts/list.query');
 jest.mock('../../libs/queries/suspendedaccounts/update.query');
+const mockedGet = mocked(getSuspendedAccount);
 const mockedList = mocked(getSuspendedAccounts);
 const mockedUpdate = mocked(updateSuspendedAccount);
+mockedGet.mockImplementation((id: string) => {
+  const mock = new MockAccount('suspended') as AWS.DynamoDB.DocumentClient.AttributeMap;
+  return Promise.resolve(mock);
+});
 mockedList.mockImplementation(() => {
   const mocks: AWS.DynamoDB.DocumentClient.AttributeMap[] = [];
   mocks.push(new MockAccount('suspended'));
@@ -47,6 +54,26 @@ describe('Reactivate Accounts Handler: no list', () => {
     });
     await lambda.main(mockArg, {} as any, {} as any);
     expect(updateSuspendedAccount).not.toHaveBeenCalled();
+  });
+});
+
+describe('Reactivate Accounts Handler: with list', () => {
+  beforeEach(() => {
+    mockedGet.mockClear();
+    mockedList.mockClear();
+    mockedUpdate.mockClear();
+  });
+  const mockArg = { list: ['abc', 'xyz'] } as unknown as lambda.ListOrScheduled;
+  it('Should call "getSuspendedAccount"', async () => {
+    await lambda.main(mockArg, {} as any, {} as any);
+    expect(mockedGet).toHaveBeenCalledTimes(2);
+  });
+  it('should call updateSuspendedAccount if not null and as ID', async () => {
+    mockedGet.mockImplementationOnce(() => {
+      return Promise.resolve(null);
+    });
+    await lambda.main(mockArg, {} as any, {} as any);
+    expect(mockedUpdate).not.toHaveBeenCalled();
   });
 });
 
