@@ -4,7 +4,6 @@ import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiative
 import { CognitoUtil } from 'libs/utils/cognito/cognito';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
-import { IMailchimpPacket, IMarketingData } from 'libs/utils/mailchimp/interfaces';
 import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
 import { InitiativeProgramTagsRunner } from 'libs/utils/runners/InitiativeProgramTagsRunner';
 import { Helper } from 'tests/helpers/test-helper';
@@ -66,12 +65,12 @@ describe('InitiativeProgramTagsRunner', () => {
     },
   } as DynamoDBRecord;
   const mockProvider = {} as CognitoIdentityServiceProvider;
-  let modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, mockSNS, mockProvider, 'pool');
+  let modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, 'pool');
   // const insRunner = new InitiativeProgramTagsRunner('INSERT', mockRecord, mockSNS);
   let modh = new Helper<InitiativeProgramTagsRunner>(modRunner);
   const { priorImage: p, currImage: c, event: e } = modRunner;
   const mockedCheckClass = mocked(new InitiativeCheck(e, c, p));
-  const mockedCogClass = mocked(new CognitoUtil(mockProvider, 'pool'));
+  const mockedCogClass = mocked(new CognitoUtil('pool'));
   const mockedMailchimp = mocked(Mailchimp);
   beforeEach(() => {
     mockedCheckClass.checkOne.mockClear();
@@ -83,7 +82,7 @@ describe('InitiativeProgramTagsRunner', () => {
   });
   afterEach(() => {
     // rest the runners
-    modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, mockSNS, mockProvider, 'pool');
+    modRunner = new InitiativeProgramTagsRunner('MODIFY', mockRecord, 'pool');
     modh = new Helper<InitiativeProgramTagsRunner>(modRunner);
   });
   describe('Inherited methods and props', () => {
@@ -128,6 +127,14 @@ describe('InitiativeProgramTagsRunner', () => {
     });
     it('should contain a packets property', () => {
       const test = modh.hasProperty(modRunner, 'packets');
+      expect(test).toEqual(true);
+    });
+    it('should contain a email property', () => {
+      const test = modh.hasProperty(modRunner, 'email');
+      expect(test).toEqual(true);
+    });
+    it('should contain a sns property', () => {
+      const test = modh.hasProperty(modRunner, 'sns');
       expect(test).toEqual(true);
     });
     it('should contain a triggerLibrary property with default', () => {

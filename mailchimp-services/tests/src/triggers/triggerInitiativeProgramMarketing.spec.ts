@@ -18,7 +18,7 @@ jest.mock('libs/utils/runners/InitiativeProgramTagsRunner', () => {
 
 describe('InitiativeProgram marketing tags', () => {
   const arg = null as any;
-  const mockedRunner = mocked(new InitiativeProgramTagsRunner(arg, arg, arg, arg, arg));
+  const mockedRunner = mocked(new InitiativeProgramTagsRunner(arg, arg, arg));
   // const mockedMain = mocked(main);
   beforeEach(() => {
     mockedRunner.publish.mockClear();
