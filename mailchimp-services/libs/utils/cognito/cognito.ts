@@ -23,6 +23,7 @@ export class CognitoUtil {
       UserPoolId: this.pool,
       Username: id,
     };
+    console.log('params: ', params);
     this.user = await this.cognito.adminGetUser(params).promise();
     return this.user;
   }

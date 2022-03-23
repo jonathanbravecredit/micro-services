@@ -33,8 +33,7 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
   }
 
   async getEmail(): Promise<void> {
-    const { pool } = this;
-    const cognito = new CognitoUtil(pool);
+    const cognito = new CognitoUtil(this.pool);
     await cognito.getUserBySub(this.currImage.id);
     this.email = cognito.email;
   }
@@ -43,8 +42,7 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
   getPackets(): void {
     this.packets = [];
     for (let key in this.triggerLibrary) {
-      const { priorImage: p, currImage: c, event: e } = this;
-      const { valid, data } = this.triggerLibrary[key](p, c, e);
+      const { valid, data } = this.triggerLibrary[key](this.priorImage, this.currImage, this.event);
       if (valid) {
         const packet = { template: key, data: data } as IMailchimpPacket<IMarketingData>;
         this.packets = [...this.packets, packet];
