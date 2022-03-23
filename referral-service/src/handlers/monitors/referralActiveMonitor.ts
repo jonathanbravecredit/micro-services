@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { SNSEvent, SNSEventRecord, SNSHandler } from 'aws-lambda';
-import { UpdateAppDataInput } from 'lib/aws/api.service';
-import { ISession } from 'lib/interfaces/api/sessions/session.interface';
-import { Referral, ReferralMaker } from 'lib/models/referral.model';
+import { UpdateAppDataInput } from 'libs/aws/api.service';
+import { ISession } from 'libs/interfaces/api/sessions/session.interface';
+import { Referral, ReferralMaker } from 'libs/models/referrals/referral.model';
 import {
   getCampaign,
   updateReferralCampaign,
@@ -10,8 +10,8 @@ import {
   updateEnrollment,
   getReferral,
   createReferral,
-} from 'lib/queries';
-import { listUserSessions } from 'lib/queries/sessions/sessions.queries';
+} from 'libs/queries';
+import { listUserSessions } from 'libs/queries/sessions/sessions.queries';
 import * as dayjs from 'dayjs';
 import * as uuid from 'uuid';
 

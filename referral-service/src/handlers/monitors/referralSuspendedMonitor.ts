@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { Referral } from 'lib/models/referral.model';
-import { updateReferral } from 'lib/queries';
+import { Referral } from 'libs/models/referrals/referral.model';
+import { updateReferral } from 'libs/queries';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   /*============================================*/

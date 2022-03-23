@@ -9,10 +9,10 @@ import {
   StreamRecord,
 } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { DynamoDBorSNSRecord } from 'lib/interfaces';
-import { Referral } from 'lib/models/referral.model';
-import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'lib/queries';
-import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
+import { DynamoDBorSNSRecord } from 'libs/interfaces';
+import { Referral } from 'libs/models/referrals/referral.model';
+import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'libs/queries';
+import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
 import * as dayjs from 'dayjs';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (

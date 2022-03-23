@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { batchDeleteReferrals, listReferrals } from 'lib/queries';
+import { batchDeleteReferrals, listReferrals } from 'libs/queries';
 import { Handler, ScheduledEvent } from 'aws-lambda';
 
 export const main: Handler = async (event: ScheduledEvent): Promise<void> => {

@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import { DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { Campaign } from 'lib/models/campaign.model';
+import { Campaign } from 'libs/models/campaigns/campaign.model';
 import {
   getActiveCampaignReferrals,
   getCampaign,
   getEligibileReferrals,
   updateReferral,
   updateReferralCampaign,
-} from 'lib/queries';
+} from 'libs/queries';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;

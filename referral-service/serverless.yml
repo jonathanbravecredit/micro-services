@@ -13,6 +13,10 @@ plugins:
 custom:
   bundle:
     linting: false
+    aliases:
+      - 'libs': libs
+      - 'src': src
+      - 'tests': tests
     externals: all
   settings:
     IDENTITY_IDS:
@@ -119,7 +123,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
   getReferralValidation:
-    handler: src/api/referrals/getReferralValidation.main
+    handler: src/api/referrals/validation/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
@@ -234,7 +238,7 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   appDataPub:
-    handler: src/handlers/pubs/appDataPub.main
+    handler: src/pubs/appDataPub.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - stream:

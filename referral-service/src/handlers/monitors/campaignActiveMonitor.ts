@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { ScheduledEvent, ScheduledHandler } from 'aws-lambda';
-import { getCampaign, getLatestCampaign, updateCurrentCampaign } from 'lib/queries';
+import { getCampaign, getLatestCampaign, updateCurrentCampaign } from 'libs/queries';
 import * as moment from 'moment';
 
 export const main: ScheduledHandler = async (event: ScheduledEvent): Promise<void> => {
