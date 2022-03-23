@@ -2,7 +2,10 @@ import * as AWS from 'aws-sdk';
 
 export class CognitoUtil {
   user: AWS.CognitoIdentityServiceProvider.AdminGetUserResponse | undefined;
-  cognito: AWS.CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
+  cognito: AWS.CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+    apiVersion: '2016-04-18',
+    region: 'us-east-2',
+  });
   constructor(public pool: string) {}
 
   get email(): string {
