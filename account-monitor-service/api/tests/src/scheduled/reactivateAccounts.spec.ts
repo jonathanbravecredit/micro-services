@@ -7,9 +7,9 @@ import { updateSuspendedAccount } from 'libs/queries/suspendedaccounts/update.qu
 
 jest.mock('../../libs/queries/suspendedaccounts/list.query');
 jest.mock('../../libs/queries/suspendedaccounts/update.query');
-const mockedGet = mocked(getSuspendedAccounts);
+const mockedList = mocked(getSuspendedAccounts);
 const mockedUpdate = mocked(updateSuspendedAccount);
-mockedGet.mockImplementation(() => {
+mockedList.mockImplementation(() => {
   const mocks: AWS.DynamoDB.DocumentClient.AttributeMap[] = [];
   mocks.push(new MockAccount('suspended'));
   mocks.push(new MockAccount('suspended'));
@@ -20,31 +20,32 @@ mockedUpdate.mockImplementation((id: string) => {
   return Promise.resolve({} as AWS.DynamoDB.DocumentClient.UpdateItemOutput);
 });
 
-describe('Reactivate Accounts Handler', () => {
-  it('Should call "getReactivationAccount"', () => {
-    mockedGet.mockClear();
-    lambda.main(null, {} as any, {} as any);
+describe('Reactivate Accounts Handler: no list', () => {
+  const mockArg = {} as unknown as lambda.ListOrScheduled;
+  it('Should call "getSuspendedAccounts"', async () => {
+    mockedList.mockClear();
+    await lambda.main(mockArg, {} as any, {} as any);
     expect(getSuspendedAccounts).toHaveBeenCalled();
   });
 
   it('should return undefined if no reactivation accounts found', async () => {
-    mockedGet.mockImplementationOnce(() => {
+    mockedList.mockImplementationOnce(() => {
       return Promise.resolve(null);
     });
-    const res = await lambda.main(null, {} as any, {} as any);
+    const res = await lambda.main(mockArg, {} as any, {} as any);
     expect(res).toBeUndefined();
   });
   it('should iterate thru results and update their status to active', async () => {
     mockedUpdate.mockClear();
-    await lambda.main(null, {} as any, {} as any);
+    await lambda.main(mockArg, {} as any, {} as any);
     expect(updateSuspendedAccount).toHaveBeenCalledTimes(3);
   });
   it('should NOT iterate thru when GET errors', async () => {
     mockedUpdate.mockClear();
-    mockedGet.mockImplementationOnce(() => {
+    mockedList.mockImplementationOnce(() => {
       throw 'Mock get error';
     });
-    await lambda.main(null, {} as any, {} as any);
+    await lambda.main(mockArg, {} as any, {} as any);
     expect(updateSuspendedAccount).not.toHaveBeenCalled();
   });
 });
