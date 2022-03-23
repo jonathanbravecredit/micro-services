@@ -10,7 +10,7 @@ export const main: Handler<any, any> = async (event: ScheduledEvent): Promise<vo
   const initiatives = await listInitiatives();
   try {
     while (initiatives.length) {
-      const queue = initiatives.splice(0, 10);
+      const queue = initiatives.splice(0, 100);
       await new Promise((resolve) => {
         setTimeout(async () => {
           const deleted = await Promise.all(
@@ -24,7 +24,7 @@ export const main: Handler<any, any> = async (event: ScheduledEvent): Promise<vo
             }),
           );
           resolve(deleted);
-        }, 501);
+        }, 1001);
       });
       console.log('initiatives length: ', initiatives.length);
     }
