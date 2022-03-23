@@ -5,7 +5,7 @@ import { UserInitiative } from 'libs/models/UserInitiative.model';
 
 const store = new DynamoStore(UserInitiative);
 
-export const listInitiatives = (): Promise<any> => {
+export const listInitiatives = (): Promise<UserInitiative[]> => {
   return store
     .scan()
     .execFetchAll()
