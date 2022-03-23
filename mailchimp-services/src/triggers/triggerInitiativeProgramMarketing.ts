@@ -1,4 +1,4 @@
-import { SNS, CognitoIdentityServiceProvider } from 'aws-sdk';
+import { SNS } from 'aws-sdk';
 import { DynamoDBStreamHandler, DynamoDBStreamEvent, DynamoDBRecord } from 'aws-lambda';
 import { InitiativeProgramTagsRunner } from 'libs/utils/runners/InitiativeProgramTagsRunner';
 

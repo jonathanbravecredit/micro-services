@@ -1,8 +1,8 @@
-import { CognitoIdentityServiceProvider } from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 
 export class CognitoUtil {
-  user: CognitoIdentityServiceProvider.AdminGetUserResponse | undefined;
-  cognito: CognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
+  user: AWS.CognitoIdentityServiceProvider.AdminGetUserResponse | undefined;
+  cognito: AWS.CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
   constructor(public pool: string) {}
 
   get email(): string {
@@ -15,7 +15,7 @@ export class CognitoUtil {
     );
   }
 
-  async getUserBySub(id: string): Promise<CognitoIdentityServiceProvider.AdminGetUserResponse> {
+  async getUserBySub(id: string): Promise<AWS.CognitoIdentityServiceProvider.AdminGetUserResponse> {
     const params: AWS.CognitoIdentityServiceProvider.AdminGetUserRequest = {
       UserPoolId: this.pool,
       Username: id,
