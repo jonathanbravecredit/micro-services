@@ -24,7 +24,7 @@ export const main: Handler<any, any> = async (event: ScheduledEvent): Promise<vo
             }),
           );
           resolve(deleted);
-        }, 1001);
+        }, 501);
       });
       console.log('initiatives length: ', initiatives.length);
     }
