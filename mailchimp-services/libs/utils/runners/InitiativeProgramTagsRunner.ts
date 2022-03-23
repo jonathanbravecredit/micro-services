@@ -1,5 +1,5 @@
 import { DynamoDBRecord } from 'aws-lambda';
-import { SNS, CognitoIdentityServiceProvider } from 'aws-sdk';
+import { SNS } from 'aws-sdk';
 import { UserInitiative } from 'libs/models/UserInitiative.model';
 import { CognitoUtil } from 'libs/utils/cognito/cognito';
 import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
@@ -10,6 +10,7 @@ import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
 
 export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> {
   email: string = '';
+  sns: SNS = new SNS();
   packets!: IMailchimpPacket<IMarketingData>[];
   triggerLibrary: Record<
     string,
@@ -20,13 +21,7 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
     [MailchimpTriggerEmails.GoalProgress]: (p, c, e) => new InitiativeCheck(e, c, p).checkThree(),
   };
 
-  constructor(
-    public event: 'MODIFY' | 'INSERT',
-    public record: DynamoDBRecord,
-    public sns: SNS,
-    public provider: CognitoIdentityServiceProvider,
-    public pool: string,
-  ) {
+  constructor(public event: 'MODIFY' | 'INSERT', public record: DynamoDBRecord, public pool: string) {
     super(record);
     this.init();
   }
@@ -38,8 +33,8 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
   }
 
   async getEmail(): Promise<void> {
-    const { provider, pool } = this;
-    const cognito = new CognitoUtil(provider, pool);
+    const { pool } = this;
+    const cognito = new CognitoUtil(pool);
     await cognito.getUserBySub(this.currImage.id);
     this.email = cognito.email;
   }

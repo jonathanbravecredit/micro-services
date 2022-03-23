@@ -2,7 +2,8 @@ import { CognitoIdentityServiceProvider } from 'aws-sdk';
 
 export class CognitoUtil {
   user: CognitoIdentityServiceProvider.AdminGetUserResponse | undefined;
-  constructor(public provider: CognitoIdentityServiceProvider, public pool: string) {}
+  cognito: CognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
+  constructor(public pool: string) {}
 
   get email(): string {
     if (!this.user) return '';
@@ -19,7 +20,7 @@ export class CognitoUtil {
       UserPoolId: this.pool,
       Username: id,
     };
-    this.user = await this.provider.adminGetUser(params).promise();
+    this.user = await this.cognito.adminGetUser(params).promise();
     return this.user;
   }
 }
