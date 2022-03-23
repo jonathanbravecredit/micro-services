@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 const MailChimpTx = require('@mailchimp/mailchimp_transactional/src');
 import { Handler, ScheduledEvent } from 'aws-lambda';
-import { MailchimpData } from 'lib/models/outgoing-messages.model';
+import { MailchimpData } from 'libs/models/outgoing-messages.model';
 import {
   batchDeleteAllItemsInOutgoingMessages,
   getAllItemsInOutgoingMessages,
-} from 'lib/queries/outgoing-messages.queries';
-import { getSecretKey } from 'lib/utils/secrets';
+} from 'libs/queries/outgoing-messages.queries';
+import { getSecretKey } from 'libs/utils/secrets';
 
 let mailChimp: {
   messages: {

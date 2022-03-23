@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
-import { PubSubUtil } from 'lib/utils/pubsub/pubsub';
-import { IBatchMsg, IAttributeValue } from 'lib/interfaces/batch.interfaces';
+import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
+import { IBatchMsg, IAttributeValue } from 'libs/interfaces/batch.interfaces';
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 

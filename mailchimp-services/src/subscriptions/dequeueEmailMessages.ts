@@ -1,11 +1,11 @@
 const MailChimpTx = require('@mailchimp/mailchimp_transactional');
-import * as interfaces from 'lib/interfaces';
-import { ajv } from 'lib/schema/validation';
+import * as interfaces from 'libs/interfaces';
+import { ajv } from 'libs/schema/validation';
 import { SNSEvent, SNSHandler } from 'aws-lambda';
-import { Mailchimp as chimp } from 'lib/utils/mailchimp/mailchimp';
-import { response } from 'lib/utils/response';
-import { getSecretKey } from 'lib/utils/secrets';
-import { IMailChimp } from 'lib/interfaces/mailchimp.interfaces';
+import { Mailchimp as chimp } from 'libs/utils/mailchimp/mailchimp';
+import { response } from 'libs/utils/response';
+import { getSecretKey } from 'libs/utils/secrets';
+import { IMailChimp } from 'libs/interfaces/mailchimp.interfaces';
 
 let mailChimp: IMailChimp;
 const mailchimpSKLoc = process.env.MAILCHIMP_SECRET_LOCATION || '';
