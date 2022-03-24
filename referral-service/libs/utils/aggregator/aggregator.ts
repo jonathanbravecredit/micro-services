@@ -57,34 +57,23 @@ export class Aggregator extends DBStreamRunner<Referral> {
   }
 
   async creditReferrer(): Promise<void> {
-    if (!this.referrer) return;
-    const { campaignActiveEarned, totalEarned } = this.incrementBase(this.referrer);
-    const { campaignActiveBonus, totalBonus } = this.incrementBonus(this.referrer);
-    const { campaignActiveReferred, totalReferred } = this.incrementCount(this.referrer);
-    const nextPaymentDate = this.getPaymentDate(this.referrer);
-    const updated = {
-      ...this.referrer,
-      campaignActiveReferred,
-      campaignActiveEarned,
-      campaignActiveBonus,
-      totalReferred,
-      totalEarned,
-      totalBonus,
-      nextPaymentDate,
-    };
+    if (!this.referrer || !Object.keys(this.referrer).length) return;
+    let updated = { ...this.referrer };
+    // keep in this order
+    updated = { ...updated, ...this.incrementCount(updated) };
+    updated = { ...updated, ...this.incrementBase(updated) };
+    updated = { ...updated, ...this.incrementBonus(updated) };
+    updated = { ...updated, ...this.getPaymentDate(updated) };
     await this.updateReferral(updated);
   }
 
   async creditReferree(): Promise<void> {
+    if (!this.referree || !Object.keys(this.referree).length) return;
     if (!(this.campaign.addOnFlagOne === 'enrollment')) return;
-    const { campaignActiveAddOn, totalAddOn } = this.incrementAddOn(this.referree);
-    const nextPaymentDate = this.getPaymentDate(this.referree);
-    const updated = {
-      ...this.referree,
-      campaignActiveAddOn,
-      totalAddOn,
-      nextPaymentDate,
-    };
+    let updated = { ...this.referree };
+    // keep in this order
+    updated = { ...updated, ...this.incrementAddOn(updated) };
+    updated = { ...updated, ...this.getPaymentDate(updated) };
     await this.updateReferral(updated);
   }
 
@@ -92,42 +81,56 @@ export class Aggregator extends DBStreamRunner<Referral> {
     await updateReferral(referral);
   }
 
-  getPaymentDate(referrer: Referral): string {
-    const bonusOrThreshold = this.inBonusOrThreshold(referrer);
-    return new PaymentDateCalculator().calcPaymentDate(bonusOrThreshold, this.campaign.endDate);
+  getPaymentDate(referrer: Referral): { nextPaymentDate: string } {
+    const bonusOrMax = this.inBonusOrMax(referrer);
+    const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrMax, this.campaign.endDate);
+    return { nextPaymentDate };
   }
 
-  inBonusOrThreshold(referrer: Referral): boolean {
+  inBonusOrMax(referrer: Referral): boolean {
     const { campaignActiveReferred: referred } = referrer;
-    const { bonusThreshold: threshold, maxReferrals: max } = this.campaign;
-    return (referred >= threshold && threshold > 0) || referred >= max ? true : false;
-  }
-
-  incrementBase(referrer: Referral): { campaignActiveEarned: number; totalEarned: number } {
-    const { denomination } = this.campaign;
-    const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
-    const totalEarned = referrer.totalEarned + denomination;
-    return { campaignActiveEarned, totalEarned };
+    const { bonusThreshold: bonus, maxReferrals: max } = this.campaign;
+    if (!referred) return false;
+    const reachedMax = referred >= max && max > 0;
+    const reachedBonus = referred >= bonus && bonus > 0;
+    return reachedBonus || reachedMax;
   }
 
   incrementCount(referrer: Referral): { campaignActiveReferred: number; totalReferred: number } {
-    const campaignActiveReferred = referrer.campaignActiveReferred + 1;
-    const totalReferred = referrer.totalReferred + 1;
+    const { maxReferrals } = this.campaign;
+    let { campaignActiveReferred, totalReferred } = referrer;
+    if (campaignActiveReferred >= maxReferrals) return { campaignActiveReferred, totalReferred };
+    campaignActiveReferred += 1;
+    totalReferred += 1;
     return { campaignActiveReferred, totalReferred };
   }
 
-  incrementAddOn(referral: Referral): { campaignActiveAddOn: number; totalAddOn: number } {
-    const { denomination } = this.campaign;
-    const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
-    const totalAddOn = referral.totalAddOn + denomination;
-    return { campaignActiveAddOn, totalAddOn };
+  incrementBase(referrer: Referral): { campaignActiveEarned: number; totalEarned: number } {
+    const { denomination, maxReferrals } = this.campaign;
+    let { campaignActiveReferred, campaignActiveEarned, totalEarned } = referrer;
+    if (campaignActiveReferred >= maxReferrals) return { campaignActiveEarned, totalEarned };
+    campaignActiveEarned += denomination;
+    totalEarned += denomination;
+    return { campaignActiveEarned, totalEarned };
   }
 
   incrementBonus(referrer: Referral): { campaignActiveBonus: number; totalBonus: number } {
     const { bonusThreshold, bonusAmount } = this.campaign;
-    const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
-    const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
-    const totalBonus = referrer.totalBonus + bonus;
+    let { campaignActiveReferred, campaignActiveBonus, totalBonus } = referrer;
+    if (campaignActiveBonus > 0) return { campaignActiveBonus, totalBonus };
+    const reachedBonus = campaignActiveReferred === bonusThreshold;
+    if (!reachedBonus) return { campaignActiveBonus, totalBonus };
+    campaignActiveBonus += bonusAmount;
+    totalBonus += bonusAmount;
     return { campaignActiveBonus, totalBonus };
+  }
+
+  incrementAddOn(referree: Referral): { campaignActiveAddOn: number; totalAddOn: number } {
+    const { denomination } = this.campaign;
+    let { campaignActiveAddOn, totalAddOn } = referree;
+    if (campaignActiveAddOn > 0) return { campaignActiveAddOn, totalAddOn }; // can only get it once
+    campaignActiveAddOn += denomination;
+    totalAddOn += denomination;
+    return { campaignActiveAddOn, totalAddOn };
   }
 }

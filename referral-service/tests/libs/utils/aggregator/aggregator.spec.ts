@@ -9,9 +9,26 @@ import {
   MOCK_NOTREFERRED_MODIFY,
   MOCK_UNENROLLED_MODIFY,
   MOCK_UNENROLLED_TO_ENROLLED_MODIFY,
+  MOCK_UNMARSHALLED,
 } from 'tests/__mocks__/referral.mocks';
 import { mocked } from 'ts-jest/utils';
 import { Nested as _nest } from 'libs/utils/helpers/Nested';
+import { Referral } from 'libs/models/referrals/referral.model';
+import { getReferralByCode, updateReferral } from 'libs/queries/referrals/referral.queries';
+import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
+import { Campaign } from 'libs/models/campaigns/campaign.model';
+
+const mockCalcPay = jest.fn().mockReturnValue(new Date().toISOString());
+jest.mock('libs/utils/paymentdatecalculator/paymentDateCalculator', () => {
+  return {
+    PaymentDateCalculator: jest.fn().mockImplementation(() => {
+      return {
+        calcPaymentDate: mockCalcPay,
+      };
+    }),
+  };
+});
+jest.mock('libs/queries/referrals/referral.queries');
 
 describe('Aggregator Class', () => {
   const mockInsert = MOCK_INSERT;
@@ -19,6 +36,15 @@ describe('Aggregator Class', () => {
   const mockCampaign = MOCK_CAMPAIGN_ACTIVE;
   let aggregator = new Aggregator(mockCampaign, mockModify);
   let h = new Helper<Aggregator>(aggregator);
+  const mockedUpdate = mocked(updateReferral);
+  const mockedGetCode = mocked(getReferralByCode);
+  const mockedPayCalc = mocked(new PaymentDateCalculator());
+  mockedUpdate.mockImplementation((referral: Referral) => {
+    return Promise.resolve();
+  });
+  mockedGetCode.mockImplementation((code: string | null) => {
+    return Promise.resolve({ id: 'xyz' } as Referral);
+  });
 
   describe('Inherited properties and methods', () => {
     it('should have property currImage', () => {
@@ -118,6 +144,10 @@ describe('Aggregator Class', () => {
       const res = await agg.getReferrer();
       expect(res).toBeNull();
     });
+    it('should return the result of the getReferralByCode query', async () => {
+      const res = await aggregator.getReferrer();
+      expect(res).toEqual({ id: 'xyz' });
+    });
   });
 
   describe('setEnrollment', () => {
@@ -215,16 +245,18 @@ describe('Aggregator Class', () => {
   });
 
   describe('creditReferrer', () => {
+    let incCountSpy = jest
+      .spyOn(aggregator, 'incrementCount')
+      .mockReturnValueOnce({ campaignActiveReferred: 1, totalReferred: 1 });
     let incBaseSpy = jest
       .spyOn(aggregator, 'incrementBase')
       .mockReturnValueOnce({ campaignActiveEarned: 1, totalEarned: 1 });
     let incBonusSpy = jest
       .spyOn(aggregator, 'incrementBonus')
       .mockReturnValueOnce({ campaignActiveBonus: 1, totalBonus: 1 });
-    let incCountSpy = jest
-      .spyOn(aggregator, 'incrementCount')
-      .mockReturnValueOnce({ campaignActiveReferred: 1, totalReferred: 1 });
-    let getPayDteSpy = jest.spyOn(aggregator, 'getPaymentDate').mockReturnValueOnce(new Date().toISOString());
+    let getPayDteSpy = jest
+      .spyOn(aggregator, 'getPaymentDate')
+      .mockReturnValueOnce({ nextPaymentDate: new Date().toISOString() });
     let updateRefSpy = jest.spyOn(aggregator, 'updateReferral').mockReturnValueOnce(Promise.resolve());
     beforeEach(() => {
       incBaseSpy.mockClear();
@@ -232,20 +264,249 @@ describe('Aggregator Class', () => {
       incCountSpy.mockClear();
       getPayDteSpy.mockClear();
       updateRefSpy.mockClear();
+      aggregator.referrer = MOCK_UNMARSHALLED;
     });
-    it('should return null if this.referrer is not set or null', async () => {
-      const spy = jest.spyOn(aggregator, 'getReferrer').mockReturnValueOnce(Promise.resolve(null));
-      aggregator.init();
+    it('should return undefined if this.referrer is not set or null', async () => {
+      aggregator.referrer = null as unknown as Referral;
       const res = await aggregator.creditReferrer();
-      expect(res).toBeNull();
+      expect(res).toBeUndefined();
+    });
+    it('should return undefined if this.referrer is empty object', async () => {
+      aggregator.referrer = {} as unknown as Referral;
+      const res = await aggregator.creditReferrer();
+      expect(res).toBeUndefined();
+    });
+    it('should call incrementCount if this.referrer is set and not null', async () => {
+      await aggregator.creditReferrer();
+      expect(incCountSpy).toHaveBeenCalledTimes(1);
     });
     it('should call incrementBase if this.referrer is set and not null', async () => {
       await aggregator.creditReferrer();
       expect(incBaseSpy).toHaveBeenCalledTimes(1);
     });
-    it('should call incrementBonuse if this.referrer is set and not null', async () => {
+    it('should call incrementBonus if this.referrer is set and not null', async () => {
       await aggregator.creditReferrer();
       expect(incBonusSpy).toHaveBeenCalledTimes(1);
+    });
+    it('should call getPaymentDate if this.referrer is set and not null', async () => {
+      await aggregator.creditReferrer();
+      expect(getPayDteSpy).toHaveBeenCalledTimes(1);
+    });
+    it('should call updateReferral if this.referrer is set and not null', async () => {
+      await aggregator.creditReferrer();
+      expect(updateRefSpy).toHaveBeenCalledTimes(1);
+    });
+    it('should call updateReferral with the updated base, bonus, count and new payment date', async () => {
+      let updated = { ...aggregator.referrer } as Referral;
+      // keep in this order
+      updated = { ...updated, ...aggregator.incrementCount(updated) };
+      updated = { ...updated, ...aggregator.incrementBase(updated) };
+      updated = { ...updated, ...aggregator.incrementBonus(updated) };
+      updated = { ...updated, ...aggregator.getPaymentDate(updated) };
+      await aggregator.creditReferrer();
+      expect(updateRefSpy).toHaveBeenCalledWith(updated);
+    });
+  });
+
+  describe('creditReferree', () => {
+    let incAddOnSpy = jest
+      .spyOn(aggregator, 'incrementAddOn')
+      .mockReturnValueOnce({ campaignActiveAddOn: 1, totalAddOn: 1 });
+    let getPayDteSpy = jest
+      .spyOn(aggregator, 'getPaymentDate')
+      .mockReturnValueOnce({ nextPaymentDate: new Date().toISOString() });
+    let updateRefSpy = jest.spyOn(aggregator, 'updateReferral').mockReturnValueOnce(Promise.resolve());
+    beforeEach(() => {
+      incAddOnSpy.mockClear();
+      updateRefSpy.mockClear();
+      getPayDteSpy.mockClear();
+      aggregator.campaign.addOnFlagOne = 'enrollment';
+      aggregator.init();
+    });
+    it('should return undefined if addOnFlagOne != "enrollment"', async () => {
+      aggregator.campaign.addOnFlagOne = 'blah';
+      aggregator.init();
+      const res = await aggregator.creditReferree();
+      expect(res).toBeUndefined();
+    });
+    it('should return undefined if this.referree is not set or null', async () => {
+      aggregator.referree = null as unknown as Referral;
+      const res = await aggregator.creditReferrer();
+      expect(res).toBeUndefined();
+    });
+    it('should return undefined if this.referrer is empty object', async () => {
+      aggregator.referree = {} as Referral;
+      const res = await aggregator.creditReferrer();
+      expect(res).toBeUndefined();
+    });
+    it('should run incrementAddon if addOnFlagOne is set', async () => {
+      await aggregator.creditReferree();
+      expect(incAddOnSpy).toHaveBeenCalled();
+    });
+    it('should run getPaymentDate if addOnFlagOne is set', async () => {
+      await aggregator.creditReferree();
+      expect(getPayDteSpy).toHaveBeenCalled();
+    });
+    it('should run updateReferral if addOnFlagOne is set', async () => {
+      await aggregator.creditReferree();
+      expect(updateRefSpy).toHaveBeenCalled();
+    });
+    it('should call updateReferral with the addon and new payment date', async () => {
+      let updated = { ...aggregator.referree } as Referral;
+      updated = { ...updated, ...aggregator.incrementAddOn(updated) };
+      updated = { ...updated, ...aggregator.getPaymentDate(updated) };
+      await aggregator.creditReferree();
+      expect(updateRefSpy).toHaveBeenCalledWith(updated);
+    });
+  });
+
+  describe('updateReferral', () => {
+    it('should call updateReferral query', async () => {
+      const params = { id: 'blahblah' } as Referral;
+      await aggregator.updateReferral(params);
+      expect(mockedUpdate).toHaveBeenCalledWith(params);
+    });
+    it('should return undefined', async () => {
+      const params = { id: 'blahblah' } as Referral;
+      const res = await aggregator.updateReferral(params);
+      expect(res).toBeUndefined();
+    });
+  });
+
+  describe('getPaymentDate', () => {
+    it('should call inBonusOrMax', () => {
+      const spy = jest.spyOn(aggregator, 'inBonusOrMax');
+      aggregator.getPaymentDate({} as Referral);
+      expect(spy).toHaveBeenCalledWith({});
+    });
+    it('should call PaymentDateCalculate.calcPaymentDate', () => {
+      const { endDate } = aggregator.campaign;
+      aggregator.getPaymentDate({} as Referral);
+      expect(mockedPayCalc.calcPaymentDate).toHaveBeenCalledWith(false, endDate);
+    });
+  });
+
+  describe('inBonusOrMax', () => {
+    it('should return false if referred falsey', () => {
+      const res1 = aggregator.inBonusOrMax({ campaignActiveReferred: 0 } as unknown as Referral);
+      const res2 = aggregator.inBonusOrMax({ campaignActiveReferred: -1 } as unknown as Referral);
+      const res3 = aggregator.inBonusOrMax({ campaignActiveReferred: false } as unknown as Referral);
+      const res4 = aggregator.inBonusOrMax({ campaignActiveReferred: undefined } as unknown as Referral);
+      expect(res1).toEqual(false);
+      expect(res2).toEqual(false);
+      expect(res3).toEqual(false);
+      expect(res4).toEqual(false);
+    });
+    it('should return true if campaignActiveReferred >= maxReferrals and maxReferrals > 0', () => {
+      aggregator.campaign = { maxReferrals: 1 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(true);
+    });
+    it('should return false if campaignActiveReferred >= maxReferrals and maxReferrals = 0', () => {
+      aggregator.campaign = { maxReferrals: 0 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
+    });
+    it('should return false if campaignActiveReferred < maxReferrals and maxReferrals > 0', () => {
+      aggregator.campaign = { maxReferrals: 5 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
+    });
+    it('should return true if  campaignActiveReferred >= bonusThreshold and bonusThreshold > 0', () => {
+      aggregator.campaign = { bonusThreshold: 1 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(true);
+    });
+    it('should return false if campaignActiveReferred >= bonusThreshold and bonusThreshold = 0', () => {
+      aggregator.campaign = { bonusThreshold: 0 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
+    });
+    it('should return false if campaignActiveReferred < bonusThreshold and bonusThreshold > 0', () => {
+      aggregator.campaign = { bonusThreshold: 5 } as unknown as Campaign;
+      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
+    });
+  });
+
+  describe('incrementCount', () => {
+    it('should return the same referred and totalReferred count if referred >= max referrals', () => {
+      const referrer = { campaignActiveReferred: 1, totalReferred: 1 } as Referral;
+      const campaign = { maxReferrals: 1 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementCount(aggregator.referrer);
+      expect(resp).toEqual(referrer);
+    });
+    it('should return the same referred and totalReferred count if referred >= max referrals', () => {
+      const referrer = { campaignActiveReferred: 2, totalReferred: 2 } as Referral;
+      const campaign = { maxReferrals: 1 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementCount(aggregator.referrer);
+      expect(resp).toEqual(referrer);
+    });
+    it('should return referred + 1 and totalReferred count + 1 if referred < max referrals', () => {
+      const referrer = { campaignActiveReferred: 2, totalReferred: 2 } as Referral;
+      const campaign = { maxReferrals: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementCount(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveReferred: 3, totalReferred: 3 });
+    });
+  });
+
+  describe('incrementBase', () => {
+    it('should return existing earned and totalEarned amount if referred >= max referrals', () => {
+      const referrer = { campaignActiveReferred: 1, campaignActiveEarned: 5, totalEarned: 5 } as Referral;
+      const campaign = { maxReferrals: 1, denomination: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBase(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveEarned: 5, totalEarned: 5 });
+    });
+    it('should return existing earned and totalEarned amount if referred >= max referrals', () => {
+      const referrer = { campaignActiveReferred: 2, campaignActiveEarned: 10, totalEarned: 10 } as Referral;
+      const campaign = { maxReferrals: 1, denomination: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBase(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveEarned: 10, totalEarned: 10 });
+    });
+    it('should return earned + 5 and totalEarned count + 5 if referred < max referrals', () => {
+      const referrer = { campaignActiveReferred: 1, campaignActiveEarned: 5, totalEarned: 5 } as Referral;
+      const campaign = { maxReferrals: 5, denomination: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBase(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveEarned: 10, totalEarned: 10 });
+    });
+  });
+
+  describe('incrementBonus', () => {
+    it('should return existing bonus if campaignActiveReferred < bonusThreshold', () => {
+      const referrer = { campaignActiveReferred: 1, campaignActiveBonus: 0, totalBonus: 0 } as Referral;
+      const campaign = { bonusThreshold: 2, bonusAmount: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBonus(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveBonus: 0, totalBonus: 0 });
+    });
+    it('should return existing bonsu and totalBonus amount if referred >= bonusThreshold', () => {
+      const referrer = { campaignActiveReferred: 2, campaignActiveBonus: 5, totalBonus: 5 } as Referral;
+      const campaign = { bonusThreshold: 1, bonusAmount: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBonus(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveBonus: 5, totalBonus: 5 });
+    });
+    it('should return bonus + 5 and totalBonus amount + 5 if referred = bonusThreshold and activeBonus = 0', () => {
+      const referrer = { campaignActiveReferred: 1, campaignActiveBonus: 0, totalBonus: 0 } as Referral;
+      const campaign = { bonusThreshold: 1, bonusAmount: 5 } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementBonus(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveBonus: 5, totalBonus: 5 });
     });
   });
 });

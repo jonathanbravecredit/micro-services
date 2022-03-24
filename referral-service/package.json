@@ -5,7 +5,8 @@
   "main": "handler.js",
   "scripts": {
     "test": "serverless-bundle test",
-    "testWatch": "serverless-bundle test --watchAll --verbose"
+    "testWatch": "serverless-bundle test --watchAll --verbose",
+    "testOpenHandles": "serverless-bundle test --detectOpenHandles"
   },
   "jest": {
     "moduleNameMapper": {
