@@ -1,4 +1,3 @@
-import { DynamoDBRecord } from 'aws-lambda';
 import { Aggregator } from 'libs/utils/aggregator/aggregator';
 import { Helper } from 'tests/helpers/test-helper';
 import { MOCK_CAMPAIGN_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN } from 'tests/__mocks__/campaign.mocks';

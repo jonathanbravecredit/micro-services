@@ -41,6 +41,16 @@ export class Aggregator extends DBStreamRunner<Referral> {
     this.enrollment = curr ? (!prior ? 'new_enrolled' : 'past_enrolled') : 'not_enrolled';
   }
 
+  /**
+   * Qualifies the referral (new_enrolled & campaign active) and adds:
+   * - count
+   * - earning
+   * - bonus
+   * to the person who referred them, and:
+   * - addOn bonus for enrolling, if enabled
+   * Must be: new_enrolled
+   * @returns void
+   */
   async qualifyReferral(): Promise<void> {
     if (!this.isCampaignActive()) return;
     if (this.enrollment === 'new_enrolled') {

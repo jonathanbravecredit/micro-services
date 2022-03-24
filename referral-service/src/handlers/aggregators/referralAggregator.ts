@@ -8,123 +8,28 @@ import {
   SNSHandler,
   StreamRecord,
 } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
 import { DynamoDBorSNSRecord } from 'libs/interfaces';
-import { Referral } from 'libs/models/referrals/referral.model';
-import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'libs/queries';
-import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
-import dayjs from 'dayjs';
+import { getCampaign } from 'libs/queries/campaigns/campaigns.queries';
+import { Aggregator } from 'libs/utils/aggregator/aggregator';
+import { Campaign } from 'libs/models/campaigns/campaign.model';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
 ): Promise<void> => {
   const records = event.Records;
-  records.forEach((r: DynamoDBorSNSRecord) => {
-    console.log('referral aggregator record: ', JSON.stringify(r));
-  });
-
-  const current = await getCampaign(1, 0);
-  const now = new Date();
-  const ended = dayjs(now).isAfter(current?.endDate);
-  if (current && ended) return;
-
-  console.log('current campaign: ', JSON.stringify(current));
-  if (!current || current?.campaign === 'NO_CAMPAIGN') return;
+  const current = (await getCampaign(1, 0)) as Campaign; // 1, 0 is always populated
+  if (!records || !current) return;
   try {
     await Promise.all(
-      records.map(async (r: DynamoDBorSNSRecord) => {
-        const isDynamo = (r as DynamoDBRecord).eventSource === 'aws:dynamodb';
-        const isSNS = (r as SNSEventRecord).EventSource === 'aws:sns';
+      records.map(async (record: DynamoDBorSNSRecord) => {
+        const isDynamo = (record as DynamoDBRecord).eventSource === 'aws:dynamodb';
+        const isSNS = (record as SNSEventRecord).EventSource === 'aws:sns';
         if (isDynamo) {
-          // !!! REFERRAL Database !!!
-          // do dynamodb stuff
-          // data coming from referral data base. inserts and modifications
-          // only concerned with modifies...people going from unenrolled to enrolled
-          const dynamo = r as DynamoDBRecord;
-          if (dynamo.eventName === 'MODIFY') {
-            const stream: StreamRecord = dynamo.dynamodb || {};
-            const { OldImage, NewImage } = stream;
-            if (!NewImage || !OldImage) return;
-            const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
-            const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
-            // the referred user needs to go from enrolled to not in rolled
-            // need to find if there is a referred by code.
-            //  - !!! because we don't want to give to people who organically sign up !!!
-            // if there is than we need to:
-            //  - get the current campaign attributes
-            //  - double check the current campaign is an active one
-            //  - increment up the count and the earnings...campaignActiveReferred
-            const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
-            if (newImage.referredByCode && enrollment) {
-              const { denomination, bonusThreshold, bonusAmount, campaign, maxReferrals } = current;
-              if (campaign === 'NO_CAMPAIGN') return;
-              // get the record by referredByCode
-              const referrer = await getReferralByCode(newImage.referredByCode);
-              if (!referrer) return;
-              // check if the bonus threshold is hit...wasn't and now would be
-              const bonus = (referrer.campaignActiveReferred || -1) + 1 === bonusThreshold ? bonusAmount : 0;
-              const campaignActiveBonus = referrer.campaignActiveBonus + bonus;
-              const campaignActiveEarned = referrer.campaignActiveEarned + denomination;
-              const campaignActiveReferred = referrer.campaignActiveReferred + 1;
-              const totalReferred = referrer.totalReferred + 1;
-              const totalEarned = referrer.totalEarned + denomination;
-              const totalBonus = referrer.totalBonus + bonus;
-              const bonusOrThreshold =
-                (campaignActiveReferred >= bonusThreshold && bonusThreshold > 0) ||
-                campaignActiveReferred >= maxReferrals
-                  ? true
-                  : false;
-              const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrThreshold, current.endDate);
-              const updated = {
-                ...referrer,
-                campaignActiveReferred,
-                campaignActiveEarned,
-                campaignActiveBonus,
-                totalReferred,
-                totalEarned,
-                totalBonus,
-                nextPaymentDate,
-              };
-              if (campaignActiveReferred > current.maxReferrals) return;
-              await updateReferral(updated);
-            }
-
-            // need to give the user credit for enrolling
-            // need a referredByCode
-            //  - !!! because we don't want to give to people who organically sign up !!!
-            if (
-              newImage.referredByCode &&
-              enrollment &&
-              current.campaign !== 'NO_CAMPAIGN' &&
-              current.addOnFlagOne === 'enrollment'
-            ) {
-              const { denomination } = current;
-              const referral = await getReferral(newImage.id);
-              if (!referral) return;
-              const campaignActiveAddOn = referral.campaignActiveAddOn + denomination;
-              const totalAddOn = referral.totalAddOn + denomination;
-              const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(false, current.endDate);
-              const updated = {
-                ...referral,
-                campaignActiveAddOn,
-                totalAddOn,
-                nextPaymentDate,
-              };
-              await updateReferral(updated);
-            }
-          }
-
-          if (dynamo.eventName === 'INSERT') {
-            // not doing anything with inserts now
-            // this will be existing users added through safelist automation
-            // do not give credit to other referral codes and
-            // do not get credit for enrolling.
-          }
+          const aggregator = new Aggregator(current, record as DynamoDBRecord);
+          await aggregator.qualifyReferral();
         }
 
         if (isSNS) {
-          // sns will only look for add ons. enrollments, etc
-          // these are their own enrollments
           // no events for aggregator now...enrollments handled above
         }
       }),
