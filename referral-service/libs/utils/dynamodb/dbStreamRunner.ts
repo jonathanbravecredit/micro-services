@@ -10,18 +10,19 @@ export class DBStreamRunner<T> {
   }
 
   init() {
-    this.parseImages(this.record);
+    this.parseImages();
+    this.parseEvent();
   }
 
-  parseImages(record: DynamoDBRecord): void {
-    const stream: StreamRecord = record.dynamodb || {};
+  parseImages(): void {
+    const stream: StreamRecord = this.record.dynamodb || {};
     const { OldImage: priorImage, NewImage: currImage } = stream;
     this.currImage = this.unmarshall(currImage) as T;
     this.priorImage = this.unmarshall(priorImage) as T | null;
   }
 
-  parseEvent(record: DynamoDBRecord): void {
-    this.event = record.eventName;
+  parseEvent(): void {
+    this.event = this.record.eventName;
   }
 
   unmarshall(image: DynamoDB.AttributeMap | undefined): T | null {

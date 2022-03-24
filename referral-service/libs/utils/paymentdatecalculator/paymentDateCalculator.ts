@@ -1,6 +1,6 @@
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -23,7 +23,7 @@ export class PaymentDateCalculator {
    * @param endDate
    * @returns
    */
-  calcPaymentDate(bonusHit: boolean, endDate: string, payOn: number = 2) {
+  calcPaymentDate(bonusHit: boolean, endDate: string, payOn: number = 2): string {
     const now = dayjs(new Date()).tz();
     const campaignEnd = dayjs(endDate).tz();
     return bonusHit

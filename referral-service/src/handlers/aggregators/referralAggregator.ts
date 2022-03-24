@@ -13,7 +13,7 @@ import { DynamoDBorSNSRecord } from 'libs/interfaces';
 import { Referral } from 'libs/models/referrals/referral.model';
 import { getCampaign, getReferral, getReferralByCode, updateReferral } from 'libs/queries';
 import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 export const main: DynamoDBStreamHandler | SNSHandler = async (
   event: DynamoDBStreamEvent | SNSEvent,
@@ -56,7 +56,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
             //  - increment up the count and the earnings...campaignActiveReferred
             const enrollment = oldImage.enrolled === false && newImage.enrolled === true;
             if (newImage.referredByCode && enrollment) {
-              const { denomination, bonusThreshold, bonusAmount, campaign } = current;
+              const { denomination, bonusThreshold, bonusAmount, campaign, maxReferrals } = current;
               if (campaign === 'NO_CAMPAIGN') return;
               // get the record by referredByCode
               const referrer = await getReferralByCode(newImage.referredByCode);
@@ -71,7 +71,7 @@ export const main: DynamoDBStreamHandler | SNSHandler = async (
               const totalBonus = referrer.totalBonus + bonus;
               const bonusOrThreshold =
                 (campaignActiveReferred >= bonusThreshold && bonusThreshold > 0) ||
-                campaignActiveReferred >= current.maxReferrals
+                campaignActiveReferred >= maxReferrals
                   ? true
                   : false;
               const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrThreshold, current.endDate);

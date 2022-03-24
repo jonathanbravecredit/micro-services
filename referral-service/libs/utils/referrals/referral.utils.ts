@@ -1,13 +1,13 @@
 import { IGroupedYearMonthReferral } from 'libs/interfaces';
 import { Referral } from 'libs/models/referrals/referral.model';
-import * as moment from 'moment';
+import dayjs from 'dayjs';
 
 export const groupReferralsByYearMonth = (referrals: Referral[]): IGroupedYearMonthReferral[] => {
   const grouped: IGroupedYearMonthReferral[] = [];
   referrals.forEach((referral) => {
     if (!referral.createdOn) return;
     const createdOn = new Date(referral.createdOn);
-    const yearMonth = +moment(createdOn).format('YYYYMM');
+    const yearMonth = +dayjs(createdOn).format('YYYYMM');
     let found = false;
     grouped.forEach((group) => {
       if (group.yearMonth === yearMonth) {
