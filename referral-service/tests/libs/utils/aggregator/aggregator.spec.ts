@@ -323,12 +323,6 @@ describe('Aggregator Class', () => {
       aggregator.campaign.addOnFlagOne = 'enrollment';
       aggregator.init();
     });
-    it('should return undefined if addOnFlagOne != "enrollment"', async () => {
-      aggregator.campaign.addOnFlagOne = 'blah';
-      aggregator.init();
-      const res = await aggregator.creditReferree();
-      expect(res).toBeUndefined();
-    });
     it('should return undefined if this.referree is not set or null', async () => {
       aggregator.referree = null as unknown as Referral;
       const res = await aggregator.creditReferrer();
@@ -507,6 +501,33 @@ describe('Aggregator Class', () => {
       aggregator.campaign = campaign;
       const resp = aggregator.incrementBonus(aggregator.referrer);
       expect(resp).toEqual({ campaignActiveBonus: 5, totalBonus: 5 });
+    });
+  });
+
+  describe('incrementAddOn', () => {
+    it('should return existing addOn if addOnFlagOne !== enrollment', () => {
+      const referrer = { campaignActiveAddOn: 0, totalAddOn: 0 } as Referral;
+      const campaign = { denomination: 5, addOnFlagOne: 'blahblah' } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementAddOn(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveAddOn: 0, totalAddOn: 0 });
+    });
+    it('should return existing addOn if campaignActiveAddOn already added', () => {
+      const referrer = { campaignActiveAddOn: 5, totalAddOn: 5 } as Referral;
+      const campaign = { denomination: 5, addOnFlagOne: 'enrollment' } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementAddOn(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveAddOn: 5, totalAddOn: 5 });
+    });
+    it('should return addOn + 5 and totalAddOn amount + 5 if campaignActiveAddOn = 0', () => {
+      const referrer = { campaignActiveAddOn: 0, totalAddOn: 0 } as Referral;
+      const campaign = { denomination: 5, addOnFlagOne: 'enrollment' } as Campaign;
+      aggregator.referrer = referrer;
+      aggregator.campaign = campaign;
+      const resp = aggregator.incrementAddOn(aggregator.referrer);
+      expect(resp).toEqual({ campaignActiveAddOn: 5, totalAddOn: 5 });
     });
   });
 });

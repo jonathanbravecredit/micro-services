@@ -69,7 +69,6 @@ export class Aggregator extends DBStreamRunner<Referral> {
 
   async creditReferree(): Promise<void> {
     if (!this.referree || !Object.keys(this.referree).length) return;
-    if (!(this.campaign.addOnFlagOne === 'enrollment')) return;
     let updated = { ...this.referree };
     // keep in this order
     updated = { ...updated, ...this.incrementAddOn(updated) };
@@ -126,11 +125,16 @@ export class Aggregator extends DBStreamRunner<Referral> {
   }
 
   incrementAddOn(referree: Referral): { campaignActiveAddOn: number; totalAddOn: number } {
-    const { denomination } = this.campaign;
+    const { denomination, addOnFlagOne, addOnFlagTwo, addOnFlagThree } = this.campaign;
     let { campaignActiveAddOn, totalAddOn } = referree;
+    // add on one
+    if (!(addOnFlagOne === 'enrollment')) return { campaignActiveAddOn, totalAddOn };
+    // need to add better logic here when multiple addons come on
     if (campaignActiveAddOn > 0) return { campaignActiveAddOn, totalAddOn }; // can only get it once
     campaignActiveAddOn += denomination;
     totalAddOn += denomination;
+    // add on two - not in place yet
+    // add on three - not in place yet
     return { campaignActiveAddOn, totalAddOn };
   }
 }
