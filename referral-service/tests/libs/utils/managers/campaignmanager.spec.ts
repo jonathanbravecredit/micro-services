@@ -3,7 +3,7 @@ import {
   getEligibileReferrals,
   updateReferralCampaign,
 } from 'libs/queries/referrals/referral.queries';
-import { CampaignManager } from 'libs/utils/campaigns/campaignManager';
+import { CampaignManager } from 'libs/utils/managers/campaignManager';
 import { Helper } from 'tests/helpers/test-helper';
 import { mocked } from 'ts-jest/utils';
 import {
@@ -12,7 +12,6 @@ import {
   MOCK_MODIFY_ACTIVE_TO_INACTIVE,
   MOCK_MODIFY_INACTIVE_TO_ACTIVE,
 } from 'tests/__mocks__/campaign.mocks';
-import { Referral } from 'libs/models/referrals/referral.model';
 
 jest.mock('libs/queries/referrals/referral.queries');
 
