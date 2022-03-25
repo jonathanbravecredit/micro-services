@@ -12,7 +12,7 @@ import {
   createReferral,
 } from 'libs/queries';
 import { listUserSessions } from 'libs/queries/sessions/sessions.queries';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import * as uuid from 'uuid';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<void> => {

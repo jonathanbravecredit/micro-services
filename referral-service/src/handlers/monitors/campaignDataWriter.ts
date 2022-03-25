@@ -17,6 +17,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   });
 
   // // Only runs once. when a new campaign is activated.
+  const noCampaign = await getCampaign(1, 1);
   await Promise.all(
     records.map(async (r) => {
       if (r.eventName === 'MODIFY') {
@@ -26,7 +27,6 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
         const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Campaign;
         const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Campaign;
         const { pKey, version } = newImage;
-        const noCampaign = await getCampaign(1, 1);
 
         // the active campaign is no longer....shutting off. campaign ==> 'NO_CAMPAIGN'
         if (
