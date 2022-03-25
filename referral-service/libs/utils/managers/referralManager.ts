@@ -19,6 +19,9 @@ export class ReferralManager extends DBStreamRunner<Referral> {
     const { suspended: curr } = this.currImage;
     return !prior && curr;
   }
+  async handleSuspensions(): Promise<void> {
+    if (this.needsSuspending) this.suspendReferral();
+  }
 
   async suspendReferral(): Promise<void> {
     const updated = {
