@@ -1,15 +1,15 @@
 import { getCampaign } from 'libs/queries/campaigns/campaigns.queries';
 import { mocked } from 'ts-jest/utils';
 import * as lamdba from 'src/handlers/monitors/campaignDataWriter';
-import { CampaignManager } from 'libs/utils/managers/campaignManager';
+import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 import { MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_MODIFY_ACTIVE_TO_ACTIVE } from 'tests/__mocks__/campaign.mocks';
 import { DynamoDBRecord } from 'aws-lambda';
 
 const mockedProcess = jest.fn().mockReturnValue(Promise.resolve());
 jest.mock('libs/queries/campaigns/campaigns.queries');
-jest.mock('libs/utils/managers/campaignManager', () => {
+jest.mock('libs/utils/managers/campaignDataManager', () => {
   return {
-    CampaignManager: jest.fn().mockImplementation(() => {
+    CampaignDataManager: jest.fn().mockImplementation(() => {
       return {
         process: mockedProcess,
       };
@@ -21,7 +21,7 @@ describe('campaignDataWriter', () => {
   const arg2 = null as any;
   const event = { Records: null } as any;
   const mockedGet = mocked(getCampaign).mockReturnValue(Promise.resolve(MOCK_CAMPAIGN_NO_CAMPAIGN));
-  const mockedManager = mocked(new CampaignManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN));
+  const mockedManager = mocked(new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN));
   beforeEach(() => {
     mockedGet.mockReturnValue(Promise.resolve(MOCK_CAMPAIGN_NO_CAMPAIGN));
   });

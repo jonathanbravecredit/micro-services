@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda';
 import { getCampaign } from 'libs/queries/campaigns/campaigns.queries';
-import { CampaignManager } from 'libs/utils/managers/campaignManager';
+import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
@@ -16,7 +16,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   try {
     await Promise.all(
       records.map(async (record) => {
-        const manager = new CampaignManager(record, noCampaign);
+        const manager = new CampaignDataManager(record, noCampaign);
         try {
           await manager.process();
         } catch (err) {

@@ -3,7 +3,7 @@ import {
   getEligibileReferrals,
   updateReferralCampaign,
 } from 'libs/queries/referrals/referral.queries';
-import { CampaignManager } from 'libs/utils/managers/campaignManager';
+import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 import { Helper } from 'tests/helpers/test-helper';
 import { mocked } from 'ts-jest/utils';
 import {
@@ -15,9 +15,9 @@ import {
 
 jest.mock('libs/queries/referrals/referral.queries');
 
-describe('CampaignManager', () => {
-  let manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
-  let h = new Helper<CampaignManager>(manager);
+describe('CampaignDataManager', () => {
+  let manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+  let h = new Helper<CampaignDataManager>(manager);
   const mockedListActive = mocked(getActiveCampaignReferrals);
   const mockedListEligible = mocked(getEligibileReferrals);
   const mockedUpdate = mocked(updateReferralCampaign);
@@ -25,7 +25,7 @@ describe('CampaignManager', () => {
     mockedListActive.mockClear();
     mockedListEligible.mockClear();
     mockedUpdate.mockClear();
-    manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+    manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
   });
   describe('Inherited properties and methods', () => {
     it('should have property currImage', () => {
@@ -135,17 +135,17 @@ describe('CampaignManager', () => {
 
   describe('isDisabled', () => {
     it('should return true if campaign goes from active to inactive', () => {
-      manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_INACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_INACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isDisabled();
       expect(res).toEqual(true);
     });
     it('should return false if campaign goes from inactive to active', () => {
-      manager = new CampaignManager(MOCK_MODIFY_INACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_INACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isDisabled();
       expect(res).toEqual(false);
     });
     it('should return false if campaign goes from active to active', () => {
-      manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isDisabled();
       expect(res).toEqual(false);
     });
@@ -153,17 +153,17 @@ describe('CampaignManager', () => {
 
   describe('isEnabled', () => {
     it('should return false if campaign goes from active to inactive', () => {
-      manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_INACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_INACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isEnabled();
       expect(res).toEqual(false);
     });
     it('should return true if campaign goes from inactive to active', () => {
-      manager = new CampaignManager(MOCK_MODIFY_INACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_INACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isEnabled();
       expect(res).toEqual(true);
     });
     it('should return false if campaign does not change', () => {
-      manager = new CampaignManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
+      manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
       const res = manager.isEnabled();
       expect(res).toEqual(false);
     });

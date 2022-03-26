@@ -8,7 +8,7 @@ import {
 } from 'libs/queries/referrals/referral.queries';
 import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
 
-export class CampaignManager extends DBStreamRunner<Campaign> {
+export class CampaignDataManager extends DBStreamRunner<Campaign> {
   constructor(public record: DynamoDBRecord, public nocampaign: Campaign) {
     super(record);
     this.init();

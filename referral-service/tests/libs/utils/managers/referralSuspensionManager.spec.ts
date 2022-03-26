@@ -1,5 +1,5 @@
 import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
-import { ReferralManager } from 'libs/utils/managers/referralManager';
+import { ReferralSuspensionManager } from 'libs/utils/managers/referralSuspensionManager';
 import { Helper } from 'tests/helpers/test-helper';
 import { mocked } from 'ts-jest/utils';
 import {
@@ -11,9 +11,9 @@ import { updateReferral } from 'libs/queries/referrals/referral.queries';
 
 jest.mock('libs/queries/referrals/referral.queries');
 
-describe('ReferralManager', () => {
-  let manager = new ReferralManager(MOCK_ACTIVE_TO_SUSPENDED);
-  let h = new Helper<ReferralManager>(manager);
+describe('ReferralSuspensionManager', () => {
+  let manager = new ReferralSuspensionManager(MOCK_ACTIVE_TO_SUSPENDED);
+  let h = new Helper<ReferralSuspensionManager>(manager);
   const mockedUpdate = mocked(updateReferral).mockReturnValue(Promise.resolve());
   describe('Inherited properties and methods', () => {
     it('should have property currImage', () => {
@@ -74,7 +74,7 @@ describe('ReferralManager', () => {
       expect(spy).toHaveBeenCalled();
     });
     it('should NOT call suspendReferral if does NOT need suspending', async () => {
-      const mgr = new ReferralManager(MOCK_SUSPENDED_TO_SUSPENDED);
+      const mgr = new ReferralSuspensionManager(MOCK_SUSPENDED_TO_SUSPENDED);
       const spy = jest.spyOn(mgr, 'suspendReferral');
       await mgr.handleSuspensions();
       expect(spy).not.toHaveBeenCalled();
@@ -83,14 +83,14 @@ describe('ReferralManager', () => {
 
   describe('needsSuspending', () => {
     it('should return false if prior suspended is undefined or null', () => {
-      const mgr = new ReferralManager(MOCK_SUSPENDED_INSERT);
+      const mgr = new ReferralSuspensionManager(MOCK_SUSPENDED_INSERT);
       expect(mgr.needsSuspending).toEqual(false);
     });
     it('should return true currently suspended but prior was not', () => {
       expect(manager.needsSuspending).toEqual(true);
     });
     it('should return false if currently suspended and prior suspended', () => {
-      const mgr = new ReferralManager(MOCK_SUSPENDED_TO_SUSPENDED);
+      const mgr = new ReferralSuspensionManager(MOCK_SUSPENDED_TO_SUSPENDED);
       expect(mgr.needsSuspending).toEqual(false);
     });
   });

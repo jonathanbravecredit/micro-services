@@ -3,9 +3,6 @@ import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda';
 import { ReferralSuspensionManager } from 'libs/utils/managers/referralSuspensionManager';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
-  /*============================================*/
-  //      SUSPENSION UPDATES
-  /*============================================*/
   const suspensions = event.Records;
   try {
     await Promise.all(

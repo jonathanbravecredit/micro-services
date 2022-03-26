@@ -3,7 +3,7 @@ import { Referral } from 'libs/models/referrals/referral.model';
 import { updateReferral } from 'libs/queries/referrals/referral.queries';
 import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
 
-export class ReferralManager extends DBStreamRunner<Referral> {
+export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   constructor(public record: DynamoDBRecord) {
     super(record);
     this.init();
