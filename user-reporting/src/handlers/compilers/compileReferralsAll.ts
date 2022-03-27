@@ -23,7 +23,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
   const { batchId } = event;
   try {
     // get the data from the results table
-    const batch = batchId ? batchId : dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+    const batch = batchId ? batchId : dayjs(new Date()).format('YYYY-MM-DD');
     const reportId = ReportNames.ReferralsAll;
     const opsreports = await listOpsReportsByBatch(batch, reportId);
     if (!opsreports?.length) return;
@@ -102,7 +102,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
         content: csvAllData,
       },
       {
-        filename: `${ReportNames.ReferralsAll}-daily-${batchId}.csv`,
+        filename: `${ReportNames.ReferralsAll}-daily-${batch}.csv`,
         content: csvNewData,
       },
     ];

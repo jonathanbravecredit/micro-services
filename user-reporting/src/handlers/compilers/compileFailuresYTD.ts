@@ -23,9 +23,9 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
   const { batchId } = event;
   try {
     // get the data from the results table
-    const batch = batchId ? batchId : dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+    const batch = batchId ? batchId : dayjs(new Date()).format('YYYY-MM-DD');
     const reportId = ReportNames.FailureYTD;
-    const opsreports = await listOpsReportsByBatch(batchId, reportId);
+    const opsreports = await listOpsReportsByBatch(batch, reportId);
     if (!opsreports?.length) return;
     console.log(`grabbed ${opsreports.length} records`);
 
@@ -82,11 +82,11 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
     let params = generateEmailParams(`Report: ${ReportNames.FailureYTD}`, emails);
     params.attachments = [
       {
-        filename: `${ReportNames.FailureYTD}-${batchId}.csv`,
+        filename: `${ReportNames.FailureYTD}-${batch}.csv`,
         content: csvAllData,
       },
       {
-        filename: `${ReportNames.FailureYTD}-daily-${batchId}.csv`,
+        filename: `${ReportNames.FailureYTD}-daily-${batch}.csv`,
         content: csvNewData,
       },
     ];

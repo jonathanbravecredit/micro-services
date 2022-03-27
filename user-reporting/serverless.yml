@@ -126,38 +126,38 @@ functions:
           maximumBatchingWindow: 5
 
   # BATCHED SCHEDULED
+  triggerEnrollmentsYTD:
+    handler: src/triggers/triggerEnrollmentsYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 7 * * ? *) # run every morning at 12:30 AM
   triggerFailuresYTD:
     handler: src/triggers/triggerFailuresYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
-      - schedule: cron(0 7 * * ? *) # run every morning at 12:30 AM
+      - schedule: cron(15 7 * * ? *) # run every morning at 12:00 AM
   triggerReferralsAll:
     handler: src/triggers/triggerReferralsAll.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 7 * * ? *) # run every morning at 12:15 AM
-  triggerEnrollmentsYTD:
-    handler: src/triggers/triggerEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 7 * * ? *) # run every morning at 12:0 AM
 
   # BATCHED COMPILERS
-  compileFailuresYTD:
-    handler: src/handlers/compilers/compileFailuresYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 9 * * ? *) # run every morning at 1:30 AM
-  compileReferralsAll:
-    handler: src/handlers/compilers/compileReferralsAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - schedule: cron(0 9 * * ? *) # run every morning at 1:15 AM
   compileEnrollmentsYTD:
     handler: src/handlers/compilers/compileEnrollmentsYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM
+  compileFailuresYTD:
+    handler: src/handlers/compilers/compileFailuresYTD.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(15 9 * * ? *) # run every morning at 1:30 AM
+  compileReferralsAll:
+    handler: src/handlers/compilers/compileReferralsAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(30 9 * * ? *) # run every morning at 1:15 AM
 
   # BATCHED MANUAL
   # no report report
