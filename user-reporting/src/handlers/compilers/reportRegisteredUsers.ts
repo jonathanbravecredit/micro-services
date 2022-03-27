@@ -23,12 +23,15 @@ export const main = async () => {
     const cutoff = `${laYear}-01-01`;
 
     let allUsers = await getUsers(paginationToken, limit); // from cognito
-    let allUsersSorted = allUsers
+    let ytdUsers = allUsers
       .sort((a, b) => new Date(b.userCreateDate).valueOf() - new Date(a.userCreateDate).valueOf())
       .filter((i) => dayjs(i.userCreateDate).isAfter(dayjs.tz(cutoff)))
       .map((i) => mapRegistrationFields(i));
     console.log('all data', allUsers.length);
-    const csvAllData = csvjson.toCSV(JSON.stringify(allUsersSorted), {
+    const csvYTD = csvjson.toCSV(JSON.stringify(ytdUsers), {
+      headers: 'key',
+    });
+    const csvAll = csvjson.toCSV(JSON.stringify(allUsers), {
       headers: 'key',
     });
 
@@ -37,8 +40,12 @@ export const main = async () => {
 
     params.attachments = [
       {
-        filename: 'prodPoolReportAllUsers.csv',
-        content: csvAllData,
+        filename: 'registered-users-YTD.csv',
+        content: csvYTD,
+      },
+      {
+        filename: 'registered-users-ALL.csv',
+        content: csvYTD,
       },
     ];
     let transporter = nodemailer.createTransport({
