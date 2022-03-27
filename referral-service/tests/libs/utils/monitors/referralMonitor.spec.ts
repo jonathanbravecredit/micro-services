@@ -22,14 +22,14 @@ describe('ReferralMonitor', () => {
     it('should have a method called init', () => {
       expect(h.hasMethod(monitor, 'init')).toEqual(true);
     });
-    it('should have a method called process', () => {
-      expect(h.hasMethod(monitor, 'process')).toEqual(true);
+    it('should have a method called monitor', () => {
+      expect(h.hasMethod(monitor, 'monitor')).toEqual(true);
     });
-    it('should have a method called processSuspensions', () => {
-      expect(h.hasMethod(monitor, 'processSuspensions')).toEqual(true);
+    it('should have a method called checkSuspensions', () => {
+      expect(h.hasMethod(monitor, 'checkSuspensions')).toEqual(true);
     });
-    it('should have a method called processAggregations', () => {
-      expect(h.hasMethod(monitor, 'processAggregations')).toEqual(true);
+    it('should have a method called checkAggregations', () => {
+      expect(h.hasMethod(monitor, 'checkAggregations')).toEqual(true);
     });
     it('should have a method called getCampaign', () => {
       expect(h.hasMethod(monitor, 'getCampaign')).toEqual(true);
@@ -45,59 +45,58 @@ describe('ReferralMonitor', () => {
   });
 
   describe('process', () => {
-    it('should not call any processSuspensions nor processAggregations if no records', async () => {
-      const spySus = jest.spyOn(monitor, 'processSuspensions');
-      const spyAgg = jest.spyOn(monitor, 'processAggregations');
-      await monitor.process();
+    it('should not call any checkSuspensions nor checkAggregations if no records', async () => {
+      const spySus = jest.spyOn(monitor, 'checkSuspensions');
+      const spyAgg = jest.spyOn(monitor, 'checkAggregations');
+      await monitor.monitor();
       expect(spySus).not.toHaveBeenCalled();
       expect(spyAgg).not.toHaveBeenCalled();
     });
-    it('should call processSuspensions and processAggregations 3 times', async () => {
+    it('should call checkSuspensions and checkAggregations 3 times', async () => {
       const mon = new ReferralMonitor([0, 1, 2] as any);
-      const spySus = jest.spyOn(mon, 'processSuspensions');
-      const spyAgg = jest.spyOn(mon, 'processAggregations');
-      await mon.process();
+      const spySus = jest.spyOn(mon, 'checkSuspensions');
+      const spyAgg = jest.spyOn(mon, 'checkAggregations');
+      await mon.monitor();
       expect(spySus).toHaveBeenCalledTimes(3);
       expect(spyAgg).toHaveBeenCalledTimes(3);
     });
   });
 
-  describe('processSuspensions', () => {
+  describe('checkSuspensions', () => {
     beforeEach(() => {
       mockedSusMgr.mockReset();
     });
     it('should create a ReferralSuspensionManager instance', async () => {
-      await monitor.processSuspensions({} as any);
+      await monitor.checkSuspensions({} as any);
       const mock = mockedSusMgr.mock.instances[0];
       expect(mock).not.toBeUndefined();
     });
     it('should call the handleSuspensions method on ReferralSuspensionManager instance', async () => {
-      await monitor.processSuspensions({} as any);
+      await monitor.checkSuspensions({} as any);
       const mock = mockedSusMgr.mock.instances[0].handleSuspensions;
       expect(mock).toHaveBeenCalled();
     });
   });
 
-  describe('processAggregations', () => {
+  describe('checkAggregations', () => {
     beforeEach(() => {
       mockedAggMgr.mockReset();
     });
     it('should not create an instance of ReferralAggregationManager if campaign is falsey ', async () => {
       monitor.campaign = null;
-      await monitor.processAggregations({} as any);
+      await monitor.checkAggregations({} as any);
       const mock = mockedAggMgr.mock.instances[0];
       expect(mock).toBeUndefined();
     });
     it('should create a ReferralAggregationManager instance', async () => {
-      // jest.spyOn(monitor, 'getCampaign').mockReturnValueOnce(Promise.resolve(MOCK_CAMPAIGN_ACTIVE));
       monitor.campaign = MOCK_CAMPAIGN_ACTIVE;
-      await monitor.processAggregations({} as any);
+      await monitor.checkAggregations({} as any);
       const mock = mockedAggMgr.mock.instances[0];
       expect(mock).not.toBeUndefined();
     });
     it('should call the quantifyReferral method on ReferralAggregationManager instance', async () => {
       monitor.campaign = MOCK_CAMPAIGN_ACTIVE;
-      await monitor.processAggregations({} as any);
+      await monitor.checkAggregations({} as any);
       const mock = mockedAggMgr.mock.instances[0].quantifyReferral;
       expect(mock).toHaveBeenCalled();
     });

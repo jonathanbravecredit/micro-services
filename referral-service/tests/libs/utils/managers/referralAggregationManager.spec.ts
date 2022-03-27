@@ -1,4 +1,3 @@
-import { Aggregator } from 'libs/utils/aggregator/aggregator';
 import { Helper } from 'tests/helpers/test-helper';
 import { MOCK_CAMPAIGN_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN } from 'tests/__mocks__/campaign.mocks';
 import {
@@ -16,6 +15,7 @@ import { Referral } from 'libs/models/referrals/referral.model';
 import { getReferralByCode, updateReferral } from 'libs/queries/referrals/referral.queries';
 import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
 import { Campaign } from 'libs/models/campaigns/campaign.model';
+import { ReferralAggregationManager } from 'libs/utils/managers/referralAggregationManager';
 
 const mockCalcPay = jest.fn().mockReturnValue(new Date().toISOString());
 jest.mock('libs/utils/paymentdatecalculator/paymentDateCalculator', () => {
@@ -29,12 +29,12 @@ jest.mock('libs/utils/paymentdatecalculator/paymentDateCalculator', () => {
 });
 jest.mock('libs/queries/referrals/referral.queries');
 
-describe('Aggregator Class', () => {
+describe('ReferralAggregationManager Class', () => {
   const mockInsert = MOCK_INSERT;
   const mockModify = MOCK_MODIFY;
   const mockCampaign = MOCK_CAMPAIGN_ACTIVE;
-  let aggregator = new Aggregator(mockCampaign, mockModify);
-  let h = new Helper<Aggregator>(aggregator);
+  let aggregator = new ReferralAggregationManager(mockCampaign, mockModify);
+  let h = new Helper<ReferralAggregationManager>(aggregator);
   const mockedUpdate = mocked(updateReferral);
   const mockedGetCode = mocked(getReferralByCode);
   const mockedPayCalc = mocked(new PaymentDateCalculator());
@@ -100,8 +100,8 @@ describe('Aggregator Class', () => {
     it('should have a method named incrementCount', () => {
       expect(h.hasMethod(aggregator, 'incrementCount')).toEqual(true);
     });
-    it('should have a method named qualifyReferral', () => {
-      expect(h.hasMethod(aggregator, 'qualifyReferral')).toEqual(true);
+    it('should have a method named quantifyReferral', () => {
+      expect(h.hasMethod(aggregator, 'quantifyReferral')).toEqual(true);
     });
   });
 
@@ -139,7 +139,7 @@ describe('Aggregator Class', () => {
 
   describe('getReferrer', () => {
     it('should return null if currImage.referredByCode is null', async () => {
-      const agg = new Aggregator(MOCK_CAMPAIGN_ACTIVE, MOCK_NOTREFERRED_MODIFY);
+      const agg = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_NOTREFERRED_MODIFY);
       const res = await agg.getReferrer();
       expect(res).toBeNull();
     });
@@ -154,18 +154,18 @@ describe('Aggregator Class', () => {
       expect(aggregator.enrollment).toEqual('past_enrolled');
     });
     it('should set enrollment to "new_enrolled" when curr enrolled and prior NOT enrolled', () => {
-      let agg = new Aggregator(mockCampaign, MOCK_INSERT);
+      let agg = new ReferralAggregationManager(mockCampaign, MOCK_INSERT);
       expect(agg.enrollment).toEqual('new_enrolled');
     });
     it('should set enrollment to "not_enrolled" when curr NOT enrolled and prior NOT enrolled', () => {
-      let agg = new Aggregator(mockCampaign, MOCK_UNENROLLED_MODIFY);
+      let agg = new ReferralAggregationManager(mockCampaign, MOCK_UNENROLLED_MODIFY);
       expect(agg.enrollment).toEqual('not_enrolled');
     });
   });
 
-  describe('qualifyReferral', () => {
+  describe('quantifyReferral', () => {
     describe('new enrollments', () => {
-      let aggTwo = new Aggregator(MOCK_CAMPAIGN_ACTIVE, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
+      let aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
       let spyReferree = jest.spyOn(aggTwo, 'creditReferree');
       let spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
       beforeEach(() => {
@@ -173,15 +173,15 @@ describe('Aggregator Class', () => {
         spyReferrer.mockClear();
       });
       it('should call creditReferree if campaign is active and enrollment = "new_enrolled"', async () => {
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferree).toHaveBeenCalledTimes(1);
       });
       it('should call creditReferrer if campaign is active and enrollment = "new_enrolled"', async () => {
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferrer).toHaveBeenCalledTimes(1);
       });
       it('should not call creditReferee or creditReferrer if campaign is inactive', () => {
-        aggTwo = new Aggregator(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
+        aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
         expect(spyReferree).not.toHaveBeenCalled();
@@ -190,7 +190,7 @@ describe('Aggregator Class', () => {
     });
 
     describe('past enrolled', () => {
-      let aggTwo = new Aggregator(MOCK_CAMPAIGN_ACTIVE, MOCK_ENROLLED_MODIFY);
+      let aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_ENROLLED_MODIFY);
       let spyReferree = jest.spyOn(aggTwo, 'creditReferree');
       let spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
       beforeEach(() => {
@@ -198,21 +198,21 @@ describe('Aggregator Class', () => {
         spyReferrer.mockClear();
       });
       it('should NOT call creditReferee or creditReferrer if campaign is active and enrollment = "past_enrolled"', async () => {
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
       it('should NOT call creditReferee or creditReferrer if campaign is inactive', async () => {
-        aggTwo = new Aggregator(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_ENROLLED_MODIFY);
+        aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_ENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferree).not.toHaveBeenCalled();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
     });
 
     describe('not enrolled', () => {
-      let aggTwo = new Aggregator(MOCK_CAMPAIGN_ACTIVE, MOCK_UNENROLLED_MODIFY);
+      let aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_UNENROLLED_MODIFY);
       let spyReferree = jest.spyOn(aggTwo, 'creditReferree');
       let spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
       beforeEach(() => {
@@ -220,24 +220,24 @@ describe('Aggregator Class', () => {
         spyReferrer.mockClear();
       });
       it('should NOT call creditReferee or creditReferrer if campaign is active and enrollment = "not_enrolled"', async () => {
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
       it('should NOT call creditReferee or creditReferrer if campaign is inactive', async () => {
-        aggTwo = new Aggregator(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_MODIFY);
+        aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
-        await aggTwo.qualifyReferral();
+        await aggTwo.quantifyReferral();
         expect(spyReferree).not.toHaveBeenCalled();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
     });
 
     it('should NOT call creditReferrer nor creditReferree if campaign = NO_CAMPAIGN', async () => {
-      let aggThree = new Aggregator(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_MODIFY);
+      let aggThree = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_MODIFY);
       const spyOne = jest.spyOn(aggThree, 'creditReferrer');
       const spyTwo = jest.spyOn(aggThree, 'creditReferree');
-      await aggThree.qualifyReferral();
+      await aggThree.quantifyReferral();
       expect(spyOne).not.toHaveBeenCalled();
       expect(spyTwo).not.toHaveBeenCalled();
     });
