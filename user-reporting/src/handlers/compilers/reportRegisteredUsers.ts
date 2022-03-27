@@ -45,7 +45,7 @@ export const main = async () => {
       },
       {
         filename: 'registered-users-ALL.csv',
-        content: csvYTD,
+        content: csvAll,
       },
     ];
     let transporter = nodemailer.createTransport({
