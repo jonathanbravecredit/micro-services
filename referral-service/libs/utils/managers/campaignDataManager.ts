@@ -25,6 +25,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
   }
 
   isDisabled(): boolean {
+    if (!this.currImage) return false;
     const { pKey, version, campaign, currentVersion: currCV } = this.currImage;
     const { currentVersion: priorCV } = this.priorImage!;
     const isMasterRecord = pKey === 1 && version === 0;
@@ -34,6 +35,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
   }
 
   isEnabled(): boolean {
+    if (!this.currImage) return false;
     const { pKey, version, campaign, currentVersion: currCV } = this.currImage;
     const { currentVersion: priorCV } = this.priorImage!;
     const isMasterRecord = pKey === 1 && version === 0;
@@ -50,6 +52,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
       await Promise.all(
         actives.map(async (referral) => {
           const reset = this.resetReferral(referral);
+          if (!reset) return;
           try {
             await this.updateReferral(reset);
           } catch (err) {
@@ -91,6 +94,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
   }
 
   async updateReferral(referral: Referral): Promise<void> {
+    if (!this.currImage) return;
     const { id } = referral;
     const { campaign } = this.currImage;
     await updateReferralCampaign(id, campaign);
@@ -103,7 +107,8 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
    * @param referral
    * @returns
    */
-  resetReferral(referral: Referral): Referral {
+  resetReferral(referral: Referral): Referral | null {
+    if (!this.currImage) return null;
     const now = new Date().toISOString();
     const active = {
       campaignActive: this.currImage.campaign,
