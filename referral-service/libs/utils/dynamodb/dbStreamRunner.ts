@@ -2,8 +2,8 @@ import { DynamoDBRecord, StreamRecord } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 
 export class DBStreamRunner<T> {
-  currImage!: T;
-  priorImage!: T | null;
+  currImage: T | null = null;
+  priorImage: T | null = null;
   event: 'INSERT' | 'MODIFY' | 'REMOVE' | undefined;
   constructor(public record: DynamoDBRecord) {
     this.init();
@@ -17,8 +17,8 @@ export class DBStreamRunner<T> {
   parseImages(): void {
     const stream: StreamRecord = this.record.dynamodb || {};
     const { OldImage: priorImage, NewImage: currImage } = stream;
-    this.currImage = this.unmarshall(currImage) as T;
-    this.priorImage = this.unmarshall(priorImage) as T | null;
+    this.currImage = currImage ? (this.unmarshall(currImage) as T) : null;
+    this.priorImage = priorImage ? (this.unmarshall(priorImage) as T | null) : null;
   }
 
   parseEvent(): void {

@@ -16,6 +16,7 @@ export class ReferralMonitor {
   constructor(public records: DynamoDBorSNSRecord[]) {}
 
   async init(): Promise<void> {
+    console.log('monitor records: ', JSON.stringify(this.records));
     this.campaign = await this.getCampaign();
     this.segmentRecords();
   }
