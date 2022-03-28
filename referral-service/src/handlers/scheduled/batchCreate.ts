@@ -1,11 +1,11 @@
 'use strict';
 import 'reflect-metadata';
 import * as uuid from 'uuid';
-import { ajv } from 'lib/schema/validation';
+import { ajv } from 'libs/schema/validation';
 import { Handler } from 'aws-lambda';
-import { Referral, ReferralMaker } from 'lib/models/referral.model';
-import { ICreateReferral } from 'lib/interfaces';
-import { createReferral, getCampaign, getReferral, updateReferral } from 'lib/queries';
+import { Referral, ReferralMaker } from 'libs/models/referrals/referral.model';
+import { ICreateReferral } from 'libs/interfaces';
+import { createReferral, getCampaign, getReferral, updateReferral } from 'libs/queries';
 
 export const main: Handler = async (event: { list: string[] }): Promise<void> => {
   const { list } = event;
