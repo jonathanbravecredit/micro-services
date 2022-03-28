@@ -90,6 +90,7 @@ provider:
         - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions/index/*'
 
 functions:
+  # API
   # referrals
   createReferral:
     handler: src/api/referrals/create.main
@@ -164,14 +165,8 @@ functions:
           authorizer: aws_iam
 
   # monitors
-  # campaignActiveMonitor:
-  #   handler: src/handlers/monitors/campaignActiveMonitor.main
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - schedule: cron(*/15 * * * ? *)
-
   campaignMonitor:
-    handler: src/handlers/campaigns/campaigns.main
+    handler: src/subs/campaigns/campaigns.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - stream:
@@ -179,18 +174,8 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
-
-  referralActiveMonitor:
-    handler: src/handlers/monitors/referralActiveMonitor.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - sns:
-          arn: !Ref ReferralsSNSTopic
-          topicName: ${self:provider.stage}-referral-sns-topic
-          integration: lambda-proxy
-
   referralMonitor:
-    handler: src/handlers/referrals/referrals.main
+    handler: src/subs/referrals/referrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - stream:
@@ -198,21 +183,15 @@ functions:
           batchSize: 100
           startingPosition: LATEST
           arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
-
-  # aggregators
-  # referralAggregator:
-  #   handler: src/handlers/aggregators/referralAggregator.main
+      - sns:
+          arn: !Ref ReferralsSNSTopic
+          topicName: ${self:provider.stage}-referral-sns-topic
+          integration: lambda-proxy
+  # campaignActiveMonitor:
+  #   handler: src/handlers/monitors/campaignActiveMonitor.main
   #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
-  #     - sns:
-  #         arn: !Ref ReferralsSNSTopic
-  #         topicName: ${self:provider.stage}-referral-sns-topic
-  #         integration: lambda-proxy
+  #     - schedule: cron(*/15 * * * ? *)
 
   # handlers
   cleanReferralTable:

@@ -119,7 +119,7 @@ describe('ReferralMonitor', () => {
   });
 
   describe('checkSuspensions', () => {
-    beforeEach(() => {
+    afterEach(() => {
       mockedSusMgr.mockReset();
     });
     it('should create a ReferralSuspensionManager instance', async () => {
@@ -135,7 +135,7 @@ describe('ReferralMonitor', () => {
   });
 
   describe('checkAggregations', () => {
-    beforeEach(() => {
+    afterEach(() => {
       mockedAggMgr.mockReset();
     });
     it('should not create an instance of ReferralAggregationManager if campaign is falsey ', async () => {
@@ -159,13 +159,18 @@ describe('ReferralMonitor', () => {
   });
 
   describe('checkActivations', () => {
-    beforeEach(() => {
+    afterEach(() => {
       mockedActMgr.mockReset();
     });
     it('should create a ReferralActivationManager instance', async () => {
-      await monitor.checkActivations({ Sns: { Subject: 'sessiondataupdate' } } as any);
+      const res = await monitor.checkActivations({ Sns: { Subject: 'sessiondataupdate' } } as any);
+      const mock = mockedActMgr.mock.instances.length > 0;
+      expect(mock).toEqual(true);
+    });
+    it('should NOT create a ReferralActivationManager instance if subject != "transunionenrollment" AND != "sessiondataupdate"', async () => {
+      await monitor.checkActivations({ Sns: { Subject: 'blahblah' } } as any);
       const mock = mockedActMgr.mock.instances[0];
-      expect(mock).not.toBeUndefined();
+      expect(mock).toBeUndefined();
     });
     it('should call the init and check methods on ReferralActivationManager instance if subject = "sessiondataupdate"', async () => {
       await monitor.checkActivations({ Sns: { Subject: 'sessiondataupdate' } } as any);
@@ -180,13 +185,6 @@ describe('ReferralMonitor', () => {
       const mock2 = mockedActMgr.mock.instances[0].check;
       expect(mock1).toHaveBeenCalled();
       expect(mock2).toHaveBeenCalled();
-    });
-    it('should NOT call the init and check methods on ReferralActivationManager instance if subject != "transunionenrollment" AND != "sessiondataupdate"', async () => {
-      await monitor.checkActivations({ Sns: { Subject: 'blahblah' } } as any);
-      const mock1 = mockedActMgr.mock.instances[0].init;
-      const mock2 = mockedActMgr.mock.instances[0].check;
-      expect(mock1).not.toHaveBeenCalled();
-      expect(mock2).not.toHaveBeenCalled();
     });
   });
 

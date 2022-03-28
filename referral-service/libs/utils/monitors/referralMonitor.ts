@@ -99,8 +99,8 @@ export class ReferralMonitor {
     }
   }
 
-  async checkActivations(rec: SNSEventRecord): Promise<void> {
-    const subj = rec.Sns.Subject as 'sessiondataupdate' | 'transunionenrollment' | unknown;
+  async checkActivations(rec: SNSEventRecord): Promise<any> {
+    const subj = rec.Sns?.Subject as 'sessiondataupdate' | 'transunionenrollment' | unknown;
     if (subj !== 'sessiondataupdate' && subj !== 'transunionenrollment') return;
     try {
       const manager = new ReferralActivationManager(rec, subj);
@@ -108,6 +108,7 @@ export class ReferralMonitor {
       await manager.check();
     } catch (err) {
       console.error(err);
+      return;
     }
   }
 
