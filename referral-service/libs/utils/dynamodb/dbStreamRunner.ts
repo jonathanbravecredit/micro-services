@@ -5,9 +5,7 @@ export class DBStreamRunner<T> {
   currImage: T | null = null;
   priorImage: T | null = null;
   event: 'INSERT' | 'MODIFY' | 'REMOVE' | undefined;
-  constructor(public record: DynamoDBRecord) {
-    this.init();
-  }
+  constructor(public record: DynamoDBRecord) {}
 
   init() {
     this.parseImages();

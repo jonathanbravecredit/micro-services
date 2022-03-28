@@ -12,7 +12,6 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   referree: Referral | null = null;
   constructor(public campaign: Campaign, public record: DynamoDBRecord) {
     super(record);
-    this.init();
   }
   init(): void {
     console.log('aggregation record: ', JSON.stringify(this.record));

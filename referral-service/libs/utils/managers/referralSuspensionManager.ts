@@ -6,7 +6,6 @@ import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
 export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   constructor(public record: DynamoDBRecord) {
     super(record);
-    this.init();
   }
 
   init(): void {
