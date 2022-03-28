@@ -9,7 +9,7 @@ export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   }
 
   init(): void {
-    console.log('aggregation record: ', JSON.stringify(this.record));
+    console.log('suspension record: ', JSON.stringify(this.record));
     super.init();
   }
 

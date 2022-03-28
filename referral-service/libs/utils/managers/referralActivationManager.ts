@@ -28,6 +28,7 @@ export class ReferralActivationManager {
   constructor(public record: SNSEventRecord, public subject: 'sessiondataupdate' | 'transunionenrollment') {}
 
   async init(): Promise<void> {
+    console.log('activation record: ', JSON.stringify(this.record));
     if (this.subject == 'sessiondataupdate') await this.initSessionData();
     if (this.subject == 'transunionenrollment') await this.initApplicationData();
   }
