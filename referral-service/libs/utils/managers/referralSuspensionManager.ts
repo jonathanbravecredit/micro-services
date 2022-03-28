@@ -6,15 +6,16 @@ import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
 export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   constructor(public record: DynamoDBRecord) {
     super(record);
-    this.init();
   }
 
   init(): void {
+    console.log('aggregation record: ', JSON.stringify(this.record));
     super.init();
   }
 
   get needsSuspending(): boolean {
     if (!this.priorImage) return false;
+    if (!this.currImage) return false;
     const { suspended: prior } = this.priorImage;
     const { suspended: curr } = this.currImage;
     return !prior && curr;

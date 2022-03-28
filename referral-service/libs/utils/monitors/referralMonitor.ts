@@ -16,6 +16,7 @@ export class ReferralMonitor {
   constructor(public records: DynamoDBorSNSRecord[]) {}
 
   async init(): Promise<void> {
+    console.log('monitor records: ', JSON.stringify(this.records));
     this.campaign = await this.getCampaign();
     this.segmentRecords();
   }
@@ -84,6 +85,7 @@ export class ReferralMonitor {
   async checkSuspensions(rec: DynamoDBRecord): Promise<void> {
     try {
       const manager = new ReferralSuspensionManager(rec);
+      manager.init();
       await manager.handleSuspensions();
     } catch (err) {
       console.error(err);
@@ -93,6 +95,7 @@ export class ReferralMonitor {
     if (!this.campaign) return;
     try {
       const aggregator = new ReferralAggregationManager(this.campaign, rec);
+      aggregator.init();
       await aggregator.quantifyReferral();
     } catch (err) {
       console.error(err);

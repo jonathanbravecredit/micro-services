@@ -9,12 +9,12 @@ import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentD
 export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   enrollment: 'not_enrolled' | 'new_enrolled' | 'past_enrolled' | undefined;
   referrer: Referral | null = null;
-  referree!: Referral;
+  referree: Referral | null = null;
   constructor(public campaign: Campaign, public record: DynamoDBRecord) {
     super(record);
-    this.init();
   }
   init(): void {
+    console.log('aggregation record: ', JSON.stringify(this.record));
     super.init();
     this.setEnrollment();
     this.setReferree();
@@ -30,6 +30,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   }
 
   async getReferrer(): Promise<Referral | null> {
+    if (!this.currImage) return null;
     const { referredByCode } = this.currImage;
     if (!referredByCode) return null;
     return await getReferralByCode(referredByCode);
@@ -37,7 +38,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
 
   setEnrollment(): void {
     const prior = this.priorImage?.enrolled || false;
-    const curr = this.currImage.enrolled;
+    const curr = this.currImage?.enrolled || false;
     this.enrollment = curr ? (!prior ? 'new_enrolled' : 'past_enrolled') : 'not_enrolled';
   }
 
