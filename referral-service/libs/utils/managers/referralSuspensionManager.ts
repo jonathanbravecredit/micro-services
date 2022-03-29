@@ -21,7 +21,7 @@ export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
     return !prior && curr;
   }
   async handleSuspensions(): Promise<void> {
-    if (this.needsSuspending) this.suspendReferral();
+    if (this.needsSuspending) await this.suspendReferral();
   }
 
   async suspendReferral(): Promise<void> {
