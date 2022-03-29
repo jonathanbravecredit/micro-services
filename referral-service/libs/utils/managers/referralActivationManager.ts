@@ -109,7 +109,7 @@ export class ReferralActivationManager {
     return await getCampaign(pkey, version);
   }
   async updateReferralCampaign(id: string, campaign: string): Promise<void> {
-    await updateReferralCampaign(id, campaign);
+    return await updateReferralCampaign(id, campaign);
   }
   async updateReferralEligibility(id: string): Promise<void> {
     return await updateReferralEligibility(id, 1);
@@ -180,7 +180,8 @@ export class ReferralActivationManager {
         await this.createReferral({ ...referral, enrolled: true });
       } else {
         console.log('here6');
-        await this.updateEnrollment(this.id);
+        const res = await this.updateEnrollment(this.id);
+        console.log('res', res);
       }
     } catch (err) {
       console.error(`manager:activateOnApplicationData:${err}`);
