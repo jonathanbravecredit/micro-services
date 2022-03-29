@@ -54,8 +54,12 @@ export const updateEnrollment = (pkey: string): Promise<void> => {
     .update(pkey)
     .updateAttribute('enrolled')
     .set(true)
+    .returnValues('ALL_NEW')
     .exec()
-    .then((res) => res)
+    .then((res) => {
+      console.log('res: ', res);
+      return res;
+    })
     .catch((err) => {
       console.error(err);
       return err;
