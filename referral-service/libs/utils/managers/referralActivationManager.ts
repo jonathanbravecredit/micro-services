@@ -48,6 +48,10 @@ export class ReferralActivationManager {
       this.sessions = await this.listSessions(this.id);
       this.campaign = await this.getCampaign(1, 0);
       this.campaignNone = await this.getCampaign(1, 1);
+      console.log('this.referral: ', this.referral);
+      console.log('this.sessions: ', this.sessions);
+      console.log('this.campaign: ', this.campaign);
+      console.log('this.campaignNone: ', this.campaignNone);
     } catch (err) {
       console.error(`manager:initSessionData:${err}`);
     }
@@ -73,8 +77,11 @@ export class ReferralActivationManager {
 
   async check(): Promise<void> {
     if (this.subject == 'sessiondataupdate') {
+      console.log('hereA:');
       if (!this.id) return;
+      console.log('hereB:');
       const check = this.checkSessionData();
+      console.log('checkZ:', check);
       if (check) this.activateOnSessionData();
     }
     if (this.subject == 'transunionenrollment') {
@@ -91,6 +98,9 @@ export class ReferralActivationManager {
     const t1 = this.eligibleCheckOne();
     const t2 = this.eligibleCheckTwo();
     const t3 = this.eligibleCheckThree();
+    console.log('t1: ', t1);
+    console.log('t2: ', t2);
+    console.log('t3: ', t3);
     return t1 && t2 && t3;
   }
 
@@ -163,8 +173,13 @@ export class ReferralActivationManager {
         const referral = new ReferralMaker(this.id, v4());
         await this.createReferral({ ...referral, enrolled: true });
       }
-      await this.updateReferralCampaign(this.id, campaign!.campaign);
-      await this.updateReferralEligibility(this.id);
+      console.log('here7');
+      const up1 = await this.updateReferralCampaign(this.id, campaign!.campaign);
+      console.log('update', up1);
+      console.log('here8');
+      const up2 = await this.updateReferralEligibility(this.id);
+      console.log('update', up2);
+      console.log('here9');
     } catch (err) {
       console.error(`manager:activateOnSessionData:${err}`);
     }
