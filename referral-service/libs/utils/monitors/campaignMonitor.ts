@@ -36,6 +36,6 @@ export class CampaignMonitor {
   }
 
   async getNoCampaign(): Promise<Campaign | null> {
-    return await getCampaign(1, 0);
+    return await getCampaign(1, 1);
   }
 }
