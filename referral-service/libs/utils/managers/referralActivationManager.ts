@@ -82,7 +82,7 @@ export class ReferralActivationManager {
       console.log('hereB:');
       const check = this.checkSessionData();
       console.log('checkZ:', check);
-      if (check) this.activateOnSessionData();
+      if (check) await this.activateOnSessionData();
     }
     if (this.subject == 'transunionenrollment') {
       console.log('here3:');
@@ -90,7 +90,7 @@ export class ReferralActivationManager {
       console.log('here3:');
       const check = this.checkApplicationData();
       console.log('check:', check);
-      if (check) this.activateOnApplicationData();
+      if (check) await this.activateOnApplicationData();
     }
   }
 
