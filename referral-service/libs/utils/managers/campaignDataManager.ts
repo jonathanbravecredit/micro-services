@@ -4,6 +4,7 @@ import { Referral } from 'libs/models/referrals/referral.model';
 import {
   getActiveCampaignReferrals,
   getEligibileReferrals,
+  updateReferral,
   updateReferralCampaign,
 } from 'libs/queries/referrals/referral.queries';
 import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
@@ -83,7 +84,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
         eligibles.map(async (referral) => {
           try {
             console.log('here:enabled2');
-            await this.updateReferral(referral);
+            await this.updateReferralCampaign(referral);
             console.log('here:enabled3');
           } catch (err) {
             console.error(err);
@@ -105,11 +106,15 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
     return await getEligibileReferrals();
   }
 
-  async updateReferral(referral: Referral): Promise<void> {
+  async updateReferralCampaign(referral: Referral): Promise<void> {
     if (!this.currImage) return;
     const { id } = referral;
     const { campaign } = this.currImage;
     await updateReferralCampaign(id, campaign);
+  }
+
+  async updateReferral(referral: Referral): Promise<void> {
+    await updateReferral(referral);
   }
 
   /**
@@ -131,7 +136,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
       campaignActiveBonus: 0,
     };
     const prior = {
-      campaignPrior: this.priorImage!.campaign,
+      campaignPrior: referral.campaignActive,
       campaignPriorReferred: referral.campaignActiveReferred,
       campaignPriorEarned: referral.campaignActiveEarned,
       campaignPriorPaid: referral.campaignActivePaid,
