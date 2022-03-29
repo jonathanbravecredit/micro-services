@@ -13,12 +13,15 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   constructor(public campaign: Campaign, public record: DynamoDBRecord) {
     super(record);
   }
-  init(): void {
+  async init(): Promise<void> {
     console.log('aggregation record: ', JSON.stringify(this.record));
     super.init();
     this.setEnrollment();
     this.setReferree();
-    this.setReferrer();
+    await this.setReferrer();
+    console.log('enrollment: ===> ', this.enrollment);
+    console.log('referree: ===> ', this.referree);
+    console.log('referrer: ===> ', this.referrer);
   }
 
   setReferree(): void {
@@ -55,6 +58,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   async quantifyReferral(): Promise<void> {
     if (!this.isCampaignActive()) return;
     if (this.enrollment === 'new_enrolled') {
+      console.log('quantifying');
       await this.creditReferrer();
       await this.creditReferree();
     }
@@ -75,6 +79,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     updated = { ...updated, ...this.incrementBase(updated) };
     updated = { ...updated, ...this.incrementBonus(updated) };
     updated = { ...updated, ...this.getPaymentDate(updated) };
+    console.log('creditReferrer:updated ===> ', updated);
     await this.updateReferral(updated);
   }
 
@@ -84,6 +89,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     // keep in this order
     updated = { ...updated, ...this.incrementAddOn(updated) };
     updated = { ...updated, ...this.getPaymentDate(updated) };
+    console.log('creditReferree:updated ===> ', updated);
     await this.updateReferral(updated);
   }
 

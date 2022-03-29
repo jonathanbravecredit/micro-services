@@ -95,7 +95,7 @@ export class ReferralMonitor {
     if (!this.campaign) return;
     try {
       const aggregator = new ReferralAggregationManager(this.campaign, rec);
-      aggregator.init();
+      await aggregator.init();
       await aggregator.quantifyReferral();
     } catch (err) {
       console.error(err);
