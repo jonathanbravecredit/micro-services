@@ -114,7 +114,7 @@ export class ReferralActivationManager {
   async updateReferralEligibility(id: string): Promise<void> {
     return await updateReferralEligibility(id, 1);
   }
-  async updateEnrollment(id: string): Promise<void> {
+  async updateEnrollment(id: string): Promise<Referral> {
     return await updateEnrollment(id);
   }
   async listSessions(id: string, limit: number = 20): Promise<Session[]> {

@@ -49,21 +49,8 @@ export const updateReferral = (referral: Referral): Promise<void> => {
     });
 };
 
-export const updateEnrollment = (pkey: string): Promise<void> => {
-  return store
-    .update(pkey)
-    .updateAttribute('enrolled')
-    .set(true)
-    .returnValues('ALL_NEW')
-    .exec()
-    .then((res) => {
-      console.log('res: ', res);
-      return res;
-    })
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+export const updateEnrollment = (pkey: string): Promise<Referral> => {
+  return store.update(pkey).updateAttribute('enrolled').set(true).returnValues('ALL_NEW').exec();
 };
 
 export const updatePaidOut = (pkey: string, paidOut: number): Promise<void> => {
