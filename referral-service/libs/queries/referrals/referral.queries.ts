@@ -9,7 +9,10 @@ export const getReferral = (id: string): Promise<Referral | null> => {
     .get(id)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const listReferrals = (): Promise<Referral[]> => {
@@ -17,7 +20,10 @@ export const listReferrals = (): Promise<Referral[]> => {
     .scan()
     .execFetchAll()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const createReferral = (referral: Referral): Promise<void> => {
@@ -26,7 +32,10 @@ export const createReferral = (referral: Referral): Promise<void> => {
     .ifNotExists()
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateReferral = (referral: Referral): Promise<void> => {
@@ -34,7 +43,10 @@ export const updateReferral = (referral: Referral): Promise<void> => {
     .put(referral)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateEnrollment = (pkey: string): Promise<void> => {
@@ -44,7 +56,10 @@ export const updateEnrollment = (pkey: string): Promise<void> => {
     .set(true)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updatePaidOut = (pkey: string, paidOut: number): Promise<void> => {
@@ -54,7 +69,10 @@ export const updatePaidOut = (pkey: string, paidOut: number): Promise<void> => {
     .set(paidOut)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
@@ -66,7 +84,10 @@ export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
     .incrementBy(addOn)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateNextPaymentDate = (pkey: string, paymentDate: string): Promise<void> => {
@@ -76,7 +97,10 @@ export const updateNextPaymentDate = (pkey: string, paymentDate: string): Promis
     .set(paymentDate)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const suspendReferral = (id: string): Promise<void> => {
@@ -86,7 +110,10 @@ export const suspendReferral = (id: string): Promise<void> => {
     .set(true)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const getActiveCampaignReferrals = (campaign: string): Promise<Referral[]> => {
@@ -96,7 +123,10 @@ export const getActiveCampaignReferrals = (campaign: string): Promise<Referral[]
     .wherePartitionKey(campaign)
     .execFetchAll()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const getEligibileReferrals = (): Promise<Referral[]> => {
@@ -123,7 +153,10 @@ export const getReferralByCode = (code: string | null): Promise<Referral | null>
     .wherePartitionKey(code)
     .execSingle()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promise<void> => {
@@ -133,7 +166,10 @@ export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promi
     .set(eligibility)
     .exec()
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.error(err);
+      return err;
+    });
 };
 
 export const updateReferralCampaign = (id: string, campaign: string): Promise<void> => {
