@@ -29,6 +29,7 @@ export class ReferralActivationManager {
 
   async init(): Promise<void> {
     console.log('activation record: ', JSON.stringify(this.record));
+    console.log('subject: ', this.subject);
     if (this.subject == 'sessiondataupdate') await this.initSessionData();
     if (this.subject == 'transunionenrollment') await this.initApplicationData();
   }
@@ -59,10 +60,12 @@ export class ReferralActivationManager {
       console.error(`no proper message passed: ${JSON.stringify(snsMsg)}`);
       return;
     }
+    console.log('here`');
     this.id = msg.id;
     this.applicationMessage = snsMsg;
     try {
       this.referral = await this.getReferral(this.id);
+      console.log('referral: ==> ', this.referral);
     } catch (err) {
       console.error(`manager:initApplicationData:${err}`);
     }
@@ -75,8 +78,11 @@ export class ReferralActivationManager {
       if (check) this.activateOnSessionData();
     }
     if (this.subject == 'transunionenrollment') {
+      console.log('here3:');
       if (!this.id) return;
+      console.log('here3:');
       const check = this.checkApplicationData();
+      console.log('check:', check);
       if (check) this.activateOnApplicationData();
     }
   }
@@ -165,12 +171,15 @@ export class ReferralActivationManager {
   }
 
   async activateOnApplicationData(): Promise<void> {
+    console.log('activate:this.id:', this.id);
+    console.log('activate:this.referral:', this.referral);
     try {
       if (!this.id) return;
       if (!this.referral) {
         const referral = new ReferralMaker(this.id, v4());
         await this.createReferral({ ...referral, enrolled: true });
       } else {
+        console.log('here6');
         await this.updateEnrollment(this.id);
       }
     } catch (err) {
