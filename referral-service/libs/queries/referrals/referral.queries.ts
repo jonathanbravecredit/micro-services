@@ -5,48 +5,19 @@ import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, Referral, REFERRAL_CODE_GSI } from 'l
 const store = new DynamoStore(Referral);
 
 export const getReferral = (id: string): Promise<Referral | null> => {
-  return store
-    .get(id)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.get(id).exec();
 };
 
 export const listReferrals = (): Promise<Referral[]> => {
-  return store
-    .scan()
-    .execFetchAll()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.scan().execFetchAll();
 };
 
 export const createReferral = (referral: Referral): Promise<void> => {
-  return store
-    .put(referral)
-    .ifNotExists()
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.put(referral).ifNotExists().exec();
 };
 
 export const updateReferral = (referral: Referral): Promise<void> => {
-  return store
-    .put(referral)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.put(referral).exec();
 };
 
 export const updateEnrollment = (pkey: string): Promise<Referral> => {
@@ -54,16 +25,7 @@ export const updateEnrollment = (pkey: string): Promise<Referral> => {
 };
 
 export const updatePaidOut = (pkey: string, paidOut: number): Promise<void> => {
-  return store
-    .update(pkey)
-    .updateAttribute('campaignActivePaid')
-    .set(paidOut)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.update(pkey).updateAttribute('campaignActivePaid').set(paidOut).exec();
 };
 
 export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
@@ -73,123 +35,39 @@ export const updateAddOn = (pkey: string, addOn: number): Promise<void> => {
     .set(addOn)
     .updateAttribute('totalAddOn')
     .incrementBy(addOn)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+    .exec();
 };
 
 export const updateNextPaymentDate = (pkey: string, paymentDate: string): Promise<void> => {
-  return store
-    .update(pkey)
-    .updateAttribute('nextPaymentDate')
-    .set(paymentDate)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.update(pkey).updateAttribute('nextPaymentDate').set(paymentDate).exec();
 };
 
 export const suspendReferral = (id: string): Promise<void> => {
-  return store
-    .update(id)
-    .updateAttribute('suspended')
-    .set(true)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.update(id).updateAttribute('suspended').set(true).exec();
 };
 
 export const getActiveCampaignReferrals = (campaign: string): Promise<Referral[]> => {
-  return store
-    .query()
-    .index(CAMPAIGNACTIVE_GSI)
-    .wherePartitionKey(campaign)
-    .execFetchAll()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.query().index(CAMPAIGNACTIVE_GSI).wherePartitionKey(campaign).execFetchAll();
 };
 
 export const getEligibileReferrals = (): Promise<Referral[]> => {
-  return store
-    .query()
-    .index(ELIGIBLE_GSI)
-    .wherePartitionKey(1)
-    .execFetchAll()
-    .then((res) => {
-      console.log('eligible referrals: ', JSON.stringify(res));
-      return res;
-    })
-    .catch((err) => {
-      console.log('eligible error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.query().index(ELIGIBLE_GSI).wherePartitionKey(1).execFetchAll();
 };
 
 export const getReferralByCode = (code: string | null): Promise<Referral | null> => {
   if (!code) return Promise.resolve(null);
-  return store
-    .query()
-    .index(REFERRAL_CODE_GSI)
-    .wherePartitionKey(code)
-    .execSingle()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.query().index(REFERRAL_CODE_GSI).wherePartitionKey(code).execSingle();
 };
 
 export const updateReferralEligibility = (id: string, eligibility: 1 | 0): Promise<void> => {
-  return store
-    .update(id)
-    .updateAttribute('eligible')
-    .set(eligibility)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.error(err);
-      return err;
-    });
+  return store.update(id).updateAttribute('eligible').set(eligibility).exec();
 };
 
 export const updateReferralCampaign = (id: string, campaign: string): Promise<void> => {
   const now = new Date().toISOString();
-  return store
-    .update(id)
-    .updateAttribute('campaignActive')
-    .set(campaign)
-    .updateAttribute('modifiedOn')
-    .set(now)
-    .exec()
-    .then((res) => {
-      console.log('update campaing: ', JSON.stringify(res));
-      return res;
-    })
-    .catch((err) => {
-      console.log('update campaign error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.update(id).updateAttribute('campaignActive').set(campaign).updateAttribute('modifiedOn').set(now).exec();
 };
 
 export const batchDeleteReferrals = (records: Referral[]): Promise<any> => {
-  return store
-    .batchWrite()
-    .delete(records)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('batch delete error ==> ', err);
-      return err;
-    });
+  return store.batchWrite().delete(records).exec();
 };
