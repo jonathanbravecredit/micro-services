@@ -76,9 +76,9 @@ describe('CampaignMonitor', () => {
     });
   });
 
-  describe('getCampaign', () => {
+  describe('getNoCampaign', () => {
     it('should call getCampaign', async () => {
-      await monitor.getCampaign();
+      await monitor.getNoCampaign();
       expect(mockedGet).toHaveBeenCalled();
     });
   });
