@@ -16,16 +16,22 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
 
   init(): void {
     super.init();
+    console.log('currImage', this.currImage);
+    console.log('priorImage', this.priorImage);
   }
 
   async process(): Promise<void> {
     if (this.event !== 'MODIFY') return;
+    const t1 = this.isDisabled();
+    const t2 = this.isEnabled();
+    console.log('t1', t1);
+    console.log('t2', t2);
     if (this.isDisabled()) await this.disableCampaign();
     else if (this.isEnabled()) await this.enableCampaign();
   }
 
   isDisabled(): boolean {
-    if (!this.currImage) return false;
+    if (!this.currImage || !this.priorImage) return false;
     const { pKey, version, campaign, currentVersion: currCV } = this.currImage;
     const { currentVersion: priorCV } = this.priorImage!;
     const isMasterRecord = pKey === 1 && version === 0;
@@ -35,7 +41,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
   }
 
   isEnabled(): boolean {
-    if (!this.currImage) return false;
+    if (!this.currImage || !this.priorImage) return false;
     const { pKey, version, campaign, currentVersion: currCV } = this.currImage;
     const { currentVersion: priorCV } = this.priorImage!;
     const isMasterRecord = pKey === 1 && version === 0;
@@ -49,11 +55,14 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
     try {
       const actives = await this.listReferralsByCampaign();
       if (!actives || !actives.length) return;
+      console.log('here:disabled');
       await Promise.all(
         actives.map(async (referral) => {
           const reset = this.resetReferral(referral);
+          console.log('here:disabled2');
           if (!reset) return;
           try {
+            console.log('here:disabled3');
             await this.updateReferral(reset);
           } catch (err) {
             console.error(err);
@@ -69,10 +78,13 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
     try {
       const eligibles = await this.listReferralsByEligible();
       if (!eligibles || !eligibles.length) return;
+      console.log('here:enabled');
       await Promise.all(
         eligibles.map(async (referral) => {
           try {
+            console.log('here:enabled2');
             await this.updateReferral(referral);
+            console.log('here:enabled3');
           } catch (err) {
             console.error(err);
           }

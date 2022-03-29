@@ -5,37 +5,15 @@ import { Campaign } from 'libs/models/campaigns/campaign.model';
 const store = new DynamoStore(Campaign);
 
 export const getCampaign = (pkey: number, skey: number): Promise<Campaign | null> => {
-  return store
-    .get(pkey, skey)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('getCampaign error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.get(pkey, skey).exec();
 };
 
 export const listCampaigns = (): Promise<Campaign[]> => {
-  return store
-    .scan()
-    .execFetchAll()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('listCampaigns error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.scan().execFetchAll();
 };
 
 export const createCampaign = (campaign: Campaign): Promise<void> => {
-  return store
-    .put(campaign)
-    .ifNotExists()
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('createCampaign error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.put(campaign).ifNotExists().exec();
 };
 
 export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
@@ -64,12 +42,7 @@ export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
     .set(campaign.endDate)
     .updateAttribute('modifiedOn')
     .set(now)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('updateCurrentCampaign Error: ', JSON.stringify(err));
-      return err;
-    });
+    .exec();
 };
 
 // {
@@ -89,15 +62,5 @@ export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
 // }
 
 export const getLatestCampaign = (pkey: number): Promise<Campaign[]> => {
-  return store
-    .query()
-    .wherePartitionKey(pkey)
-    .descending()
-    .limit(1)
-    .exec()
-    .then((res) => res)
-    .catch((err) => {
-      console.log('getLatestCampaign error: ', JSON.stringify(err));
-      return err;
-    });
+  return store.query().wherePartitionKey(pkey).descending().limit(1).exec();
 };

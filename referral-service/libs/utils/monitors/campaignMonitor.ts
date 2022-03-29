@@ -8,10 +8,12 @@ export class CampaignMonitor {
   constructor(public records: DynamoDBRecord[]) {}
 
   async init(): Promise<void> {
-    this.campaign = await this.getCampaign();
+    this.campaign = await this.getNoCampaign();
+    console.log('campaign: ', this.campaign);
   }
 
   async monitor(): Promise<void> {
+    console.log('records: ', this.records);
     await Promise.all(
       this.records.map(async (rec) => {
         try {
@@ -33,7 +35,7 @@ export class CampaignMonitor {
     }
   }
 
-  async getCampaign(): Promise<Campaign | null> {
+  async getNoCampaign(): Promise<Campaign | null> {
     return await getCampaign(1, 0);
   }
 }
