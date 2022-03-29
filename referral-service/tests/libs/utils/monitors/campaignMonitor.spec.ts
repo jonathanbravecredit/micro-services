@@ -31,8 +31,8 @@ describe('CampaignMonitor', () => {
   });
 
   describe('init', () => {
-    it('should should call getCampaign', async () => {
-      const spy = jest.spyOn(monitor, 'getCampaign');
+    it('should should call getNoCampaign', async () => {
+      const spy = jest.spyOn(monitor, 'getNoCampaign');
       await monitor.init();
       expect(spy).toHaveBeenCalled();
     });
