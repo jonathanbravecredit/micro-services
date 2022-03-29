@@ -177,6 +177,7 @@ functions:
   referralMonitor:
     handler: src/subs/referrals/referrals.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 60
     events:
       - stream:
           type: dynamodb
