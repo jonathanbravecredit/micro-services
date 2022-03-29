@@ -6,6 +6,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
   const records = event.Records;
   try {
     const monitor = new CampaignMonitor(records);
+    await monitor.init();
     await monitor.monitor();
   } catch (err) {
     console.error(err);

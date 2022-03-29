@@ -5,9 +5,7 @@ import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 
 export class CampaignMonitor {
   campaign: Campaign | null = null;
-  constructor(public records: DynamoDBRecord[]) {
-    this.init();
-  }
+  constructor(public records: DynamoDBRecord[]) {}
 
   async init(): Promise<void> {
     this.campaign = await this.getCampaign();
