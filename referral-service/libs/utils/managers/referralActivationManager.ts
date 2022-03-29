@@ -155,7 +155,7 @@ export class ReferralActivationManager {
    * @returns
    */
   eligibleCheckThree(): boolean {
-    return this.referral?.suspended || false;
+    return !this.referral?.suspended;
   }
   /**
    * Make sure the application data is enrolled
