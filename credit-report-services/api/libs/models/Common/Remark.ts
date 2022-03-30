@@ -3,8 +3,8 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class Remark extends Homogenize<Partial<IRemark>> implements IRemark {
-  RemarkCode: ICodeRef;
-  customRemark: string;
+  RemarkCode!: ICodeRef;
+  customRemark: string | null = null;
 
   constructor(_data: Partial<IRemark>) {
     super(_data);

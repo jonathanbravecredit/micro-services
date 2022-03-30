@@ -4,9 +4,9 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class MonthlyPayStatusItem extends Homogenize<Partial<IMonthyPayStatusItem>> implements IMonthyPayStatusItem {
-  GenericRemark: ICodeRef;
-  RatingRemark: ICodeRef;
-  ComplianceRemark: ICodeRef;
+  GenericRemark!: ICodeRef;
+  RatingRemark!: ICodeRef;
+  ComplianceRemark!: ICodeRef;
   PaymentDue: number | string | null = null;
   CreditLimit: number | string | null = null;
   ActualPayment: number | string | null = null;

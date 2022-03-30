@@ -4,7 +4,7 @@ import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class Source extends Homogenize<Partial<ISource>> implements ISource {
   BorrowerKey: string | null = null;
-  Bureau: ICodeRef;
+  Bureau!: ICodeRef;
   InquiryDate: string | null = null;
   Reference: string | null = null;
 

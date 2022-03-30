@@ -4,7 +4,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class FinancingStatement extends Homogenize<Partial<IFinancingStatement>> implements IFinancingStatement {
-  CreditorType: ICodeRef;
+  CreditorType!: ICodeRef;
   dateMaturity: string | null = null;
 
   constructor(_data: Partial<IFinancingStatement>) {

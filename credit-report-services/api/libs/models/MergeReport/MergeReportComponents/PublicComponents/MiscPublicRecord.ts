@@ -2,7 +2,7 @@ import { IMiscPublicRecord } from 'libs/interfaces/merge-report.interface';
 import { Homogenize } from 'libs/models/Base/HomogenizeData';
 
 export class MiscPublicRecord extends Homogenize<Partial<IMiscPublicRecord>> implements IMiscPublicRecord {
-  miscInformation: string;
+  miscInformation: string | null = null;
 
   constructor(_data: Partial<IMiscPublicRecord>) {
     super(_data);

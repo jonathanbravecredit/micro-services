@@ -5,8 +5,8 @@ import { CodeRef } from 'libs/models/Common/CodeRef';
 import { Source } from 'libs/models/Common/Source';
 
 export class Inquiry extends Homogenize<Partial<IInquiry>> implements IInquiry {
-  IndustryCode: ICodeRef;
-  Source: ISource;
+  IndustryCode!: ICodeRef;
+  Source!: ISource;
   bureau: string | null = null;
   inquiryType: string | null = null;
   subscriberNumber: string | null = null;

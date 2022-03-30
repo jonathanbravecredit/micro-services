@@ -7,7 +7,7 @@ export class AccountHistorySummaryInfo
   extends Homogenize<Partial<IAccountHistorySummaryInfo>>
   implements IAccountHistorySummaryInfo
 {
-  SummaryType: ICodeRef;
+  SummaryType!: ICodeRef;
   TotalPaymentRatio: number | string | null = null;
   ActualPaymentAmount: number | string | null = null;
   PaymentDueAmount: number | string | null = null;

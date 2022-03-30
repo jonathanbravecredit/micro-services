@@ -4,7 +4,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class TradelineSummaryInfo extends Homogenize<Partial<ITradelineSummaryInfo>> implements ITradelineSummaryInfo {
-  RecentDeliquencyMOP: ICodeRef;
+  RecentDeliquencyMOP!: ICodeRef;
   TotalHistoricalNegatives: number | string | null = null;
   OpenCollectionAccounts: number | string | null = null;
   TotalCollectionAccounts: number | string | null = null;

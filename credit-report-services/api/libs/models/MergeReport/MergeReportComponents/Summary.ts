@@ -14,9 +14,9 @@ import { PublicRecordSummary } from 'libs/models/MergeReport/MergeReportComponen
 import { TradelineSummary } from 'libs/models/MergeReport/MergeReportComponents/SummaryComponents/TradelineSummary';
 
 export class Summary extends Homogenize<Partial<ISummary>> implements ISummary {
-  TradelineSummary: ITradelineSummary;
-  InquirySummary: IInquirySummary;
-  PublicRecordSummary: IPublicRecordSummary;
+  TradelineSummary!: ITradelineSummary;
+  InquirySummary!: IInquirySummary;
+  PublicRecordSummary!: IPublicRecordSummary;
   PortfolioCreditSummary: IPortfolioCreditSummary[] = [];
   AccountHistorySummary: IAccountHistorySummary[] = [];
 

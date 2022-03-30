@@ -3,10 +3,10 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { InquirySummaryInfo } from 'libs/models/MergeReport/MergeReportComponents/SummaryComponents/InquirySummaryInfo';
 
 export class InquirySummary extends Homogenize<Partial<IInquirySummary>> implements IInquirySummary {
-  Experian: IInquirySummaryInfo;
-  Equifax: IInquirySummaryInfo;
-  TransUnion: IInquirySummaryInfo;
-  Merge: IInquirySummaryInfo;
+  Experian!: IInquirySummaryInfo;
+  Equifax!: IInquirySummaryInfo;
+  TransUnion!: IInquirySummaryInfo;
+  Merge!: IInquirySummaryInfo;
 
   constructor(_data: Partial<IInquirySummary>) {
     super(_data);

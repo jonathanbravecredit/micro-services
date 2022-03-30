@@ -5,9 +5,9 @@ import { Source } from 'libs/models/Common/Source';
 import { CreditAddress } from 'libs/models/Common/CreditAddress';
 
 export class Employer extends Homogenize<Partial<IEmployer>> implements IEmployer {
-  CreditAddress: ICreditAddress;
-  Source: ISource;
-  name: string;
+  CreditAddress!: ICreditAddress;
+  Source!: ISource;
+  name!: string;
   partitionSet: number | string | null = null;
   dateReported: string | null = null;
   dateUpdated: string | null = null;

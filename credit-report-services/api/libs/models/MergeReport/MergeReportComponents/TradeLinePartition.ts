@@ -3,7 +3,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { Tradeline } from 'libs/models/MergeReport/MergeReportComponents/TradelineComponents/Tradeline';
 
 export class TradeLinePartition extends Homogenize<Partial<ITradeLinePartition>> implements ITradeLinePartition {
-  Tradeline: ITradeline;
+  Tradeline!: ITradeline;
   accountTypeDescription: string | null = null;
   accountTypeSymbol: string | null = null;
   accountTypeAbbreviation: string | null = null;

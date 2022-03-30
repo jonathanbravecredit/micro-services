@@ -6,7 +6,7 @@ export class AccountHistorySummary
   extends Homogenize<Partial<IAccountHistorySummary>>
   implements IAccountHistorySummary
 {
-  Transunion: IAccountHistorySummaryInfo;
+  Transunion!: IAccountHistorySummaryInfo;
 
   constructor(_data: Partial<IAccountHistorySummary>) {
     super(_data);

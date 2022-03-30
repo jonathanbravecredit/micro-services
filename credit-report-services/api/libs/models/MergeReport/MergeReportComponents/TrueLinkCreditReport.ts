@@ -27,15 +27,15 @@ export class TrueLinkCreditReportType
   extends Homogenize<Partial<ITrueLinkCreditReportType>>
   implements ITrueLinkCreditReportType
 {
-  SB168Frozen: ISB168Frozen;
-  Borrower: IBorrower;
+  SB168Frozen!: ISB168Frozen;
+  Borrower!: IBorrower;
   TradeLinePartition: ITradeLinePartition[] = [];
   InquiryPartition: IInquiryPartition[] = [];
   BankingRecordPartition: IBankingPartition[] = [];
   PulblicRecordPartition: IPublicPartition[] = [];
   Subscriber: ISubscriber[] = [];
   Message: IMessage[] = [];
-  Summary: ISummary;
+  Summary!: ISummary;
   Sources: ISourceSummary[] = [];
 
   SafetyCheckPassed: boolean | string | null = null;

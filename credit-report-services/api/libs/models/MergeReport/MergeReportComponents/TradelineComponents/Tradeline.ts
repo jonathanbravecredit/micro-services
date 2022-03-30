@@ -9,18 +9,18 @@ import { GrantedTrade } from 'libs/models/MergeReport/MergeReportComponents/Trad
 import { CollectionTrade } from 'libs/models/MergeReport/MergeReportComponents/TradelineComponents/CollectionTrade';
 
 export class Tradeline extends Homogenize<Partial<ITradeline>> implements ITradeline {
-  AccountCondition: ICodeRef;
-  AccountDesignator: ICodeRef;
-  DisputeFlag: ICodeRef;
-  IndustryCode: ICodeRef;
-  OpenClosed: ICodeRef;
-  PayStatus: ICodeRef;
-  VerificationIndicator: ICodeRef;
-  Remark: IRemark[];
-  WatchTrade: IWatchTrade;
-  GrantedTrade: IGrantedTrade;
-  CollectionTrade: ICollectionTrade;
-  Source: ISource;
+  AccountCondition!: ICodeRef;
+  AccountDesignator!: ICodeRef;
+  DisputeFlag!: ICodeRef;
+  IndustryCode!: ICodeRef;
+  OpenClosed!: ICodeRef;
+  PayStatus!: ICodeRef;
+  VerificationIndicator!: ICodeRef;
+  Remark!: IRemark[];
+  WatchTrade!: IWatchTrade;
+  GrantedTrade!: IGrantedTrade;
+  CollectionTrade!: ICollectionTrade;
+  Source!: ISource;
   subscriberCode: string | null = null;
   highBalance: number | string | null = null;
   dateVerified: string | null = null;

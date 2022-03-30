@@ -6,7 +6,7 @@ export class PortfolioCreditSummary
   extends Homogenize<Partial<IPortfolioCreditSummary>>
   implements IPortfolioCreditSummary
 {
-  Transunion: IPortfolioCreditSummaryInfo;
+  Transunion!: IPortfolioCreditSummaryInfo;
 
   constructor(_data: Partial<IPortfolioCreditSummary>) {
     super(_data);
