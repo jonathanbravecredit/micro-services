@@ -1,8 +1,8 @@
-import { MergeReport } from 'libs/models/MergeReport/MergeReport';
+import { IMergeReport } from 'libs/interfaces/merge-report.interface';
 
 export class CreditReportMetrics {
   negativeAccounts = 0;
-  constructor(private report: MergeReport) {}
+  constructor(private report: IMergeReport) {}
 
   calcNegativeAccounts(): void {
     return;
