@@ -6,20 +6,20 @@ import { MergeReport } from 'libs/models/MergeReport/MergeReport';
 @Model({ tableName: 'CreditReports' })
 export class CreditReport {
   @PartitionKey()
-  userId: string;
+  userId!: string;
 
   @SortKey()
-  version: number;
+  version!: number;
 
   currentVersion: number | undefined;
 
-  bureau: string;
+  bureau!: string;
 
-  report: IMergeReport;
+  report!: IMergeReport;
 
-  createdOn: string | null;
+  createdOn: string | null = null;
 
-  modifiedOn: string | null;
+  modifiedOn: string | null = null;
 }
 
 export class CreditReportMaker implements CreditReport {

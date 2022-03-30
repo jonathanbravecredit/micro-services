@@ -6,9 +6,8 @@ import { CreditReportMetrics } from 'libs/utils/metrics/CreditReportMetrics';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
 
-const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC;
-
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
+  const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC || '';
   const records = event.Records;
   // mailchimp emails
   console.log('arn', arn);
