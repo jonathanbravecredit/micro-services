@@ -1,9 +1,9 @@
-import { IInquiry, IInquiryPartition, IInquirySummaryInfo } from 'libs/interfaces/merge-report.interface';
+import { IInquiry, IInquiryPartition } from 'libs/interfaces/merge-report.interface';
 import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { Inquiry } from 'libs/models/MergeReport/MergeReportComponents/InquiryComponents/Inquiry';
 
 export class InquiryPartition extends Homogenize<Partial<IInquiryPartition>> implements IInquiryPartition {
-  Inquiry: IInquiry;
+  Inquiry!: IInquiry;
 
   constructor(_data: Partial<IInquiryPartition>) {
     super(_data);

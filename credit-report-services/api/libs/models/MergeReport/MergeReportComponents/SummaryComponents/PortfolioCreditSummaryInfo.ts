@@ -7,7 +7,7 @@ export class PortfolioCreditSummaryInfo
   extends Homogenize<Partial<IPortfolioCreditSummaryInfo>>
   implements IPortfolioCreditSummaryInfo
 {
-  SummaryType: ICodeRef;
+  SummaryType!: ICodeRef;
   CurrentPaymentDueAmount: number | string | null = null;
   PriorPaymentDueAmount: number | string | null = null;
   CurrentActualPaymentAmount: number | string | null = null;

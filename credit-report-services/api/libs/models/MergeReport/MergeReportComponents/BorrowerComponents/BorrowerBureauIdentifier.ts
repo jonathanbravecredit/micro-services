@@ -10,7 +10,7 @@ export class BorrowerBureauIdentifier
   type: string | null = null;
   identifier: string | null = null;
   partitionSet: number | string | null = null;
-  Source: ISource;
+  Source!: ISource;
 
   constructor(_data: Partial<IBorrowerBureauIdentifier>) {
     super(_data);

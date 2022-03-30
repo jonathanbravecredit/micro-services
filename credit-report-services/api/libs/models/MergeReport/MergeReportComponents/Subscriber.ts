@@ -6,9 +6,9 @@ import { Source } from 'libs/models/Common/Source';
 import { CreditAddress } from 'libs/models/Common/CreditAddress';
 
 export class Subscriber extends Homogenize<Partial<ISubscriber>> implements ISubscriber {
-  CreditAddress: ICreditAddress;
-  IndustryCode: ICodeRef;
-  Source: ISource;
+  CreditAddress!: ICreditAddress;
+  IndustryCode!: ICodeRef;
+  Source!: ISource;
   subscriberCode: string | null = null;
   telephone: string | null = null;
   name: string | null = null;

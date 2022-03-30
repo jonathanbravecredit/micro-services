@@ -5,7 +5,7 @@ import { Source } from 'libs/models/Common/Source';
 
 export class Social extends Homogenize<Partial<ISocial>> implements ISocial {
   SocialSecurityNumber: string | null = null;
-  Source: ISource;
+  Source!: ISource;
 
   constructor(_data: Partial<ISocial>) {
     super(_data);

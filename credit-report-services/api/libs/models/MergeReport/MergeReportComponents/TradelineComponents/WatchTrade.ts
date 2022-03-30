@@ -4,9 +4,9 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class WatchTrade extends Homogenize<Partial<IWatchTrade>> implements IWatchTrade {
-  ContactMethod: ICodeRef;
-  CreditType: ICodeRef;
-  PreviousAccountCondition: ICodeRef;
+  ContactMethod!: ICodeRef;
+  CreditType!: ICodeRef;
+  PreviousAccountCondition!: ICodeRef;
   previousAmountPastDue: number | string | null = null;
   amountPastDue: number | string | null = null;
 

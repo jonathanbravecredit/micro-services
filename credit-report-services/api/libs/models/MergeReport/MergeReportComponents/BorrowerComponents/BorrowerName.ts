@@ -6,9 +6,9 @@ import { Source } from 'libs/models/Common/Source';
 import { Name } from 'libs/models/MergeReport/MergeReportComponents/BorrowerComponents/Name';
 
 export class BorrowerName extends Homogenize<Partial<IBorrowerName>> implements IBorrowerName {
-  Name: IName;
-  NameType: ICodeRef;
-  Source: ISource;
+  Name!: IName;
+  NameType!: ICodeRef;
+  Source!: ISource;
   partitionSet: number | string | null = null;
   dateReported: string | null = null;
   dateUpdated: string | null = null;

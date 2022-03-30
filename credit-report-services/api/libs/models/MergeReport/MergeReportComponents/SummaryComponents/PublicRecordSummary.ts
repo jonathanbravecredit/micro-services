@@ -3,10 +3,10 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { PublicRecordSummaryInfo } from 'libs/models/MergeReport/MergeReportComponents/SummaryComponents/PublicRecordSummaryInfo';
 
 export class PublicRecordSummary extends Homogenize<Partial<IPublicRecordSummary>> implements IPublicRecordSummary {
-  Experian: IPublicRecordSummaryInfo;
-  Equifax: IPublicRecordSummaryInfo;
-  Transunion: IPublicRecordSummaryInfo;
-  Merge: IPublicRecordSummaryInfo;
+  Experian!: IPublicRecordSummaryInfo;
+  Equifax!: IPublicRecordSummaryInfo;
+  Transunion!: IPublicRecordSummaryInfo;
+  Merge!: IPublicRecordSummaryInfo;
 
   constructor(_data: Partial<IPublicRecordSummary>) {
     super(_data);

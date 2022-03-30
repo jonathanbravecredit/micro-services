@@ -7,9 +7,9 @@ import { CreditScoreFactor } from 'libs/models/MergeReport/MergeReportComponents
 
 export class CreditScore extends Homogenize<Partial<ICreditScore>> implements ICreditScore {
   CreditScoreFactor: ICreditScoreFactor[] = [];
-  CreditScoreMode: ICodeRef;
-  NoScoreReason: ICodeRef;
-  Source: ISource;
+  CreditScoreMode!: ICodeRef;
+  NoScoreReason!: ICodeRef;
+  Source!: ISource;
   qualitativeRank: number | string | null = null;
   inquiriesAffectedScore: boolean | string | null = null;
   new: boolean | null = null;

@@ -4,7 +4,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class CreditScoreFactor extends Homogenize<Partial<ICreditScoreFactor>> implements ICreditScoreFactor {
-  Factor: ICodeRef;
+  Factor!: ICodeRef;
   FactorText: string[] = [];
   FactorType: 'Negative' | 'Positive' | null = null;
   bureauCode: number | null = null;

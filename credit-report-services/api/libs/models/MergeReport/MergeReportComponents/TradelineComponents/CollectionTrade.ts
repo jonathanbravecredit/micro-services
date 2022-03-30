@@ -4,7 +4,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class CollectionTrade extends Homogenize<Partial<ICollectionTrade>> implements ICollectionTrade {
-  creditType: ICodeRef; // TODO double check the case in XSD
+  creditType!: ICodeRef; // TODO double check the case in XSD
   actualPaymentAmount: number | string | null = null;
   originalCreditor: string | null = null;
 

@@ -5,12 +5,12 @@ import { CodeRef } from 'libs/models/Common/CodeRef';
 import { PayStatusHistory } from 'libs/models/MergeReport/MergeReportComponents/TradelineComponents/PayStatusHistory';
 
 export class GrantedTrade extends Homogenize<Partial<IGrantedTrade>> implements IGrantedTrade {
-  AccountType: ICodeRef;
-  CreditType: ICodeRef;
-  PaymentFrequency: ICodeRef;
-  TermType: ICodeRef;
-  WorstPayStatus: ICodeRef;
-  PayStatusHistory: IPayStatusHistory;
+  AccountType!: ICodeRef;
+  CreditType!: ICodeRef;
+  PaymentFrequency!: ICodeRef;
+  TermType!: ICodeRef;
+  WorstPayStatus!: ICodeRef;
+  PayStatusHistory!: IPayStatusHistory;
   CreditLimit: number | string | null = null;
   monthsReviewed: number | string | null = null;
   monthlyPayment: number | string | null = null;

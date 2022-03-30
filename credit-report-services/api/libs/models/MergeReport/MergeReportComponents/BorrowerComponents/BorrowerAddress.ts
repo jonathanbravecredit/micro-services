@@ -6,10 +6,10 @@ import { Source } from 'libs/models/Common/Source';
 import { CreditAddress } from 'libs/models/Common/CreditAddress';
 
 export class BorrowerAddress extends Homogenize<Partial<IBorrowerAddress>> implements IBorrowerAddress {
-  CreditAddress: ICreditAddress;
-  Dwelling: ICodeRef;
-  Origin: ICodeRef;
-  Ownership: ICodeRef;
+  CreditAddress!: ICreditAddress;
+  Dwelling!: ICodeRef;
+  Origin!: ICodeRef;
+  Ownership!: ICodeRef;
   Source: ISource = new Source({});
   dateReported: string | null = null;
   addressOrder: number | null = null;

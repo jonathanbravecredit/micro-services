@@ -6,12 +6,12 @@ import { Remark } from 'libs/models/Common/Remark';
 import { Source } from 'libs/models/Common/Source';
 
 export class BankingRecord extends Homogenize<Partial<IBankingRecord>> implements IBankingRecord {
-  BankingType: ICodeRef;
-  AccountDesignator: ICodeRef;
-  IndustryCode: ICodeRef;
-  Status: ICodeRef;
+  BankingType!: ICodeRef;
+  AccountDesignator!: ICodeRef;
+  IndustryCode!: ICodeRef;
+  Status!: ICodeRef;
   Remark: IRemark[] = [];
-  Source: ISource;
+  Source!: ISource;
   dateOpened: string | null = null;
   dateClosed: string | null = null;
   bureau: string | null = null;

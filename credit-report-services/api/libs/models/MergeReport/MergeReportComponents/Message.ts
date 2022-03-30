@@ -4,8 +4,8 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class Message extends Homogenize<Partial<IMessage>> implements IMessage {
-  Code: ICodeRef;
-  Type: ICodeRef;
+  Code!: ICodeRef;
+  Type!: ICodeRef;
 
   constructor(_data: Partial<IMessage>) {
     super(_data);

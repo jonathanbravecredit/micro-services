@@ -3,7 +3,7 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { Source } from 'libs/models/Common/Source';
 
 export class SourceSummary extends Homogenize<Partial<ISourceSummary>> implements ISourceSummary {
-  Source: ISource;
+  Source!: ISource;
 
   constructor(_data: Partial<ISourceSummary>) {
     super(_data);

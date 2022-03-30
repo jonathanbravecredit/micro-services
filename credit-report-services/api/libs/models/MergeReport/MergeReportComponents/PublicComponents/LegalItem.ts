@@ -4,8 +4,8 @@ import { Homogenize } from 'libs/models/Base/HomogenizeData';
 import { CodeRef } from 'libs/models/Common/CodeRef';
 
 export class LegalItem extends Homogenize<Partial<ILegalItem>> implements ILegalItem {
-  CourtLocation: ICodeRef;
-  CourtType: ICodeRef;
+  CourtLocation!: ICodeRef;
+  CourtType!: ICodeRef;
   plaintiff: string | null = null;
   lawyer: string | null = null;
   thirdParty: string | null = null;

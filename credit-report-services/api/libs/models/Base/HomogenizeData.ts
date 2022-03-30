@@ -1,4 +1,5 @@
 interface InstanceInterface<T> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   new (_data: any): T;
 }
 
@@ -20,6 +21,8 @@ export class Homogenize<T> {
       return arr.map((a) => {
         return new instance(a);
       });
+    } else {
+      return [];
     }
   }
 }
