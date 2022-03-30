@@ -1,7 +1,7 @@
 {
-  "name": "utilities-package",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@bravecredit/utilities",
+  "version": "1.0.3",
+  "description": "A library of utility classes for use across services",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "files": [
@@ -15,6 +15,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@types/uuid": "^8.3.4",
     "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.0.7",
+    "he": "^1.2.0",
+    "uuid": "^8.3.2"
   }
 }
