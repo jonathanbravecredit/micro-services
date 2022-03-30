@@ -3,17 +3,17 @@ before_compile:
 #compile:
 #  - echo "Override compile"
 
-# before_build:
-#   - echo "Before build"
+before_build:
+  - echo "Before build"
 
-# before_deploy:
-#   - echo "Before deploy"
+before_deploy:
+  - echo "Before deploy"
 
-# after_deploy:
-#   - echo "After deploy"
+after_deploy:
+  - echo "After deploy"
 
-# before_remove:
-#   - echo "Before deploy"
+before_remove:
+  - echo "Before deploy"
 
-# after_remove:
-#   - echo "After deploy"
+after_remove:
+  - echo "After deploy"
