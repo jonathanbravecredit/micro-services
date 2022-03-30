@@ -13,6 +13,10 @@ plugins:
 custom:
   bundle:
     linting: false
+    aliases:
+      - 'libs': libs
+      - 'src': src
+      - 'tests': tests
 
 provider:
   name: aws

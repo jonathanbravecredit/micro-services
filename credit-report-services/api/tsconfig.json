@@ -5,7 +5,9 @@
     "baseUrl": ".",
     "target": "es6",
     "sourceMap": true,
+    "strict": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "types": ["reflect-metadata", "node", "jest"]
   }
