@@ -24,7 +24,7 @@ export class CreditMixMetric {
   getMetric(): CreditReportMetric<string, CreditMixStatus> {
     const { rating = '' } = this.getRatingsOnly() || {};
     const status = this.mapCreditMixSnapshotStatus(rating);
-    return new CreditReportMetric(MetricIds.CreditUtilization, MetricLabels.CreditUtilization, rating, status);
+    return new CreditReportMetric(MetricIds.CreditMix, MetricLabels.CreditMix, rating, status);
   }
 
   get summary(): ICreditMixTLSummary {
