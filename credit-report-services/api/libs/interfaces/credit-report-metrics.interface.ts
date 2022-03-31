@@ -1,5 +1,5 @@
 export interface ICreditReportMetrics {
-  userId: string;
+  userId: string | null;
   creditScore: number;
   countAllAccounts: number;
   sumAllBalances: number;
