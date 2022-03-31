@@ -14,6 +14,7 @@ require("reflect-metadata");
 const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let CreditReport = class CreditReport {
     constructor() {
+        this.metrics = [];
         this.createdOn = null;
         this.modifiedOn = null;
     }
@@ -36,6 +37,7 @@ class CreditReportMaker {
         this.bureau = bureau;
         this.report = report;
         this.version = version;
+        this.metrics = [];
         this.createdOn = new Date().toISOString();
         this.modifiedOn = new Date().toISOString();
     }

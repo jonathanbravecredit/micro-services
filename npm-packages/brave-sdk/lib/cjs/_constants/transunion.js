@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRANSUNION_ERROR_CODES = exports.TRANSUNION_CRITICAL_ERRORS = exports.INVESTIGATION_RESULTS_CODE_MAPPING = exports.EXPERIAN_STATES = exports.KROGER_STATES = exports.INDUSTRY_CODES = exports.FORBEARANCE_TYPE = exports.DATA_BREACH_CARDS = exports.BRAVE_ACCOUNT_TYPE = exports.PAY_STATUS_WARNINGS = exports.PAY_STATUS_CODES = exports.NEGATIVE_PAY_STATUS_CODES = exports.POSITIVE_PAY_STATUS_CODES = exports.LATE_PAY_STATUS_CODES = exports.REPOSSESSION_PAY_STATUS_CODE = exports.WAGE_EARNER_PAY_STATUS_CODES = exports.COLLECTION_PAY_STATUS_CODES = exports.LATE_120_STATUS_CODE = exports.LATE_90_STATUS_CODE = exports.LATE_60_STATUS_CODE = exports.LATE_30_STATUS_CODE = exports.TOO_NEW_STATUS_CODE = exports.UNKNOWN_PAY_STATUS_CODES = exports.ONTIME_PAY_STATUS_CODES = exports.CREDIT_REPORT_GROUPS = exports.ADDRESS_LINE_2 = exports.ADDRESS_LINE_1 = exports.NAME_MAP = exports.PHONE_MAP = exports.DataBreaches = exports.ReportPartitions = exports.PassCodeQuestion = exports.OTPReponse = exports.OTPQuestion = exports.CreditReportGroups = exports.TUBundles = exports.TUStatusRefStatuses = exports.CreditBureauFindingsType = void 0;
+exports.TRANSUNION_ERROR_CODES = exports.TRANSUNION_CRITICAL_ERRORS = exports.INVESTIGATION_RESULTS_CODE_MAPPING = exports.EXPERIAN_STATES = exports.KROGER_STATES = exports.INDUSTRY_CODES = exports.FORBEARANCE_TYPE = exports.RecommendationValues = exports.RecommendationConditionalLogic = exports.CreditMixRecommendations = exports.Recommendations = exports.DATA_BREACH_CARDS = exports.BRAVE_ACCOUNT_TYPE = exports.PAY_STATUS_WARNINGS = exports.PAY_STATUS_CODES = exports.NEGATIVE_PAY_STATUS_CODES = exports.POSITIVE_PAY_STATUS_CODES = exports.LATE_PAY_STATUS_CODES = exports.REPOSSESSION_PAY_STATUS_CODE = exports.WAGE_EARNER_PAY_STATUS_CODES = exports.COLLECTION_PAY_STATUS_CODES = exports.LATE_120_STATUS_CODE = exports.LATE_90_STATUS_CODE = exports.LATE_60_STATUS_CODE = exports.LATE_30_STATUS_CODE = exports.TOO_NEW_STATUS_CODE = exports.UNKNOWN_PAY_STATUS_CODES = exports.ONTIME_PAY_STATUS_CODES = exports.CREDIT_REPORT_GROUPS = exports.ADDRESS_LINE_2 = exports.ADDRESS_LINE_1 = exports.NAME_MAP = exports.PHONE_MAP = exports.DataBreaches = exports.ReportPartitions = exports.PassCodeQuestion = exports.OTPReponse = exports.OTPQuestion = exports.CreditReportGroups = exports.TUBundles = exports.TUStatusRefStatuses = exports.CreditBureauFindingsType = void 0;
 /*===================================*/
 /*              enums                */
 /*===================================*/
@@ -231,6 +231,164 @@ exports.DATA_BREACH_CARDS = {
         paragraphs: [
             `<p class="mb-5">On April 2021, a security researcher found that Experian consumer credit scores could be obtained without user consent on lending sites by tinkering with the code. Using publicly-available consumer information, they could force the site to reveal a customer’s credit score. Experian fixed the issue days after it was revealed, but the impact of the flaw is unknown.</p>`,
         ],
+    },
+};
+//I want to pass in a name of a rule and check some conditions based on the associated rules
+// then I want to return if it passes or not.
+// I may want to pass back some data as well.
+const condition1 = (summary) => {
+    const { totalLineAmount, amountOfClosed } = summary;
+    return !amountOfClosed && !totalLineAmount;
+};
+const condition2 = (summary) => {
+    const { totalLineAmount } = summary;
+    return totalLineAmount === 1;
+};
+const condition3 = (summary) => {
+    const { totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount - amountOfClosed <= 4 && totalLineAmount - amountOfClosed >= 2;
+};
+const condition4 = (summary) => {
+    const { amountOfOpenCreditCards, autoLoanAmount, studentLoanAmount, mortgageAmount } = summary;
+    return amountOfOpenCreditCards >= 5 && !autoLoanAmount && !studentLoanAmount && !mortgageAmount;
+};
+const condition5 = (summary) => {
+    const { totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount === amountOfClosed && amountOfClosed > 2;
+};
+const condition6 = (summary) => {
+    const { autoLoanAmount, studentLoanAmount, mortgageAmount, totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount - amountOfClosed <= 7 && (!!studentLoanAmount || !!autoLoanAmount) && !mortgageAmount;
+};
+const condition7 = (summary) => {
+    const { autoLoanAmount, studentLoanAmount, mortgageAmount, totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount - amountOfClosed <= 7 && (!!studentLoanAmount || !!autoLoanAmount || !!mortgageAmount);
+};
+const condition8 = (summary) => {
+    const { creditCardAmount, autoLoanAmount, mortgageAmount, totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount - amountOfClosed >= 8 && !!creditCardAmount && !!autoLoanAmount && !!mortgageAmount;
+};
+const condition9 = (summary) => {
+    const { totalLineAmount, amountOfClosed } = summary;
+    return totalLineAmount - amountOfClosed >= 8;
+};
+var Recommendations;
+(function (Recommendations) {
+    Recommendations["Link"] = "https://learn.self.inc/lpg/click-through/credit-builder-education-credit-card/?affiliate_partner=Bulldog%20Media%20Group&irgwc=1&irclickid=yB12CQ130xyIRHnyqjWYSydRUkG2Ph1p1VLCXg0&utm_source=impact_radius&utm_medium=affiliate&utm_campaign=Bulldog%20Media%20Group&utm_content=Self%20-%20Credit%20Card%20%2B%20Credit%20Builder%20Combo%20Page&media_partner1=&media_partner2=&media_parter3=&ad_name=Self%20-%20Credit%20Card%20%2B%20Credit%20Builder%20Combo%20Page&ad_type=TEXT_LINK&media_partner_id=70161&campaign_id=10159&media_partner_type=mediapartner&click_time_unix=1638237272355&subid1=N4P567_19805&subid2=&subid3=&sharedid=N4P567_19805&ircid=10159";
+    Recommendations["TwoToFourLink"] = "https://www.commissionsoup.com/opts.aspx?t=POIUA7&u=https%3A%2F%2Fwww.milestonegoldcard.com%2Fpre-qualify%3Fmmcid%3DMAAG00213075001%26subid%3DPOIUA7_5851_19805";
+    Recommendations["AllClosedLink"] = "https://www.commissionsoup.com/opts.aspx?t=POIUA7&u=https%3A%2F%2Fwww.milestonegoldcard.com%2Fpre-qualify%3Fmmcid%3DMAAG00213075001%26subid%3DPOIUA7_5851_19805";
+    Recommendations["NotTooLate"] = "It's never too late to start building a diversified credit base to help your score!";
+    Recommendations["GoodStart"] = "You're off to a good start on building a strong credit base!";
+    Recommendations["GreatStart"] = "You're off to a great start on building a strong credit base!";
+    Recommendations["GreatBut"] = "You have a great credit base but there's a few easy things that can make it even better!";
+    Recommendations["GoodBut"] = "You have a good credit base, but keeping some accounts open could help you in the future!";
+    Recommendations["Fantastic"] = "You're doing a fantastic job managing a variety of credit types!";
+    Recommendations["GreatJob"] = "Great job managing a variety of credit types!";
+    Recommendations["ExceptionalJob"] = "You're doing an exceptional job managing your credit mix!";
+    Recommendations["SeeProducts"] = "Click here to learn about a product that helps you build your credit without taking on debt!";
+    Recommendations["MakeStronger"] = "Make your credit stronger by opening up other credit products. Want to do this without taking on debt? Click here to learn how to do this!";
+    Recommendations["WiderCreditBase"] = "Make your credit stronger with a wider credit base. Click here to learn about an entry-level credit card that could help your credit grow!";
+    Recommendations["HavingMore"] = "Having more than credit cards could help you show lenders you can manage a variety of credit types. Click to learn about an easy way to do this while saving for a house or car!";
+    Recommendations["ForExample"] = "Keeping an old credit card open could really help your score! Click to learn about an unsecured credit card that could help.";
+    Recommendations["MakeSure"] = "Make sure to keep making on-time payments and keeping your utilization low on any credit cards!";
+    Recommendations["HouseGoal"] = "If your goal is to buy a house, click here for a way to continue to building a stronger credit base and score while helping you save for a down payment!";
+    Recommendations["ToHelp"] = "To help your score, remember that keeping credit cards you don't use open, even if you don't use it, increases your credit age and mix!";
+    Recommendations["MoreVaried"] = "Having more varied types of credit could help you show lenders you can manage a variety of credit types. Click to learn about an easy way to do this while saving for your goals!";
+    Recommendations["ratingPoor"] = "Poor";
+    Recommendations["poorColor"] = "#F56700";
+    Recommendations["ratingFair"] = "Fair";
+    Recommendations["fairColor"] = "#F59300";
+    Recommendations["ratingGood"] = "Good";
+    Recommendations["goodColor"] = "#BBD904";
+    Recommendations["ratingExcellent"] = "Excellent";
+    Recommendations["excellentColor"] = "#4BD269";
+})(Recommendations = exports.Recommendations || (exports.Recommendations = {}));
+var CreditMixRecommendations;
+(function (CreditMixRecommendations) {
+    CreditMixRecommendations["NoClosedAndNoOpen"] = "no-closed-and-no-open";
+    CreditMixRecommendations["OnlyOneOpen"] = "only-one-open";
+    CreditMixRecommendations["TwoToFourOpen"] = "two-to-four-open";
+    CreditMixRecommendations["FivePlusOnlyCC"] = "five-plus-only-cc";
+    CreditMixRecommendations["AllClosed"] = "all-closed";
+    CreditMixRecommendations["SevenOrLessNoMortgage"] = "seven-or-less-no-mortgage";
+    CreditMixRecommendations["SevenOrLess"] = "seven-or-less";
+    CreditMixRecommendations["EightOrMoreAtLeastOneOfAll"] = "eight-or-more-at-least-one-of-all";
+    CreditMixRecommendations["EightOrMore"] = "eight-or-more";
+})(CreditMixRecommendations = exports.CreditMixRecommendations || (exports.CreditMixRecommendations = {}));
+exports.RecommendationConditionalLogic = {
+    [CreditMixRecommendations.NoClosedAndNoOpen]: condition1,
+    [CreditMixRecommendations.OnlyOneOpen]: condition2,
+    [CreditMixRecommendations.TwoToFourOpen]: condition3,
+    [CreditMixRecommendations.FivePlusOnlyCC]: condition4,
+    [CreditMixRecommendations.AllClosed]: condition5,
+    [CreditMixRecommendations.SevenOrLessNoMortgage]: condition6,
+    [CreditMixRecommendations.SevenOrLess]: condition7,
+    [CreditMixRecommendations.EightOrMoreAtLeastOneOfAll]: condition8,
+    [CreditMixRecommendations.EightOrMore]: condition9,
+};
+exports.RecommendationValues = {
+    [CreditMixRecommendations.NoClosedAndNoOpen]: {
+        link: Recommendations.Link,
+        text: Recommendations.NotTooLate,
+        subtext: Recommendations.SeeProducts,
+        rating: Recommendations.ratingPoor,
+        color: Recommendations.poorColor,
+    },
+    [CreditMixRecommendations.OnlyOneOpen]: {
+        link: Recommendations.Link,
+        text: Recommendations.GoodStart,
+        subtext: Recommendations.MakeStronger,
+        rating: Recommendations.ratingPoor,
+        color: Recommendations.poorColor,
+    },
+    [CreditMixRecommendations.TwoToFourOpen]: {
+        link: Recommendations.TwoToFourLink,
+        text: Recommendations.GreatStart,
+        subtext: Recommendations.WiderCreditBase,
+        rating: Recommendations.ratingFair,
+        color: Recommendations.fairColor,
+    },
+    [CreditMixRecommendations.FivePlusOnlyCC]: {
+        link: Recommendations.Link,
+        text: Recommendations.GreatBut,
+        subtext: Recommendations.HavingMore,
+        rating: Recommendations.ratingFair,
+        color: Recommendations.fairColor,
+    },
+    [CreditMixRecommendations.AllClosed]: {
+        link: Recommendations.AllClosedLink,
+        text: Recommendations.GoodBut,
+        subtext: Recommendations.ForExample,
+        rating: Recommendations.ratingFair,
+        color: Recommendations.fairColor,
+    },
+    [CreditMixRecommendations.SevenOrLessNoMortgage]: {
+        link: Recommendations.Link,
+        text: Recommendations.GreatJob,
+        subtext: Recommendations.HouseGoal,
+        rating: Recommendations.ratingGood,
+        color: Recommendations.goodColor,
+    },
+    [CreditMixRecommendations.SevenOrLess]: {
+        link: Recommendations.Link,
+        text: Recommendations.Fantastic,
+        subtext: Recommendations.MakeSure,
+        rating: Recommendations.ratingGood,
+        color: Recommendations.goodColor,
+    },
+    [CreditMixRecommendations.EightOrMoreAtLeastOneOfAll]: {
+        link: Recommendations.Link,
+        text: Recommendations.ExceptionalJob,
+        subtext: Recommendations.ToHelp,
+        rating: Recommendations.ratingExcellent,
+        color: Recommendations.excellentColor,
+    },
+    [CreditMixRecommendations.EightOrMore]: {
+        link: Recommendations.Link,
+        text: Recommendations.ExceptionalJob,
+        subtext: Recommendations.MoreVaried,
+        rating: Recommendations.ratingExcellent,
+        color: Recommendations.excellentColor,
     },
 };
 exports.FORBEARANCE_TYPE = {

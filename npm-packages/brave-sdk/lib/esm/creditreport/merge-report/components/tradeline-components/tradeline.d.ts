@@ -1,0 +1,32 @@
+import { ICodeRef, IRemark, ISource } from '../../../../_types/common-tu';
+import { ITradeline, IWatchTrade, IGrantedTrade, ICollectionTrade } from '../../../../_types/merge-report';
+import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
+export declare class Tradeline extends Homogenize<Partial<ITradeline>> implements ITradeline {
+    AccountCondition: ICodeRef;
+    AccountDesignator: ICodeRef;
+    DisputeFlag: ICodeRef;
+    IndustryCode: ICodeRef;
+    OpenClosed: ICodeRef;
+    PayStatus: ICodeRef;
+    VerificationIndicator: ICodeRef;
+    Remark: IRemark[];
+    WatchTrade: IWatchTrade;
+    GrantedTrade: IGrantedTrade;
+    CollectionTrade: ICollectionTrade;
+    Source: ISource;
+    subscriberCode: string | null;
+    highBalance: number | string | null;
+    dateVerified: string | null;
+    handle: string | null;
+    bureau: string | null;
+    position: number | string | null;
+    dateReported: string | null;
+    currentBalance: number | string | null;
+    creditorName: string | null;
+    accountNumber: string | number | null;
+    dateOpened: string | null;
+    dateClosed: string | null;
+    dateAccountStatus: string | null;
+    constructor(_data: Partial<ITradeline>);
+    init(): void;
+}

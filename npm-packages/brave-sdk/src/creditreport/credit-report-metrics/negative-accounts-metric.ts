@@ -1,5 +1,5 @@
-import { TransunionUtil as tu } from '../../../transunion/transunion';
-import { NegativeAccountStatus, MetricIds, MetricLabels } from '../../../_types/credit-report-metrics';
+import { TransunionUtil as tu } from '../../transunion/transunion';
+import { NegativeAccountStatus, MetricIds, MetricLabels } from '../../_types/credit-report-metrics';
 import { MergeReport } from '../merge-report/merge-report';
 import { CreditReportMetric } from './credit-report-metrics';
 

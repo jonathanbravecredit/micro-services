@@ -20,6 +20,8 @@ export const enum MetricLabels {
 export type CreditMixStatus = 'semicritical' | 'danger' | 'normal' | 'safe';
 export type CreditUtilizationStatus = 'critical' | 'semicritical' | 'danger' | 'normal' | 'safe';
 export type NegativeAccountStatus = 'critical' | 'safe';
+export type ForbearanceStatus = 'danger' | 'safe';
+export type DatabreachStatus = 'danger' | 'safe';
 
 /*===============================*/
 /*           credit mix          */

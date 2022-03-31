@@ -11,6 +11,7 @@ import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 let CreditReport = class CreditReport {
     constructor() {
+        this.metrics = [];
         this.createdOn = null;
         this.modifiedOn = null;
     }
@@ -33,6 +34,7 @@ export class CreditReportMaker {
         this.bureau = bureau;
         this.report = report;
         this.version = version;
+        this.metrics = [];
         this.createdOn = new Date().toISOString();
         this.modifiedOn = new Date().toISOString();
     }

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
-import { CreditReportMetrics } from '../classes/credit-report-metrics/credit-report-metrics';
 import { MergeReport } from '../../creditreport/merge-report/merge-report';
+import { CreditReportMetrics } from '../../creditreport/credit-report-metrics/credit-report-metrics';
 
 @Model({ tableName: 'CreditReports' })
 export class CreditReport {
