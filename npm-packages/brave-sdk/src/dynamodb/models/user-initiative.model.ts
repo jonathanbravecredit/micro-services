@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
-import { ProgramPrimaryTask, ProgramReasons } from '../classes/initiative/program';
-import { InitiativeStatus, InitiativeTask } from '../classes/initiative/initiative';
+import { ProgramPrimaryTask, ProgramReasons } from '../../initiatives/program/program';
+import { InitiativeStatus, InitiativeTask } from '../../initiatives/initiative/initiative';
 
 @Model({ tableName: 'InitiativePrograms' })
 export class UserInitiative {
