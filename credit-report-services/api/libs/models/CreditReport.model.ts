@@ -1,6 +1,5 @@
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import { IMergeReport } from 'libs/interfaces/merge-report.interface';
-import { MergeReport } from 'libs/models/MergeReport/MergeReport';
 
 // add credit report data model
 @Model({ tableName: 'CreditReports' })
@@ -33,7 +32,6 @@ export class CreditReportMaker implements CreditReport {
     public report: IMergeReport,
     public version: number = new Date().valueOf(),
   ) {
-    this.report = new MergeReport(this.report);
     this.createdOn = new Date().toISOString();
     this.modifiedOn = new Date().toISOString();
   }
