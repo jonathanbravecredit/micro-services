@@ -1,4 +1,4 @@
-import { Nested as _nest } from '../..';
+import { Nested as _nest } from '../../utils/nested/nested';
 
 export class TransunionScrubbers {
   constructor() {}

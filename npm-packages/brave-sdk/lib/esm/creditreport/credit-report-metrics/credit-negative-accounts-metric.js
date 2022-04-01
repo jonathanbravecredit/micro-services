@@ -1,6 +1,6 @@
 import { TransunionUtil as tu } from '../../transunion/transunion';
 import { CreditReportMetric } from './credit-report-metrics';
-export class NegativeAccountsMetric {
+export class CreditNegativeAccountsMetric {
     constructor(report) {
         this.report = report;
     }

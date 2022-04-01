@@ -6,6 +6,9 @@
     "target": "es6",
     "sourceMap": true,
     "strict": true,
+    "paths": {
+      "brave-sdk/*": ["node_modules/@bravecredit/brave-sdk/lib/esm/*"]
+    },
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,

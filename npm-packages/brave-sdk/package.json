@@ -1,13 +1,19 @@
 {
   "name": "@bravecredit/brave-sdk",
-  "version": "1.0.2",
+  "version": "1.0.8",
   "description": "An SDK for backend and frontend development specifically designed for the services facilitating Brave Credit",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
+  "exports": {
+    "require": "./lib/cjs/index.js",
+    "import": "./lib/esm/index.js",
+    "default": "./lib/esm/index.js"
+  },
   "files": [
     "lib/"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup",
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublishOnly": "npm run tsc"
   },

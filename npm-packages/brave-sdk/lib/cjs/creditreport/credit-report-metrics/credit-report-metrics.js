@@ -5,14 +5,23 @@ const credit_databreaches_metric_1 = require("./credit-databreaches-metric");
 const credit_forbearance_metric_1 = require("./credit-forbearance-metric");
 const credit_mix_metric_1 = require("./credit-mix-metric");
 const credit_utilization_metric_1 = require("./credit-utilization-metric");
-const negative_accounts_metric_1 = require("./negative-accounts-metric");
+const credit_negative_accounts_metric_1 = require("./credit-negative-accounts-metric");
+/**
+ * Class to compile the 5 summary metrics from the MergeReport
+ * @constructor MergeReport
+ * @method calculateMetrics required to run and pull the metrics
+ */
 class CreditReportMetrics {
     constructor(report) {
         this.report = report;
         this.metrics = [];
     }
+    /**
+     *
+     * @returns CreditReportMetric Array
+     */
     calculateMetrics() {
-        const metric1 = new negative_accounts_metric_1.NegativeAccountsMetric(this.report).getMetric();
+        const metric1 = new credit_negative_accounts_metric_1.CreditNegativeAccountsMetric(this.report).getMetric();
         const metric2 = new credit_mix_metric_1.CreditMixMetric(this.report).getMetric();
         const metric3 = new credit_utilization_metric_1.CreditUtilizationMetric(this.report).getMetric();
         const metric4 = new credit_forbearance_metric_1.CreditForbearanceMetric(this.report).getMetric();

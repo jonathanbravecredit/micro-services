@@ -1,8 +1,8 @@
 'use strict';
 import * as AWS from 'aws-sdk';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import { CreditReport } from 'libs/models/CreditReport.model';
-import { CreditReportWithMetrics } from 'libs/models/CreditReportWithMetrics';
+import { CreditReport } from 'brave-sdk/dynamodb';
+import { CreditReportMetrics } from 'libs/models/credit-report-metrics';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 
@@ -19,8 +19,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { NewImage } = stream;
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
-          const analysis = new CreditReportWithMetrics(newImage);
-          analysis.init();
+          const analysis = new CreditReportMetrics(newImage);
           analysis.aggregate();
           const { id, metrics } = analysis;
           if (!id || !metrics) return;
@@ -43,8 +42,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           if (!NewImage) return;
           const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as CreditReport;
           if (newImage.version !== 0) return;
-          const analysis = new CreditReportWithMetrics(newImage);
-          analysis.init();
+          const analysis = new CreditReportMetrics(newImage);
           analysis.aggregate();
           const { id, metrics } = analysis;
           if (!id || !metrics) return;

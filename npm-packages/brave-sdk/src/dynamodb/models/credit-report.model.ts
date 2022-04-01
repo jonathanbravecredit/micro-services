@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import { MergeReport } from '../../creditreport/merge-report/merge-report';
-import { CreditReportMetrics } from '../../creditreport/credit-report-metrics/credit-report-metrics';
+import { CreditReportMetric } from '../../creditreport/credit-report-metrics/credit-report-metrics';
 
 @Model({ tableName: 'CreditReports' })
 export class CreditReport {
@@ -17,7 +17,7 @@ export class CreditReport {
 
   report!: MergeReport;
 
-  metrics: CreditReportMetrics[] = [];
+  metrics: CreditReportMetric<any, any>[] = [];
 
   createdOn: string | null = null;
 
@@ -28,7 +28,7 @@ export class CreditReportMaker implements CreditReport {
   createdOn: string | null;
   modifiedOn: string | null;
   currentVersion: number | undefined;
-  metrics: CreditReportMetrics[] = [];
+  metrics: CreditReportMetric<any, any>[] = [];
 
   constructor(
     public userId: string,

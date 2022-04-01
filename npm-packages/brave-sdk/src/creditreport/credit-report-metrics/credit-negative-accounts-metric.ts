@@ -3,7 +3,7 @@ import { NegativeAccountStatus, MetricIds, MetricLabels } from '../../_types/cre
 import { MergeReport } from '../merge-report/merge-report';
 import { CreditReportMetric } from './credit-report-metrics';
 
-export class NegativeAccountsMetric {
+export class CreditNegativeAccountsMetric {
   constructor(private report: MergeReport) {}
 
   getMetric(): CreditReportMetric<number, NegativeAccountStatus> {

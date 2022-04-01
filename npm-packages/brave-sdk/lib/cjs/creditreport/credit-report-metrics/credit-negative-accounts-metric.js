@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NegativeAccountsMetric = void 0;
+exports.CreditNegativeAccountsMetric = void 0;
 const transunion_1 = require("../../transunion/transunion");
 const credit_report_metrics_1 = require("./credit-report-metrics");
-class NegativeAccountsMetric {
+class CreditNegativeAccountsMetric {
     constructor(report) {
         this.report = report;
     }
@@ -23,4 +23,4 @@ class NegativeAccountsMetric {
         return count ? 'critical' : 'safe';
     }
 }
-exports.NegativeAccountsMetric = NegativeAccountsMetric;
+exports.CreditNegativeAccountsMetric = CreditNegativeAccountsMetric;

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransunionScrubbers = void 0;
-const __1 = require("../..");
+const nested_1 = require("../../utils/nested/nested");
 class TransunionScrubbers {
     constructor() { }
     /**
@@ -10,8 +10,8 @@ class TransunionScrubbers {
      * @returns
      */
     static scrubBackendData(data) {
-        let clean = __1.Nested.delete(data, '__typename');
-        clean = __1.Nested.delete(data, 'isFresh');
+        let clean = nested_1.Nested.delete(data, '__typename');
+        clean = nested_1.Nested.delete(data, 'isFresh');
         delete clean.createdAt; // this is a graphql managed field
         delete clean.updatedAt; // this is a graphql managed field
         delete clean.owner; // this is a graphql managed field
