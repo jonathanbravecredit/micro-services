@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { response } from 'libs/utils/response';
-import { CreditReportQueries } from 'brave-sdk/dynamodb';
+import { CreditReportQueries as db } from 'brave-sdk/dynamodb';
 import { MergeReport } from 'brave-sdk/creditreport';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -9,7 +9,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   const sub = event?.requestContext?.authorizer?.claims?.sub;
   if (!sub) return response(200, 'no id provided');
   try {
-    const report = await CreditReportQueries.getCurrentReport(sub);
+    const report = await db.getCurrentReport(sub);
     if (!report) return response(200, null);
     const resp = {
       ...report,
