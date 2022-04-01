@@ -1,10 +1,10 @@
 'use strict';
 import * as AWS from 'aws-sdk';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import { CreditReport } from 'libs/models/CreditReport.model';
-import { CreditReportMetrics } from 'libs/utils/metrics/CreditReportMetrics';
-import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
+import { CreditReport } from 'brave-sdk/dynamodb';
+import { CreditReportMetrics } from 'libs/models/credit-report-metrics';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
+import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC || '';
@@ -22,6 +22,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const analysis = new CreditReportMetrics(newImage);
           analysis.aggregate();
           const { id, metrics } = analysis;
+          if (!id || !metrics) return;
           console.log('id: ', id);
           console.log('metrics: ', metrics);
           const pub = new PubSubUtil();
@@ -44,6 +45,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const analysis = new CreditReportMetrics(newImage);
           analysis.aggregate();
           const { id, metrics } = analysis;
+          if (!id || !metrics) return;
           console.log('id: ', id);
           console.log('metrics: ', metrics);
           const pub = new PubSubUtil();
