@@ -1,6 +1,6 @@
 {
   "name": "@bravecredit/brave-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An SDK for backend and frontend development specifically designed for the services facilitating Brave Credit",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
