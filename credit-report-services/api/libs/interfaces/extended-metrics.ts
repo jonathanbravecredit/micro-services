@@ -1,4 +1,4 @@
-export interface ICreditReportMetrics {
+export interface IExtendedMetrics {
   userId: string | null;
   creditScore: number;
   countAllAccounts: number;

@@ -2,7 +2,7 @@
 import * as AWS from 'aws-sdk';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { ExtendedMetrics } from 'libs/models/extended-metrics';
-import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
+import { IExtendedMetrics } from 'libs/interfaces/extended-metrics';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 import { CreditReport } from '@bravecredit/brave-sdk';
 
@@ -26,7 +26,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           console.log('id: ', id);
           console.log('metrics: ', metrics);
           const pub = new PubSubUtil();
-          pub.createSNSPayload<{ id: string; metrics: ICreditReportMetrics }>(
+          pub.createSNSPayload<{ id: string; metrics: IExtendedMetrics }>(
             'creditreports',
             'PUT',
             { id, metrics },
@@ -49,7 +49,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           console.log('id: ', id);
           console.log('metrics: ', metrics);
           const pub = new PubSubUtil();
-          pub.createSNSPayload<{ id: string; metrics: ICreditReportMetrics }>(
+          pub.createSNSPayload<{ id: string; metrics: IExtendedMetrics }>(
             'creditreports',
             'POST',
             { id, metrics },

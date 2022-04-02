@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
+import { IExtendedMetrics } from 'libs/interfaces/extended-metrics';
 import {
   MergeReport,
   Subscriber,
@@ -13,8 +13,10 @@ import {
   CreditReport,
   CreditScore,
   Nested as _nest,
+  AccountTypes,
+  NEGATIVE_PAY_STATUS_CODES,
+  ACCOUNT_TYPES,
 } from '@bravecredit/brave-sdk';
-import { AccountTypes, ACCOUNT_TYPES } from '@bravecredit/brave-sdk';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Los_Angeles');
@@ -30,7 +32,7 @@ export class ExtendedMetrics {
   publicRecordsSummary: PublicRecordSummary | null;
   publicRecords: PublicPartition[];
   creditScore: number | null;
-  metrics: ICreditReportMetrics = {} as ICreditReportMetrics;
+  metrics: IExtendedMetrics = {} as IExtendedMetrics;
 
   constructor(creditReport: CreditReport) {
     this.id = creditReport.userId;
@@ -47,7 +49,7 @@ export class ExtendedMetrics {
   }
 
   aggregate(): void {
-    const data: ICreditReportMetrics = {
+    const data: IExtendedMetrics = {
       userId: this.id,
       creditScore: this.creditScore || -1,
       countPublicRecordAccounts: this.countPublicRecordAccounts(),

@@ -1,7 +1,13 @@
 import 'reflect-metadata';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
-import { IBatchPayload, ICreditReportPayload } from 'libs/interfaces/batch.interface';
-import { CreditReportMaker, MergeReport, CreditReportMetrics, CreditReportQueries as db } from '@bravecredit/brave-sdk';
+import {
+  CreditReportMaker,
+  MergeReport,
+  CreditReportMetrics,
+  CreditReportQueries as db,
+  IBatchPayload,
+  ICreditReportPayload,
+} from '@bravecredit/brave-sdk';
 
 export const main: SQSHandler = async (event: SQSEvent): Promise<void> => {
   const reportRequests = event.Records.map((r) => {
