@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { response } from 'libs/utils/response';
-import { MergeReport, CreditReportQueries as db } from '@bravecredit/brave-sdk';
-import { CreditReportMetrics } from 'libs/models/credit-report-metrics';
+import { MergeReport, CreditReportMetrics, CreditReportQueries as db } from '@bravecredit/brave-sdk';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event ==> ', JSON.stringify(event));
