@@ -1,35 +1,35 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import {
-  IMergeReport,
-  ISubscriber,
-  IBorrower,
-  ITradelineSummary,
-  ITradeLinePartition,
-  IPublicRecordSummary,
-  IPublicPartition,
-  ICreditScore,
-} from 'brave-sdk/_types/merge-report';
-import { CreditReport } from 'brave-sdk/dynamodb';
-import { Nested as _nest } from 'brave-sdk/utils';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
 import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
-import { AccountTypes, ACCOUNT_TYPES } from 'libs/data/account-types';
+import {
+  MergeReport,
+  Subscriber,
+  Borrower,
+  TradelineSummary,
+  TradeLinePartition,
+  PublicRecordSummary,
+  PublicPartition,
+  CreditReport,
+  CreditScore,
+  Nested as _nest,
+} from '@bravecredit/brave-sdk';
+import { AccountTypes, ACCOUNT_TYPES } from '@bravecredit/brave-sdk/lib/cjs/constants/transunion';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Los_Angeles');
 
-export class CreditReportMetrics {
+export class ExtendedMetrics {
   id: string;
   userEnrolled = false;
-  userReport: IMergeReport;
-  subscribers: ISubscriber[];
-  borrowerRecords: IBorrower;
-  tradelineRecordsSummary: ITradelineSummary | null;
-  tradelineRecords: ITradeLinePartition[];
-  publicRecordsSummary: IPublicRecordSummary | null;
-  publicRecords: IPublicPartition[];
+  userReport: MergeReport;
+  subscribers: Subscriber[];
+  borrowerRecords: Borrower;
+  tradelineRecordsSummary: TradelineSummary | null;
+  tradelineRecords: TradeLinePartition[];
+  publicRecordsSummary: PublicRecordSummary | null;
+  publicRecords: PublicPartition[];
   creditScore: number | null;
   metrics: ICreditReportMetrics = {} as ICreditReportMetrics;
 
@@ -38,15 +38,13 @@ export class CreditReportMetrics {
     const { report } = creditReport;
     this.userReport = report;
     this.creditScore = this.parseCreditScore(report);
-    this.subscribers = _nest.find<ISubscriber[]>(report, 'Subscriber') || [];
-    this.borrowerRecords = _nest.find<IBorrower>(report, 'Borrower') || ({} as IBorrower);
-    this.tradelineRecordsSummary =
-      _nest.find<ITradelineSummary>(report, 'TradelineSummary') || ({} as ITradelineSummary);
-    this.tradelineRecords = _nest.find<ITradeLinePartition[]>(report, 'TradeLinePartition') || [];
+    this.subscribers = _nest.find<Subscriber[]>(report, 'Subscriber') || [];
+    this.borrowerRecords = _nest.find<Borrower>(report, 'Borrower') || ({} as Borrower);
+    this.tradelineRecordsSummary = _nest.find<TradelineSummary>(report, 'TradelineSummary') || ({} as TradelineSummary);
+    this.tradelineRecords = _nest.find<TradeLinePartition[]>(report, 'TradeLinePartition') || [];
     this.publicRecordsSummary =
-      _nest.find<IPublicRecordSummary>(report, 'PublicRecordSummary') || ({} as IPublicRecordSummary);
-    this.publicRecords = _nest.find<IPublicPartition[]>(report, 'PulblicRecordPartition') || [];
-    // this.aggregate(); // creates the report ready data on this.report
+      _nest.find<PublicRecordSummary>(report, 'PublicRecordSummary') || ({} as PublicRecordSummary);
+    this.publicRecords = _nest.find<PublicPartition[]>(report, 'PulblicRecordPartition') || [];
   }
 
   aggregate(): void {
@@ -119,7 +117,7 @@ export class CreditReportMetrics {
     };
   }
 
-  getAccountBalance(trade: ITradeLinePartition): number {
+  getAccountBalance(trade: TradeLinePartition): number {
     const bal = trade?.Tradeline?.currentBalance || 0;
     return isNaN(+bal) ? 0 : +bal;
   }
@@ -141,40 +139,40 @@ export class CreditReportMetrics {
   /*=============================*/
   //        filter/aggregators
   /*=============================*/
-  filterOpenAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenAccounts(trade: TradeLinePartition): boolean {
     const symbol = trade?.Tradeline?.OpenClosed?.symbol?.toString() || '';
     return symbol.toLowerCase() === 'o';
   }
 
-  filterNegativeAccounts(trade: ITradeLinePartition): boolean {
+  filterNegativeAccounts(trade: TradeLinePartition): boolean {
     const symbol = trade?.Tradeline?.PayStatus?.symbol || 'U';
     const neg = NEGATIVE_PAY_STATUS_CODES[symbol];
     return !!neg;
   }
 
-  filterOpenByAccountType(trade: ITradeLinePartition, type: AccountTypes): boolean {
+  filterOpenByAccountType(trade: TradeLinePartition, type: AccountTypes): boolean {
     if (trade.Tradeline?.OpenClosed?.symbol?.toString().toLowerCase() !== 'o') return false;
     const sym = trade.accountTypeSymbol?.toLowerCase() || '';
     return ACCOUNT_TYPES[sym] === type ? true : false;
   }
 
-  filterOpenInstallmentAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenInstallmentAccounts(trade: TradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Installment);
   }
 
-  filterOpenRealEstateAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenRealEstateAccounts(trade: TradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Mortgage);
   }
 
-  filterOpenRevolvingAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenRevolvingAccounts(trade: TradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Revolving);
   }
 
-  filterOpenCollectionAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenCollectionAccounts(trade: TradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Collection);
   }
 
-  filterOpenOtherAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenOtherAccounts(trade: TradeLinePartition): boolean {
     if (!this.filterOpenAccounts(trade)) return false;
     if (
       this.filterOpenInstallmentAccounts(trade) ||
@@ -188,7 +186,7 @@ export class CreditReportMetrics {
     }
   }
 
-  filterOpenStudentLoanAccounts(trade: ITradeLinePartition): boolean {
+  filterOpenStudentLoanAccounts(trade: TradeLinePartition): boolean {
     if (trade.Tradeline?.OpenClosed?.symbol?.toString().toLowerCase() !== 'o') return false;
     const symbol = trade.Tradeline?.GrantedTrade?.AccountType?.symbol || null;
     return `${symbol}`.toLowerCase() === 'st' || `${symbol}`.toLowerCase() === 'educ';
@@ -281,9 +279,9 @@ export class CreditReportMetrics {
   /*=============================*/
   //        parsers
   /*=============================*/
-  parseCreditScore(report: IMergeReport): number | null {
+  parseCreditScore(report: MergeReport): number | null {
     if (!report) return null;
-    const creditScore = _nest.find<ICreditScore[]>(report, 'CreditScore') || [];
+    const creditScore = _nest.find<CreditScore[]>(report, 'CreditScore') || [];
     const riskScore = creditScore.find((s) => s.scoreName?.toLowerCase() === 'vantagescore3');
     const value = +`${riskScore}`;
     if (isNaN(value)) return 0;
