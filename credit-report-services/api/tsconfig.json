@@ -6,9 +6,6 @@
     "target": "es6",
     "sourceMap": true,
     "strict": true,
-    "paths": {
-      "@brave/*": ["node_modules/@bravecredit/brave-sdk/lib/cjs/*"]
-    },
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
