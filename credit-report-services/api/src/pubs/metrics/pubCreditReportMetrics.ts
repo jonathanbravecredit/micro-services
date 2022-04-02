@@ -1,10 +1,10 @@
 'use strict';
 import * as AWS from 'aws-sdk';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import { CreditReport } from 'brave-sdk/dynamodb';
 import { CreditReportMetrics } from 'libs/models/credit-report-metrics';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
+import { CreditReport } from '@bravecredit/brave-sdk';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const arn = process.env.CREDIT_REPORT_METRICS_SNS_TOPIC || '';

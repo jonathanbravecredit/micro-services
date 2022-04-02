@@ -7,7 +7,7 @@
     "sourceMap": true,
     "strict": true,
     "paths": {
-      "brave-sdk/*": ["node_modules/@bravecredit/brave-sdk/lib/cjs/*"]
+      "@brave/*": ["node_modules/@bravecredit/brave-sdk/lib/cjs/*"]
     },
     "moduleResolution": "node",
     "esModuleInterop": true,
