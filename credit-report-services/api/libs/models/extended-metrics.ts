@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
-import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
 import {
   MergeReport,
   Subscriber,
@@ -15,7 +14,7 @@ import {
   CreditScore,
   Nested as _nest,
 } from '@bravecredit/brave-sdk';
-import { AccountTypes, ACCOUNT_TYPES } from '@bravecredit/brave-sdk/lib/cjs/constants/transunion';
+import { AccountTypes, ACCOUNT_TYPES } from '@bravecredit/brave-sdk';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Los_Angeles');
