@@ -1,9 +1,10 @@
+import { IInquirySummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 
-export class InquirySummaryInfo extends Homogenize<Partial<InquirySummaryInfo>> {
+export class InquirySummaryInfo extends Homogenize<Partial<IInquirySummaryInfo>> implements IInquirySummaryInfo {
   NumberInLast2Years: number | string | null = null;
 
-  constructor(_data: Partial<InquirySummaryInfo>) {
+  constructor(_data: Partial<IInquirySummaryInfo>) {
     super(_data);
     this.homogenize(_data);
   }

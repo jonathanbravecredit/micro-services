@@ -1,19 +1,21 @@
+import { ICodeRef, ISource } from '../../../../types';
+import { IBorrowerAddress, ICreditAddress } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 import { CreditAddress } from '../../common/credit-address';
 import { Source } from '../../common/source';
 
-export class BorrowerAddress extends Homogenize<Partial<BorrowerAddress>> {
-  CreditAddress!: CreditAddress;
-  Dwelling!: CodeRef;
-  Origin!: CodeRef;
-  Ownership!: CodeRef;
-  Source: Source = new Source({});
+export class BorrowerAddress extends Homogenize<Partial<IBorrowerAddress>> implements IBorrowerAddress {
+  CreditAddress!: ICreditAddress;
+  Dwelling!: ICodeRef;
+  Origin!: ICodeRef;
+  Ownership!: ICodeRef;
+  Source: ISource = new Source({});
   dateReported: string | null = null;
   addressOrder: number | null = null;
   partitionSet: number | null = null;
 
-  constructor(_data: Partial<BorrowerAddress>) {
+  constructor(_data: Partial<IBorrowerAddress>) {
     super(_data);
     this.homogenize(_data);
     this.init();

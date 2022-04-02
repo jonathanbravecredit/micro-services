@@ -1,10 +1,11 @@
+import { IInquiryPartition, IInquiry } from '../../../types/merge-report';
 import { Homogenize } from '../../../utils/homogenize/homogenize-data';
 import { Inquiry } from './inquiry-components/inquiry';
 
-export class InquiryPartition extends Homogenize<Partial<InquiryPartition>> {
-  Inquiry!: Inquiry;
+export class InquiryPartition extends Homogenize<Partial<IInquiryPartition>> implements IInquiryPartition {
+  Inquiry!: IInquiry;
 
-  constructor(_data: Partial<InquiryPartition>) {
+  constructor(_data: Partial<IInquiryPartition>) {
     super(_data);
     this.homogenize(_data);
     this.init();

@@ -1,3 +1,5 @@
+import { ICodeRef, IRemark, ISource } from '../../../../types';
+import { ITradeline, IWatchTrade, IGrantedTrade, ICollectionTrade } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 import { Remark } from '../../common/remark';
@@ -6,19 +8,19 @@ import { CollectionTrade } from './collection-trade';
 import { GrantedTrade } from './granted-trade';
 import { WatchTrade } from './watch-trade';
 
-export class Tradeline extends Homogenize<Partial<Tradeline>> {
-  AccountCondition!: CodeRef;
-  AccountDesignator!: CodeRef;
-  DisputeFlag!: CodeRef;
-  IndustryCode!: CodeRef;
-  OpenClosed!: CodeRef;
-  PayStatus!: CodeRef;
-  VerificationIndicator!: CodeRef;
-  Remark!: Remark[];
-  WatchTrade!: WatchTrade;
-  GrantedTrade!: GrantedTrade;
-  CollectionTrade!: CollectionTrade;
-  Source!: Source;
+export class Tradeline extends Homogenize<Partial<ITradeline>> implements ITradeline {
+  AccountCondition!: ICodeRef;
+  AccountDesignator!: ICodeRef;
+  DisputeFlag!: ICodeRef;
+  IndustryCode!: ICodeRef;
+  OpenClosed!: ICodeRef;
+  PayStatus!: ICodeRef;
+  VerificationIndicator!: ICodeRef;
+  Remark!: IRemark[];
+  WatchTrade!: IWatchTrade;
+  GrantedTrade!: IGrantedTrade;
+  CollectionTrade!: ICollectionTrade;
+  Source!: ISource;
   subscriberCode: string | null = null;
   highBalance: number | string | null = null;
   dateVerified: string | null = null;
@@ -33,7 +35,7 @@ export class Tradeline extends Homogenize<Partial<Tradeline>> {
   dateClosed: string | null = null;
   dateAccountStatus: string | null = null;
 
-  constructor(_data: Partial<Tradeline>) {
+  constructor(_data: Partial<ITradeline>) {
     super(_data);
     this.homogenize(_data);
     this.init();
@@ -47,7 +49,7 @@ export class Tradeline extends Homogenize<Partial<Tradeline>> {
     this.OpenClosed = new CodeRef(this.OpenClosed);
     this.PayStatus = new CodeRef(this.PayStatus);
     this.VerificationIndicator = new CodeRef(this.VerificationIndicator);
-    this.Remark = this.homogenizeArray<Remark, Remark>(this.Remark, Remark);
+    this.Remark = this.homogenizeArray<IRemark, Remark>(this.Remark, Remark);
     this.WatchTrade = new WatchTrade(this.WatchTrade);
     this.GrantedTrade = new GrantedTrade(this.GrantedTrade);
     this.CollectionTrade = new CollectionTrade(this.CollectionTrade);

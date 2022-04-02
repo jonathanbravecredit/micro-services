@@ -1,4 +1,17 @@
-import { ICodeRef, IRemark, ISource } from '../../../../types/common-tu';
+import { ICodeRef, IRemark, ISource } from '../../../../types';
+import {
+  IPublicRecord,
+  IMiscPublicRecord,
+  IFinancingStatement,
+  IGarnishment,
+  IFinancialCounseling,
+  IMaritalItem,
+  IBankruptcy,
+  IRegisteredItem,
+  ITaxLien,
+  ILegalItem,
+  IForeclosure,
+} from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 import { Remark } from '../../common/remark';
@@ -14,24 +27,24 @@ import { MiscPublicRecord } from './misc-public-record';
 import { RegisteredItem } from './registered-item';
 import { TaxLien } from './tax-lien';
 
-export class PublicRecord extends Homogenize<Partial<PublicRecord>> {
-  AccountDesignator!: CodeRef;
-  Classification!: CodeRef;
-  IndustryCode!: CodeRef;
-  Status!: CodeRef;
-  Type!: CodeRef;
-  MiscPublicRecord!: MiscPublicRecord;
-  FinancingStatement!: FinancingStatement;
-  Garnishment!: Garnishment;
-  FinancialCounseling!: FinancialCounseling;
-  MaritalItem!: MaritalItem;
-  Bankruptcy!: Bankruptcy;
-  RegisteredItem!: RegisteredItem;
-  TaxLien!: TaxLien;
-  LegalItem!: LegalItem;
-  Foreclosure!: Foreclosure;
-  Remark: Remark[] = [];
-  Source!: Source;
+export class PublicRecord extends Homogenize<Partial<IPublicRecord>> implements IPublicRecord {
+  AccountDesignator!: ICodeRef;
+  Classification!: ICodeRef;
+  IndustryCode!: ICodeRef;
+  Status!: ICodeRef;
+  Type!: ICodeRef;
+  MiscPublicRecord!: IMiscPublicRecord;
+  FinancingStatement!: IFinancingStatement;
+  Garnishment!: IGarnishment;
+  FinancialCounseling!: IFinancialCounseling;
+  MaritalItem!: IMaritalItem;
+  Bankruptcy!: IBankruptcy;
+  RegisteredItem!: IRegisteredItem;
+  TaxLien!: ITaxLien;
+  LegalItem!: ILegalItem;
+  Foreclosure!: IForeclosure;
+  Remark: IRemark[] = [];
+  Source!: ISource;
   ExpirationDate: string | null = null;
   subscriberCode: string | null = null;
   referenceNumber: string | null = null;
@@ -42,7 +55,7 @@ export class PublicRecord extends Homogenize<Partial<PublicRecord>> {
   dateVerified: string | null = null;
   dateUpdated: string | null = null;
 
-  constructor(_data: Partial<PublicRecord>) {
+  constructor(_data: Partial<IPublicRecord>) {
     super(_data);
     this.homogenize(_data);
     this.init();

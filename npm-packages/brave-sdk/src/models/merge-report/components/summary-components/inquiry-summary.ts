@@ -1,13 +1,14 @@
+import { IInquirySummary, IInquirySummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { InquirySummaryInfo } from './inquiry-summary-info';
 
-export class InquirySummary extends Homogenize<Partial<InquirySummary>> {
-  Experian!: InquirySummaryInfo;
-  Equifax!: InquirySummaryInfo;
-  TransUnion!: InquirySummaryInfo;
-  Merge!: InquirySummaryInfo;
+export class InquirySummary extends Homogenize<Partial<IInquirySummary>> implements IInquirySummary {
+  Experian!: IInquirySummaryInfo;
+  Equifax!: IInquirySummaryInfo;
+  TransUnion!: IInquirySummaryInfo;
+  Merge!: IInquirySummaryInfo;
 
-  constructor(_data: Partial<InquirySummary>) {
+  constructor(_data: Partial<IInquirySummary>) {
     super(_data);
     this.homogenize(_data);
     this.init();

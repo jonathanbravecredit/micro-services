@@ -1,14 +1,16 @@
+import { ICodeRef } from '../../../../types';
+import { IGrantedTrade, IPayStatusHistory } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 import { PayStatusHistory } from './pay-status-history';
 
-export class GrantedTrade extends Homogenize<Partial<GrantedTrade>> {
-  AccountType!: CodeRef;
-  CreditType!: CodeRef;
-  PaymentFrequency!: CodeRef;
-  TermType!: CodeRef;
-  WorstPayStatus!: CodeRef;
-  PayStatusHistory!: PayStatusHistory;
+export class GrantedTrade extends Homogenize<Partial<IGrantedTrade>> implements IGrantedTrade {
+  AccountType!: ICodeRef;
+  CreditType!: ICodeRef;
+  PaymentFrequency!: ICodeRef;
+  TermType!: ICodeRef;
+  WorstPayStatus!: ICodeRef;
+  PayStatusHistory!: IPayStatusHistory;
   CreditLimit: number | string | null = null;
   monthsReviewed: number | string | null = null;
   monthlyPayment: number | string | null = null;
@@ -24,7 +26,7 @@ export class GrantedTrade extends Homogenize<Partial<GrantedTrade>> {
   dateWorstPayStatus: string | null = null;
   datePastDue: string | null = null;
 
-  constructor(_data: Partial<GrantedTrade>) {
+  constructor(_data: Partial<IGrantedTrade>) {
     super(_data);
     this.homogenize(_data);
     this.init();

@@ -1,6 +1,7 @@
+import { ICreditAddress } from '../../../types/merge-report';
 import { Homogenize } from '../../../utils/homogenize/homogenize-data';
 
-export class CreditAddress extends Homogenize<Partial<CreditAddress>> {
+export class CreditAddress extends Homogenize<Partial<ICreditAddress>> implements ICreditAddress {
   city: string | null = null;
   country: string | null = null;
   county: string | null = null;
@@ -13,7 +14,7 @@ export class CreditAddress extends Homogenize<Partial<CreditAddress>> {
   unparsedStreet: string | null = null;
   postalCode: string | number | null = null;
 
-  constructor(_data: Partial<CreditAddress>) {
+  constructor(_data: Partial<ICreditAddress>) {
     super(_data);
     this.homogenize(_data);
   }

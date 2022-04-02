@@ -1,10 +1,14 @@
+import { IPortfolioCreditSummary, IPortfolioCreditSummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { PortfolioCreditSummaryInfo } from './portfolio-credit-summary-info';
 
-export class PortfolioCreditSummary extends Homogenize<Partial<PortfolioCreditSummary>> {
-  TransUnion!: PortfolioCreditSummaryInfo;
+export class PortfolioCreditSummary
+  extends Homogenize<Partial<IPortfolioCreditSummary>>
+  implements IPortfolioCreditSummary
+{
+  TransUnion!: IPortfolioCreditSummaryInfo;
 
-  constructor(_data: Partial<PortfolioCreditSummary>) {
+  constructor(_data: Partial<IPortfolioCreditSummary>) {
     super(_data);
     this.homogenize(_data);
     this.init();

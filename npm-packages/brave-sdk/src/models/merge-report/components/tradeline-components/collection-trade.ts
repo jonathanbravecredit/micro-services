@@ -1,12 +1,14 @@
+import { ICodeRef } from '../../../../types';
+import { ICollectionTrade } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 
-export class CollectionTrade extends Homogenize<Partial<CollectionTrade>> {
-  creditType!: CodeRef; // TODO double check the case in XSD
+export class CollectionTrade extends Homogenize<Partial<ICollectionTrade>> implements ICollectionTrade {
+  creditType!: ICodeRef; // TODO double check the case in XSD
   actualPaymentAmount: number | string | null = null;
   originalCreditor: string | null = null;
 
-  constructor(_data: Partial<CollectionTrade>) {
+  constructor(_data: Partial<ICollectionTrade>) {
     super(_data);
     this.homogenize(_data);
     this.init();

@@ -1,3 +1,11 @@
+import {
+  ISummary,
+  ITradelineSummary,
+  IInquirySummary,
+  IPublicRecordSummary,
+  IPortfolioCreditSummary,
+  IAccountHistorySummary,
+} from '../../../types/merge-report';
 import { Homogenize } from '../../../utils/homogenize/homogenize-data';
 import { AccountHistorySummary } from './summary-components/account-history-summary';
 import { InquirySummary } from './summary-components/inquiry-summary';
@@ -5,14 +13,14 @@ import { PortfolioCreditSummary } from './summary-components/portfolio-credit-su
 import { PublicRecordSummary } from './summary-components/public-record-summary';
 import { TradelineSummary } from './summary-components/tradeline-summary';
 
-export class Summary extends Homogenize<Partial<Summary>> {
-  TradelineSummary!: TradelineSummary;
-  InquirySummary!: InquirySummary;
-  PublicRecordSummary!: PublicRecordSummary;
-  PortfolioCreditSummary: PortfolioCreditSummary[] = [];
-  AccountHistorySummary: AccountHistorySummary[] = [];
+export class Summary extends Homogenize<Partial<ISummary>> implements ISummary {
+  TradelineSummary!: ITradelineSummary;
+  InquirySummary!: IInquirySummary;
+  PublicRecordSummary!: IPublicRecordSummary;
+  PortfolioCreditSummary: IPortfolioCreditSummary[] = [];
+  AccountHistorySummary: IAccountHistorySummary[] = [];
 
-  constructor(_data: Partial<Summary>) {
+  constructor(_data: Partial<ISummary>) {
     super(_data);
     this.homogenize(_data);
     this.init();
@@ -22,11 +30,11 @@ export class Summary extends Homogenize<Partial<Summary>> {
     this.TradelineSummary = new TradelineSummary(this.TradelineSummary);
     this.InquirySummary = new InquirySummary(this.InquirySummary);
     this.PublicRecordSummary = new PublicRecordSummary(this.PublicRecordSummary);
-    this.PortfolioCreditSummary = this.homogenizeArray<PortfolioCreditSummary, PortfolioCreditSummary>(
+    this.PortfolioCreditSummary = this.homogenizeArray<IPortfolioCreditSummary, PortfolioCreditSummary>(
       this.PortfolioCreditSummary,
       PortfolioCreditSummary,
     );
-    this.AccountHistorySummary = this.homogenizeArray<AccountHistorySummary, AccountHistorySummary>(
+    this.AccountHistorySummary = this.homogenizeArray<IAccountHistorySummary, AccountHistorySummary>(
       this.AccountHistorySummary,
       AccountHistorySummary,
     );

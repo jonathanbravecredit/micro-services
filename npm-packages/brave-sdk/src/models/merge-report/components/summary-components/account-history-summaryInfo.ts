@@ -1,8 +1,13 @@
+import { ICodeRef } from '../../../../types';
+import { IAccountHistorySummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 
-export class AccountHistorySummaryInfo extends Homogenize<Partial<AccountHistorySummaryInfo>> {
-  SummaryType!: CodeRef;
+export class AccountHistorySummaryInfo
+  extends Homogenize<Partial<IAccountHistorySummaryInfo>>
+  implements IAccountHistorySummaryInfo
+{
+  SummaryType!: ICodeRef;
   TotalPaymentRatio: number | string | null = null;
   ActualPaymentAmount: number | string | null = null;
   PaymentDueAmount: number | string | null = null;
@@ -16,7 +21,7 @@ export class AccountHistorySummaryInfo extends Homogenize<Partial<AccountHistory
   PriorMonthBalance: number | string | null = null;
   CreditLimitAmount: number | string | null = null;
 
-  constructor(_data: Partial<AccountHistorySummaryInfo>) {
+  constructor(_data: Partial<IAccountHistorySummaryInfo>) {
     super(_data);
     this.homogenize(_data);
     this.init();

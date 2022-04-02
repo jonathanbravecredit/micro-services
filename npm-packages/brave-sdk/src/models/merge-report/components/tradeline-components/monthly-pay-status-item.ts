@@ -1,10 +1,12 @@
+import { ICodeRef } from '../../../../types';
+import { IMonthlyPayStatusItem } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 
-export class MonthlyPayStatusItem extends Homogenize<Partial<MonthlyPayStatusItem>> {
-  GenericRemark!: CodeRef;
-  RatingRemark!: CodeRef;
-  ComplianceRemark!: CodeRef;
+export class MonthlyPayStatusItem extends Homogenize<Partial<IMonthlyPayStatusItem>> implements IMonthlyPayStatusItem {
+  GenericRemark!: ICodeRef;
+  RatingRemark!: ICodeRef;
+  ComplianceRemark!: ICodeRef;
   PaymentDue: number | string | null = null;
   CreditLimit: number | string | null = null;
   ActualPayment: number | string | null = null;
@@ -15,7 +17,7 @@ export class MonthlyPayStatusItem extends Homogenize<Partial<MonthlyPayStatusIte
   currentBalance: number | string | null = null;
   changed: boolean | string | null = null;
 
-  constructor(_data: Partial<MonthlyPayStatusItem>) {
+  constructor(_data: Partial<IMonthlyPayStatusItem>) {
     super(_data);
     this.homogenize(_data);
     this.init();

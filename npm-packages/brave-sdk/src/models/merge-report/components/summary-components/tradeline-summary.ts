@@ -1,13 +1,14 @@
+import { ITradelineSummary, ITradelineSummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { TradelineSummaryInfo } from './tradeline-summary-info';
 
-export class TradelineSummary extends Homogenize<Partial<TradelineSummary>> {
-  Experian!: TradelineSummaryInfo;
-  Equifax!: TradelineSummaryInfo;
-  TransUnion!: TradelineSummaryInfo;
-  Merge!: TradelineSummaryInfo;
+export class TradelineSummary extends Homogenize<Partial<ITradelineSummary>> implements ITradelineSummary {
+  Experian!: ITradelineSummaryInfo;
+  Equifax!: ITradelineSummaryInfo;
+  TransUnion!: ITradelineSummaryInfo;
+  Merge!: ITradelineSummaryInfo;
 
-  constructor(_data: Partial<TradelineSummary>) {
+  constructor(_data: Partial<ITradelineSummary>) {
     super(_data);
     this.homogenize(_data);
     this.init();

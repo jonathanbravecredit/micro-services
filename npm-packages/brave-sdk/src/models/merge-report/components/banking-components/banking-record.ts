@@ -1,15 +1,17 @@
+import { ICodeRef, IRemark, ISource } from '../../../../types';
+import { IBankingRecord } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 import { Remark } from '../../common/remark';
 import { Source } from '../../common/source';
 
-export class BankingRecord extends Homogenize<Partial<BankingRecord>> {
-  BankingType!: CodeRef;
-  AccountDesignator!: CodeRef;
-  IndustryCode!: CodeRef;
-  Status!: CodeRef;
-  Remark: Remark[] = [];
-  Source!: Source;
+export class BankingRecord extends Homogenize<Partial<IBankingRecord>> implements IBankingRecord {
+  BankingType!: ICodeRef;
+  AccountDesignator!: ICodeRef;
+  IndustryCode!: ICodeRef;
+  Status!: ICodeRef;
+  Remark: IRemark[] = [];
+  Source!: ISource;
   dateOpened: string | null = null;
   dateClosed: string | null = null;
   bureau: string | null = null;
@@ -19,7 +21,7 @@ export class BankingRecord extends Homogenize<Partial<BankingRecord>> {
   balance: number | string | null = null;
   accountNumber: string | null = null;
 
-  constructor(_data: Partial<BankingRecord>) {
+  constructor(_data: Partial<IBankingRecord>) {
     super(_data);
     this.homogenize(_data);
     this.init();
@@ -29,7 +31,7 @@ export class BankingRecord extends Homogenize<Partial<BankingRecord>> {
     this.AccountDesignator = new CodeRef(this.AccountDesignator);
     this.IndustryCode = new CodeRef(this.IndustryCode);
     this.Status = new CodeRef(this.Status);
-    this.Remark = this.homogenizeArray<Remark, Remark>(this.Remark, Remark);
+    this.Remark = this.homogenizeArray<IRemark, Remark>(this.Remark, Remark);
     this.Source = new Source(this.Source);
   }
 }

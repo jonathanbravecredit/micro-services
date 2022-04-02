@@ -1,13 +1,14 @@
+import { ISource, ICodeRef } from '../../../types';
 import { Homogenize } from '../../../utils/homogenize/homogenize-data';
 import { CodeRef } from './code-ref';
 
-export class Source extends Homogenize<Partial<Source>> {
+export class Source extends Homogenize<Partial<ISource>> implements ISource {
   BorrowerKey: string | null = null;
-  Bureau!: CodeRef;
+  Bureau!: ICodeRef;
   InquiryDate: string | null = null;
   Reference: string | null = null;
 
-  constructor(_data: Partial<Source>) {
+  constructor(_data: Partial<ISource>) {
     super(_data);
     this.homogenize(_data);
     this.init();

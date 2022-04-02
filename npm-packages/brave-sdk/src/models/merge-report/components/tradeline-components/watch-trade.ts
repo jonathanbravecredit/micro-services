@@ -1,14 +1,16 @@
+import { ICodeRef } from '../../../../types';
+import { IWatchTrade } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 
-export class WatchTrade extends Homogenize<Partial<WatchTrade>> {
-  ContactMethod!: CodeRef;
-  CreditType!: CodeRef;
-  PreviousAccountCondition!: CodeRef;
+export class WatchTrade extends Homogenize<Partial<IWatchTrade>> implements IWatchTrade {
+  ContactMethod!: ICodeRef;
+  CreditType!: ICodeRef;
+  PreviousAccountCondition!: ICodeRef;
   previousAmountPastDue: number | string | null = null;
   amountPastDue: number | string | null = null;
 
-  constructor(_data: Partial<WatchTrade>) {
+  constructor(_data: Partial<IWatchTrade>) {
     super(_data);
     this.homogenize(_data);
     this.init();

@@ -1,13 +1,14 @@
+import { IPublicRecordSummary, IPublicRecordSummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { PublicRecordSummaryInfo } from './public-record-summary-info';
 
-export class PublicRecordSummary extends Homogenize<Partial<PublicRecordSummary>> {
-  Experian!: PublicRecordSummaryInfo;
-  Equifax!: PublicRecordSummaryInfo;
-  TransUnion!: PublicRecordSummaryInfo;
-  Merge!: PublicRecordSummaryInfo;
+export class PublicRecordSummary extends Homogenize<Partial<IPublicRecordSummary>> implements IPublicRecordSummary {
+  Experian!: IPublicRecordSummaryInfo;
+  Equifax!: IPublicRecordSummaryInfo;
+  TransUnion!: IPublicRecordSummaryInfo;
+  Merge!: IPublicRecordSummaryInfo;
 
-  constructor(_data: Partial<PublicRecordSummary>) {
+  constructor(_data: Partial<IPublicRecordSummary>) {
     super(_data);
     this.homogenize(_data);
     this.init();

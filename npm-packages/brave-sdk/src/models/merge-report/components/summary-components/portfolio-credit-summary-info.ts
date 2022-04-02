@@ -1,8 +1,13 @@
+import { ICodeRef } from '../../../../types';
+import { IPortfolioCreditSummaryInfo } from '../../../../types/merge-report';
 import { Homogenize } from '../../../../utils/homogenize/homogenize-data';
 import { CodeRef } from '../../common/code-ref';
 
-export class PortfolioCreditSummaryInfo extends Homogenize<Partial<PortfolioCreditSummaryInfo>> {
-  SummaryType!: CodeRef;
+export class PortfolioCreditSummaryInfo
+  extends Homogenize<Partial<IPortfolioCreditSummaryInfo>>
+  implements IPortfolioCreditSummaryInfo
+{
+  SummaryType!: ICodeRef;
   CurrentPaymentDueAmount: number | string | null = null;
   PriorPaymentDueAmount: number | string | null = null;
   CurrentActualPaymentAmount: number | string | null = null;
@@ -10,7 +15,7 @@ export class PortfolioCreditSummaryInfo extends Homogenize<Partial<PortfolioCred
   CreditLimitAmount: number | string | null = null;
   BalanceAmount: number | string | null = null;
 
-  constructor(_data: Partial<PortfolioCreditSummaryInfo>) {
+  constructor(_data: Partial<IPortfolioCreditSummaryInfo>) {
     super(_data);
     this.homogenize(_data);
     this.init();
