@@ -13,6 +13,8 @@ plugins:
 custom:
   bundle:
     linting: false
+    externals:
+      - '@bravecredit/brave-sdk'
     aliases:
       - 'libs': libs
       - 'src': src
