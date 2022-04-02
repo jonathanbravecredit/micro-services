@@ -1,20 +1,13 @@
 {
   "name": "@bravecredit/brave-sdk",
-  "version": "1.0.14",
+  "version": "1.0.16",
   "description": "An SDK for backend and frontend development specifically designed for the services facilitating Brave Credit",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
-  "exports": {
-    "require": "./lib/cjs/index.js",
-    "import": "./lib/esm/index.js",
-    "default": "./lib/esm/index.js"
-  },
+  "main": "./dist/index.js",
   "files": [
-    "lib/"
+    "dist/"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup",
-    "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "tsc": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run tsc"
   },
   "keywords": [],
@@ -26,10 +19,10 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@shiftcoders/dynamo-easy": "^7.1.0",
-    "fast-xml-parser": "^4.0.7",
     "he": "^1.2.0",
+    "uuid": "^8.3.2",
+    "fast-xml-parser": "^4.0.7",
     "reflect-metadata": "^0.1.13",
-    "uuid": "^8.3.2"
+    "@shiftcoders/dynamo-easy": "^7.1.0"
   }
 }

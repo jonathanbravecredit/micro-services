@@ -4,6 +4,9 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "target": "es6",
+    "paths": {
+      "@brave/*": ["node_modules/@bravecredit/brave-sdk/cjs/*"]
+    },
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "node",

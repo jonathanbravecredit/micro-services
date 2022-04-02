@@ -1,12 +1,12 @@
 import { MetricIds, MetricLabels } from '../../constants/transunion';
-import { CreditUtilizationStatus } from '../../types';
-import { TradeLinePartition } from '../merge-report/components/tradeline-partition';
+import { CreditUtilizationStatus, IMergeReport } from '../../types';
+import { ITradeLinePartition } from '../../types/merge-report';
 import { MergeReport } from '../merge-report/merge-report';
 import { CreditReportMetric } from './credit-report-metrics';
 
 export class CreditUtilizationMetric {
-  tradelines: TradeLinePartition[] = [];
-  constructor(private report: MergeReport) {
+  tradelines: ITradeLinePartition[] = [];
+  constructor(private report: IMergeReport) {
     this.tradelines = report.TrueLinkCreditReportType?.TradeLinePartition || [];
   }
 
@@ -16,7 +16,7 @@ export class CreditUtilizationMetric {
     return new CreditReportMetric(MetricIds.CreditUtilization, MetricLabels.CreditUtilization, perc, status);
   }
 
-  getCreditUtilizationSnapshotStatus(tradelines: TradeLinePartition[]): { status: string; perc: number } {
+  getCreditUtilizationSnapshotStatus(tradelines: ITradeLinePartition[]): { status: string; perc: number } {
     const perc = this.calculateCreditUtilization(tradelines);
     const status = this.mapUtilizationStatusToSnapshot(this.calculateCreditStatus(perc));
     return {
@@ -25,15 +25,15 @@ export class CreditUtilizationMetric {
     };
   }
 
-  calculateCreditUtilization(tradelines: TradeLinePartition[]): number {
+  calculateCreditUtilization(tradelines: ITradeLinePartition[]): number {
     const debtAmount = this.sumDebtAmount(tradelines);
     const totalAmount = this.sumTotalAmount(tradelines);
     const utilizationPerc = this.calcUtilzationPerc(debtAmount, totalAmount);
     return utilizationPerc;
   }
 
-  sumDebtAmount(tradelines: TradeLinePartition[]): number {
-    return tradelines.reduce<number>((a: number, partition: TradeLinePartition) => {
+  sumDebtAmount(tradelines: ITradeLinePartition[]): number {
+    return tradelines.reduce<number>((a: number, partition: ITradeLinePartition) => {
       const openClosed = partition.Tradeline?.OpenClosed?.symbol?.toString().toLowerCase() || '';
       const typeSymbol = partition.accountTypeSymbol?.toLowerCase() || '';
       const limit = +(partition.Tradeline?.GrantedTrade?.CreditLimit || 0);
@@ -46,8 +46,8 @@ export class CreditUtilizationMetric {
     }, 0);
   }
 
-  sumTotalAmount(tradelines: TradeLinePartition[]): number {
-    return tradelines.reduce<number>((a: number, partition: TradeLinePartition) => {
+  sumTotalAmount(tradelines: ITradeLinePartition[]): number {
+    return tradelines.reduce<number>((a: number, partition: ITradeLinePartition) => {
       const openClosed = partition.Tradeline?.OpenClosed?.symbol?.toString().toLowerCase() || '';
       const typeSymbol = partition.accountTypeSymbol?.toLowerCase() || '';
       const limit = +(partition.Tradeline?.GrantedTrade?.CreditLimit || 0);

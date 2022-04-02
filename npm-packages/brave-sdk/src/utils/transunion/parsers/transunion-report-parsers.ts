@@ -2,14 +2,14 @@ import { IRemark } from '../../../types/common-tu';
 import { TransunionMissing } from '../transunion-missing';
 import { NAME_MAP, ADDRESS_LINE_1, ADDRESS_LINE_2 } from '../../../constants/transunion';
 import {
-  Borrower,
-  BorrowerName,
-  CreditAddress,
-  CreditStatement,
-  Employer,
-  PhoneNumber,
-  Subscriber,
-} from '../../../models/merge-report';
+  IBorrower,
+  IBorrowerName,
+  ICreditAddress,
+  ICreditStatement,
+  IEmployer,
+  IPhoneNumber,
+  ISubscriber,
+} from '../../../types/merge-report';
 
 export class TransunionReportParsers extends TransunionMissing {
   constructor() {
@@ -35,7 +35,7 @@ export class TransunionReportParsers extends TransunionMissing {
   /**
    * Flatten the credit statement provided by the borrower
    */
-  static parseBorrowerForCreditStatement(borrower: Borrower | undefined): string | null | undefined {
+  static parseBorrowerForCreditStatement(borrower: IBorrower | undefined): string | null | undefined {
     if (!borrower) return;
     return borrower instanceof Array
       ? this.parseCreditStatement(borrower[0].CreditStatement)
@@ -45,7 +45,7 @@ export class TransunionReportParsers extends TransunionMissing {
   /**
    * Flatten the credit statement provided by the borrower
    */
-  private static parseCreditStatement(creditStatement: CreditStatement[] | undefined): string | null | undefined {
+  private static parseCreditStatement(creditStatement: ICreditStatement[] | undefined): string | null | undefined {
     if (!creditStatement) return;
     return creditStatement[0]?.statement;
   }
@@ -55,7 +55,7 @@ export class TransunionReportParsers extends TransunionMissing {
    * @param borrowerName
    * @returns
    */
-  static unparseName(borrowerName: BorrowerName | undefined): string {
+  static unparseName(borrowerName: IBorrowerName | undefined): string {
     if (!borrowerName) return this.bcMissing;
     if (!borrowerName.Name) return this.bcMissing;
     const name: Record<string, any> = borrowerName.Name;
@@ -73,7 +73,7 @@ export class TransunionReportParsers extends TransunionMissing {
    * @param employer
    * @returns
    */
-  static unparseEmployer(employer: Employer | undefined): string {
+  static unparseEmployer(employer: IEmployer | undefined): string {
     if (!employer) return this.bcMissing;
     if (!employer.name) return this.bcMissing;
 
@@ -88,7 +88,7 @@ export class TransunionReportParsers extends TransunionMissing {
    * @param phone
    * @returns
    */
-  static unparsePhone(phone: PhoneNumber | undefined): string {
+  static unparsePhone(phone: IPhoneNumber | undefined): string {
     if (!phone) return this.bcMissing;
     let area = phone.AreaCode ? `${phone.AreaCode}` : '000';
     let main = phone.Number ? `${phone.Number}` : '';
@@ -103,7 +103,7 @@ export class TransunionReportParsers extends TransunionMissing {
    * @returns
    */
   static unparseSubscriber(
-    subscriber: Subscriber | undefined | null,
+    subscriber: ISubscriber | undefined | null,
     nameOverride?: string,
   ): [string?, string?, string?] {
     if (!subscriber) return [0, 0, 0].map((x) => this.bcMissing) as [string, string, string];
@@ -119,7 +119,7 @@ export class TransunionReportParsers extends TransunionMissing {
    * @param address
    * @returns
    */
-  static unparseAddress(address: CreditAddress | undefined): string {
+  static unparseAddress(address: ICreditAddress | undefined): string {
     if (!address) return '';
     let records: Record<string, any> = address;
     let creditAddress = '';

@@ -5,14 +5,13 @@ import {
   MetricIds,
   MetricLabels,
 } from '../../constants/transunion';
-import { ICreditMixTLSummary, CreditMixStatus, IRecommendationText } from '../../types';
-import { TradeLinePartition } from '../merge-report/components/tradeline-partition';
-import { MergeReport } from '../merge-report/merge-report';
+import { ICreditMixTLSummary, CreditMixStatus, IRecommendationText, IMergeReport } from '../../types';
+import { ITradeLinePartition } from '../../types/merge-report';
 import { CreditReportMetric } from './credit-report-metrics';
 
 export class CreditMixMetric {
   private _summary: ICreditMixTLSummary = new CreditMixMetricSummaryMaker();
-  constructor(private report: MergeReport) {
+  constructor(private report: IMergeReport) {
     this.init(report.TrueLinkCreditReportType.TradeLinePartition || []);
   }
 
@@ -26,7 +25,7 @@ export class CreditMixMetric {
     return this._summary;
   }
 
-  init(partitions: TradeLinePartition[]): void {
+  init(partitions: ITradeLinePartition[]): void {
     partitions.forEach((tradeline) => {
       const openClosed = tradeline.Tradeline?.OpenClosed?.symbol?.toString().toLowerCase() || '';
       const typeSymbol = tradeline.accountTypeSymbol?.toLowerCase() || '';

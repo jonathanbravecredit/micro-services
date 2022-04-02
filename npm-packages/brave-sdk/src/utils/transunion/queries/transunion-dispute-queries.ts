@@ -1,5 +1,4 @@
 import { INVESTIGATION_RESULTS_CODE_MAPPING, CreditBureauFindingsType } from '../../../constants/transunion';
-import { PublicPartition, TrueLinkCreditReportType, TradeLinePartition } from '../../../models/merge-report';
 import {
   ICreditBureau,
   ILineItem,
@@ -8,6 +7,7 @@ import {
   ISummarySection,
   IPublicRecord,
 } from '../../../types/credit-bureau';
+import { IPublicPartition, ITradeLinePartition, ITrueLinkCreditReportType } from '../../../types/merge-report';
 
 export class TransunionDisputeQueries {
   static resultCodeMap = INVESTIGATION_RESULTS_CODE_MAPPING;
@@ -35,10 +35,10 @@ export class TransunionDisputeQueries {
    * @param partition
    * @returns
    */
-  static getUpdatedPublicRecordByKey(cbKey: string, partition: PublicPartition[]): PublicPartition | undefined {
+  static getUpdatedPublicRecordByKey(cbKey: string, partition: IPublicPartition[]): IPublicPartition | undefined {
     const memberCode = cbKey.split('_').slice(0, 2)[1];
     if (!partition) return;
-    return partition.find((item: PublicPartition) => {
+    return partition.find((item: IPublicPartition) => {
       const code = item.PublicRecord?.subscriberCode;
       return code == memberCode;
     });
@@ -49,7 +49,7 @@ export class TransunionDisputeQueries {
    * @param report
    * @returns
    */
-  static listUpdatedPublicRecords(report: TrueLinkCreditReportType): PublicPartition[] | [] {
+  static listUpdatedPublicRecords(report: ITrueLinkCreditReportType): IPublicPartition[] | [] {
     if (!report) return [];
     const partition = report.PulblicRecordPartition;
     if (partition instanceof Array) {
@@ -87,7 +87,7 @@ export class TransunionDisputeQueries {
    * @param report
    * @returns
    */
-  static listUpdatedTradelines(report: TrueLinkCreditReportType): TradeLinePartition[] | [] {
+  static listUpdatedTradelines(report: ITrueLinkCreditReportType): ITradeLinePartition[] | [] {
     if (!report) return [];
     const partition = report.TradeLinePartition;
     if (partition instanceof Array) {
@@ -103,10 +103,10 @@ export class TransunionDisputeQueries {
    * @param partition
    * @returns
    */
-  static getUpdatedTradelineByKey(cbKey: string, partition: TradeLinePartition[]): TradeLinePartition | undefined {
+  static getUpdatedTradelineByKey(cbKey: string, partition: ITradeLinePartition[]): ITradeLinePartition | undefined {
     const memberCode = cbKey.split('_').slice(0, 2)[1];
     if (!partition) return;
-    return partition.find((item: TradeLinePartition) => {
+    return partition.find((item: ITradeLinePartition) => {
       const code = item.Tradeline?.subscriberCode;
       return code == memberCode;
     });

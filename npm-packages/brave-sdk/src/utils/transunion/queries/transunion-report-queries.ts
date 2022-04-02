@@ -12,14 +12,14 @@ import {
   ACCOUNT_TYPES,
 } from '../../../constants/transunion';
 import {
-  Borrower,
-  BorrowerAddress,
-  MergeReport,
-  PublicPartition,
-  Subscriber,
-  TradeLinePartition,
-} from '../../../models/merge-report';
-import { InquiryPartition } from '../../../models/merge-report/components/inquiry-partition';
+  IBorrower,
+  IBorrowerAddress,
+  IInquiryPartition,
+  IMergeReport,
+  IPublicPartition,
+  ISubscriber,
+  ITradeLinePartition,
+} from '../../../types/merge-report';
 
 export class TransunionReportQueries extends TransunionMissing {
   constructor() {
@@ -30,7 +30,7 @@ export class TransunionReportQueries extends TransunionMissing {
   //           MESSAGE
   /*===================================*/
 
-  static isReportSupressed(report: MergeReport | null): boolean {
+  static isReportSupressed(report: IMergeReport | null): boolean {
     if (!report) return false;
     let res = report.TrueLinkCreditReportType?.Message?.find((ele) => {
       ele.Code?.abbreviation === 'Credit data suppressed';
@@ -44,10 +44,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type, falls back to pay status.
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static listTradelines(report: MergeReport | null): TradeLinePartition[] | [] {
+  static listTradelines(report: IMergeReport | null): ITradeLinePartition[] | [] {
     if (!report) return [];
     const partition = report.TrueLinkCreditReportType?.TradeLinePartition;
     if (partition === undefined) return [];
@@ -60,10 +60,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type, falls back to pay status.
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getBraveTradelineDescription(partition: TradeLinePartition | undefined): string {
+  static getBraveTradelineDescription(partition: ITradeLinePartition | undefined): string {
     if (!partition) return this.bcMissing;
     const description = partition.accountTypeDescription;
     const status = BRAVE_ACCOUNT_TYPE[`${partition.Tradeline?.PayStatus?.symbol}`];
@@ -72,10 +72,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type, falls back to pay status.
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getTradelineTypeDescription(partition: TradeLinePartition | undefined): AccountTypes {
+  static getTradelineTypeDescription(partition: ITradeLinePartition | undefined): AccountTypes {
     if (!partition) return AccountTypes.Unknown;
     const description = ACCOUNT_TYPES[`${partition.accountTypeSymbol?.toLowerCase()}`];
     return description ? description : AccountTypes.Unknown;
@@ -83,10 +83,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to calculate the max delinquency.
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getDelinquencyCount(partition: TradeLinePartition | undefined): number {
+  static getDelinquencyCount(partition: ITradeLinePartition | undefined): number {
     if (!partition) return 0;
     const count30 = partition.Tradeline?.GrantedTrade?.late30Count || 0;
     const count60 = partition.Tradeline?.GrantedTrade?.late60Count || 0;
@@ -99,10 +99,10 @@ export class TransunionReportQueries extends TransunionMissing {
   /*===================================*/
   /**
    * Helper function to securey look up the original creditor
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getOriginalCreditor(partition: TradeLinePartition | undefined | null): string {
+  static getOriginalCreditor(partition: ITradeLinePartition | undefined | null): string {
     if (!partition) return this.bcMissing;
     const originalCreditor = partition.Tradeline?.CollectionTrade?.originalCreditor;
     const creditorName = partition.Tradeline?.creditorName || this.bcMissing;
@@ -115,27 +115,27 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securey look up the original creditor
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getCreditor(partition: TradeLinePartition | undefined | null): string {
+  static getCreditor(partition: ITradeLinePartition | undefined | null): string {
     if (!partition) return this.bcMissing;
     return partition.Tradeline?.creditorName || this.bcMissing;
   }
 
   /*=====================================*/
-  //            SUBSCRIBER
+  //            ISubscriber
   /*=====================================*/
   /**
-   * Get the subscriber from the merge report by tradeline subscriber key
+   * Get the ISubscriber from the merge report by tradeline ISubscriber key
    * @param tradeline
    * @param subs
    * @returns
    */
-  static getTradelineSubscriberByKey(
-    tradeline: TradeLinePartition | undefined,
-    subs: Subscriber[] = [],
-  ): Subscriber | undefined {
+  static getTradelineISubscriberByKey(
+    tradeline: ITradeLinePartition | undefined,
+    subs: ISubscriber[] = [],
+  ): ISubscriber | undefined {
     const code = tradeline?.Tradeline?.subscriberCode;
     if (!code || !tradeline) return;
     return subs.find((sub) => {
@@ -144,15 +144,15 @@ export class TransunionReportQueries extends TransunionMissing {
   }
 
   /**
-   * Get the subscriber from the merge report by publicItem subscriber key
+   * Get the ISubscriber from the merge report by publicItem ISubscriber key
    * @param publicItem
    * @param subs
    * @returns
    */
-  static getPublicSubscriberByKey(
-    publicItem: PublicPartition | undefined,
-    subs: Subscriber[] = [],
-  ): Subscriber | undefined {
+  static getPublicISubscriberByKey(
+    publicItem: IPublicPartition | undefined,
+    subs: ISubscriber[] = [],
+  ): ISubscriber | undefined {
     const code = publicItem?.PublicRecord?.subscriberCode;
     if (!code || !publicItem) return;
     return subs.find((sub) => {
@@ -161,19 +161,19 @@ export class TransunionReportQueries extends TransunionMissing {
   }
 
   /*=====================================*/
-  //            SUBSCRIBER
+  //            ISubscriber
   /*=====================================*/
   /**
-   * Get the subscriber from the merge report by tradeline subscriber key
+   * Get the ISubscriber from the merge report by tradeline ISubscriber key
    * @param tradeline
    * @param subs
    * @returns
    */
-  static listSubscribers(report: MergeReport): Subscriber[] | [] {
-    const subscribers = report.TrueLinkCreditReportType?.Subscriber;
-    if (subscribers instanceof Array) return subscribers;
-    if (subscribers === undefined) return [];
-    return [subscribers];
+  static listISubscribers(report: IMergeReport): ISubscriber[] | [] {
+    const ISubscribers = report.TrueLinkCreditReportType?.Subscriber;
+    if (ISubscribers instanceof Array) return ISubscribers;
+    if (ISubscribers === undefined) return [];
+    return [ISubscribers];
   }
 
   /*=====================================*/
@@ -181,10 +181,10 @@ export class TransunionReportQueries extends TransunionMissing {
   /*=====================================*/
   /**
    * Helper function to securely look up the dispute flag
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getDisputeFlag(partition: TradeLinePartition | undefined): string {
+  static getDisputeFlag(partition: ITradeLinePartition | undefined): string {
     if (!partition) return 'No';
     const symbol = partition.Tradeline?.DisputeFlag?.description || 'not';
     return symbol.indexOf('not') === -1 ? 'Yes' : 'No';
@@ -195,10 +195,10 @@ export class TransunionReportQueries extends TransunionMissing {
   /*=====================================*/
   /**
    * Helper function to securely lookup the account type
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static getAccountType(partition: TradeLinePartition | undefined): string {
+  static getAccountType(partition: ITradeLinePartition | undefined): string {
     if (!partition) return 'unknown';
     const description = partition.accountTypeDescription;
     const status = BRAVE_ACCOUNT_TYPE[`${partition.Tradeline?.PayStatus?.symbol}`];
@@ -207,10 +207,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static isForbearanceAccount(partition: TradeLinePartition | undefined): boolean {
+  static isForbearanceAccount(partition: ITradeLinePartition | undefined): boolean {
     if (!partition) return false;
     const { accountTypeSymbol = '' } = partition;
     if (!accountTypeSymbol) return false;
@@ -230,7 +230,7 @@ export class TransunionReportQueries extends TransunionMissing {
    * @param partition
    * @returns
    */
-  static isStudentLoanAccount(partition: TradeLinePartition | undefined): boolean {
+  static isStudentLoanAccount(partition: ITradeLinePartition | undefined): boolean {
     if (!partition) return false;
     const industry = partition.Tradeline?.IndustryCode?.description;
     if (industry?.toLowerCase().includes('student')) {
@@ -241,10 +241,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static isNegativeAccount(partition: TradeLinePartition | undefined): boolean {
+  static isNegativeAccount(partition: ITradeLinePartition | undefined): boolean {
     if (!partition) return false;
     const symbol = partition.Tradeline?.PayStatus?.symbol;
     if (!symbol) return false;
@@ -253,10 +253,10 @@ export class TransunionReportQueries extends TransunionMissing {
 
   /**
    * Helper function to securely lookup the account type
-   * @param {TradeLinePartition | undefined} partition
+   * @param {ITradeLinePartition | undefined} partition
    * @returns
    */
-  static isPositiveAccount(partition: TradeLinePartition | undefined): boolean {
+  static isPositiveAccount(partition: ITradeLinePartition | undefined): boolean {
     if (!partition) return false;
     const symbol = partition.Tradeline?.PayStatus?.symbol;
     if (!symbol) return false;
@@ -276,10 +276,10 @@ export class TransunionReportQueries extends TransunionMissing {
    * @param condition
    * @returns
    */
-  static isDataBreachCondition(report: MergeReport, condition: string): DataBreaches {
+  static isDataBreachCondition(report: IMergeReport, condition: string): DataBreaches {
     if (!report) return DataBreaches.None;
-    const borrower = report.TrueLinkCreditReportType?.Borrower;
-    const address = this.getCurrentAddress(borrower || {});
+    const IBorrower = report.TrueLinkCreditReportType?.Borrower;
+    const address = this.getCurrentAddress(IBorrower || {});
     const tradelines = this.listTradelines(report);
     const inquiries = this.listInquiries(report);
 
@@ -323,7 +323,7 @@ export class TransunionReportQueries extends TransunionMissing {
    * @param report
    * @returns
    */
-  static listDataBreaches(report: MergeReport): IBreachCard[] {
+  static listDataBreaches(report: IMergeReport): IBreachCard[] {
     const breachCards = Object.values(DataBreaches)
       .filter((item) => {
         return this.isDataBreachCondition(report, item) !== DataBreaches.None;
@@ -338,12 +338,12 @@ export class TransunionReportQueries extends TransunionMissing {
   //            Personal Info
   /*=====================================*/
   /**
-   * Get the current borrower address
-   * @param borrower
+   * Get the current IBorrower address
+   * @param IBorrower
    * @returns
    */
-  static getCurrentAddress(borrower: Borrower): BorrowerAddress | undefined {
-    const address = borrower?.BorrowerAddress;
+  static getCurrentAddress(IBorrower: IBorrower): IBorrowerAddress | undefined {
+    const address = IBorrower?.BorrowerAddress;
     if (address === undefined) return;
     if (address instanceof Array) {
       return address.sort((a, b) => {
@@ -362,7 +362,7 @@ export class TransunionReportQueries extends TransunionMissing {
    * @param report
    * @returns
    */
-  static listInquiries(report: MergeReport): InquiryPartition[] | [] {
+  static listInquiries(report: IMergeReport): IInquiryPartition[] | [] {
     if (!report) return [];
     const inquiries = report.TrueLinkCreditReportType?.InquiryPartition;
     if (inquiries === undefined) return [];
