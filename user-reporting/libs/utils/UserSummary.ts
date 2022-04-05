@@ -51,7 +51,12 @@ export class UserSummary {
   }
   async init(): Promise<void> {
     console.log('id: ', this.id);
-    const report = await getCurrentReport(this.id);
+    let report;
+    try {
+      report = await getCurrentReport(this.id);
+    } catch (err) {
+      return;
+    }
     console.log('report: ', report);
     if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;

@@ -24,6 +24,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
+        console.log('item ==> ', item);
         const user = new UserSummary(item);
         await user.init();
         console.log('user.report', user.report);
