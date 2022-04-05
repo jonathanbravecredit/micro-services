@@ -15,6 +15,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { IUserSummaryMappedValues } from 'libs/interfaces/user-summary.interfaces';
 import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
+import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Los_Angeles');
@@ -27,14 +28,14 @@ export class UserSummary {
   userState: string = 'UNKNOWN';
   userZip: string = 'UNKNOWN';
   userEnrolled: boolean = false;
-  userReport: IMergeReport;
-  subscribers: ISubscriber[];
-  borrowerRecords: IBorrower;
-  tradelineRecordsSummary: ITradelineSummary | null;
-  tradelineRecords: ITradeLinePartition[];
-  publicRecordsSummary: IPublicRecordSummary | null;
-  publicRecords: IPublicPartition[];
-  creditScore: number | null;
+  userReport!: IMergeReport;
+  subscribers: ISubscriber[] = [];
+  borrowerRecords!: IBorrower;
+  tradelineRecordsSummary: ITradelineSummary | null = null;
+  tradelineRecords: ITradeLinePartition[] = [];
+  publicRecordsSummary: IPublicRecordSummary | null = null;
+  publicRecords: IPublicPartition[] = [];
+  creditScore: number | null = null;
   transunion: TransunionInput | null | undefined;
   report: IUserSummaryMappedValues = {} as IUserSummaryMappedValues;
 
@@ -43,7 +44,15 @@ export class UserSummary {
     this.user = data.user;
     this.transunion = data.agencies?.transunion;
     this.userEnrolled = data.agencies?.transunion?.enrolled || false;
-    this.userReport = this.parseTransunionMergeReport(this.transunion);
+  }
+
+  get enrolledOn(): string {
+    return this.transunion?.enrolledOn || '';
+  }
+  async init(): Promise<void> {
+    const report = await getCurrentReport(this.id);
+    if (!report || !report.report) return;
+    this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
     this.subscribers = this.parseSubscriberRecords(this.userReport);
     this.borrowerRecords = this.parseBorrowerRecords(this.userReport);
@@ -54,11 +63,6 @@ export class UserSummary {
     this.setUserAddressValues(this.user?.userAttributes?.address);
     this.setUserDobValus(this.user?.userAttributes?.dob);
   }
-
-  get enrolledOn(): string {
-    return this.transunion?.enrolledOn || '';
-  }
-
   aggregate(): void {
     let data: IUserSummaryMappedValues = {
       userId: this.id,
@@ -66,7 +70,7 @@ export class UserSummary {
       userState: this.userState,
       userZipCode: this.userZip,
       creditScore: this.creditScore || -1,
-      countPublicRecordAccounts: this.countPublicRecordAccounts(),
+      countPublicRecordAccounts: -1,
       countAllAccounts: 0,
       sumAllBalances: 0,
       countOpenAccounts: 0,
@@ -85,11 +89,17 @@ export class UserSummary {
       sumOpenStudentLoanBalances: 0,
       countOpenOtherAccounts: 0,
       sumOpenOtherBalances: 0,
-      avgCreditLimit: this.avgCreditLimit() || -1,
-      avgAgeRevolving: this.avgAgeRevolving() || -1,
-      avgTermLengthInstallment: this.avgTermLength() || -1,
-      avgAPRInstallment: this.avgAPRInstallment() || -1,
+      avgCreditLimit: -1,
+      avgAgeRevolving: -1,
+      avgTermLengthInstallment: -1,
+      avgAPRInstallment: -1,
     };
+
+    if (!this.userReport) {
+      this.report = data;
+      return;
+    }
+
     this.tradelineRecords.forEach((trade) => {
       data.countAllAccounts++;
       data.sumAllBalances += this.getAccountBalance(trade);
@@ -130,6 +140,11 @@ export class UserSummary {
     });
     data = {
       ...data,
+      countPublicRecordAccounts: this.countPublicRecordAccounts() || -1,
+      avgCreditLimit: this.avgCreditLimit() || -1,
+      avgAgeRevolving: this.avgAgeRevolving() || -1,
+      avgTermLengthInstallment: this.avgTermLength() || -1,
+      avgAPRInstallment: this.avgAPRInstallment() || -1,
     };
     this.report = data;
   }
