@@ -259,17 +259,18 @@ export class UserSummary {
   }
 
   avgAgeRevolving(): number {
-    const revolvings = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this));
+    const revolvings = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this)).filter((a) => {
+      return a.Tradeline?.dateOpened;
+    });
     if (!revolvings.length) return -1;
     return (
       revolvings.reduce((a, b) => {
         const opened = b.Tradeline?.dateOpened;
-        const closed = b.Tradeline?.dateClosed;
         if (this.id === '18acd328-dcc0-49d5-bd27-724b01a3a618') {
           console.log('tradeline ===> ', b.Tradeline);
         }
-        if (!opened || !closed) return 0;
-        const age = dayjs(closed, 'YYYY-MM-DD').diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
+        if (!opened) return 0;
+        const age = dayjs(new Date()).diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
         return a + age;
       }, 0) / revolvings.length
     );
