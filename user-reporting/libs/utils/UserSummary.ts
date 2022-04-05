@@ -50,14 +50,12 @@ export class UserSummary {
     return this.transunion?.enrolledOn || '';
   }
   async init(): Promise<void> {
-    console.log('id: ', this.id);
     let report;
     try {
       report = await getCurrentReport(this.id);
     } catch (err) {
       return;
     }
-    console.log('report: ', report);
     if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
@@ -268,7 +266,7 @@ export class UserSummary {
         const opened = b.Tradeline?.dateOpened;
         const closed = b.Tradeline?.dateClosed;
         if (this.id === '18acd328-dcc0-49d5-bd27-724b01a3a618') {
-          console.log('tradeline', b.Tradeline);
+          console.log('tradeline ===> ', b.Tradeline);
         }
         if (!opened || !closed) return 0;
         const age = dayjs(closed, 'YYYY-MM-DD').diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
