@@ -66,8 +66,10 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
           sumOpenOtherBalances: e.sumOpenOtherBalances,
           avgCreditLimit: e.avgCreditLimit,
           avgAgeRevolving: e.avgAgeRevolving,
-          avgTermLengthInstallment: e.avgTermLengthInstallment,
-          avgAPRInstallment: e.avgAPRInstallment,
+          avgTermLengthLOC: e.avgTermLengthLOC,
+          avgTermLengthInstallments: e.avgTermLengthInstallments,
+          avgTermLengthMortgage: e.avgTermLengthMortgage,
+          avgTermLengthStudentLoan: e.avgTermLengthStudentLoan,
         };
       });
     // send an email letting me know which segment is done
