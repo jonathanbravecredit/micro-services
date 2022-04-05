@@ -17,7 +17,6 @@ import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
 dayjs.tz.setDefault('America/Los_Angeles');
 
 export class UserSummary {
@@ -87,6 +86,10 @@ export class UserSummary {
       sumOpenStudentLoanBalances: 0,
       countOpenOtherAccounts: 0,
       sumOpenOtherBalances: 0,
+      avgCreditLimit: -1,
+      avgAgeRevolving: -1,
+      avgTermLengthInstallment: -1,
+      avgAPRInstallment: -1,
     };
     this.tradelineRecords.forEach((trade) => {
       data.countAllAccounts++;
@@ -126,6 +129,13 @@ export class UserSummary {
         data.sumOpenOtherBalances += this.getAccountBalance(trade);
       }
     });
+    data = {
+      ...data,
+      avgCreditLimit: this.avgCreditLimit() || -1,
+      avgAgeRevolving: this.avgAgeRevolving() || -1,
+      avgTermLengthInstallment: this.avgTermLength() || -1,
+      avgAPRInstallment: this.avgAPRInstallment() || -1,
+    };
     this.report = data;
   }
 
@@ -221,6 +231,61 @@ export class UserSummary {
     return this.publicRecords.length || 0;
   }
 
+  avgCreditLimit(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts);
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const bal = b.Tradeline?.GrantedTrade?.CreditLimit || 0;
+        return a + (isNaN(+bal) ? 0 : +bal);
+      }, 0) / installs.length
+    );
+  }
+
+  avgAgeRevolving(): number {
+    const revolvings = this.tradelineRecords
+      .filter(this.filterOpenRevolvingAccounts)
+      .filter((a) => a.Tradeline?.dateOpened && a.Tradeline?.dateClosed);
+    if (!revolvings.length) return -1;
+    return (
+      revolvings.reduce((a, b) => {
+        // const bal = b.Tradeline?.GrantedTrade?.CreditLimit || 0;
+        const opened = b.Tradeline?.dateOpened;
+        const closed = b.Tradeline?.dateClosed;
+        if (!opened || !closed) return 0;
+        const age = dayjs(new Date(opened)).diff(new Date(closed), 'month');
+        return a + age;
+      }, 0) / revolvings.length
+    );
+  }
+
+  avgTermLength(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts).filter((a) => {
+      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
+      return (isNaN(+term) ? 0 : +term) > 0;
+    });
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
+  avgAPRInstallment(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts).filter((a) => {
+      const apr = a.Tradeline?.GrantedTrade?.TermType?.rank || 0;
+      return (isNaN(+apr) ? 0 : +apr) > 0;
+    });
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const apr = b.Tradeline?.GrantedTrade?.TermType?.rank || 0;
+        return a + (isNaN(+apr) ? 0 : +apr);
+      }, 0) / installs.length
+    );
+  }
   /*=============================*/
   //        queries
   /*=============================*/
