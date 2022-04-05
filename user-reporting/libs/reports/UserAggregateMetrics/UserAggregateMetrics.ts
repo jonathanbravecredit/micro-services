@@ -25,6 +25,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
         const user = new UserSummary(item);
+        user.aggregate();
         const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = user.report;
