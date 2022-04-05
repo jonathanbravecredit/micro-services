@@ -250,7 +250,10 @@ export class UserSummary {
   }
 
   avgCreditLimit(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts);
+    const installs = this.tradelineRecords.filter((a) => {
+      return this.filterOpenInstallmentAccounts(a);
+    });
+
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -262,7 +265,9 @@ export class UserSummary {
 
   avgAgeRevolving(): number {
     const revolvings = this.tradelineRecords
-      .filter(this.filterOpenRevolvingAccounts)
+      .filter((a) => {
+        return this.filterOpenRevolvingAccounts(a);
+      })
       .filter((a) => a.Tradeline?.dateOpened && a.Tradeline?.dateClosed);
     if (!revolvings.length) return -1;
     return (
@@ -278,10 +283,14 @@ export class UserSummary {
   }
 
   avgTermLength(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts).filter((a) => {
-      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
-      return (isNaN(+term) ? 0 : +term) > 0;
-    });
+    const installs = this.tradelineRecords
+      .filter((a) => {
+        return this.filterOpenInstallmentAccounts(a);
+      })
+      .filter((a) => {
+        const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
+        return (isNaN(+term) ? 0 : +term) > 0;
+      });
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -292,10 +301,14 @@ export class UserSummary {
   }
 
   avgAPRInstallment(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts).filter((a) => {
-      const apr = a.Tradeline?.GrantedTrade?.TermType?.rank || 0;
-      return (isNaN(+apr) ? 0 : +apr) > 0;
-    });
+    const installs = this.tradelineRecords
+      .filter((a) => {
+        return this.filterOpenInstallmentAccounts(a);
+      })
+      .filter((a) => {
+        const apr = a.Tradeline?.GrantedTrade?.TermType?.rank || 0;
+        return (isNaN(+apr) ? 0 : +apr) > 0;
+      });
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
