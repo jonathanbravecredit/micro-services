@@ -97,8 +97,10 @@ export class UserSummary {
       sumOpenOtherBalances: 0,
       avgCreditLimit: -1,
       avgAgeRevolving: -1,
-      avgTermLengthInstallment: -1,
-      avgAPRInstallment: -1,
+      avgTermLengthLOC: -1,
+      avgTermLengthInstallments: -1,
+      avgTermLengthMortgage: -1,
+      avgTermLengthStudentLoan: -1,
     };
 
     if (!this.userReport) {
@@ -149,8 +151,10 @@ export class UserSummary {
       countPublicRecordAccounts: this.countPublicRecordAccounts() || -1,
       avgCreditLimit: this.avgCreditLimit() || -1,
       avgAgeRevolving: this.avgAgeRevolving() || -1,
-      avgTermLengthInstallment: this.avgTermLength() || -1,
-      avgAPRInstallment: this.avgAPRInstallment() || -1,
+      avgTermLengthLOC: this.avgTermLengthLOC() || -1,
+      avgTermLengthInstallments: this.avgTermLengthInstallments() || -1,
+      avgTermLengthMortgage: this.avgTermLengthMortgages() || -1,
+      avgTermLengthStudentLoan: this.avgTermLengthStudentLoans() || -1,
     };
     this.report = data;
   }
@@ -222,6 +226,9 @@ export class UserSummary {
   filterOpenCollectionAccounts(trade: ITradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Collection);
   }
+  filterOpenLOCAccounts(trade: ITradeLinePartition): boolean {
+    return this.filterOpenByAccountType(trade, AccountTypes.LineOfCredit);
+  }
 
   filterOpenOtherAccounts(trade: ITradeLinePartition): boolean {
     if (!this.filterOpenAccounts(trade)) return false;
@@ -266,9 +273,6 @@ export class UserSummary {
     return (
       revolvings.reduce((a, b) => {
         const opened = b.Tradeline?.dateOpened;
-        if (this.id === '18acd328-dcc0-49d5-bd27-724b01a3a618') {
-          console.log('tradeline ===> ', b.Tradeline);
-        }
         if (!opened) return 0;
         const age = dayjs(new Date()).diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
         return a + age;
@@ -276,8 +280,8 @@ export class UserSummary {
     );
   }
 
-  avgTermLength(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts.bind(this)).filter((a) => {
+  avgTermLengthLOC(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenLOCAccounts.bind(this)).filter((a) => {
       const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
       return (isNaN(+term) ? 0 : +term) > 0;
     });
@@ -290,19 +294,54 @@ export class UserSummary {
     );
   }
 
-  avgAPRInstallment(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts.bind(this)).filter((a) => {
-      const apr = a.Tradeline?.GrantedTrade?.TermType?.rank || 0;
-      return (isNaN(+apr) ? 0 : +apr) > 0;
+  avgTermLengthInstallments(): number {
+    const installs = this.tradelineRecords
+      .filter((a) => {
+        if (!this.filterOpenInstallmentAccounts(a)) return false;
+        if (this.filterOpenRealEstateAccounts(a)) return false;
+        if (this.filterOpenStudentLoanAccounts(a)) return false;
+      })
+      .filter((a) => {
+        const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
+        return (isNaN(+term) ? 0 : +term) > 0;
+      });
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
+  avgTermLengthMortgages(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenRealEstateAccounts.bind(this)).filter((a) => {
+      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
+      return (isNaN(+term) ? 0 : +term) > 0;
     });
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
-        const apr = b.Tradeline?.GrantedTrade?.TermType?.rank || 0;
-        return a + (isNaN(+apr) ? 0 : +apr);
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
       }, 0) / installs.length
     );
   }
+
+  avgTermLengthStudentLoans(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenStudentLoanAccounts.bind(this)).filter((a) => {
+      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
+      return (isNaN(+term) ? 0 : +term) > 0;
+    });
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
   /*=============================*/
   //        queries
   /*=============================*/
