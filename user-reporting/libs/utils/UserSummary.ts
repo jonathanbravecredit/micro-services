@@ -53,7 +53,6 @@ export class UserSummary {
     this.publicRecords = this.parsePublicRecords(this.userReport);
     this.setUserAddressValues(this.user?.userAttributes?.address);
     this.setUserDobValus(this.user?.userAttributes?.dob);
-    this.aggregate(); // creates the report ready data on this.reporting
   }
 
   get enrolledOn(): string {
@@ -86,10 +85,10 @@ export class UserSummary {
       sumOpenStudentLoanBalances: 0,
       countOpenOtherAccounts: 0,
       sumOpenOtherBalances: 0,
-      avgCreditLimit: -1,
-      avgAgeRevolving: -1,
-      avgTermLengthInstallment: -1,
-      avgAPRInstallment: -1,
+      avgCreditLimit: this.avgCreditLimit() || -1,
+      avgAgeRevolving: this.avgAgeRevolving() || -1,
+      avgTermLengthInstallment: this.avgTermLength() || -1,
+      avgAPRInstallment: this.avgAPRInstallment() || -1,
     };
     this.tradelineRecords.forEach((trade) => {
       data.countAllAccounts++;
@@ -131,10 +130,6 @@ export class UserSummary {
     });
     data = {
       ...data,
-      avgCreditLimit: this.avgCreditLimit() || -1,
-      avgAgeRevolving: this.avgAgeRevolving() || -1,
-      avgTermLengthInstallment: this.avgTermLength() || -1,
-      avgAPRInstallment: this.avgAPRInstallment() || -1,
     };
     this.report = data;
   }
