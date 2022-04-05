@@ -1,9 +1,9 @@
 'use strict';
 import 'reflect-metadata';
-import { ajv } from 'lib/schema/validation';
+import { ajv } from 'libs/schema/validation';
 import { Handler } from 'aws-lambda';
-import { IGetReferral } from 'lib/interfaces';
-import { getReferral, updateAddOn, updatePaidOut } from 'lib/queries';
+import { IGetReferral } from 'libs/interfaces';
+import { getReferral, updateAddOn, updatePaidOut } from 'libs/queries';
 
 export const main: Handler = async (event: { list: string[] }): Promise<void> => {
   const { list } = event;

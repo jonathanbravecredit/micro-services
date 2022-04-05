@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import { Program, ProgramPrimaryTask, ProgramReasons, TaskCard, ExtendedTaskCard } from 'libs/classes/Program';
 
 export type InitiativeStatus = 'not_started' | 'in_progress' | 'complete';

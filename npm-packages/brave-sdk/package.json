@@ -1,0 +1,28 @@
+{
+  "name": "@bravecredit/brave-sdk",
+  "version": "1.0.16",
+  "description": "An SDK for backend and frontend development specifically designed for the services facilitating Brave Credit",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "tsc": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@types/uuid": "^8.3.4",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "he": "^1.2.0",
+    "uuid": "^8.3.2",
+    "fast-xml-parser": "^4.0.7",
+    "reflect-metadata": "^0.1.13",
+    "@shiftcoders/dynamo-easy": "^7.1.0"
+  }
+}

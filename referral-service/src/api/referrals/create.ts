@@ -1,14 +1,14 @@
 'use strict';
 import 'reflect-metadata';
 import * as uuid from 'uuid';
-import { ajv } from 'lib/schema/validation';
-import { response } from 'lib/utils/response';
+import { ajv } from 'libs/schema/validation';
+import { response } from 'libs/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { safeParse } from 'lib/utils/safeJson';
-import { ReferralMaker } from 'lib/models/referral.model';
-import { ICreateReferral } from 'lib/interfaces';
-import { createReferral, getReferralByCode } from 'lib/queries';
-import { CURRENT_CAMPAIGN } from 'lib/data/campaign';
+import { safeParse } from 'libs/utils/safeJson';
+import { ReferralMaker } from 'libs/models/referrals/referral.model';
+import { ICreateReferral } from 'libs/interfaces';
+import { createReferral, getReferralByCode } from 'libs/queries';
+import { CURRENT_CAMPAIGN } from 'libs/data/campaign';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event: ', JSON.stringify(event));

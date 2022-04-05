@@ -1,9 +1,9 @@
 'use strict';
 import 'reflect-metadata';
-import * as interfaces from 'lib/interfaces';
-import * as queries from 'lib/queries';
-import { ajv } from 'lib/schema/validation';
-import { response } from 'lib/utils/response';
+import * as interfaces from 'libs/interfaces';
+import * as queries from 'libs/queries';
+import { ajv } from 'libs/schema/validation';
+import { response } from 'libs/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

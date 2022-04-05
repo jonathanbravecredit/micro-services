@@ -1,7 +1,7 @@
 'use strict';
 import 'reflect-metadata';
-import { getCampaign } from 'lib/queries';
-import { response } from 'lib/utils/response';
+import { getCampaign } from 'libs/queries';
+import { response } from 'libs/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
