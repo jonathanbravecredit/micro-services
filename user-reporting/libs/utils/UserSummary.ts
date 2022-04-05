@@ -50,14 +50,12 @@ export class UserSummary {
     return this.transunion?.enrolledOn || '';
   }
   async init(): Promise<void> {
-    console.log('id: ', this.id);
     let report;
     try {
       report = await getCurrentReport(this.id);
     } catch (err) {
       return;
     }
-    console.log('report: ', report);
     if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
@@ -250,8 +248,7 @@ export class UserSummary {
   }
 
   avgCreditLimit(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts.bind(this));
-
+    const installs = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this));
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -262,17 +259,17 @@ export class UserSummary {
   }
 
   avgAgeRevolving(): number {
-    const revolvings = this.tradelineRecords
-      .filter(this.filterOpenRevolvingAccounts.bind(this))
-      .filter((a) => a.Tradeline?.dateOpened && a.Tradeline?.dateClosed);
+    const revolvings = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this));
     if (!revolvings.length) return -1;
     return (
       revolvings.reduce((a, b) => {
-        // const bal = b.Tradeline?.GrantedTrade?.CreditLimit || 0;
         const opened = b.Tradeline?.dateOpened;
         const closed = b.Tradeline?.dateClosed;
+        if (this.id === '18acd328-dcc0-49d5-bd27-724b01a3a618') {
+          console.log('tradeline ===> ', b.Tradeline);
+        }
         if (!opened || !closed) return 0;
-        const age = dayjs(new Date(opened)).diff(new Date(closed), 'month');
+        const age = dayjs(closed, 'YYYY-MM-DD').diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
         return a + age;
       }, 0) / revolvings.length
     );
