@@ -24,4 +24,8 @@ export interface IUserSummaryMappedValues {
   sumOpenStudentLoanBalances: number;
   countOpenOtherAccounts: number;
   sumOpenOtherBalances: number;
+  avgCreditLimit: number;
+  avgAgeRevolving: number;
+  avgTermLengthInstallment: number;
+  avgAPRInstallment: number;
 }

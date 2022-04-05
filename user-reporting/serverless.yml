@@ -158,6 +158,9 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(30 9 * * ? *) # run every morning at 1:15 AM
+  compileUserAggregationMetrics:
+    handler: src/handlers/compilers/compileUserAggregationReport.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # BATCHED MANUAL
   # no report report
