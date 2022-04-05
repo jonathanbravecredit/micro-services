@@ -271,7 +271,7 @@ export class UserSummary {
           console.log('tradeline', b.Tradeline);
         }
         if (!opened || !closed) return 0;
-        const age = dayjs(opened, 'YYYY-MM-DD').diff(dayjs(closed, 'YYYY-MM-DD'), 'months');
+        const age = dayjs(closed, 'YYYY-MM-DD').diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
         return a + age;
       }, 0) / revolvings.length
     );
