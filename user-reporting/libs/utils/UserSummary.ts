@@ -52,6 +52,7 @@ export class UserSummary {
   async init(): Promise<void> {
     console.log('id: ', this.id);
     const report = await getCurrentReport(this.id);
+    console.log('report: ', report);
     if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
