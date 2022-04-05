@@ -75,10 +75,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
     const csvAllData = csvjson.toCSV(JSON.stringify(analytics), {
       headers: 'key',
     });
-    const emails =
-      STAGE === 'dev'
-        ? ['jonathan@brave.credit']
-        : ['jonathan@brave.credit', 'noah@brave.credit', 'jorge@brave.credit'];
+    const emails = STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit'];
     let params = generateEmailParams(`Report: ${ReportNames.UserAggregatedMetrics}`, emails);
     params.attachments = [
       {

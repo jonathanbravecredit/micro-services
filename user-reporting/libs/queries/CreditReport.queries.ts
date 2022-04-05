@@ -12,12 +12,8 @@ export const getReport = (userId: string, version: number): Promise<CreditReport
     .catch((err) => err);
 };
 
-export const getCurrentReport = (userId: string): Promise<CreditReport> => {
-  return store
-    .get(userId, 0)
-    .exec()
-    .then((res) => res)
-    .catch((err) => err);
+export const getCurrentReport = (userId: string): Promise<CreditReport | null> => {
+  return store.get(userId, 0).exec();
 };
 
 export const createReport = (report: CreditReport): Promise<PutItemOutput> => {

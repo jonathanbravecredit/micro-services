@@ -50,8 +50,10 @@ export class UserSummary {
     return this.transunion?.enrolledOn || '';
   }
   async init(): Promise<void> {
+    console.log('id: ', this.id);
     const report = await getCurrentReport(this.id);
-    if (!report || !report.report) return;
+    console.log('report: ', report);
+    if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
     this.subscribers = this.parseSubscriberRecords(this.userReport);
@@ -63,6 +65,7 @@ export class UserSummary {
     this.setUserAddressValues(this.user?.userAttributes?.address);
     this.setUserDobValus(this.user?.userAttributes?.dob);
   }
+
   aggregate(): void {
     let data: IUserSummaryMappedValues = {
       userId: this.id,
