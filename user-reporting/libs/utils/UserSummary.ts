@@ -281,10 +281,7 @@ export class UserSummary {
   }
 
   avgTermLengthLOC(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenLOCAccounts.bind(this)).filter((a) => {
-      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
-      return (isNaN(+term) ? 0 : +term) > 0;
-    });
+    const installs = this.tradelineRecords.filter(this.filterOpenLOCAccounts.bind(this));
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -295,16 +292,11 @@ export class UserSummary {
   }
 
   avgTermLengthInstallments(): number {
-    const installs = this.tradelineRecords
-      .filter((a) => {
-        if (!this.filterOpenInstallmentAccounts(a)) return false;
-        if (this.filterOpenRealEstateAccounts(a)) return false;
-        if (this.filterOpenStudentLoanAccounts(a)) return false;
-      })
-      .filter((a) => {
-        const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
-        return (isNaN(+term) ? 0 : +term) > 0;
-      });
+    const installs = this.tradelineRecords.filter((a) => {
+      if (!this.filterOpenInstallmentAccounts(a)) return false;
+      if (this.filterOpenRealEstateAccounts(a)) return false;
+      if (this.filterOpenStudentLoanAccounts(a)) return false;
+    });
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -315,10 +307,7 @@ export class UserSummary {
   }
 
   avgTermLengthMortgages(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenRealEstateAccounts.bind(this)).filter((a) => {
-      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
-      return (isNaN(+term) ? 0 : +term) > 0;
-    });
+    const installs = this.tradelineRecords.filter(this.filterOpenRealEstateAccounts.bind(this));
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -329,10 +318,7 @@ export class UserSummary {
   }
 
   avgTermLengthStudentLoans(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenStudentLoanAccounts.bind(this)).filter((a) => {
-      const term = a.Tradeline?.GrantedTrade?.termMonths || 0;
-      return (isNaN(+term) ? 0 : +term) > 0;
-    });
+    const installs = this.tradelineRecords.filter(this.filterOpenStudentLoanAccounts.bind(this));
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
