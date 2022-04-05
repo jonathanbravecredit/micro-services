@@ -1,0 +1,5578 @@
+{
+  "TrueLinkCreditReportType": {
+    "Message": [],
+    "Borrower": {
+      "BorrowerAddress": [
+        {
+          "CreditAddress": {
+            "postDirection": "",
+            "streetName": "2ND",
+            "streetType": "ST",
+            "unit": "",
+            "city": "BURT",
+            "postalCode": 50522,
+            "houseNumber": 101,
+            "stateCode": "IA",
+            "direction": ""
+          },
+          "Origin": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Ownership": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Dwelling": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "addressOrder": 0,
+          "dateReported": "2013-11-08",
+          "partitionSet": 0,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          }
+        }
+      ],
+      "PreviousAddress": [
+        {
+          "CreditAddress": {
+            "streetName": "PO BOX 166",
+            "streetType": "",
+            "unit": "",
+            "city": "BURT",
+            "postalCode": 50522,
+            "houseNumber": 166,
+            "stateCode": "IA",
+            "direction": ""
+          },
+          "Origin": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Ownership": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Dwelling": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "addressOrder": 0,
+          "dateReported": "2013-07-11",
+          "partitionSet": 0,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          }
+        },
+        {
+          "CreditAddress": {
+            "streetName": "4TH",
+            "streetType": "ST",
+            "unit": "",
+            "city": "BURT",
+            "postalCode": 50522,
+            "houseNumber": 407,
+            "stateCode": "IA",
+            "direction": ""
+          },
+          "Origin": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Ownership": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "Dwelling": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "addressOrder": 1,
+          "partitionSet": 1,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          }
+        }
+      ],
+      "CreditStatement": [],
+      "SocialSecurityNumber": 666403077,
+      "BorrowerTelephone": [],
+      "Employer": [
+        {
+          "dateReported": "2010-08-01",
+          "name": "EMPLOYER X",
+          "CreditAddress": {
+            "unparsedStreet": "",
+            "stateCode": "",
+            "city": "",
+            "postalCode": ""
+          },
+          "partitionSet": 0,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "dateUpdated": "2020-09-18"
+        }
+      ],
+      "BorrowerBureauIdentifier": [],
+      "SocialPartition": [
+        {
+          "Social": [
+            {
+              "Source": {
+                "InquiryDate": "2021-07-08",
+                "BorrowerKey": "",
+                "Reference": "18acd328-dcc0-49d5-bd2",
+                "Bureau": {
+                  "description": "TransUnion",
+                  "symbol": "TUC",
+                  "rank": 1,
+                  "abbreviation": "TransUnion"
+                }
+              },
+              "SocialSecurityNumber": 666403077
+            }
+          ]
+        }
+      ],
+      "Birth": [
+        {
+          "date": "1956-02-01",
+          "partitionSet": 0,
+          "age": 0,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "BirthDate": {
+            "month": 2,
+            "year": 1956,
+            "day": 1
+          }
+        }
+      ],
+      "CreditScore": [
+        {
+          "CreditScoreMode": {},
+          "NoScoreReason": {
+            "description": "",
+            "symbol": "",
+            "rank": 100000,
+            "abbreviation": ""
+          },
+          "inquiriesAffectedScore": true,
+          "CreditScoreModel": {
+            "description": "VantageScore 3.0 with Positive Score Factors",
+            "symbol": "00W40",
+            "rank": 10000,
+            "abbreviation": "VantageScore 3.0 with Positive Score Factors"
+          },
+          "riskScore": 653,
+          "populationRank": 43,
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "scoreName": "VantageScore3",
+          "CreditScoreFactor": [
+            {
+              "bureauCode": 98,
+              "FactorType": "Negative",
+              "FactorText": [
+                "explain: Bankruptcy is a proven indicator of risk with future payments and causes a significant drop to your credit score over an extended period of time.",
+                "factor: There is a bankruptcy on your credit report",
+                "cando: Make all future payments on time. The impact on your credit score from the bankruptcy will diminish over time."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": 98,
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": 14,
+              "FactorType": "Negative",
+              "FactorText": [
+                "explain: Your credit file does not contain enough information about your use of credit. A credit file with older accounts and/or more accounts reflects more experience with handling credit and can have a positive impact on your credit score.",
+                "factor: Lack of sufficient credit history",
+                "cando: Maintaining open and active credit accounts in good standing can help improve your credit score."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": 14,
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": 12,
+              "FactorType": "Negative",
+              "FactorText": [
+                "explain: Your oldest account is still too recent. A credit file containing older accounts will have a positive impact on your credit score because it demonstrates that you are experienced managing credit.",
+                "factor: The date that you opened your oldest account is too recent",
+                "cando: Don&#x27;t open more accounts than you actually need. Research shows that new accounts indicate greater risk. Your score will benefit as your accounts get older."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": 12,
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": 30,
+              "FactorType": "Negative",
+              "FactorText": [
+                "explain: Bankcard accounts include credit cards and charge cards from a bank and are frequently revolving accounts. Revolving accounts allow you to carry a balance and your monthly payment will vary, based on the amount of your balance. Having too few accounts with high credit limits is an indicator that you lack available credit. Having higher limits gives you access to credit without seeking new loans or becoming overextended _ which are triggers for higher risk.",
+                "factor: Too few of your bankcard or other revolving accounts have high limits",
+                "cando: Use credit responsibly and always make payments on time with your existing accounts. After a period of successfully managing your accounts, you can seek increases to your credit limit."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": 30,
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": "P08",
+              "FactorType": "Positive",
+              "FactorText": [
+                "explain: Paying your bills on time improves your score. Recently at least one of your accounts was paid on time.",
+                "factor: One or more of your accounts were paid on time in recent months",
+                "cando: Keep paying bills on time every month since it is important to maintaining a good credit score. If you remain behind with any payments, bring them current as soon as possible, and then make future payments on time."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": "P08",
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": "P34",
+              "FactorType": "Positive",
+              "FactorText": [
+                "explain: Bankcard accounts include credit cards and charge cards from a bank and are frequently revolving accounts. Revolving accounts allow you to carry a balance and your monthly payment will vary, based on the amount of your balance. The total of your balances on your open bankcard or revolving accounts, compared to the credit limit amounts, is not too high which has caused your score to improve.",
+                "factor: Total of all balances on bankcard or revolving accounts is not too high",
+                "cando: Keep low balances on your accounts; this will benefit your score."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": "P34",
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": "P07",
+              "FactorType": "Positive",
+              "FactorText": [
+                "explain: Paying your bills on time improves your score. You have paid all or nearly all of your bills on time.",
+                "factor: You have either no or few delinquent or derogatory accounts",
+                "cando: Keep paying bills on time every month since it is important to maintaining a good credit score. If you remain behind with any payments, bring them current as soon as possible, and then make future payments on time."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": "P07",
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            },
+            {
+              "bureauCode": "P32",
+              "FactorType": "Positive",
+              "FactorText": [
+                "explain: Bankcard accounts include credit cards and charge cards from a bank and are frequently revolving accounts. Revolving accounts allow you to carry a balance and your monthly payment will vary, based on the amount of your balance. Your balances on bankcard or revolving accounts are not too high compared to the credit limit amounts, which causes your score to improve.",
+                "factor: Balances on bankcard or revolving accts not too high compared to limits",
+                "cando: Keep low balances on your accounts; this will benefit your score."
+              ],
+              "Factor": {
+                "description": "",
+                "symbol": "P32",
+                "rank": 100000,
+                "abbreviation": ""
+              }
+            }
+          ]
+        }
+      ],
+      "BorrowerName": [
+        {
+          "partitionSet": 0,
+          "NameType": {
+            "description": "Primary",
+            "symbol": 1,
+            "rank": 199,
+            "abbreviation": "Primary"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Name": {
+            "last": "GIDDENS",
+            "first": "NEIL",
+            "middle": ""
+          }
+        }
+      ]
+    },
+    "Sources": [
+      {
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "OriginalData": "VFU0UjA2MjAxMTE4YWNkMzI4LWRjYzAtNDlkNS1iZDIgIDEyMDFaIDUwNjA5MTcgMjAyMTA3MDgxMTIxMTVQSDAxMDEyMDcwMDBTSDAxMDI3MTAxWTA1TjA3U0NOMjAxMTExMDFOTTAxMDcwRjFHSURERU5TICAgICAgICAgICAgICAgICAgTkVJTCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUEkwMTAyOUY2NjY0MDMwNzcxOTU2MDIwMSAgICBUQTAxMDEyQzExMDBBRDAxMTA1RjExMTAxICAgICAgICAgMk5EICAgICAgICAgICAgICAgICAgICAgICAgICBTVCAgICAgQlVSVCAgICAgICAgICAgICAgICAgICAgICAgSUE1MDUyMiAgICAgMjAxMzExMDhBRDAxMTA1RjExMTY2ICAgICAgICAgUE8gQk9YIDE2NiAgICAgICAgICAgICAgICAgICAgICAgICAgQlVSVCAgICAgICAgICAgICAgICAgICAgICAgSUE1MDUyMiAgICAgMjAxMzA3MTFBRDAxMTA1RjExNDA3ICAgICAgICAgNFRIICAgICAgICAgICAgICAgICAgICAgICAgICBTVCAgICAgQlVSVCAgICAgICAgICAgICAgICAgICAgICAgSUE1MDUyMiAgICAgICAgICAgICBFTTAxMTAwRU1QTE9ZRVIgWCAgICAgICAgICAgICAgICAgICAgICAgICBGU1VQUE9SVCBTVEFGRiAgICAgICAgIDIwMTAwODAxICAgICAgICAyMDIwMDkxOFYgICAgICAgICAgUFIwMTE2OFogMDUwMDE2OTQ3WDdYMVg4WCAgICAgQVRUT1JORVkgWCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjAxNjA4MTgyMDE2MTEyNSAgICAgICAgICAgICAgICAgIENGRSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ0wwMTE2MFkgMDI1NkMwMDFIJlIgQUNDT1VOVFMgICAgICAgICAgICBPM1gxWDVYNiAgICAgICAgICAgICAgICAgSU5PUlRIIElPV0EgTUVSQ1kgQ0xJTklDUyBSMjIgICAgICAgIDIwMTcxMjI1MjAxODAyMjhBICAgICAgICAgICAgICAgICA5QjAwMDAwMDE1NjAwMDAwMDE1NkNMQUNMMDExNjBZIDAyNTZDMDAxSCZSIEFDQ09VTlRTICAgICAgICAgICAgTzNYM1g4WDIgICAgICAgICAgICAgICAgIElOT1JUSCBJT1dBIE1FUkNZIENMSU5JQ1MgUjIyICAgICAgICAyMDE2MDkwMzIwMTYxMTMwQTIwMTYwODE4QzIwMTYwODE4VVIwMDAwMDAwMDAwMDAwMDAzNzhDQkxDTDAxMTYwWSAwMjU2QzAwMUgmUiBBQ0NPVU5UUyAgICAgICAgICAgIE8zWDFYNVgwICAgICAgICAgICAgICAgICBJTk9SVEggSU9XQSBNRVJDWSBDTElOSUNTIFIyICAgICAgICAgMjAxNTEwMDYyMDE1MTIzMUEyMDE1MTIzMUMyMDE1MTIzMVVSMDAwMDAwMDAwMDAwMDAwMzk3Q0JMVFIwMTI4OEIgMDI2UUswMDFKUE1DQiBDQVJEICAgICAgICAgICAgICBSNDI2NjgyMTcxMjg4MjQzMSAgICAgICAgVDIwMTIxMjAyMjAxNjA4MjJBMjAxNjA4MjJGMjAxNjAzMzEyMDE2MDMzMTA5MTAwMDAwMDAwMDAwMDAwMTQzMjAwMDAwMDk1MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQ0NCRzAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgVFIwMTI4OEUgMDEwNjYwNDFTVU5UUlVTVCBCSyAgICAgICAgICAgICBJNFgxWDZYNVg5WCAgICAgICAgICAgICAgSTIwMTEwOTIyMjAxNzEwMTBBMjAxNzEwMTBDICAgICAgICAgICAgICAgIDA1MTAwMDAwMDAwMDAwMDAxMDMxNCAgICAgICAgIDEyME0wMDAwMDAyMDAwNyBTVU5UUlVTVCBCQU5LUyBJTkMgICAgICAgICAgICAgICBTVFNMUDAwMDAwMDAwMDAwMDAwMDAxMDI1MjAxNzAzMDEwNTIwMTcwOTEwNTU1NTU1NTQzMTExICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTIwMDAxMDgyVFIwMTI4OEUgMDFYUTMwMDFJT1dBIFNURFQgTE4gICAgICAgICAgICBJOFg5WDNYNlgzWElYMFgwWDMgICAgICAgSTIwMTIwOTMwMjAxNTA5MzBBMjAxNTA5MzBDICAgICAgICAyMDE1MDkxNDA1MTAwMDAwMDAwMDAwMDAwMzUwMCAgICAgICAgIDEwMU0wMDAwMDAwNDJERUZFUlJFRCBUTyAxMjE0MjAxMyAgICAgICAgICAgICAgICBTVFNMUDAwMDAwMDAwMDAwMDAwMDAwMTkwMjAxNTAxMDEwNTIwMTUwODMwNTU1NTU1NTQzMTExMTExMTExMTExMTExMTExMTExMTExMTEgICAgICAgICAgICAgMzUwMDAxMDgyVFIwMTI4OEUgMDFYUTMwMDFJT1dBIFNURFQgTE4gICAgICAgICAgICBJOFg5WDNYNlgzWElYMFgwWDIgICAgICAgSTIwMTEwOTIyMjAxNTA5MzBBMjAxNTA5MzBDICAgICAgICAyMDE1MDkxNDA1MTAwMDAwMDAwMDAwMDAwMzM5MCAgICAgICAgIDEwMU0wMDAwMDAwMDJERUZFUlJFRCBUTyAxMjE0MjAxMyAgICAgICAgICAgICAgICBTVFNMUDAwMDAwMDAwMDAwMDAwMDAwMDEzMjAxNTAxMDEwNTIwMTUwODMwNTU1NTU1NTQzMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEgNDcwMDAxMDgyVFIwMTI4OEUgMDFYUTMwMDFJT1dBIFNURFQgTE4gICAgICAgICAgICBJOFg5WDNYNlgzWElYMFgwWDEgICAgICAgSTIwMTEwOTIyMjAxNTA5MzBBMjAxNTA5MzBDICAgICAgICAyMDE1MDkxNDA1MTAwMDAwMDAwMDAwMDAwMjYyNSAgICAgICAgIDEwMU0wMDAwMDAwMjFERUZFUlJFRCBUTyAxMjE0MjAxMyAgICAgICAgICAgICAgICBTVFNMUDAwMDAwMDAwMDAwMDAwMDAwMDk1MjAxNTAxMDEwNTIwMTUwODMwNTU1NTU1NTQzMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEgNDcwMDAxMDgyVFIwMTI4OEIgMDc5OTExODlIU0JDIEJBTksgICAgICAgICAgICAgICBSNTE1NTk2MTI1Mjk4MDYwNSAgICAgICAgSTIwMjAwNjA3MjAyMTA1MjBBICAgICAgICAgMjAyMTA1MTEyMDIxMDUxMTAxMTAwMDAwMDAwMDAwMDAwMDIwMjAwMDAwMDMwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQyAgIDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgIDIwMjEwNDIwMTExMTExMTExICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDkwMDAwMDAyVFIwMTI4OFYgMDFCVFAwMDFVUyBERVAgRUQgICAgICAgICAgICAgICBJN1gwWDBYOVgyWDVYOFg2ICAgICAgICAgSTIwMTgwODI3MjAyMTA1MTlBICAgICAgICAgICAgICAgICAyMDIxMDUxNDAxMTAwMDAwMjg2MzAwMDAwMzM4NyAgICAgICAgIDEyME0wMDAwMDAwMzIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVCAgIDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgIDIwMjEwNDE5MTExMTEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDUwMDAwMDAyVFIwMTI4OFYgMDFCVFAwMDFVUyBERVAgRUQgICAgICAgICAgICAgICBJN1gwWDBYOVgyWDVYOVg2ICAgICAgICAgSTIwMTgwODI3MjAyMTA1MTlBICAgICAgICAgICAgICAgICAyMDIxMDUxNDAxMTAwMDAwMTYwMDAwMDAwMTg5MiAgICAgICAgIDEyME0wMDAwMDAwMTggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVCAgIDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgIDIwMjEwNDE5MTExMTEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDUwMDAwMDAyVFIwMTI4OEIgMDFEVFYwMDFDQVBJVEFMIE9ORSAgICAgICAgICAgICBSNTE3ODAxOTMyNjQzODkwNyAgICAgICAgSTIwMjAwOTMwMjAyMTA1MTZBICAgICAgICAgICAgICAgICAyMDIxMDUxMTAxMTAwMDAwMDE5MjAwMDAwMDM5NjAwMDAwMDc1ME1JTiAwMDAwMDAwMTUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQyAgIDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgIDIwMjEwNDE2MTExMTExMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDcwMDAwMDAyVFIwMTI4OFYgMDFCVFAwMDFVUyBERVAgRUQgICAgICAgICAgICAgICBJNFgxWDZYNVg5WCAgICAgICAgICAgICAgSTIwMTgwODI3MjAyMDExMzBBMjAyMDExMzBDICAgICAgICAyMDIwMTExNDAxMTAwMDAwMDAwMDAwMDAwNTQxOCAgICAgICAgIDEyMFgwMDAwMDAwNTEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVCAgIDAwMDAwMDAwMDAwMDAwMDAwMjUwMjAxOTAyMDEwNTIwMjAxMDMwMTExMTExMTExMTExMTExMVgxNTU0MzExMSAgICAgICAgICAgICAgICAgICAgICAgMjYwMDAxMDMyVFIwMTI4OEUgMDYzWVEwNzlTQUYgICAgICAgICAgICAgICAgICAgICBJOFg5WDNYNlgzWFNYMFgwWDMgICAgICAgSTIwMTIwOTI2MjAxODEwMDRBMjAxODEwMDRDICAgICAgICAyMDE4MTAwNDAxMTAwMDAwMDAwMDAwMDAwMzUwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVEFDUjAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgVFIwMTI4OEUgMDYzWVEwNzlTQUYgICAgICAgICAgICAgICAgICAgICBJOFg5WDNYNlgzWFNYMFgwWDIgICAgICAgSTIwMTEwOTIyMjAxODEwMDRBMjAxODEwMDRDICAgICAgICAyMDE4MTAwNDAxMTAwMDAwMDAwMDAwMDAwMzM5MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVEFDUjAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgVFIwMTI4OEUgMDYzWVEwNzlTQUYgICAgICAgICAgICAgICAgICAgICBJOFg5WDNYNlgzWFNYMFgwWDEgICAgICAgSTIwMTEwOTIyMjAxODEwMDRBMjAxODEwMDRDICAgICAgICAyMDE4MTAwNDAxMTAwMDAwMDAwMDAwMDAwMjYyNSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTVEFDUjAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgVFIwMTI4OEIgMDFEVFYwMDFDQVBJVEFMIE9ORSAgICAgICAgICAgICBSNDg2MjMyNDI3MTUxMDIzNyAgICAgICAgSTIwMTIwODI0MjAyMTA1MDhBMjAxNjA3MThDICAgICAgICAyMDE2MDIyN1VSMTAwMDAwMDAwMDAwMDAwMTI1MjAwMDAwMTAwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQ0NCTDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgVFIwMTI4OEIgMDcwMU4xMzRDSEFTRSBDQVJEICAgICAgICAgICAgICBSNDE4NTgyMjU0NTEzNTA2NiAgICAgICAgSTIwMTIwNzIzMjAxNjA4MzFBMjAxNjA4MzFDMjAxNjA4MjIyMDE2MDgyMlVSMTAwMDAwMDAwMDAwMDAwMzI4NDAwMDAwMjg4MiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQ0NCTDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMDAgICAgICAgSU4wMTA2NTMzUENCIDAyNjk5ODI0Q0FQIE9ORSAgICAgICAgICAgICAgICAgSSAgICAgICAgICAgMjAyMDA5MjdJTjAxMDY1MTdOWUYgMDU5MTk2MzRDSEFTRSBBVVRPICAgICAgICAgICAgICBQICAgICAgICAgICAyMDIwMDgxNklOMDEwNjUxMURUTiAwMTAwODMxNVREIEFVVE8gRklOQSAgICAgICAgICAgIEkgICAgICAgICAgIDIwMjAwODE2SU4wMTA2NTExRFROIDAxMjAzNTQzQUxMWSBGSU5BTiBJICAgICAgICAgICAgSUFVICAgICAgICAgMjAyMDA4MTZJTjAxMDY1MDZDSEEgMDY0MTI4MjlXSUxDT1ggQVVUTyAgICAgICAgICAgICBJICAgICAgICAgICAyMDIwMDgxNklOMDEwNjUzM1BDRiAwMTI0NjUzOENPQUYgICAgICAgICAgICAgICAgICAgIEkgICAgICAgICAgIDIwMjAwODExSU4wMTA2NTExRFROIDAxMjAzNTQzQUxMWSBGSU5BTiBJICAgICAgICAgICAgSUFVICAgICAgICAgMjAyMDA4MTFJTjAxMDY1MTVERkYgMDAwMjcwMTZBTUVSSUNSRURJVCAgICAgICAgICAgICBQICAgICAgICAgICAyMDIwMDgxMUlOMDEwNjUwOU1TRCAwMzc2NDE0M01FVEFCTksvRkhVVCAgICAgICAgICAgIEkgICAgICAgICAgIDIwMTkxMDI0QU8wMTAxNzA3NTAwMDEgICBMSzAxMDQ4UFIwMDAwWlAwNTAwMTY5NFVTQksgQ09VUlQgU09VVEhFUk4gSU9XQSBTQTAxMTA2MTEwIENPVVJUIEFWRSAgICAgICAgICAgICAgICAgU1VJVEUgMzAwICAgICAgICAgICAgICAgICAgICAgREVTIE1PSU5FUyAgICAgICAgICAgICAgICAgSUE1MDMwOSAgICAgUE4wMTAyN0Y0MDkgNTE1Mjg0NjIzMCAgICAgTEswMTA0OFRSMDAwMEVMMDEwNjYwNDFTVU5UUlVTVCBCQU5LICAgICAgICAgICAgU0EwMTEwNkMvTyBBQ1MgICAgICAgICAgICAgICAgICAgICAgIDUwMSBCTEVFQ0tFUiBTVFJFRVQgICAgICAgICAgIFVUSUNBICAgICAgICAgICAgICAgICAgICAgIE5ZMTM1MDEgICAgIFBOMDEwMjdGNDA5IDgwMDgzNTQ2MTEgICAgIExLMDEwNDhUUjAwMDBWWjAxQlRQMDAxVS5TLiBERVBUIE9GIEVEIC0gRElSRUNUIFNBMDExMDZQTyBCT1ggNTYwOSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBHUkVFTlZJTExFICAgICAgICAgICAgICAgICBUWDc1NDAzICAgICBQTjAxMDI3RjQwOSA4MDA4NDgwOTc5ICAgICBMSzAxMDQ4VFIwMDAwQkMwMURUVjAwMUNBUElUQUwgT05FIEJBTksgVVNBIE5BICBTQTAxMTA2UE8gQk9YIDMxMjkzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU0FMVCBMQUtFIENJVFkgICAgICAgICAgICAgVVQ4NDEzMSAgICAgUE4wMTAyN0Y0MDkgODAwOTU1NzA3MCAgICAgTEswMTA0OFRSMDAwMEVMMDFYUTMwMDFJU0wvSUEgU1REVCBMTiAgICAgICAgICAgU0EwMTEwNjY4MDUgVklTVEEgRFJJVkUgICAgICAgICAgICAgIEFTSEZPUkQgSSBCVUlMRElORyAgICAgICAgICAgIFdFU1QgREVTIE1PSU5FUyAgICAgICAgICAgIElBNTAyNjYgICAgIFBOMDEwMjdGNDA5IDgwMDI0Mzc1NTIgICAgIExLMDEwNDhUUjAwMDBCQzAyNlFLMDAxSlBNQ0IgQ0FSRCBTRVJWSUNFUyAgICAgIFNBMDExMDZQTyBCT1ggMTUzNjkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBXSUxNSU5HVE9OICAgICAgICAgICAgICAgICBERTE5ODUwICAgICBQTjAxMDI3RjQwOSA4MDA5NDUyMDAwICAgICBMSzAxMDQ4VFIwMDAwRUwwNjNZUTA3OVNUVURFTlQgQVNTSVNUQU5DRSBGT1VORCBTQTAxMTA2MjUwMCBCUk9BRFdBWSAgICAgICAgICAgICAgICAgUE9CIDUyMDkgICAgICAgICAgICAgICAgICAgICAgSEVMRU5BICAgICAgICAgICAgICAgICAgICAgTVQ1OTYwNCAgICAgUE4wMTAyN0Y0MDkgODAwODUyMjc2MSAgICAgTEswMTA0OFRSMDAwMEJDMDcwMU4xMzRDSEFTRSBDQVJEICAgICAgICAgICAgICAgU0EwMTEwNlBPIEJPWCAxNTM2OSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdJTE1JTkdUT04gICAgICAgICAgICAgICAgIERFMTk4NTAgICAgIFBOMDEwMjdGNDA5IDgwMDk0NTIwMDAgICAgIExLMDEwNDhUUjAwMDBCQzA3OTkxMTg5SFNCQyBCQU5LICAgICAgICAgICAgICAgIFNBMDExMDZQTyBCT1ggNTI1MyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQVJPTCBTVFJFQU0gICAgICAgICAgICAgICBJTDYwMTk3ICAgICBQTjAxMDI3RjQwOSA4MDA0Nzc2MDAwICAgICBMSzAxMDQ4Q0wwMDAwWUMwMjU2QzAwMUgmUiBBQ0NPVU5UUyAgICAgICAgICAgICBTQTAxMTA2NTMyMCAyMk5EIEFWRSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTU9MSU5FICAgICAgICAgICAgICAgICAgICAgSUw2MTI2NSAgICAgUE4wMTAyN0Y0MDkgMzA5NzM2MjI1NSAgICAgTEswMTA0OElOMDYwMEEgMDY0MTI4MjlPREUvV0lMQ09YIEFVVE9NT1RJVkUgICAgU0EwMTEwNjMyMSAxOVRIIFNUUkVFVCBTVyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEZPUkVTVCBMQUtFICAgICAgICAgICAgICAgIE1ONTUwMjUgICAgIFBOMDEwMjdGMzA5IDY1MTQ2NDQyMTIgICAgIExLMDEwNDhJTjA5MjREIDAzNzY0MTQzTUVUQUJBTksvRklOR0VSSFVUICAgICAgIFNBMDExMDY3MDc1IEZMWUlORyBDTE9VRCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFREVOIFBSQUlSSUUgICAgICAgICAgICAgICBNTjU1MzQ0ICAgICBQTjAxMDI3RjMwOSA4MDAzNTYyMzQ3ICAgICBMSzAxMDQ4SU4xMTIwTiAwMTAwODMxNVREIEFVVE8gRklOQU5DRSAgICAgICAgICBTQTAxMTA2RktBIENIUllTTEVSIEZJTkFOICAgICAgICAgICAgUE8gQk9YIDkyMjMgICgxMTMyICAgICAgICAgICAgRkFSTUlOR1RPTiBISUwgICAgICAgICAgICAgTUk0ODMzMyAgICAgUE4wMTAyN0YzMDkgODAwNTU2ODE3MiAgICAgTEswMTA0OElOMTEyME4gMDEyMDM1NDNBTExZIEZJTkFOQ0lBTCwgSU5DICAgICAgU0EwMTEwNlBPIEJPWCAzODA5MDEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJMT09NSU5HVE9OICAgICAgICAgICAgICAgIE1ONTU0MzggICAgIFBOMDEwMjdGMzA5IDg4ODkyNTI1NTkgICAgIExLMDEwNDhJTjE1MjdGIDAwMDI3MDE2QU1FUklDUkVESVQgICAgICAgICAgICAgIFNBMDExMDY4MDEgQ0hFUlJZIFNUICAgICAgICAgICAgICAgICBTVUlURSAzOTAwICAgICAgICAgICAgICAgICAgICBGVCBXT1JUSCAgICAgICAgICAgICAgICAgICBUWDc2MTAyICAgICBQTjAxMDI3RjMwOSA4MDAyODQyMjcxICAgICBMSzAxMDQ4SU4xNzAyRiAwNTkxOTYzNENIQVNFIEFVVE8gICAgICAgICAgICAgICBTQTAxMTA2UC5PLiBCT1ggOTAxMDAzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRlQuIFdPUlRIICAgICAgICAgICAgICAgICAgVFg3NjEwMSAgICAgUE4wMTAyN0YzMDkgODAwMzM2NjY3NSAgICAgTEswMTA0OElOMzMxNEIgMDI2OTk4MjRDQVBJVEFMIE9ORSBCQU5LIFVTQSBOQSAgU0EwMTEwNlBPIEJPWCAgMzAyODEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNBTFQgTEFLRSBDSVRZICAgICAgICAgICAgIFVUODQxMzAgICAgIFBOMDEwMjdGMzA5IDgwMDk1NTcwNzAgICAgIExLMDEwNDhJTjMzMTRGIDAxMjQ2NTM4Q0FQSVRBTCBPTkUgQVVUTyBGSU5BTkNFIFNBMDExMDYzOTA1IE4gREFMTEFTIFBBUksgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQTEFOTyAgICAgICAgICAgICAgICAgICAgICBUWDc1MDkzICAgICBQTjAxMDI3RjMwOSA4MDA5NDYwMzMyICAgICBBTzAxMDE3MDY1MDAwMUgwMUFPMDEwMTcwMFc0MDAxICAgU0MwMTAzNDAwVzQwKzY1MyAgIEk5OCAxNCAxMiAzMCAwMkNIMDEwMzAwMFc0MFBPU1JFQTEgUDA4ICAgICAgIENIMDEwMzAwMFc0MFBPU1JFQTIgUDM0ICAgICAgIENIMDEwMzAwMFc0MFBPU1JFQTMgUDA3ICAgICAgIENIMDEwMzAwMFc0MFBPU1JFQTQgUDMyICAgICAgIEVORFMwMTAxMDE=",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      }
+    ],
+    "SafetyCheckPassed": true,
+    "FraudIndicator": false,
+    "PulblicRecordPartition": [
+      {
+        "PublicRecord": {
+          "Status": {
+            "description": "Discharged",
+            "symbol": 1,
+            "rank": 199,
+            "abbreviation": "Discharged"
+          },
+          "TaxLien": {},
+          "IndustryCode": {
+            "description": "Miscellaneous",
+            "symbol": "Z",
+            "rank": 199,
+            "abbreviation": "Miscellaneous"
+          },
+          "MiscPublicRecord": {},
+          "MaritalItem": {},
+          "FinancingStatement": {
+            "CreditorType": {}
+          },
+          "RegisteredItem": {
+            "Security": []
+          },
+          "LegalItem": {
+            "CourtType": {},
+            "CourtLocation": {}
+          },
+          "Foreclosure": {},
+          "FinancialCounseling": {},
+          "subscriberCode": 5001694,
+          "handle": "PR01_1657419304_-1031353275",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "Type": {
+            "description": "Chapter 7 Bankruptcy",
+            "symbol": 1,
+            "rank": 199,
+            "abbreviation": "Chapter 7 Bankruptcy"
+          },
+          "Garnishment": {},
+          "courtName": "Federal District",
+          "referenceNumber": "7X1X8X",
+          "Classification": {
+            "description": "Bankruptcy",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bankruptcy"
+          },
+          "bureau": "TransUnion",
+          "AccountDesignator": {
+            "description": "Joint",
+            "symbol": "J",
+            "rank": 199,
+            "abbreviation": "Joint"
+          },
+          "Bankruptcy": {
+            "division": "",
+            "thirdParty": "",
+            "courtNumber": "",
+            "dateResolved": "2016-11-25",
+            "assetAmount": 0,
+            "liabilityAmount": 0,
+            "trustee": "",
+            "company": "",
+            "exemptAmount": 0
+          },
+          "dateFiled": "2016-08-18"
+        }
+      }
+    ],
+    "BankingRecordPartition": [],
+    "Subscriber": [
+      {
+        "name": "USBK COURT SOUTHERN IOWA",
+        "CreditAddress": {
+          "unparsedStreet": "110 COURT AVE                  SUITE 300",
+          "stateCode": "IA",
+          "city": "DES MOINES",
+          "postalCode": 50309
+        },
+        "telephone": 5152846230,
+        "subscriberCode": 5001694,
+        "IndustryCode": {
+          "description": "Public Records",
+          "symbol": "ZP",
+          "rank": 199,
+          "abbreviation": "Public Records"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "SUNTRUST BANK",
+        "CreditAddress": {
+          "unparsedStreet": "C/O ACS                        501 BLEECKER STREET",
+          "stateCode": "NY",
+          "city": "UTICA",
+          "postalCode": 13501
+        },
+        "telephone": 8008354611,
+        "subscriberCode": 1066041,
+        "IndustryCode": {
+          "description": "Student Loans",
+          "symbol": "EL",
+          "rank": 199,
+          "abbreviation": "Student Loans"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "U.S. DEPT OF ED - DIRECT",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 5609",
+          "stateCode": "TX",
+          "city": "GREENVILLE",
+          "postalCode": 75403
+        },
+        "telephone": 8008480979,
+        "subscriberCode": "01BTP001",
+        "IndustryCode": {
+          "description": "Miscellaneous Government",
+          "symbol": "VZ",
+          "rank": 199,
+          "abbreviation": "Miscellaneous Government"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "CAPITAL ONE BANK USA NA",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 31293",
+          "stateCode": "UT",
+          "city": "SALT LAKE CITY",
+          "postalCode": 84131
+        },
+        "telephone": 8009557070,
+        "subscriberCode": "01DTV001",
+        "IndustryCode": {
+          "description": "Bank Credit Cards",
+          "symbol": "BC",
+          "rank": 199,
+          "abbreviation": "Bank Credit Cards"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "ISL/IA STDT LN",
+        "CreditAddress": {
+          "unparsedStreet": "6805 VISTA DRIVE               ASHFORD I BUILDING",
+          "stateCode": "IA",
+          "city": "WEST DES MOINES",
+          "postalCode": 50266
+        },
+        "telephone": 8002437552,
+        "subscriberCode": "01XQ3001",
+        "IndustryCode": {
+          "description": "Student Loans",
+          "symbol": "EL",
+          "rank": 199,
+          "abbreviation": "Student Loans"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "JPMCB CARD SERVICES",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 15369",
+          "stateCode": "DE",
+          "city": "WILMINGTON",
+          "postalCode": 19850
+        },
+        "telephone": 8009452000,
+        "subscriberCode": "026QK001",
+        "IndustryCode": {
+          "description": "Bank Credit Cards",
+          "symbol": "BC",
+          "rank": 199,
+          "abbreviation": "Bank Credit Cards"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "STUDENT ASSISTANCE FOUND",
+        "CreditAddress": {
+          "unparsedStreet": "2500 BROADWAY                  POB 5209",
+          "stateCode": "MT",
+          "city": "HELENA",
+          "postalCode": 59604
+        },
+        "telephone": 8008522761,
+        "subscriberCode": "063YQ079",
+        "IndustryCode": {
+          "description": "Student Loans",
+          "symbol": "EL",
+          "rank": 199,
+          "abbreviation": "Student Loans"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "CHASE CARD",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 15369",
+          "stateCode": "DE",
+          "city": "WILMINGTON",
+          "postalCode": 19850
+        },
+        "telephone": 8009452000,
+        "subscriberCode": "0701N134",
+        "IndustryCode": {
+          "description": "Bank Credit Cards",
+          "symbol": "BC",
+          "rank": 199,
+          "abbreviation": "Bank Credit Cards"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "HSBC BANK",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 5253",
+          "stateCode": "IL",
+          "city": "CAROL STREAM",
+          "postalCode": 60197
+        },
+        "telephone": 8004776000,
+        "subscriberCode": 7991189,
+        "IndustryCode": {
+          "description": "Bank Credit Cards",
+          "symbol": "BC",
+          "rank": 199,
+          "abbreviation": "Bank Credit Cards"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "H&#x26;amp;R ACCOUNTS",
+        "CreditAddress": {
+          "unparsedStreet": "5320 22ND AVE",
+          "stateCode": "IL",
+          "city": "MOLINE",
+          "postalCode": 61265
+        },
+        "telephone": 3097362255,
+        "subscriberCode": "0256C001",
+        "IndustryCode": {
+          "description": "Other Collection Agencies",
+          "symbol": "YC",
+          "rank": 199,
+          "abbreviation": "Other Collection Agencies"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "ODE/WILCOX AUTOMOTIVE",
+        "CreditAddress": {
+          "unparsedStreet": "321 19TH STREET SW",
+          "stateCode": "MN",
+          "city": "FOREST LAKE",
+          "postalCode": 55025
+        },
+        "telephone": 6514644212,
+        "subscriberCode": 6412829,
+        "IndustryCode": {
+          "description": "Automotive",
+          "symbol": "A",
+          "rank": 199,
+          "abbreviation": "Automotive"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "METABANK/FINGERHUT",
+        "CreditAddress": {
+          "unparsedStreet": "7075 FLYING CLOUD",
+          "stateCode": "MN",
+          "city": "EDEN PRAIRIE",
+          "postalCode": 55344
+        },
+        "telephone": 8003562347,
+        "subscriberCode": 3764143,
+        "IndustryCode": {
+          "description": "Department/Variety and Other Retail",
+          "symbol": "D",
+          "rank": 199,
+          "abbreviation": "Department/Variety and Other Retail"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "TD AUTO FINANCE",
+        "CreditAddress": {
+          "unparsedStreet": "FKA CHRYSLER FINAN             PO BOX 9223  (1132",
+          "stateCode": "MI",
+          "city": "FARMINGTON HIL",
+          "postalCode": 48333
+        },
+        "telephone": 8005568172,
+        "subscriberCode": 1008315,
+        "IndustryCode": {
+          "description": "Travel/Entertainment",
+          "symbol": "N",
+          "rank": 199,
+          "abbreviation": "Travel/Entertainment"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "ALLY FINANCIAL, INC",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX 380901",
+          "stateCode": "MN",
+          "city": "BLOOMINGTON",
+          "postalCode": 55438
+        },
+        "telephone": 8889252559,
+        "subscriberCode": 1203543,
+        "IndustryCode": {
+          "description": "Travel/Entertainment",
+          "symbol": "N",
+          "rank": 199,
+          "abbreviation": "Travel/Entertainment"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "AMERICREDIT",
+        "CreditAddress": {
+          "unparsedStreet": "801 CHERRY ST                  SUITE 3900",
+          "stateCode": "TX",
+          "city": "FT WORTH",
+          "postalCode": 76102
+        },
+        "telephone": 8002842271,
+        "subscriberCode": 27016,
+        "IndustryCode": {
+          "description": "Finance/Personal",
+          "symbol": "F",
+          "rank": 199,
+          "abbreviation": "Finance/Personal"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "CHASE AUTO",
+        "CreditAddress": {
+          "unparsedStreet": "P.O. BOX 901003",
+          "stateCode": "TX",
+          "city": "FT. WORTH",
+          "postalCode": 76101
+        },
+        "telephone": 8003366675,
+        "subscriberCode": 5919634,
+        "IndustryCode": {
+          "description": "Finance/Personal",
+          "symbol": "F",
+          "rank": 199,
+          "abbreviation": "Finance/Personal"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "CAPITAL ONE BANK USA NA",
+        "CreditAddress": {
+          "unparsedStreet": "PO BOX  30281",
+          "stateCode": "UT",
+          "city": "SALT LAKE CITY",
+          "postalCode": 84130
+        },
+        "telephone": 8009557070,
+        "subscriberCode": 2699824,
+        "IndustryCode": {
+          "description": "Bank",
+          "symbol": "B",
+          "rank": 199,
+          "abbreviation": "Bank"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      },
+      {
+        "name": "CAPITAL ONE AUTO FINANCE",
+        "CreditAddress": {
+          "unparsedStreet": "3905 N DALLAS PARK",
+          "stateCode": "TX",
+          "city": "PLANO",
+          "postalCode": 75093
+        },
+        "telephone": 8009460332,
+        "subscriberCode": 1246538,
+        "IndustryCode": {
+          "description": "Finance/Personal",
+          "symbol": "F",
+          "rank": 199,
+          "abbreviation": "Finance/Personal"
+        },
+        "Source": {
+          "InquiryDate": "2021-07-08",
+          "BorrowerKey": "",
+          "Reference": "18acd328-dcc0-49d5-bd2",
+          "Bureau": {
+            "description": "TransUnion",
+            "symbol": "TUC",
+            "rank": 1,
+            "abbreviation": "TransUnion"
+          }
+        }
+      }
+    ],
+    "TradeLinePartition": [
+      {
+        "accountTypeAbbreviation": "Collection",
+        "accountTypeDescription": "Collection Account",
+        "accountTypeSymbol": "Y",
+        "Tradeline": {
+          "creditorName": "H&#x26;amp;R ACCOUNTS",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Placed for collection",
+                "symbol": "T00CLA",
+                "rank": 199,
+                "abbreviation": "Placed for collection"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 156,
+          "dateOpened": "2017-12-25",
+          "dateReported": "2018-02-28",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2018-02-28",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Derogatory",
+            "symbol": "F",
+            "rank": 20,
+            "abbreviation": "Derog"
+          },
+          "PayStatus": {
+            "description": "Collection/Chargeoff",
+            "symbol": 9,
+            "rank": 2,
+            "abbreviation": "Coll/Chargeoff"
+          },
+          "IndustryCode": {
+            "description": "Collection Services",
+            "symbol": "Y",
+            "rank": 199,
+            "abbreviation": "Collection Services"
+          },
+          "GrantedTrade": {
+            "PaymentFrequency": {},
+            "WorstPayStatus": {},
+            "CreditType": {},
+            "AccountType": {},
+            "TermType": {},
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            }
+          },
+          "currentBalance": 156,
+          "subscriberCode": "0256C001",
+          "handle": "TR01_585340615_750320049_89",
+          "CollectionTrade": {
+            "originalCreditor": "NORTH IOWA MERCY CLINICS R22",
+            "creditType": {
+              "description": "Collection Account",
+              "symbol": "Y",
+              "rank": 5,
+              "abbreviation": "Collection"
+            },
+            "actualPaymentAmount": 0
+          },
+          "dateAccountStatus": "2018-02-28",
+          "accountNumber": "3X1X5X6",
+          "OpenClosed": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 199,
+            "abbreviation": "Open"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 0,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Collection",
+        "accountTypeDescription": "Collection Account",
+        "accountTypeSymbol": "Y",
+        "Tradeline": {
+          "creditorName": "H&#x26;amp;R ACCOUNTS",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Chapter 7 bankruptcy",
+                "symbol": "T00CBL",
+                "rank": 199,
+                "abbreviation": "Chapter 7 bankruptcy"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 378,
+          "dateOpened": "2016-09-03",
+          "dateReported": "2016-11-30",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2016-11-30",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Paid",
+            "symbol": "P",
+            "rank": 10,
+            "abbreviation": "Paid"
+          },
+          "PayStatus": {
+            "description": "Collection/Chargeoff",
+            "symbol": 9,
+            "rank": 2,
+            "abbreviation": "Coll/Chargeoff"
+          },
+          "IndustryCode": {
+            "description": "Collection Services",
+            "symbol": "Y",
+            "rank": 199,
+            "abbreviation": "Collection Services"
+          },
+          "GrantedTrade": {
+            "PaymentFrequency": {},
+            "WorstPayStatus": {},
+            "CreditType": {},
+            "AccountType": {},
+            "TermType": {},
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            }
+          },
+          "currentBalance": 0,
+          "subscriberCode": "0256C001",
+          "handle": "TR01_587190536_750320049_89",
+          "CollectionTrade": {
+            "originalCreditor": "NORTH IOWA MERCY CLINICS R22",
+            "creditType": {
+              "description": "Collection Account",
+              "symbol": "Y",
+              "rank": 5,
+              "abbreviation": "Collection"
+            },
+            "actualPaymentAmount": 0
+          },
+          "dateAccountStatus": "2016-08-18",
+          "accountNumber": "3X3X8X2",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 1,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Collection",
+        "accountTypeDescription": "Collection Account",
+        "accountTypeSymbol": "Y",
+        "Tradeline": {
+          "creditorName": "H&#x26;amp;R ACCOUNTS",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Chapter 7 bankruptcy",
+                "symbol": "T00CBL",
+                "rank": 199,
+                "abbreviation": "Chapter 7 bankruptcy"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 397,
+          "dateOpened": "2015-10-06",
+          "dateReported": "2015-12-31",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2015-12-31",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Paid",
+            "symbol": "P",
+            "rank": 10,
+            "abbreviation": "Paid"
+          },
+          "PayStatus": {
+            "description": "Collection/Chargeoff",
+            "symbol": 9,
+            "rank": 2,
+            "abbreviation": "Coll/Chargeoff"
+          },
+          "IndustryCode": {
+            "description": "Collection Services",
+            "symbol": "Y",
+            "rank": 199,
+            "abbreviation": "Collection Services"
+          },
+          "GrantedTrade": {
+            "PaymentFrequency": {},
+            "WorstPayStatus": {},
+            "CreditType": {},
+            "AccountType": {},
+            "TermType": {},
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            }
+          },
+          "currentBalance": 0,
+          "subscriberCode": "0256C001",
+          "handle": "TR01_585340609_750320049_89",
+          "CollectionTrade": {
+            "originalCreditor": "NORTH IOWA MERCY CLINICS R2",
+            "creditType": {
+              "description": "Collection Account",
+              "symbol": "Y",
+              "rank": 5,
+              "abbreviation": "Collection"
+            },
+            "actualPaymentAmount": 0
+          },
+          "dateAccountStatus": "2015-12-31",
+          "accountNumber": "3X1X5X0",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 2,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Revolving",
+        "accountTypeDescription": "Revolving Account",
+        "accountTypeSymbol": "R",
+        "Tradeline": {
+          "creditorName": "JPMCB CARD",
+          "dateClosed": "2016-08-22",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Charged off as bad debt",
+                "symbol": "TM009",
+                "rank": 10000,
+                "abbreviation": "Charged off as bad debt"
+              },
+              "customRemark": ""
+            },
+            {
+              "RemarkCode": {
+                "description": "Canceled by credit grantor",
+                "symbol": "T00CBG",
+                "rank": 199,
+                "abbreviation": "Canceled by credit grantor"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 1432,
+          "dateOpened": "2012-12-02",
+          "dateReported": "2016-08-22",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2016-08-22",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Paid",
+            "symbol": "P",
+            "rank": 10,
+            "abbreviation": "Paid"
+          },
+          "PayStatus": {
+            "description": "Collection/Chargeoff",
+            "symbol": 9,
+            "rank": 2,
+            "abbreviation": "Coll/Chargeoff"
+          },
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 950,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2016-03-31",
+            "AccountType": {
+              "description": "Credit Card",
+              "symbol": "CC",
+              "rank": 50,
+              "abbreviation": "Credit Card"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Revolving Account",
+              "symbol": "R",
+              "rank": 50,
+              "abbreviation": "Revolving"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "026QK001",
+          "handle": "TR01_1291748319_804122595_82",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2016-03-31",
+          "accountNumber": 4266821712882431,
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 3,
+          "AccountDesignator": {
+            "description": "Terminated",
+            "symbol": "T",
+            "rank": 199,
+            "abbreviation": "Terminated"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "SUNTRUST BK",
+          "dateClosed": "2017-10-10",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Student loan permanently assigned to government",
+                "symbol": "T00SLP",
+                "rank": 199,
+                "abbreviation": "Student loan permanently assigned to government"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 10314,
+          "dateOpened": "2011-09-22",
+          "dateReported": "2017-10-10",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2017-10-10",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 50,
+            "abbreviation": "Closed"
+          },
+          "PayStatus": {
+            "description": "Late 120 Days",
+            "symbol": 4,
+            "rank": 102,
+            "abbreviation": "120 Delinq"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2017-09-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-08-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-07-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-06-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-05-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-04-10",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-03-09",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-02-09",
+                  "ComplianceRemark": {},
+                  "status": 3,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2017-01-09",
+                  "ComplianceRemark": {},
+                  "status": 2,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-12-09",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-11-09",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-10-10",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-09-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-08-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-07-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-06-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-05-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-04-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-03-09",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-02-09",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2016-01-09",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-12-09",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-11-09",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-10-10",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2017-09-10",
+              "status": "444444432CCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 12,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 8,
+            "late60Count": 1,
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 200,
+            "termMonths": 120,
+            "WorstPayStatus": {
+              "description": "Late 120 Days",
+              "symbol": 4,
+              "rank": 102,
+              "abbreviation": "120 Delinq"
+            },
+            "monthsReviewed": 12,
+            "collateral": "07 SUNTRUST BANKS INC",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": 1066041,
+          "handle": "TR01_147211983_-280716546_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2017-10-10",
+          "accountNumber": "4X1X6X5X9X",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 4,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "IOWA STDT LN",
+          "dateClosed": "2015-09-30",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Student loan permanently assigned to government",
+                "symbol": "T00SLP",
+                "rank": 199,
+                "abbreviation": "Student loan permanently assigned to government"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 3500,
+          "dateOpened": "2012-09-30",
+          "dateReported": "2015-09-30",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2015-09-30",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 50,
+            "abbreviation": "Closed"
+          },
+          "PayStatus": {
+            "description": "Late 120 Days",
+            "symbol": 4,
+            "rank": 102,
+            "abbreviation": "120 Delinq"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2015-08-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-07-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-06-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-05-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-04-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-03-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-02-27",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-01-27",
+                  "ComplianceRemark": {},
+                  "status": 3,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-12-27",
+                  "ComplianceRemark": {},
+                  "status": 2,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2015-08-30",
+              "status": "444444432CCCCCCCCCCCCCCCCCCCCCCCCCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 35,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 8,
+            "late60Count": 1,
+            "dateLastPayment": "2015-09-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 42,
+            "termMonths": 101,
+            "WorstPayStatus": {
+              "description": "Late 120 Days",
+              "symbol": 4,
+              "rank": 102,
+              "abbreviation": "120 Delinq"
+            },
+            "monthsReviewed": 35,
+            "collateral": "DEFERRED TO 12142013",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "01XQ3001",
+          "handle": "TR01_1303680425_889295064_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2015-09-30",
+          "accountNumber": "8X9X3X6X3XIX0X0X3",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 5,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "IOWA STDT LN",
+          "dateClosed": "2015-09-30",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Student loan permanently assigned to government",
+                "symbol": "T00SLP",
+                "rank": 199,
+                "abbreviation": "Student loan permanently assigned to government"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 3390,
+          "dateOpened": "2011-09-22",
+          "dateReported": "2015-09-30",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2015-09-30",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 50,
+            "abbreviation": "Closed"
+          },
+          "PayStatus": {
+            "description": "Late 120 Days",
+            "symbol": 4,
+            "rank": 102,
+            "abbreviation": "120 Delinq"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2015-08-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-07-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-06-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-05-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-04-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-03-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-02-27",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-01-27",
+                  "ComplianceRemark": {},
+                  "status": 3,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-12-27",
+                  "ComplianceRemark": {},
+                  "status": 2,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2015-08-30",
+              "status": "444444432CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 47,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 8,
+            "late60Count": 1,
+            "dateLastPayment": "2015-09-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 2,
+            "termMonths": 101,
+            "WorstPayStatus": {
+              "description": "Late 120 Days",
+              "symbol": 4,
+              "rank": 102,
+              "abbreviation": "120 Delinq"
+            },
+            "monthsReviewed": 47,
+            "collateral": "DEFERRED TO 12142013",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "01XQ3001",
+          "handle": "TR01_1303680424_889295064_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2015-09-30",
+          "accountNumber": "8X9X3X6X3XIX0X0X2",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 6,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "IOWA STDT LN",
+          "dateClosed": "2015-09-30",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Student loan permanently assigned to government",
+                "symbol": "T00SLP",
+                "rank": 199,
+                "abbreviation": "Student loan permanently assigned to government"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 2625,
+          "dateOpened": "2011-09-22",
+          "dateReported": "2015-09-30",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2015-09-30",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 50,
+            "abbreviation": "Closed"
+          },
+          "PayStatus": {
+            "description": "Late 120 Days",
+            "symbol": 4,
+            "rank": 102,
+            "abbreviation": "120 Delinq"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2015-08-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-07-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-06-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-05-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-04-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-03-30",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-02-27",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2015-01-27",
+                  "ComplianceRemark": {},
+                  "status": 3,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-12-27",
+                  "ComplianceRemark": {},
+                  "status": 2,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2014-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2013-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-09-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-08-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-07-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-06-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-05-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-04-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-03-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-02-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2012-01-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2011-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2015-08-30",
+              "status": "444444432CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 47,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 8,
+            "late60Count": 1,
+            "dateLastPayment": "2015-09-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 21,
+            "termMonths": 101,
+            "WorstPayStatus": {
+              "description": "Late 120 Days",
+              "symbol": 4,
+              "rank": 102,
+              "abbreviation": "120 Delinq"
+            },
+            "monthsReviewed": 47,
+            "collateral": "DEFERRED TO 12142013",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "01XQ3001",
+          "handle": "TR01_1303680423_889295064_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2015-09-30",
+          "accountNumber": "8X9X3X6X3XIX0X0X1",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 7,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Revolving",
+        "accountTypeDescription": "Revolving Account",
+        "accountTypeSymbol": "R",
+        "Tradeline": {
+          "creditorName": "HSBC BANK",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "highBalance": 202,
+          "dateOpened": "2020-06-07",
+          "dateReported": "2021-05-20",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2021-05-20",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 60,
+            "abbreviation": "Open"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2021-04-20",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-03-20",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-02-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-01-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-12-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-11-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-10-20",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-09-20",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-08-20",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-07-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-06-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-05-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-04-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-03-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-02-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-01-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-12-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-11-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-10-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-09-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-08-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-07-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-06-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-05-20",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2021-04-20",
+              "status": "CCCCCCCCC"
+            },
+            "CreditLimit": 300,
+            "worstPatStatusCount": 9,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2021-05-11",
+            "AccountType": {
+              "description": "Credit Card",
+              "symbol": "CC",
+              "rank": 50,
+              "abbreviation": "Credit Card"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Current",
+              "symbol": "C",
+              "rank": 110,
+              "abbreviation": "Current"
+            },
+            "monthsReviewed": 9,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Revolving Account",
+              "symbol": "R",
+              "rank": 50,
+              "abbreviation": "Revolving"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": 7991189,
+          "handle": "TR01_461051713_1009623304_82",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2021-05-11",
+          "accountNumber": 5155961252980605,
+          "OpenClosed": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 199,
+            "abbreviation": "Open"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 8,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "US DEP ED",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "highBalance": 3387,
+          "dateOpened": "2018-08-27",
+          "dateReported": "2021-05-19",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2021-05-19",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 60,
+            "abbreviation": "Open"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Government",
+            "symbol": "V",
+            "rank": 199,
+            "abbreviation": "Government"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2021-04-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-03-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-02-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-01-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-12-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-11-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-10-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-09-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-08-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-07-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-06-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-05-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-04-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-03-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-02-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-01-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-12-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-11-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-10-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-09-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-08-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-07-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-06-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-05-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2021-04-19",
+              "status": "CCCCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 5,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2021-05-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 32,
+            "termMonths": 120,
+            "WorstPayStatus": {
+              "description": "Current",
+              "symbol": "C",
+              "rank": 110,
+              "abbreviation": "Current"
+            },
+            "monthsReviewed": 5,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 2863,
+          "subscriberCode": "01BTP001",
+          "handle": "TR01_-620920067_263088244_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2021-05-19",
+          "accountNumber": "7X0X0X9X2X5X8X6",
+          "OpenClosed": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 199,
+            "abbreviation": "Open"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 9,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "US DEP ED",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "highBalance": 1892,
+          "dateOpened": "2018-08-27",
+          "dateReported": "2021-05-19",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2021-05-19",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 60,
+            "abbreviation": "Open"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Government",
+            "symbol": "V",
+            "rank": 199,
+            "abbreviation": "Government"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2021-04-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-03-19",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-02-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-01-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-12-18",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-11-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-10-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-09-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-08-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-07-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-06-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-05-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-04-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-03-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-02-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-01-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-12-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-11-18",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-10-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-09-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-08-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-07-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-06-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-05-19",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2021-04-19",
+              "status": "CCCCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 5,
+            "PaymentFrequency": {
+              "description": "Monthly (every month)",
+              "symbol": "M",
+              "rank": 199,
+              "abbreviation": "Monthly (every month)"
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2021-05-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 18,
+            "termMonths": 120,
+            "WorstPayStatus": {
+              "description": "Current",
+              "symbol": "C",
+              "rank": 110,
+              "abbreviation": "Current"
+            },
+            "monthsReviewed": 5,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 1600,
+          "subscriberCode": "01BTP001",
+          "handle": "TR01_-620919106_263088244_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2021-05-19",
+          "accountNumber": "7X0X0X9X2X5X9X6",
+          "OpenClosed": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 199,
+            "abbreviation": "Open"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 10,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Revolving",
+        "accountTypeDescription": "Revolving Account",
+        "accountTypeSymbol": "R",
+        "Tradeline": {
+          "creditorName": "CAPITAL ONE",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "highBalance": 396,
+          "dateOpened": "2020-09-30",
+          "dateReported": "2021-05-16",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2021-05-16",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 60,
+            "abbreviation": "Open"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2021-04-16",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-03-16",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-02-15",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2021-01-15",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-12-15",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-11-15",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-10-16",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-09-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-08-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-07-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-06-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-05-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-04-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-03-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-02-15",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-01-15",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-12-15",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-11-15",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-10-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-09-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-08-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-07-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-06-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-05-16",
+                  "ComplianceRemark": {},
+                  "status": "",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2021-04-16",
+              "status": "CCCCCCC"
+            },
+            "CreditLimit": 750,
+            "worstPatStatusCount": 7,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2021-05-11",
+            "AccountType": {
+              "description": "Credit Card",
+              "symbol": "CC",
+              "rank": 50,
+              "abbreviation": "Credit Card"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 15,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Current",
+              "symbol": "C",
+              "rank": 110,
+              "abbreviation": "Current"
+            },
+            "monthsReviewed": 7,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Revolving Account",
+              "symbol": "R",
+              "rank": 50,
+              "abbreviation": "Revolving"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 192,
+          "subscriberCode": "01DTV001",
+          "handle": "TR01_1187236835_320525292_82",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2021-05-16",
+          "accountNumber": 5178019326438907,
+          "OpenClosed": {
+            "description": "Open",
+            "symbol": "O",
+            "rank": 199,
+            "abbreviation": "Open"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 11,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "US DEP ED",
+          "dateClosed": "2020-11-30",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [],
+          "highBalance": 5418,
+          "dateOpened": "2018-08-27",
+          "dateReported": "2020-11-30",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2020-11-30",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 50,
+            "abbreviation": "Closed"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Government",
+            "symbol": "V",
+            "rank": 199,
+            "abbreviation": "Government"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": [
+                {
+                  "date": "2020-10-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-09-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-08-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-07-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-06-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-05-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-04-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-03-30",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-02-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2020-01-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-12-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-11-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-10-29",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-09-29",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-08-29",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-07-29",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-06-29",
+                  "ComplianceRemark": {},
+                  "status": "U",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-05-29",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-04-29",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-03-29",
+                  "ComplianceRemark": {},
+                  "status": 4,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-02-27",
+                  "ComplianceRemark": {},
+                  "status": 3,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2019-01-27",
+                  "ComplianceRemark": {},
+                  "status": 2,
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2018-12-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2018-11-27",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                },
+                {
+                  "date": "2018-10-28",
+                  "ComplianceRemark": {},
+                  "status": "C",
+                  "GenericRemark": {},
+                  "RatingRemark": {}
+                }
+              ],
+              "startDate": "2020-10-30",
+              "status": "CCCCCCCCCCCCCCCCUC4432CCC"
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 26,
+            "PaymentFrequency": {
+              "description": "Unspecified",
+              "symbol": "X",
+              "rank": 199,
+              "abbreviation": "Unspecified"
+            },
+            "late90Count": 3,
+            "late60Count": 1,
+            "dateLastPayment": "2020-11-14",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 51,
+            "termMonths": 120,
+            "WorstPayStatus": {
+              "description": "Late 120 Days",
+              "symbol": 4,
+              "rank": 102,
+              "abbreviation": "120 Delinq"
+            },
+            "monthsReviewed": 26,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "01BTP001",
+          "handle": "TR01_147211983_263088244_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2020-11-30",
+          "accountNumber": "4X1X6X5X9X",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 12,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "SAF",
+          "dateClosed": "2018-10-04",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Account closed due to refinance",
+                "symbol": "T00ACR",
+                "rank": 199,
+                "abbreviation": "Account closed due to refinance"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 3500,
+          "dateOpened": "2012-09-26",
+          "dateReported": "2018-10-04",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2018-10-04",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Refinanced",
+            "symbol": "R",
+            "rank": 40,
+            "abbreviation": "Refi"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2018-10-04",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "063YQ079",
+          "handle": "TR01_1588782643_-19150291_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2018-10-04",
+          "accountNumber": "8X9X3X6X3XSX0X0X3",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 13,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "SAF",
+          "dateClosed": "2018-10-04",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Account closed due to refinance",
+                "symbol": "T00ACR",
+                "rank": 199,
+                "abbreviation": "Account closed due to refinance"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 3390,
+          "dateOpened": "2011-09-22",
+          "dateReported": "2018-10-04",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2018-10-04",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Refinanced",
+            "symbol": "R",
+            "rank": 40,
+            "abbreviation": "Refi"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2018-10-04",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "063YQ079",
+          "handle": "TR01_1588782642_-19150291_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2018-10-04",
+          "accountNumber": "8X9X3X6X3XSX0X0X2",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 14,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Installment",
+        "accountTypeDescription": "Installment Account",
+        "accountTypeSymbol": "I",
+        "Tradeline": {
+          "creditorName": "SAF",
+          "dateClosed": "2018-10-04",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Account closed due to refinance",
+                "symbol": "T00ACR",
+                "rank": 199,
+                "abbreviation": "Account closed due to refinance"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 2625,
+          "dateOpened": "2011-09-22",
+          "dateReported": "2018-10-04",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2018-10-04",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Refinanced",
+            "symbol": "R",
+            "rank": 40,
+            "abbreviation": "Refi"
+          },
+          "PayStatus": {
+            "description": "Current",
+            "symbol": "C",
+            "rank": 110,
+            "abbreviation": "Current"
+          },
+          "IndustryCode": {
+            "description": "Education/Employment",
+            "symbol": "E",
+            "rank": 199,
+            "abbreviation": "Education/Employment"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 0,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2018-10-04",
+            "AccountType": {
+              "description": "Educational",
+              "symbol": "ST",
+              "rank": 50,
+              "abbreviation": "Educational"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Installment Account",
+              "symbol": "I",
+              "rank": 20,
+              "abbreviation": "Installment"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "063YQ079",
+          "handle": "TR01_1588782641_-19150291_73",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2018-10-04",
+          "accountNumber": "8X9X3X6X3XSX0X0X1",
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 15,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Revolving",
+        "accountTypeDescription": "Revolving Account",
+        "accountTypeSymbol": "R",
+        "Tradeline": {
+          "creditorName": "CAPITAL ONE",
+          "dateClosed": "2016-07-18",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Chapter 7 bankruptcy",
+                "symbol": "T00CBL",
+                "rank": 199,
+                "abbreviation": "Chapter 7 bankruptcy"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 1252,
+          "dateOpened": "2012-08-24",
+          "dateReported": "2021-05-08",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2021-05-08",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Derogatory",
+            "symbol": "F",
+            "rank": 20,
+            "abbreviation": "Derog"
+          },
+          "PayStatus": {
+            "description": "Unknown",
+            "symbol": "U",
+            "rank": 10000,
+            "abbreviation": "Unk"
+          },
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 1000,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2016-02-27",
+            "AccountType": {
+              "description": "Credit Card",
+              "symbol": "CC",
+              "rank": 50,
+              "abbreviation": "Credit Card"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Revolving Account",
+              "symbol": "R",
+              "rank": 50,
+              "abbreviation": "Revolving"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "01DTV001",
+          "handle": "TR01_-1274836935_320525292_82",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2016-07-18",
+          "accountNumber": 4862324271510237,
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 16,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      },
+      {
+        "accountTypeAbbreviation": "Revolving",
+        "accountTypeDescription": "Revolving Account",
+        "accountTypeSymbol": "R",
+        "Tradeline": {
+          "creditorName": "CHASE CARD",
+          "dateClosed": "2016-08-31",
+          "DisputeFlag": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "Remark": [
+            {
+              "RemarkCode": {
+                "description": "Chapter 7 bankruptcy",
+                "symbol": "T00CBL",
+                "rank": 199,
+                "abbreviation": "Chapter 7 bankruptcy"
+              },
+              "customRemark": ""
+            }
+          ],
+          "highBalance": 3284,
+          "dateOpened": "2012-07-23",
+          "dateReported": "2016-08-31",
+          "VerificationIndicator": {
+            "description": "Account not disputed",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Account not disputed"
+          },
+          "dateVerified": "2016-08-31",
+          "bureau": "TransUnion",
+          "AccountCondition": {
+            "description": "Paid",
+            "symbol": "P",
+            "rank": 10,
+            "abbreviation": "Paid"
+          },
+          "PayStatus": {
+            "description": "Unknown",
+            "symbol": "U",
+            "rank": 10000,
+            "abbreviation": "Unk"
+          },
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "GrantedTrade": {
+            "PayStatusHistory": {
+              "MonthlyPayStatus": []
+            },
+            "CreditLimit": 2882,
+            "worstPatStatusCount": 0,
+            "PaymentFrequency": {
+              "description": "",
+              "symbol": "",
+              "rank": 100000,
+              "abbreviation": ""
+            },
+            "late90Count": 0,
+            "late60Count": 0,
+            "dateLastPayment": "2016-08-22",
+            "AccountType": {
+              "description": "Credit Card",
+              "symbol": "CC",
+              "rank": 50,
+              "abbreviation": "Credit Card"
+            },
+            "TermType": {
+              "description": "Provided",
+              "symbol": "P",
+              "rank": 199,
+              "abbreviation": "Provided"
+            },
+            "monthlyPayment": 0,
+            "termMonths": 0,
+            "WorstPayStatus": {
+              "description": "Unknown",
+              "symbol": "U",
+              "rank": 10000,
+              "abbreviation": "Unk"
+            },
+            "monthsReviewed": 0,
+            "collateral": "",
+            "amountPastDue": 0,
+            "CreditType": {
+              "description": "Revolving Account",
+              "symbol": "R",
+              "rank": 50,
+              "abbreviation": "Revolving"
+            },
+            "late30Count": 0
+          },
+          "currentBalance": 0,
+          "subscriberCode": "0701N134",
+          "handle": "TR01_1580949109_745436556_82",
+          "CollectionTrade": {
+            "creditType": {}
+          },
+          "dateAccountStatus": "2016-08-22",
+          "accountNumber": 4185822545135066,
+          "OpenClosed": {
+            "description": "Closed",
+            "symbol": "C",
+            "rank": 198,
+            "abbreviation": "Closed"
+          },
+          "WatchTrade": {
+            "ContactMethod": {},
+            "CreditType": {},
+            "PreviousAccountCondition": {}
+          },
+          "position": 17,
+          "AccountDesignator": {
+            "description": "Individual",
+            "symbol": "I",
+            "rank": 199,
+            "abbreviation": "Individual"
+          }
+        }
+      }
+    ],
+    "Summary": {
+      "PublicRecordSummary": {
+        "Experian": {},
+        "Merge": {},
+        "Equifax": {},
+        "TransUnion": {
+          "NumberOfRecords": 1
+        }
+      },
+      "PortfolioCreditSummary": [],
+      "TradelineSummary": {
+        "Experian": {
+          "RecentDeliquencyMOP": {}
+        },
+        "Merge": {
+          "RecentDeliquencyMOP": {}
+        },
+        "Equifax": {
+          "RecentDeliquencyMOP": {}
+        },
+        "TransUnion": {
+          "TotalBalances": 4811,
+          "TotalMonthlyPayments": 65,
+          "CloseAccounts": 13,
+          "OpenAccounts": 5,
+          "TotalAccounts": 18,
+          "RecentDeliquencyMOP": {},
+          "DerogatoryAccounts": 5,
+          "DelinquentAccounts": 4
+        }
+      },
+      "InquirySummary": {
+        "Experian": {},
+        "Merge": {},
+        "Equifax": {},
+        "TransUnion": {
+          "NumberInLast2Years": 9
+        }
+      },
+      "AccountHistorySummary": []
+    },
+    "SB168Frozen": {
+      "experian": false,
+      "equifax": false,
+      "transunion": false
+    },
+    "DeceasedIndicator": false,
+    "InquiryPartition": [
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Bank",
+            "symbol": "B",
+            "rank": 199,
+            "abbreviation": "Bank"
+          },
+          "subscriberName": "CAP ONE",
+          "subscriberNumber": 2699824,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-09-27"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "P",
+          "IndustryCode": {
+            "description": "Finance/Personal",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Finance/Personal"
+          },
+          "subscriberName": "CHASE AUTO",
+          "subscriberNumber": 5919634,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-16"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Travel/Entertainment",
+            "symbol": "N",
+            "rank": 199,
+            "abbreviation": "Travel/Entertainment"
+          },
+          "subscriberName": "TD AUTO FINA",
+          "subscriberNumber": 1008315,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-16"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Travel/Entertainment",
+            "symbol": "N",
+            "rank": 199,
+            "abbreviation": "Travel/Entertainment"
+          },
+          "subscriberName": "ALLY FINAN I",
+          "subscriberNumber": 1203543,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-16"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Automotive",
+            "symbol": "A",
+            "rank": 199,
+            "abbreviation": "Automotive"
+          },
+          "subscriberName": "WILCOX AUTO",
+          "subscriberNumber": 6412829,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-16"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Finance/Personal",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Finance/Personal"
+          },
+          "subscriberName": "COAF",
+          "subscriberNumber": 1246538,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-11"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Travel/Entertainment",
+            "symbol": "N",
+            "rank": 199,
+            "abbreviation": "Travel/Entertainment"
+          },
+          "subscriberName": "ALLY FINAN I",
+          "subscriberNumber": 1203543,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-11"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "P",
+          "IndustryCode": {
+            "description": "Finance/Personal",
+            "symbol": "F",
+            "rank": 199,
+            "abbreviation": "Finance/Personal"
+          },
+          "subscriberName": "AMERICREDIT",
+          "subscriberNumber": 27016,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2020-08-11"
+        }
+      },
+      {
+        "Inquiry": {
+          "inquiryType": "I",
+          "IndustryCode": {
+            "description": "Department/Variety and Other Retail",
+            "symbol": "D",
+            "rank": 199,
+            "abbreviation": "Department/Variety and Other Retail"
+          },
+          "subscriberName": "METABNK/FHUT",
+          "subscriberNumber": 3764143,
+          "bureau": "TransUnion",
+          "Source": {
+            "InquiryDate": "2021-07-08",
+            "BorrowerKey": "",
+            "Reference": "18acd328-dcc0-49d5-bd2",
+            "Bureau": {
+              "description": "TransUnion",
+              "symbol": "TUC",
+              "rank": 1,
+              "abbreviation": "TransUnion"
+            }
+          },
+          "inquiryDate": "2019-10-24"
+        }
+      }
+    ]
+  }
+}

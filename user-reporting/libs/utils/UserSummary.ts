@@ -250,8 +250,7 @@ export class UserSummary {
   }
 
   avgCreditLimit(): number {
-    const installs = this.tradelineRecords.filter(this.filterOpenInstallmentAccounts.bind(this));
-
+    const installs = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this));
     if (!installs.length) return -1;
     return (
       installs.reduce((a, b) => {
@@ -272,7 +271,7 @@ export class UserSummary {
         const opened = b.Tradeline?.dateOpened;
         const closed = b.Tradeline?.dateClosed;
         if (!opened || !closed) return 0;
-        const age = dayjs(new Date(opened)).diff(new Date(closed), 'month');
+        const age = dayjs(opened, 'YYY-MM-DD').diff(dayjs(closed, 'YYYY-MM-DD'), 'month');
         return a + age;
       }, 0) / revolvings.length
     );
