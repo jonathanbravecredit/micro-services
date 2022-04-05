@@ -51,7 +51,7 @@ export class UserSummary {
   }
   async init(): Promise<void> {
     const report = await getCurrentReport(this.id);
-    if (!report || !report.report) return;
+    if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
     this.subscribers = this.parseSubscriberRecords(this.userReport);
@@ -63,6 +63,7 @@ export class UserSummary {
     this.setUserAddressValues(this.user?.userAttributes?.address);
     this.setUserDobValus(this.user?.userAttributes?.dob);
   }
+
   aggregate(): void {
     let data: IUserSummaryMappedValues = {
       userId: this.id,
