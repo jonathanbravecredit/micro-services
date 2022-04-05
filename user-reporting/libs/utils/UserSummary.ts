@@ -296,6 +296,7 @@ export class UserSummary {
       if (!this.filterOpenInstallmentAccounts(a)) return false;
       if (this.filterOpenRealEstateAccounts(a)) return false;
       if (this.filterOpenStudentLoanAccounts(a)) return false;
+      return true;
     });
     if (!installs.length) return -1;
     return (
