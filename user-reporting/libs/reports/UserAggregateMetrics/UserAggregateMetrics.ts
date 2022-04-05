@@ -27,6 +27,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
         console.log('item ==> ', item);
         const user = new UserSummary(item);
         await user.init();
+        console.log('user.userReport', user.userReport);
         console.log('user.report', user.report);
         user.aggregate();
         const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
