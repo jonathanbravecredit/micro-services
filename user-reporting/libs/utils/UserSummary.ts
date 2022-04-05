@@ -50,6 +50,7 @@ export class UserSummary {
     return this.transunion?.enrolledOn || '';
   }
   async init(): Promise<void> {
+    console.log('id: ', this.id);
     const report = await getCurrentReport(this.id);
     if (!report || !report.report || !Object.keys(report.report).length) return;
     this.userReport = report.report;
