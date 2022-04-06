@@ -1,32 +1,33 @@
+import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
-import { getUsers } from 'lib/queries/cognito.queries';
-import { PubSubUtil } from 'lib/utils/pubsub/pubsub';
-import { ICognitoFormattedData } from 'lib/interfaces/cognito.interfaces';
-
-const POOL = process.env.POOL;
+import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
+import { IBatchMsg, IAttributeValue } from 'libs/interfaces/batch.interfaces';
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 
-export const main: Handler = async (): Promise<void> => {
-  const limit = 60;
-  const paginationToken = '';
-
+export const main: Handler = async (): Promise<any> => {
   try {
-    const users = await getUsers(paginationToken, limit, POOL);
-    if (!users.length) throw 'no users';
-    // create the payload with out the auth and agent
-    // step 2. going through each record, call fulfill (regardless of last time that the user called fulfill in the app)
+    let counter = 0;
+    const segments = [];
+    for (let i = 0; i < 10; i++) {
+      segments.push(i);
+    }
     await Promise.all(
-      users.map(async (user) => {
-        // step 2b. query for the users credit score record
-        if (user.email_verified.toLowerCase() != 'true') return;
-        const payload = pubsub.createSNSPayload<{ user: ICognitoFormattedData }>('mailchimpbatch', { user });
+      segments.map(async (s) => {
+        const packet: IBatchMsg<IAttributeValue> = {
+          exclusiveStartKey: undefined,
+          segment: s,
+          totalSegments: segments.length,
+        };
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('mailchimpbatch', packet);
         await sns.publish(payload).promise();
       }),
     );
-    const results = { success: true, error: null, data: `Mailchimp:batch queued ${users.length} records.` };
+    const results = { success: true, error: null, data: `Mailchimp:batch queued ${counter} records.` };
+    return JSON.stringify(results);
   } catch (error) {
     console.log('merketing error ==> ', error);
+    return JSON.stringify({ success: false, error: { error: `Unknown server error=${JSON.stringify(error)}` } });
   }
 };

@@ -1,9 +1,9 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { IDispute } from 'lib/interfaces';
-import { getUsersBySub } from 'lib/queries/cognito.queries';
-import { SecureMail } from 'lib/utils/securemail/securemail';
+import { IDispute } from 'libs/interfaces';
+import { getUsersBySub } from 'libs/queries/cognito.queries';
+import { SecureMail } from 'libs/utils/securemail/securemail';
 
 const pool = process.env.POOL || '';
 

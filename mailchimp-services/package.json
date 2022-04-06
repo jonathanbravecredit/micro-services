@@ -4,9 +4,16 @@
   "description": "A TypeScript starter for Serverless Framework",
   "main": "handler.js",
   "scripts": {
-    "testOld": "serverless-bundle test",
-    "test": "jest --watchAll --verbose",
+    "test": "serverless-bundle test",
+    "testWatch": "serverless-bundle test --watchAll --verbose",
     "lint": "eslint . --ext .js,.ts"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "libs(.*)$": "<rootDir>/libs/$1",
+      "src(.*)$": "<rootDir>/src/$1",
+      "tests(.*)$": "<rootDir>/tests/$1"
+    }
   },
   "author": "",
   "license": "MIT",
@@ -18,16 +25,15 @@
     "@types/amazon-cognito-auth-js": "^1.2.2",
     "@types/aws-lambda": "^8.10.64",
     "@types/jest": "^26.0.14",
+    "@types/lodash": "^4.14.180",
     "@types/mailchimp__mailchimp_marketing": "^3.0.2",
     "@types/md5": "^2.3.1",
     "@types/nodemailer": "^6.4.4",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
-    "jest": "^27.5.1",
     "serverless-bundle": "5.3.0",
     "serverless-dotenv-plugin": "^3.12.2",
-    "serverless-offline": "^6.8.0",
-    "ts-jest": "^27.1.3"
+    "serverless-offline": "^6.8.0"
   },
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.72",

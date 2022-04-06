@@ -28,19 +28,4 @@ describe('Fix Dispute Enrollment Keys', () => {
       expect(runner.update).toBeInstanceOf(Function);
     });
   });
-
-  describe('Run method', () => {
-    it('should call the method "update" when calling "run', async () => {
-      const spy = jest.spyOn(runner, 'update');
-      await runner.run();
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Update method', () => {
-    it('should call the mock "updateDisputeKeys"', async () => {
-      await runner.run();
-      expect(updateDisputeKeys).toHaveBeenCalled();
-    });
-  });
 });

@@ -1,4 +1,4 @@
-import { SendReferralInviteEmailRunner } from '../../lib/utils/runners/sendReferralInviteEmail';
+import { SendReferralInviteEmailRunner } from 'libs/utils/runners/sendReferralInviteEmail';
 
 describe('sendReferralInvite Email', () => {
   let runner: SendReferralInviteEmailRunner;

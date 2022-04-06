@@ -13,14 +13,11 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
     super(records);
   }
 
-  async query(
-    esk: IAttributeValue | string | undefined,
-    segment: number | null,
-    totalSegments: number | null,
+  async processQuery(
+    esk: IAttributeValue | undefined,
+    segment: number,
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    if (typeof esk == 'string') throw 'esk cannot be a string';
-    if (segment === null || totalSegments === null)
-      throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
     return await parallelScanAppData(esk, segment, totalSegments);
   }
 
@@ -30,7 +27,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
         const acked = item?.agencies?.transunion?.acknowledgedDisputeTerms;
         const keys = item?.agencies?.transunion?.disputeEnrollmentKey;
         if (acked && !keys) {
-          const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = {};
           const record = mapAcknowledgedFields(item);
           const ops = new OpsReportMaker(

@@ -15,9 +15,9 @@ import timezone from 'dayjs/plugin/timezone';
 import { IUserSummaryMappedValues } from 'libs/interfaces/user-summary.interfaces';
 import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
 import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
+import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
 dayjs.tz.setDefault('America/Los_Angeles');
 
 export class UserSummary {
@@ -28,14 +28,14 @@ export class UserSummary {
   userState: string = 'UNKNOWN';
   userZip: string = 'UNKNOWN';
   userEnrolled: boolean = false;
-  userReport: IMergeReport;
-  subscribers: ISubscriber[];
-  borrowerRecords: IBorrower;
-  tradelineRecordsSummary: ITradelineSummary | null;
-  tradelineRecords: ITradeLinePartition[];
-  publicRecordsSummary: IPublicRecordSummary | null;
-  publicRecords: IPublicPartition[];
-  creditScore: number | null;
+  userReport!: IMergeReport;
+  subscribers: ISubscriber[] = [];
+  borrowerRecords!: IBorrower;
+  tradelineRecordsSummary: ITradelineSummary | null = null;
+  tradelineRecords: ITradeLinePartition[] = [];
+  publicRecordsSummary: IPublicRecordSummary | null = null;
+  publicRecords: IPublicPartition[] = [];
+  creditScore: number | null = null;
   transunion: TransunionInput | null | undefined;
   report: IUserSummaryMappedValues = {} as IUserSummaryMappedValues;
 
@@ -44,7 +44,20 @@ export class UserSummary {
     this.user = data.user;
     this.transunion = data.agencies?.transunion;
     this.userEnrolled = data.agencies?.transunion?.enrolled || false;
-    this.userReport = this.parseTransunionMergeReport(this.transunion);
+  }
+
+  get enrolledOn(): string {
+    return this.transunion?.enrolledOn || '';
+  }
+  async init(): Promise<void> {
+    let report;
+    try {
+      report = await getCurrentReport(this.id);
+    } catch (err) {
+      return;
+    }
+    if (!report || !report.report || !Object.keys(report.report).length) return;
+    this.userReport = report.report;
     this.creditScore = this.parseCreditScore(this.userReport);
     this.subscribers = this.parseSubscriberRecords(this.userReport);
     this.borrowerRecords = this.parseBorrowerRecords(this.userReport);
@@ -54,11 +67,6 @@ export class UserSummary {
     this.publicRecords = this.parsePublicRecords(this.userReport);
     this.setUserAddressValues(this.user?.userAttributes?.address);
     this.setUserDobValus(this.user?.userAttributes?.dob);
-    this.aggregate(); // creates the report ready data on this.reporting
-  }
-
-  get enrolledOn(): string {
-    return this.transunion?.enrolledOn || '';
   }
 
   aggregate(): void {
@@ -68,7 +76,7 @@ export class UserSummary {
       userState: this.userState,
       userZipCode: this.userZip,
       creditScore: this.creditScore || -1,
-      countPublicRecordAccounts: this.countPublicRecordAccounts(),
+      countPublicRecordAccounts: -1,
       countAllAccounts: 0,
       sumAllBalances: 0,
       countOpenAccounts: 0,
@@ -87,7 +95,19 @@ export class UserSummary {
       sumOpenStudentLoanBalances: 0,
       countOpenOtherAccounts: 0,
       sumOpenOtherBalances: 0,
+      avgCreditLimit: -1,
+      avgAgeRevolving: -1,
+      avgTermLengthLOC: -1,
+      avgTermLengthInstallments: -1,
+      avgTermLengthMortgage: -1,
+      avgTermLengthStudentLoan: -1,
     };
+
+    if (!this.userReport) {
+      this.report = data;
+      return;
+    }
+
     this.tradelineRecords.forEach((trade) => {
       data.countAllAccounts++;
       data.sumAllBalances += this.getAccountBalance(trade);
@@ -126,6 +146,16 @@ export class UserSummary {
         data.sumOpenOtherBalances += this.getAccountBalance(trade);
       }
     });
+    data = {
+      ...data,
+      countPublicRecordAccounts: this.countPublicRecordAccounts() || -1,
+      avgCreditLimit: this.avgCreditLimit() || -1,
+      avgAgeRevolving: this.avgAgeRevolving() || -1,
+      avgTermLengthLOC: this.avgTermLengthLOC() || -1,
+      avgTermLengthInstallments: this.avgTermLengthInstallments() || -1,
+      avgTermLengthMortgage: this.avgTermLengthMortgages() || -1,
+      avgTermLengthStudentLoan: this.avgTermLengthStudentLoans() || -1,
+    };
     this.report = data;
   }
 
@@ -196,6 +226,9 @@ export class UserSummary {
   filterOpenCollectionAccounts(trade: ITradeLinePartition): boolean {
     return this.filterOpenByAccountType(trade, AccountTypes.Collection);
   }
+  filterOpenLOCAccounts(trade: ITradeLinePartition): boolean {
+    return this.filterOpenByAccountType(trade, AccountTypes.LineOfCredit);
+  }
 
   filterOpenOtherAccounts(trade: ITradeLinePartition): boolean {
     if (!this.filterOpenAccounts(trade)) return false;
@@ -219,6 +252,81 @@ export class UserSummary {
 
   countPublicRecordAccounts(): number {
     return this.publicRecords.length || 0;
+  }
+
+  avgCreditLimit(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this));
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const bal = b.Tradeline?.GrantedTrade?.CreditLimit || 0;
+        return a + (isNaN(+bal) ? 0 : +bal);
+      }, 0) / installs.length
+    );
+  }
+
+  avgAgeRevolving(): number {
+    const revolvings = this.tradelineRecords.filter(this.filterOpenRevolvingAccounts.bind(this)).filter((a) => {
+      return a.Tradeline?.dateOpened;
+    });
+    if (!revolvings.length) return -1;
+    return (
+      revolvings.reduce((a, b) => {
+        const opened = b.Tradeline?.dateOpened;
+        if (!opened) return 0;
+        const age = dayjs(new Date()).diff(dayjs(opened, 'YYYY-MM-DD'), 'months');
+        return a + age;
+      }, 0) / revolvings.length
+    );
+  }
+
+  avgTermLengthLOC(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenLOCAccounts.bind(this));
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
+  avgTermLengthInstallments(): number {
+    const installs = this.tradelineRecords.filter((a) => {
+      if (!this.filterOpenInstallmentAccounts(a)) return false;
+      if (this.filterOpenRealEstateAccounts(a)) return false;
+      if (this.filterOpenStudentLoanAccounts(a)) return false;
+      return true;
+    });
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
+  avgTermLengthMortgages(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenRealEstateAccounts.bind(this));
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
+  }
+
+  avgTermLengthStudentLoans(): number {
+    const installs = this.tradelineRecords.filter(this.filterOpenStudentLoanAccounts.bind(this));
+    if (!installs.length) return -1;
+    return (
+      installs.reduce((a, b) => {
+        const terms = b.Tradeline?.GrantedTrade?.termMonths || 0;
+        return a + (isNaN(+terms) ? 0 : +terms);
+      }, 0) / installs.length
+    );
   }
 
   /*=============================*/

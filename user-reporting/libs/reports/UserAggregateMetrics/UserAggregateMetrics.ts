@@ -13,14 +13,11 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
     super(records);
   }
 
-  async query(
-    esk: IAttributeValue | string | undefined,
-    segment: number | null,
-    totalSegments: number | null,
+  async processQuery(
+    esk: IAttributeValue | undefined,
+    segment: number,
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    if (typeof esk == 'string') throw 'esk cannot be a string';
-    if (segment === null || totalSegments === null)
-      throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
     return await parallelScanAppData(esk, segment, totalSegments);
   }
 
@@ -28,7 +25,9 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
     await Promise.all(
       this.scan?.items.map(async (item: IAppDataInput) => {
         const user = new UserSummary(item);
-        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        await user.init();
+        user.aggregate();
+        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = user.report;
         if (user.userEnrolled) {

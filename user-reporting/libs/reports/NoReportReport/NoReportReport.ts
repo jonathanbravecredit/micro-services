@@ -14,14 +14,11 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
     super(records);
   }
 
-  async query(
-    esk: IAttributeValue | string | undefined,
-    segment: number | null,
-    totalSegments: number | null,
+  async processQuery(
+    esk: IAttributeValue | undefined,
+    segment: number,
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    if (typeof esk == 'string') throw 'esk cannot be a string';
-    if (segment === null || totalSegments === null)
-      throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
     return await parallelScanAppData(esk, segment, totalSegments);
   }
 
@@ -34,7 +31,7 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
           const userId = item.id;
           const report = await getCurrentReport(userId);
           if (!report) {
-            const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+            const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
             const schema = {};
             const record = mapEnrollmentFields(item);
             const ops = new OpsReportMaker(

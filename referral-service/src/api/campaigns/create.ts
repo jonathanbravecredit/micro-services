@@ -1,12 +1,12 @@
 'use strict';
 import 'reflect-metadata';
-import { ajv } from 'lib/schema/validation';
-import { response } from 'lib/utils/response';
+import { ajv } from 'libs/schema/validation';
+import { response } from 'libs/utils/response';
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { safeParse } from 'lib/utils/safeJson';
-import { ICreateCampaign } from 'lib/interfaces';
-import { CampaignMaker } from 'lib/models/campaign.model';
-import { createCampaign } from 'lib/queries';
+import { safeParse } from 'libs/utils/safeJson';
+import { ICreateCampaign } from 'libs/interfaces';
+import { CampaignMaker } from 'libs/models/campaigns/campaign.model';
+import { createCampaign } from 'libs/queries';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const payload: ICreateCampaign = safeParse(event, 'body'); // referredByCode;

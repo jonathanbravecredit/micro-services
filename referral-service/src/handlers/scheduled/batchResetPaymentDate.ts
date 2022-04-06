@@ -1,10 +1,10 @@
 'use strict';
 import 'reflect-metadata';
-import { ajv } from 'lib/schema/validation';
+import { ajv } from 'libs/schema/validation';
 import { Handler } from 'aws-lambda';
-import { IGetReferral } from 'lib/interfaces';
-import { getCampaign, getReferral, updateNextPaymentDate } from 'lib/queries';
-import { PaymentDateCalculator } from 'lib/utils/paymentdatecalculator/paymentDateCalculator';
+import { IGetReferral } from 'libs/interfaces';
+import { getCampaign, getReferral, updateNextPaymentDate } from 'libs/queries';
+import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
 
 export const main: Handler = async (event: { list: string[] }): Promise<void> => {
   const { list } = event;

@@ -13,21 +13,18 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
     super(records);
   }
 
-  async query(
-    esk: IAttributeValue | string | undefined,
-    segment: number | null,
-    totalSegments: number | null,
+  async processQuery(
+    esk: IAttributeValue | undefined,
+    segment: number,
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    if (typeof esk == 'string') throw 'esk cannot be a string';
-    if (segment === null || totalSegments === null)
-      throw `segment or totalSegment cannot be null; segment:${segment}, totalSegments:${totalSegments}`;
     return await parallelScanActionData(esk, segment, totalSegments);
   }
 
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: Analytics) => {
-        const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = item;
         if (dayjs(item.createdOn).format('YYYY-MM') === this.month && item.event === 'user_log_in') {

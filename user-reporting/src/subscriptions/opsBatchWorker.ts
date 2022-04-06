@@ -32,6 +32,7 @@ import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggr
 import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
 import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
+import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
 
 // request.debug = true; import * as request from 'request';
 // const errorLogger = new ErrorLogger();
@@ -73,7 +74,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const enrolledOn = item?.agencies?.transunion?.enrolledOn;
               const inCurrentYear = dayjs(enrolledOn).isAfter(dayjs('2021-11-30'));
               if (enrolled && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = enrollmentYTDSchema;
                 const record = mapEnrollmentFields(item);
                 const ops = new OpsReportMaker(
@@ -142,7 +143,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const createdAt = item?.createdAt;
               const inCurrentYear = dayjs(createdAt).isAfter(dayjs('2021-11-30'));
               if (failed && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = enrollmentYTDSchema;
                 const record = mapSuspendedFields(item);
                 const ops = new OpsReportMaker(
@@ -210,7 +211,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const createdOn = item?.createdOn;
               const inCurrentYear = dayjs(createdOn).isAfter(dayjs('2021-11-30'));
               if (inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = {};
                 const record = item;
                 const ops = new OpsReportMaker(
@@ -277,7 +278,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const record = DynamoDB.Converter.unmarshall(item) as unknown as APITransactionLog;
               const isAuth = record.action === 'Enroll:type';
               if (isAuth) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = {};
                 const ops = new OpsReportMaker(
                   ReportNames.AuthenticationAll,
@@ -386,7 +387,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           await Promise.all(
             scan?.items.map(async (item: any) => {
               //* type is AppData
-              const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+              const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
               const schema = {};
               const userId = item.id;
               const fulfillMergeReport = item?.agencies?.transunion?.fulfillMergeReport;
@@ -494,7 +495,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const disputeEnrolledOn = item?.agencies?.transunion?.disputeEnrolledOn;
               const inCurrentYear = dayjs(disputeEnrolledOn).isAfter(dayjs('2021-11-30'));
               if (disputeEnrolled && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = {};
                 const record = mapDisputeEnrollmentFields(item);
                 const ops = new OpsReportMaker(
@@ -568,7 +569,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               const fulfilledOn = new Date(item.agencies.transunion.fulfilledOn);
               const ranPriorTo = dayjs(fulfilledOn).isBefore(dayjs(fulfillCalledOn));
               if (enrolled && ranPriorTo) {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const schema = {};
                 const record = mapFailedFulfilFields(item);
                 const ops = new OpsReportMaker(
@@ -637,7 +638,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const scan = await parallelScanReferrals(esk, segment, totalSegments);
           await Promise.all(
             scan?.items.map(async (item: Referral) => {
-              const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+              const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
               const schema = {};
               let record: Referral = item;
               // 1. only referred users
@@ -753,6 +754,25 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }
 
   /*===================================*/
+  //    disputeErrors
+  /*===================================*/
+  const disputeErrors = event.Records.map((r) => {
+    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
+  }).filter((b) => {
+    return b.service === ReportNames.DisputeErrors;
+  });
+
+  if (disputeErrors.length) {
+    const report = new DisputeErrorsReport(disputeErrors);
+    try {
+      const results = await report.run();
+      return results;
+    } catch (err) {
+      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+    }
+  }
+
+  /*===================================*/
   //    registration report
   //  !!!DISABLED!!!
   /*===================================*/
@@ -775,7 +795,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           if (scan && scan.Users) {
             await Promise.all(
               scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
-                const batchId = dayjs(new Date()).add(-8, 'hours').format('YYYY-MM-DD');
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
                 const newYear = dayjs('2022-01-01');
                 const created = dayjs(item.UserCreateDate);
                 const test = created.isAfter(newYear);

@@ -1,9 +1,9 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { IDispute } from 'lib/interfaces';
-import { getUsersBySub } from 'lib/queries/cognito.queries';
-import { Mailchimp } from 'lib/utils/mailchimp/mailchimp';
+import { IDispute } from 'libs/interfaces';
+import { getUsersBySub } from 'libs/queries/cognito.queries';
+import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 
 const sns = new AWS.SNS();
 const pool = process.env.POOL || '';
