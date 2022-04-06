@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { attribute, DynamoStore } from '@shiftcoders/dynamo-easy';
-import { TransactionData } from '../../../models/transaction-data/transactiondata';
+import { TransactionData } from '../../../models/transaction-data/transaction-data';
 
 export class TransactionDataQueries {
   static store = new DynamoStore(TransactionData);
