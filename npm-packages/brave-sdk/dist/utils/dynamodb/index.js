@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserInitiativeQueries = exports.SessionQueries = exports.ReferralQueries = exports.OpsReportQueries = exports.InvestigationResultQueries = exports.CreditScoreQueries = exports.CreditReportQueries = exports.CampaignQueries = exports.APITransactionLogQueries = exports.APIErrorLogQueries = exports.AnalyticQueries = exports.AdsQueries = void 0;
+exports.TransactionDataQueries = exports.UserInitiativeQueries = exports.SessionQueries = exports.ReferralQueries = exports.OpsReportQueries = exports.InvestigationResultQueries = exports.CreditScoreQueries = exports.CreditReportQueries = exports.CampaignQueries = exports.APITransactionLogQueries = exports.APIErrorLogQueries = exports.AnalyticQueries = exports.AdsQueries = void 0;
 var ad_queries_js_1 = require("./queries/ad.queries.js");
 Object.defineProperty(exports, "AdsQueries", { enumerable: true, get: function () { return ad_queries_js_1.AdsQueries; } });
 var analytics_queries_js_1 = require("./queries/analytics.queries.js");
@@ -25,3 +25,5 @@ var sessions_queries_js_1 = require("./queries/sessions.queries.js");
 Object.defineProperty(exports, "SessionQueries", { enumerable: true, get: function () { return sessions_queries_js_1.SessionQueries; } });
 var user_initiative_queries_js_1 = require("./queries/user-initiative.queries.js");
 Object.defineProperty(exports, "UserInitiativeQueries", { enumerable: true, get: function () { return user_initiative_queries_js_1.UserInitiativeQueries; } });
+var transaction_data_queries_js_1 = require("./queries/transaction-data.queries.js");
+Object.defineProperty(exports, "TransactionDataQueries", { enumerable: true, get: function () { return transaction_data_queries_js_1.TransactionDataQueries; } });
