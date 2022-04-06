@@ -52,6 +52,7 @@ export const BLACKLIST = {
   'midiharmonica.com': true,
   'afarek.com': true,
   'vintomaper.com': true,
+  'vsooc.com': true,
 };
 
 export const TLDBLACKLIST = {
