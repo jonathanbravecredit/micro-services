@@ -1,8 +1,5 @@
-import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-import { OpsReport, OpsReportMaker } from 'libs/models/ops-reports';
-import { ReportNames } from 'libs/data/reports';
 import { parallelScanCreditReports } from 'libs/queries/CreditReport.queries';
 
 export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {

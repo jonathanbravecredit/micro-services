@@ -4,8 +4,6 @@ import dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
-import { IEnrolledUserReport } from 'libs/interfaces/enrolled-user-report.interface';
-import { listOpsReportsByBatch } from 'libs/queries/ops-report.queries';
 import { generateEmailParams } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { DuplicateFulfillsRunner } from 'libs/reports/duplicatefulfills/duplicatefulfills';
