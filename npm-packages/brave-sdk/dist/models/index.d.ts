@@ -13,3 +13,4 @@ export { Referral, ReferralMaker } from './referral/referral';
 export { Session, SessionMaker } from './session/session';
 export { Initiative, Program, UserInitiative } from './user-initiative';
 export { TransunionUtil } from '../utils/transunion';
+export { TransactionData, TransactionDataMaker } from './transaction-data/transaction-data';

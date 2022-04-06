@@ -10,3 +10,4 @@ export { OpsReportQueries } from './queries/ops-report.queries.js';
 export { ReferralQueries } from './queries/referral.queries.js';
 export { SessionQueries } from './queries/sessions.queries.js';
 export { UserInitiativeQueries } from './queries/user-initiative.queries.js';
+export { TransactionDataQueries } from './queries/transaction-data.queries.js';

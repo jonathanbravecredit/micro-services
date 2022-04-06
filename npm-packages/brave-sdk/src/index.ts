@@ -139,6 +139,8 @@ export {
   Initiative,
   Program,
   TransunionUtil,
+  TransactionData,
+  TransactionDataMaker,
 } from './models';
 
 /*======================*/
@@ -272,4 +274,5 @@ export {
   ReferralQueries,
   SessionQueries,
   UserInitiativeQueries,
+  TransactionDataQueries,
 } from './utils';
