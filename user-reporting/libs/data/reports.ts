@@ -10,6 +10,7 @@ export enum ReportNames {
   UserEmployerAll = 'useremployerall',
   RegistrationsYTD = 'registrationsYTD',
   UserAggregatedMetrics = 'useraggregatedmetricsYTD',
+  DuplicateReports = 'duplicatecreditreports',
   NoReportReport = 'noreportreport',
   MissingDisputeKeys = 'missingdisputekeys',
   DisputeErrors = 'disputeerrors',
