@@ -25,7 +25,7 @@
   "dependencies": {
     "@shiftcoders/dynamo-easy": "^7.1.0",
     "ajv": "^7.2.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "csvjson": "^5.1.0",
     "dayjs": "^1.10.7",
     "nodemailer": "^6.7.2",
