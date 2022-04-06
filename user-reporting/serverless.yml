@@ -210,6 +210,10 @@ functions:
   reportFailedCount:
     handler: src/handlers/compilers/reportFailedCount.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  reportDuplicateFulfills:
+    handler: src/handlers/compilers/reportDuplicateFulfills.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    memorySize: 1024
   disableCancelledUsers:
     handler: src/handlers/compilers/disableCancelledUsers.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
