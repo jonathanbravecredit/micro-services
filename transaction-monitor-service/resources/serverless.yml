@@ -8,3 +8,24 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     OUR_ENV: ${self:provider.stage}
+
+resources:
+  Resources:
+    TransactionsDataTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TransactionsData
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: sortKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: 'HASH'
+          - AttributeName: sortKey
+            KeyType: 'RANGE'
+        TimeToLiveSpecification:
+          AttributeName: timeToLive
+          Enabled: true
