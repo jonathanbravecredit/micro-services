@@ -1,0 +1,28 @@
+# NOTE: update this with your service name
+service: transaction-monitor-api
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+custom:
+  bundle:
+    linting: false
+    aliases:
+      - 'libs': libs
+      - 'src': src
+      - 'tests': tests
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  environment:
+    OUR_ENV: ${self:provider.stage}
+  iamRoleStatements:
