@@ -42,8 +42,8 @@ export class ReferralMonitor {
 
   async monitor(): Promise<void> {
     try {
+      await this.monitorSns(); // activations must come before aggregations
       await this.monitorDynamo();
-      await this.monitorSns();
     } catch (err) {
       console.error(err);
     }
