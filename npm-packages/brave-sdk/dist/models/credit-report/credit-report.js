@@ -20,15 +20,15 @@ let CreditReport = class CreditReport {
     }
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], CreditReport.prototype, "userId", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", Number)
 ], CreditReport.prototype, "version", void 0);
 CreditReport = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'CreditReports' })
+    dynamo_easy_1.Model({ tableName: 'CreditReports' })
 ], CreditReport);
 exports.CreditReport = CreditReport;
 class CreditReportMaker {
