@@ -179,10 +179,10 @@ export class ReferralActivationManager {
         const update1 = {
           ...referral,
           enrolled: true,
-          campaignActive: campaign!.campaign,
           eligible: 1,
         } as Referral;
         await this.createReferral(update1);
+        await this.updateReferral({ ...update1, campaignActive: campaign!.campaign }); // to trick the email going out
       } else {
         console.log('here8');
         const update2 = {
