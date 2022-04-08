@@ -42,8 +42,8 @@ export class ReferralMonitor {
 
   async monitor(): Promise<void> {
     try {
+      await this.monitorSns(); // activations must come before aggregations
       await this.monitorDynamo();
-      await this.monitorSns();
     } catch (err) {
       console.error(err);
     }
@@ -52,14 +52,20 @@ export class ReferralMonitor {
   async monitorDynamo(): Promise<void> {
     try {
       await Promise.all(
-        this.dynamoRecords.map(async (rec) => {
-          try {
-            await this.checkSuspensions(rec);
-            await this.checkAggregations(rec);
-          } catch (err) {
-            console.error(err);
-          }
-        }),
+        this.dynamoRecords
+          .sort((a, b) => {
+            const seqA = +(a.dynamodb?.SequenceNumber || 0);
+            const seqB = +(b.dynamodb?.SequenceNumber || 0);
+            return seqA - seqB;
+          })
+          .map(async (rec) => {
+            try {
+              await this.checkSuspensions(rec);
+              await this.checkAggregations(rec);
+            } catch (err) {
+              console.error(err);
+            }
+          }),
       );
     } catch (err) {
       console.error(err);
