@@ -29,15 +29,15 @@ let Campaign = class Campaign {
     }
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", Number)
 ], Campaign.prototype, "pKey", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", Number)
 ], Campaign.prototype, "version", void 0);
 Campaign = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'Campaigns' })
+    dynamo_easy_1.Model({ tableName: 'Campaigns' })
 ], Campaign);
 exports.Campaign = Campaign;
 class CampaignMaker {

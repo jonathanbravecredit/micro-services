@@ -19,14 +19,14 @@ let UserInitiative = class UserInitiative {
     }
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], UserInitiative.prototype, "id", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], UserInitiative.prototype, "program", void 0);
 UserInitiative = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'InitiativePrograms' })
+    dynamo_easy_1.Model({ tableName: 'InitiativePrograms' })
 ], UserInitiative);
 exports.UserInitiative = UserInitiative;

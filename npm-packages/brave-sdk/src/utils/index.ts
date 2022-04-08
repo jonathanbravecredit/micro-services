@@ -13,4 +13,5 @@ export {
   ReferralQueries,
   SessionQueries,
   UserInitiativeQueries,
+  TransactionDataQueries,
 } from './dynamodb';
