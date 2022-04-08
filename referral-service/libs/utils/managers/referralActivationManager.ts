@@ -12,6 +12,7 @@ import {
   createReferral,
   getReferral,
   updateEnrollment,
+  updateReferral,
   updateReferralCampaign,
   updateReferralEligibility,
 } from 'libs/queries/referrals/referral.queries';
@@ -115,6 +116,9 @@ export class ReferralActivationManager {
   async createReferral(referral: Referral): Promise<void> {
     return await createReferral(referral);
   }
+  async updateReferral(referral: Referral): Promise<void> {
+    return await updateReferral(referral);
+  }
   async getCampaign(pkey: number, version: number): Promise<Campaign | null> {
     return await getCampaign(pkey, version);
   }
@@ -170,16 +174,24 @@ export class ReferralActivationManager {
       const campaign = dayjs(new Date()).isAfter(this.campaign!.endDate) ? this.campaignNone : this.campaign;
       if (!this.id) return;
       if (!this.referral) {
+        console.log('here7');
         const referral = new ReferralMaker(this.id, v4());
-        await this.createReferral({ ...referral, enrolled: true });
+        const update1 = {
+          ...referral,
+          enrolled: true,
+          eligible: 1,
+        } as Referral;
+        await this.createReferral(update1);
+        await this.updateReferral({ ...update1, campaignActive: campaign!.campaign }); // to trick the email going out
+      } else {
+        console.log('here8');
+        const update2 = {
+          ...this.referral,
+          campaignActive: campaign!.campaign,
+          eligible: 1,
+        } as Referral;
+        await this.updateReferral(update2);
       }
-      console.log('here7');
-      const up1 = await this.updateReferralCampaign(this.id, campaign!.campaign);
-      console.log('update', up1);
-      console.log('here8');
-      const up2 = await this.updateReferralEligibility(this.id);
-      console.log('update', up2);
-      console.log('here9');
     } catch (err) {
       console.error(`manager:activateOnSessionData:${err}`);
     }

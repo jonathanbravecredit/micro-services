@@ -1,6 +1,6 @@
 {
   "name": "@bravecredit/brave-sdk",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "description": "An SDK for backend and frontend development specifically designed for the services facilitating Brave Credit",
   "main": "./dist/index.js",
   "files": [
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "^17.0.23",
     "@types/uuid": "^8.3.4",
-    "typescript": "^4.6.2"
+    "typescript": "^4.1.5"
   },
   "dependencies": {
     "he": "^1.2.0",

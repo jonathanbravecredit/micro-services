@@ -15,14 +15,14 @@ const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let InvestigationResult = class InvestigationResult {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], InvestigationResult.prototype, "id", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], InvestigationResult.prototype, "userId", void 0);
 InvestigationResult = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'InvestigationResults' })
+    dynamo_easy_1.Model({ tableName: 'InvestigationResults' })
 ], InvestigationResult);
 exports.InvestigationResult = InvestigationResult;

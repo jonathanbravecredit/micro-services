@@ -15,14 +15,14 @@ const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let APIErrorLog = class APIErrorLog {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], APIErrorLog.prototype, "userId", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], APIErrorLog.prototype, "errorId", void 0);
 APIErrorLog = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'APIErrorLog' })
+    dynamo_easy_1.Model({ tableName: 'APIErrorLog' })
 ], APIErrorLog);
 exports.APIErrorLog = APIErrorLog;
