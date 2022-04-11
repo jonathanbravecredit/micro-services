@@ -53,6 +53,7 @@ export const BLACKLIST = {
   'afarek.com': true,
   'vintomaper.com': true,
   'vsooc.com': true,
+  'candassociates.com': true,
   'cutraition.com': true,
   'songsign.com': true,
   'tourcc.com': true,
