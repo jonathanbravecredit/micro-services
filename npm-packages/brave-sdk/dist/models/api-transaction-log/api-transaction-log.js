@@ -15,14 +15,14 @@ const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let APITransactionLog = class APITransactionLog {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], APITransactionLog.prototype, "userId", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], APITransactionLog.prototype, "transactionId", void 0);
 APITransactionLog = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'APITransactionLog' })
+    dynamo_easy_1.Model({ tableName: 'APITransactionLog' })
 ], APITransactionLog);
 exports.APITransactionLog = APITransactionLog;

@@ -15,15 +15,15 @@ const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let Analytic = class Analytic {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], Analytic.prototype, "id", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], Analytic.prototype, "event", void 0);
 Analytic = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'Analytics' })
+    dynamo_easy_1.Model({ tableName: 'Analytics' })
 ], Analytic);
 exports.Analytic = Analytic;
 class AnalyticMaker {

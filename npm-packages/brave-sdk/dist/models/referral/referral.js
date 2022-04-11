@@ -41,23 +41,23 @@ let Referral = class Referral {
     }
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], Referral.prototype, "id", void 0);
 __decorate([
-    (0, dynamo_easy_1.GSIPartitionKey)(exports.REFERRAL_CODE_GSI),
+    dynamo_easy_1.GSIPartitionKey(exports.REFERRAL_CODE_GSI),
     __metadata("design:type", String)
 ], Referral.prototype, "referralCode", void 0);
 __decorate([
-    (0, dynamo_easy_1.GSIPartitionKey)(exports.ELIGIBLE_GSI),
+    dynamo_easy_1.GSIPartitionKey(exports.ELIGIBLE_GSI),
     __metadata("design:type", Number)
 ], Referral.prototype, "eligible", void 0);
 __decorate([
-    (0, dynamo_easy_1.GSIPartitionKey)(exports.CAMPAIGNACTIVE_GSI),
+    dynamo_easy_1.GSIPartitionKey(exports.CAMPAIGNACTIVE_GSI),
     __metadata("design:type", String)
 ], Referral.prototype, "campaignActive", void 0);
 Referral = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'Referrals' })
+    dynamo_easy_1.Model({ tableName: 'Referrals' })
 ], Referral);
 exports.Referral = Referral;
 class ReferralMaker {

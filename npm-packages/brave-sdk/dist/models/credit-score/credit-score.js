@@ -15,15 +15,15 @@ const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
 let BraveCreditScore = class BraveCreditScore {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], BraveCreditScore.prototype, "id", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", Number)
 ], BraveCreditScore.prototype, "scoreId", void 0);
 BraveCreditScore = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'CreditScores' })
+    dynamo_easy_1.Model({ tableName: 'CreditScores' })
 ], BraveCreditScore);
 exports.BraveCreditScore = BraveCreditScore;
 class BraveCreditScoreMaker {

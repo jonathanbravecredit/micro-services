@@ -18,10 +18,10 @@ let Ad = class Ad {
     }
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], Ad.prototype, "id", void 0);
 Ad = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'Ads' })
+    dynamo_easy_1.Model({ tableName: 'Ads' })
 ], Ad);
 exports.Ad = Ad;

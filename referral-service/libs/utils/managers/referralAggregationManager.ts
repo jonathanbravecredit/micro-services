@@ -39,7 +39,22 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     return await getReferralByCode(referredByCode);
   }
 
+  /**
+   * Processes INSERTS and MODIFYs
+   * - inserts come in two forms:
+   *   1) A user who just signs up (enrolled = false)
+   *   2) A user who already signed up but did not have a referral record (enrolled = true)
+   *   under condition 1, the user is considered past_enrolled
+   *   under condition 2, the user is considered not_enrolled
+   * - modifies
+   *   monitor when the enrollment goes from enrolled = false > true
+   * @returns
+   */
   setEnrollment(): void {
+    if (!this.priorImage) {
+      this.enrollment = this.currImage?.enrolled ? 'past_enrolled' : 'not_enrolled';
+      return;
+    }
     const prior = this.priorImage?.enrolled || false;
     const curr = this.currImage?.enrolled || false;
     this.enrollment = curr ? (!prior ? 'new_enrolled' : 'past_enrolled') : 'not_enrolled';

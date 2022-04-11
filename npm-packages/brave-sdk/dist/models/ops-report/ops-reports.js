@@ -16,20 +16,20 @@ exports.BATCHID_REPORTID_INDEX = 'batchIdReportId-index';
 let OpsReport = class OpsReport {
 };
 __decorate([
-    (0, dynamo_easy_1.PartitionKey)(),
-    (0, dynamo_easy_1.GSISortKey)(exports.BATCHID_REPORTID_INDEX),
+    dynamo_easy_1.PartitionKey(),
+    dynamo_easy_1.GSISortKey(exports.BATCHID_REPORTID_INDEX),
     __metadata("design:type", String)
 ], OpsReport.prototype, "reportId", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], OpsReport.prototype, "recordId", void 0);
 __decorate([
-    (0, dynamo_easy_1.GSIPartitionKey)(exports.BATCHID_REPORTID_INDEX),
+    dynamo_easy_1.GSIPartitionKey(exports.BATCHID_REPORTID_INDEX),
     __metadata("design:type", String)
 ], OpsReport.prototype, "batchId", void 0);
 OpsReport = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'OpsReports' })
+    dynamo_easy_1.Model({ tableName: 'OpsReports' })
 ], OpsReport);
 exports.OpsReport = OpsReport;
 class OpsReportMaker {

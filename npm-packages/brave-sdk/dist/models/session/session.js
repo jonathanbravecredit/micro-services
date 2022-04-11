@@ -16,20 +16,20 @@ exports.USERID_SESSIONDATE_INDEX = 'userIdSessionDate-index';
 let Session = class Session {
 };
 __decorate([
-    (0, dynamo_easy_1.GSIPartitionKey)(exports.USERID_SESSIONDATE_INDEX),
-    (0, dynamo_easy_1.PartitionKey)(),
+    dynamo_easy_1.GSIPartitionKey(exports.USERID_SESSIONDATE_INDEX),
+    dynamo_easy_1.PartitionKey(),
     __metadata("design:type", String)
 ], Session.prototype, "userId", void 0);
 __decorate([
-    (0, dynamo_easy_1.SortKey)(),
+    dynamo_easy_1.SortKey(),
     __metadata("design:type", String)
 ], Session.prototype, "sessionId", void 0);
 __decorate([
-    (0, dynamo_easy_1.GSISortKey)(exports.USERID_SESSIONDATE_INDEX),
+    dynamo_easy_1.GSISortKey(exports.USERID_SESSIONDATE_INDEX),
     __metadata("design:type", String)
 ], Session.prototype, "sessionDate", void 0);
 Session = __decorate([
-    (0, dynamo_easy_1.Model)({ tableName: 'Sessions' })
+    dynamo_easy_1.Model({ tableName: 'Sessions' })
 ], Session);
 exports.Session = Session;
 class SessionMaker {

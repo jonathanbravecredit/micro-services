@@ -10,7 +10,7 @@ const parserOptions = {
     ignoreNameSpace: true,
     parseAttributeValue: true,
     attrValueProcessor: (val, attrName) => he.encode(val, { isAttributeValue: true }),
-    tagValueProcessor: (val, tagName) => he.encode(val), //default is a=>a
+    tagValueProcessor: (val, tagName) => he.encode(val),
 };
 class TransunionOnboardingParsers {
     constructor() { }
@@ -55,8 +55,7 @@ class TransunionOnboardingParsers {
     static parseOTPQuestion(questions) {
         var _a, _b, _c;
         const series = ((_a = questions === null || questions === void 0 ? void 0 : questions.ChallengeConfigurationType) === null || _a === void 0 ? void 0 : _a.MultiChoiceQuestion) instanceof Array
-            ? (_b = questions === null || questions === void 0 ? void 0 : questions.ChallengeConfigurationType) === null || _b === void 0 ? void 0 : _b.MultiChoiceQuestion
-            : new Array((_c = questions === null || questions === void 0 ? void 0 : questions.ChallengeConfigurationType) === null || _c === void 0 ? void 0 : _c.MultiChoiceQuestion);
+            ? (_b = questions === null || questions === void 0 ? void 0 : questions.ChallengeConfigurationType) === null || _b === void 0 ? void 0 : _b.MultiChoiceQuestion : new Array((_c = questions === null || questions === void 0 ? void 0 : questions.ChallengeConfigurationType) === null || _c === void 0 ? void 0 : _c.MultiChoiceQuestion);
         return series.find((q) => q.FullQuestionText === transunion_1.OTPQuestion.FullText ||
             q.FullQuestionText.indexOf(transunion_1.OTPQuestion.PartialOne) >= 0 ||
             q.FullQuestionText.indexOf(transunion_1.OTPQuestion.PartialTwo) >= 0);
