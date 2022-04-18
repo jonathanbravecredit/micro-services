@@ -64,6 +64,7 @@ export const BLACKLIST = {
   'siberpay.com': true,
   'inbox.eu': true,
   'cutradition.com': true,
+  'killol25.xyz': true,
 };
 
 export const TLDBLACKLIST = {
@@ -132,4 +133,5 @@ export const FILTERS = {
   siberpay: true,
   cutradition: true,
   inbox: true,
+  killol25.xyz: true,
 };
