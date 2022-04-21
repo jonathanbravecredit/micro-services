@@ -15,6 +15,8 @@ custom:
   settings:
     APPDATA:
       dev: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
+      qa:  'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
+      staging: 'AppData-mwxdv374n5gtxfao5ylbhdnce4-qa'
       prod: 'AppData-4tpaga7rzjayhk75opsmpeurme-prod'
 
 plugins:
