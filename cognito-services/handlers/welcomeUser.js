@@ -5,6 +5,7 @@ const stage = process.env.NODE_ENV;
 const urlConfig = {
   dev: `${process.env.DEVPOST_REGISTRATION_VERIFICATION_REDIRECT_URL}`,
   qa: `${process.env.QAPOST_REGISTRATION_VERIFICATION_REDIRECT_URL}`,
+  staging: `${process.env.STAGINGPOST_REGISTRATION_VERIFICATION_REDIRECT_URL}`,
   prod: `${process.env.PRODPOST_REGISTRATION_VERIFICATION_REDIRECT_URL}`,
 };
 const apiUrl = urlConfig[stage];

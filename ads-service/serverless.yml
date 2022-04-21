@@ -17,6 +17,7 @@ custom:
     POOL_IDS:
       dev: 'us-east-2_beTcykTM9'
       qa: 'us-east-2_beTcykTM9'
+      staging: 'us-east-2_6RQqasoH3'
       prod: 'us-east-2_R22DawoAR'
 
 provider:
