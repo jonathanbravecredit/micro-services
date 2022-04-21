@@ -133,5 +133,5 @@ export const FILTERS = {
   siberpay: true,
   cutradition: true,
   inbox: true,
-  killol25.xyz: true,
+  'killol25.xyz': true,
 };
