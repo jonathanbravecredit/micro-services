@@ -367,8 +367,8 @@ describe('ReferralAggregationManager Class', () => {
   });
 
   describe('getPaymentDate', () => {
-    it('should call inBonusOrMax', () => {
-      const spy = jest.spyOn(aggregator, 'inBonusOrMax');
+    it('should call hitMax', () => {
+      const spy = jest.spyOn(aggregator, 'hitMax');
       aggregator.getPaymentDate({} as Referral);
       expect(spy).toHaveBeenCalledWith({});
     });
@@ -379,12 +379,12 @@ describe('ReferralAggregationManager Class', () => {
     });
   });
 
-  describe('inBonusOrMax', () => {
+  describe('hitMax', () => {
     it('should return false if referred falsey', () => {
-      const res1 = aggregator.inBonusOrMax({ campaignActiveReferred: 0 } as unknown as Referral);
-      const res2 = aggregator.inBonusOrMax({ campaignActiveReferred: -1 } as unknown as Referral);
-      const res3 = aggregator.inBonusOrMax({ campaignActiveReferred: false } as unknown as Referral);
-      const res4 = aggregator.inBonusOrMax({ campaignActiveReferred: undefined } as unknown as Referral);
+      const res1 = aggregator.hitMax({ campaignActiveReferred: 0 } as unknown as Referral);
+      const res2 = aggregator.hitMax({ campaignActiveReferred: -1 } as unknown as Referral);
+      const res3 = aggregator.hitMax({ campaignActiveReferred: false } as unknown as Referral);
+      const res4 = aggregator.hitMax({ campaignActiveReferred: undefined } as unknown as Referral);
       expect(res1).toEqual(false);
       expect(res2).toEqual(false);
       expect(res3).toEqual(false);
@@ -392,32 +392,27 @@ describe('ReferralAggregationManager Class', () => {
     });
     it('should return true if campaignActiveReferred >= maxReferrals and maxReferrals > 0', () => {
       aggregator.campaign = { maxReferrals: 1 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(true);
     });
     it('should return false if campaignActiveReferred >= maxReferrals and maxReferrals = 0', () => {
       aggregator.campaign = { maxReferrals: 0 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
     it('should return false if campaignActiveReferred < maxReferrals and maxReferrals > 0', () => {
       aggregator.campaign = { maxReferrals: 5 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
-    it('should return true if  campaignActiveReferred >= bonusThreshold and bonusThreshold > 0', () => {
+    it('should return false if campaignActiveReferred >= bonusThreshold and bonusThreshold > 0', () => {
       aggregator.campaign = { bonusThreshold: 1 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
-      expect(res).toEqual(true);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
     });
     it('should return false if campaignActiveReferred >= bonusThreshold and bonusThreshold = 0', () => {
       aggregator.campaign = { bonusThreshold: 0 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
-      expect(res).toEqual(false);
-    });
-    it('should return false if campaignActiveReferred < bonusThreshold and bonusThreshold > 0', () => {
-      aggregator.campaign = { bonusThreshold: 5 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
   });
