@@ -214,9 +214,9 @@ describe('CampaignDataManager', () => {
       const res = await manager.enableCampaign();
       expect(res).toBeUndefined();
     });
-    it('should run updateReferral 3 times if 3 elgible referrals', async () => {
+    it('should run updateReferralCampaign 3 times if 3 elgible referrals', async () => {
       jest.spyOn(manager, 'listReferralsByEligible').mockReturnValue(Promise.resolve([0, 1, 2] as any[]));
-      const spy = jest.spyOn(manager, 'updateReferral');
+      const spy = jest.spyOn(manager, 'updateReferralCampaign');
       await manager.enableCampaign();
       expect(spy).toHaveBeenNthCalledWith(1, 0);
       expect(spy).toHaveBeenNthCalledWith(2, 1);
