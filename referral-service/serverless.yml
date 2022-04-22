@@ -32,7 +32,7 @@ custom:
     APPDATA:
       dev: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
       qa: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
-      staging: 'mwxdv374n5gtxfao5ylbhdnce4:GetAtt:AppDataTable:StreamArn'
+      staging: 'mza6aevpsvef5btykbyjp5ffdm:GetAtt:AppDataTable:StreamArn'
       prod: '4tpaga7rzjayhk75opsmpeurme:GetAtt:AppDataTable:StreamArn'
 
 provider:
