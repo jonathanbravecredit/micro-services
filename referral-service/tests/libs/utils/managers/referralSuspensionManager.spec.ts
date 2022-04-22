@@ -22,9 +22,6 @@ describe('ReferralSuspensionManager', () => {
     it('should have property priorImage', () => {
       expect(h.hasProperty(manager, 'priorImage')).toEqual(true);
     });
-    it('should have property event', () => {
-      expect(h.hasProperty(manager, 'event')).toEqual(true);
-    });
     it('should have init method', () => {
       expect(h.hasMethod(manager, 'init')).toEqual(true);
     });
