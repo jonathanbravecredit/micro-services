@@ -2,6 +2,7 @@ import {
   getActiveCampaignReferrals,
   getEligibileReferrals,
   updateReferralCampaign,
+  updateReferral,
 } from 'libs/queries/referrals/referral.queries';
 import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 import { Helper } from 'tests/helpers/test-helper';
@@ -21,10 +22,12 @@ describe('CampaignDataManager', () => {
   const mockedListActive = mocked(getActiveCampaignReferrals);
   const mockedListEligible = mocked(getEligibileReferrals);
   const mockedUpdate = mocked(updateReferralCampaign);
+  const mockedUpdateReferral = mocked(updateReferral);
   beforeEach(() => {
     mockedListActive.mockClear();
     mockedListEligible.mockClear();
     mockedUpdate.mockClear();
+    mockedUpdateReferral.mockClear();
     manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
   });
   describe('Inherited properties and methods', () => {
@@ -254,9 +257,9 @@ describe('CampaignDataManager', () => {
   });
 
   describe('updateReferral', () => {
-    it('should run updateReferralCampaign', async () => {
+    it('should run updateReferral', async () => {
       await manager.updateReferral({ id: 'abc', campaign: 'mar2022' } as any);
-      expect(mockedUpdate).toHaveBeenCalled();
+      expect(mockedUpdateReferral).toHaveBeenCalled();
     });
   });
 });
