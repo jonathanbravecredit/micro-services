@@ -57,7 +57,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     }
     const prior = this.priorImage?.enrolled || false;
     const curr = this.currImage?.enrolled || false;
-    this.enrollment = curr ? (!prior ? 'new_enrolled' : 'past_enrolled') : 'not_enrolled';
+    this.enrollment = curr ? (prior ? 'past_enrolled' : 'new_enrolled') : 'not_enrolled';
   }
 
   /**
@@ -113,18 +113,17 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
   }
 
   getPaymentDate(referrer: Referral): { nextPaymentDate: string } {
-    const bonusOrMax = this.inBonusOrMax(referrer);
+    const bonusOrMax = this.hitMax(referrer);
     const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrMax, this.campaign.endDate);
     return { nextPaymentDate };
   }
 
-  inBonusOrMax(referrer: Referral): boolean {
+  hitMax(referrer: Referral): boolean {
     const { campaignActiveReferred: referred } = referrer;
-    const { bonusThreshold: bonus, maxReferrals: max } = this.campaign;
+    const { maxReferrals: max } = this.campaign;
     if (!referred) return false;
     const reachedMax = referred >= max && max > 0;
-    const reachedBonus = referred >= bonus && bonus > 0;
-    return reachedBonus || reachedMax;
+    return reachedMax;
   }
 
   incrementCount(referrer: Referral): { campaignActiveReferred: number; totalReferred: number } {

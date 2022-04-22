@@ -20,10 +20,8 @@ export const main: Handler = async (event: { list: string[] }): Promise<void> =>
         const current = await getCampaign(1, 0);
         if (!current) return;
         const campaignActiveReferred = referral.campaignActiveReferred + 1;
-        const bonusOrThreshold =
-          (campaignActiveReferred >= current.bonusThreshold && current.bonusThreshold > 0) ||
-          campaignActiveReferred >= current.maxReferrals;
-        const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrThreshold, current.endDate);
+        const maxHit = campaignActiveReferred >= current.maxReferrals;
+        const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(maxHit, current.endDate);
         await updateNextPaymentDate(referral.id, nextPaymentDate);
       }),
     );

@@ -5,6 +5,7 @@ import {
   MOCK_INSERT,
   MOCK_MODIFY,
   MOCK_NOTREFERRED_MODIFY,
+  MOCK_UNENROLLED_INSERT,
   MOCK_UNENROLLED_MODIFY,
   MOCK_UNENROLLED_TO_ENROLLED_MODIFY,
   MOCK_UNMARSHALLED,
@@ -44,16 +45,15 @@ describe('ReferralAggregationManager Class', () => {
   mockedGetCode.mockImplementation((code: string | null) => {
     return Promise.resolve({ id: 'xyz' } as Referral);
   });
-
+  beforeEach(async () => {
+    await aggregator.init();
+  });
   describe('Inherited properties and methods', () => {
     it('should have property currImage', () => {
       expect(h.hasProperty(aggregator, 'currImage')).toEqual(true);
     });
     it('should have property priorImage', () => {
       expect(h.hasProperty(aggregator, 'priorImage')).toEqual(true);
-    });
-    it('should have property event', () => {
-      expect(h.hasProperty(aggregator, 'event')).toEqual(true);
     });
     it('should have init method', () => {
       expect(h.hasMethod(aggregator, 'init')).toEqual(true);
@@ -106,19 +106,19 @@ describe('ReferralAggregationManager Class', () => {
   });
 
   describe('init', () => {
-    it('should call setEnrollment', () => {
+    it('should call setEnrollment', async () => {
       const spy = jest.spyOn(aggregator, 'setEnrollment');
-      aggregator.init();
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('should call setReferree', () => {
+    it('should call setReferree', async () => {
       const spy = jest.spyOn(aggregator, 'setReferree');
-      aggregator.init();
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('should call setReferrer', () => {
+    it('should call setReferrer', async () => {
       const spy = jest.spyOn(aggregator, 'setReferrer');
-      aggregator.init();
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
@@ -140,6 +140,7 @@ describe('ReferralAggregationManager Class', () => {
   describe('getReferrer', () => {
     it('should return null if currImage.referredByCode is null', async () => {
       const agg = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_NOTREFERRED_MODIFY);
+      await agg.init();
       const res = await agg.getReferrer();
       expect(res).toBeNull();
     });
@@ -150,15 +151,27 @@ describe('ReferralAggregationManager Class', () => {
   });
 
   describe('setEnrollment', () => {
-    it('should set enrollment to "past_enrolled" when curr enrolled and prior enrolled', () => {
+    it('should set enrollment to "past_enrolled" when curr enrolled and priorImage is undefined', async () => {
+      let agg = new ReferralAggregationManager(mockCampaign, MOCK_INSERT);
+      await agg.init();
+      expect(agg.enrollment).toEqual('past_enrolled');
+    });
+    it('should set enrollment to "not_enrolled" when NOT curr enrolled and priorImage is undefined', async () => {
+      let agg = new ReferralAggregationManager(mockCampaign, MOCK_UNENROLLED_INSERT);
+      await agg.init();
+      expect(agg.enrollment).toEqual('not_enrolled');
+    });
+    it('should set enrollment to "past_enrolled" when curr enrolled and prior enrolled', async () => {
       expect(aggregator.enrollment).toEqual('past_enrolled');
     });
-    it('should set enrollment to "new_enrolled" when curr enrolled and prior NOT enrolled', () => {
-      let agg = new ReferralAggregationManager(mockCampaign, MOCK_INSERT);
+    it('should set enrollment to "new_enrolled" when curr enrolled and prior NOT enrolled', async () => {
+      let agg = new ReferralAggregationManager(mockCampaign, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
+      await agg.init();
       expect(agg.enrollment).toEqual('new_enrolled');
     });
-    it('should set enrollment to "not_enrolled" when curr NOT enrolled and prior NOT enrolled', () => {
+    it('should set enrollment to "not_enrolled" when curr NOT enrolled and prior defined', async () => {
       let agg = new ReferralAggregationManager(mockCampaign, MOCK_UNENROLLED_MODIFY);
+      await agg.init();
       expect(agg.enrollment).toEqual('not_enrolled');
     });
   });
@@ -168,7 +181,8 @@ describe('ReferralAggregationManager Class', () => {
       let aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
       let spyReferree = jest.spyOn(aggTwo, 'creditReferree');
       let spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
-      beforeEach(() => {
+      beforeEach(async () => {
+        await aggTwo.init();
         spyReferree.mockClear();
         spyReferrer.mockClear();
       });
@@ -180,10 +194,12 @@ describe('ReferralAggregationManager Class', () => {
         await aggTwo.quantifyReferral();
         expect(spyReferrer).toHaveBeenCalledTimes(1);
       });
-      it('should not call creditReferee or creditReferrer if campaign is inactive', () => {
+      it('should not call creditReferee or creditReferrer if campaign is inactive', async () => {
         aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_TO_ENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
+        await aggTwo.init();
+        await aggTwo.quantifyReferral();
         expect(spyReferree).not.toHaveBeenCalled();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
@@ -193,7 +209,8 @@ describe('ReferralAggregationManager Class', () => {
       let aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_ACTIVE, MOCK_ENROLLED_MODIFY);
       let spyReferree = jest.spyOn(aggTwo, 'creditReferree');
       let spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
-      beforeEach(() => {
+      beforeEach(async () => {
+        await aggTwo.init();
         spyReferree.mockClear();
         spyReferrer.mockClear();
       });
@@ -205,6 +222,7 @@ describe('ReferralAggregationManager Class', () => {
         aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_ENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
+        await aggTwo.init();
         await aggTwo.quantifyReferral();
         expect(spyReferree).not.toHaveBeenCalled();
         expect(spyReferrer).not.toHaveBeenCalled();
@@ -220,6 +238,7 @@ describe('ReferralAggregationManager Class', () => {
         spyReferrer.mockClear();
       });
       it('should NOT call creditReferee or creditReferrer if campaign is active and enrollment = "not_enrolled"', async () => {
+        await aggTwo.init();
         await aggTwo.quantifyReferral();
         expect(spyReferrer).not.toHaveBeenCalled();
       });
@@ -227,6 +246,7 @@ describe('ReferralAggregationManager Class', () => {
         aggTwo = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_UNENROLLED_MODIFY);
         spyReferree = jest.spyOn(aggTwo, 'creditReferree');
         spyReferrer = jest.spyOn(aggTwo, 'creditReferrer');
+        await aggTwo.init();
         await aggTwo.quantifyReferral();
         expect(spyReferree).not.toHaveBeenCalled();
         expect(spyReferrer).not.toHaveBeenCalled();
@@ -237,6 +257,7 @@ describe('ReferralAggregationManager Class', () => {
       let aggThree = new ReferralAggregationManager(MOCK_CAMPAIGN_NO_CAMPAIGN, MOCK_MODIFY);
       const spyOne = jest.spyOn(aggThree, 'creditReferrer');
       const spyTwo = jest.spyOn(aggThree, 'creditReferree');
+      await aggThree.init();
       await aggThree.quantifyReferral();
       expect(spyOne).not.toHaveBeenCalled();
       expect(spyTwo).not.toHaveBeenCalled();
@@ -320,7 +341,6 @@ describe('ReferralAggregationManager Class', () => {
       updateRefSpy.mockClear();
       getPayDteSpy.mockClear();
       aggregator.campaign.addOnFlagOne = 'enrollment';
-      aggregator.init();
     });
     it('should return undefined if this.referree is not set or null', async () => {
       aggregator.referree = null as unknown as Referral;
@@ -367,8 +387,8 @@ describe('ReferralAggregationManager Class', () => {
   });
 
   describe('getPaymentDate', () => {
-    it('should call inBonusOrMax', () => {
-      const spy = jest.spyOn(aggregator, 'inBonusOrMax');
+    it('should call hitMax', () => {
+      const spy = jest.spyOn(aggregator, 'hitMax');
       aggregator.getPaymentDate({} as Referral);
       expect(spy).toHaveBeenCalledWith({});
     });
@@ -379,12 +399,12 @@ describe('ReferralAggregationManager Class', () => {
     });
   });
 
-  describe('inBonusOrMax', () => {
+  describe('hitMax', () => {
     it('should return false if referred falsey', () => {
-      const res1 = aggregator.inBonusOrMax({ campaignActiveReferred: 0 } as unknown as Referral);
-      const res2 = aggregator.inBonusOrMax({ campaignActiveReferred: -1 } as unknown as Referral);
-      const res3 = aggregator.inBonusOrMax({ campaignActiveReferred: false } as unknown as Referral);
-      const res4 = aggregator.inBonusOrMax({ campaignActiveReferred: undefined } as unknown as Referral);
+      const res1 = aggregator.hitMax({ campaignActiveReferred: 0 } as unknown as Referral);
+      const res2 = aggregator.hitMax({ campaignActiveReferred: -1 } as unknown as Referral);
+      const res3 = aggregator.hitMax({ campaignActiveReferred: false } as unknown as Referral);
+      const res4 = aggregator.hitMax({ campaignActiveReferred: undefined } as unknown as Referral);
       expect(res1).toEqual(false);
       expect(res2).toEqual(false);
       expect(res3).toEqual(false);
@@ -392,32 +412,27 @@ describe('ReferralAggregationManager Class', () => {
     });
     it('should return true if campaignActiveReferred >= maxReferrals and maxReferrals > 0', () => {
       aggregator.campaign = { maxReferrals: 1 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(true);
     });
     it('should return false if campaignActiveReferred >= maxReferrals and maxReferrals = 0', () => {
       aggregator.campaign = { maxReferrals: 0 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
     it('should return false if campaignActiveReferred < maxReferrals and maxReferrals > 0', () => {
       aggregator.campaign = { maxReferrals: 5 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
-    it('should return true if  campaignActiveReferred >= bonusThreshold and bonusThreshold > 0', () => {
+    it('should return false if campaignActiveReferred >= bonusThreshold and bonusThreshold > 0', () => {
       aggregator.campaign = { bonusThreshold: 1 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
-      expect(res).toEqual(true);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      expect(res).toEqual(false);
     });
     it('should return false if campaignActiveReferred >= bonusThreshold and bonusThreshold = 0', () => {
       aggregator.campaign = { bonusThreshold: 0 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
-      expect(res).toEqual(false);
-    });
-    it('should return false if campaignActiveReferred < bonusThreshold and bonusThreshold > 0', () => {
-      aggregator.campaign = { bonusThreshold: 5 } as unknown as Campaign;
-      const res = aggregator.inBonusOrMax({ campaignActiveReferred: 1 } as unknown as Referral);
+      const res = aggregator.hitMax({ campaignActiveReferred: 1 } as unknown as Referral);
       expect(res).toEqual(false);
     });
   });
