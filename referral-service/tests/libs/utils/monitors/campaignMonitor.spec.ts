@@ -25,8 +25,8 @@ describe('CampaignMonitor', () => {
     it('should have a method called checkCampaignStatus', () => {
       expect(h.hasMethod(monitor, 'checkCampaignStatus')).toEqual(true);
     });
-    it('should have a method called getCampaign', () => {
-      expect(h.hasMethod(monitor, 'getCampaign')).toEqual(true);
+    it('should have a method called getNoCampaign', () => {
+      expect(h.hasMethod(monitor, 'getNoCampaign')).toEqual(true);
     });
   });
 
