@@ -90,8 +90,8 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     if (!this.referrer || !Object.keys(this.referrer).length) return;
     let updated = { ...this.referrer };
     // keep in this order
-    updated = { ...updated, ...this.incrementCount(updated) };
-    updated = { ...updated, ...this.incrementBase(updated) };
+    updated = { ...updated, ...this.incrementCount(this.referrer) };
+    updated = { ...updated, ...this.incrementBase(this.referrer) };
     updated = { ...updated, ...this.incrementBonus(updated) };
     updated = { ...updated, ...this.getPaymentDate(updated) };
     console.log('creditReferrer:updated ===> ', updated);
