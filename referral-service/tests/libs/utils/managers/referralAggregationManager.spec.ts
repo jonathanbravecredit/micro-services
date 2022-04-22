@@ -106,16 +106,19 @@ describe('ReferralAggregationManager Class', () => {
   });
 
   describe('init', () => {
-    it('should call setEnrollment', () => {
+    it('should call setEnrollment', async () => {
       const spy = jest.spyOn(aggregator, 'setEnrollment');
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('should call setReferree', () => {
+    it('should call setReferree', async () => {
       const spy = jest.spyOn(aggregator, 'setReferree');
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('should call setReferrer', () => {
+    it('should call setReferrer', async () => {
       const spy = jest.spyOn(aggregator, 'setReferrer');
+      await aggregator.init();
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
