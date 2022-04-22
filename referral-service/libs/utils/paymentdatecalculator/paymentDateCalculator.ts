@@ -11,12 +11,12 @@ export class PaymentDateCalculator {
 
   /**
    * Logic:
-   * 1. if they hit the max referrals amount then next payOn day (ex: tuesday (gladly))
+   * 1. if they hit the max referrals amount then next payOn day (ex: next available Tuesday)
    * 2. if NOT in the max then first payOn of next month
    *   - move to start of month (avoids 30/31 and 28 misses)
    *   - add one month to date
    *   - add 6 - payOn to date
-   *      - 6 - payOn will move it to sunday (0) or later if curr day is after payOn dat and push the week over
+   *      - 6 - payOn will move it to sunday (0) or later if curr day is after payOn date and push the week over
    *      - or, wll keep in the same week if on Sun, Mon, or Tues, etc if before payOn which is correct
    *   - set the date to payOn (ex: Tuesday = 2)
    * @param maxHit
