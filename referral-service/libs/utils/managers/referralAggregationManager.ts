@@ -57,7 +57,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     }
     const prior = this.priorImage?.enrolled || false;
     const curr = this.currImage?.enrolled || false;
-    this.enrollment = curr ? (!prior ? 'new_enrolled' : 'past_enrolled') : 'not_enrolled';
+    this.enrollment = curr ? (prior ? 'past_enrolled' : 'new_enrolled') : 'not_enrolled';
   }
 
   /**
