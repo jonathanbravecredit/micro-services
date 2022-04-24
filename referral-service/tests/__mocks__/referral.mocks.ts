@@ -399,6 +399,13 @@ export const MOCK_UNENROLLED_MODIFY = {
   eventName: 'MODIFY',
 } as DynamoDBRecord;
 
+export const MOCK_UNENROLLED_INSERT = {
+  dynamodb: {
+    NewImage: MOCK_UNENROLLED,
+  },
+  eventName: 'INSERT',
+} as DynamoDBRecord;
+
 export const MOCK_NOTREFERRED_MODIFY = {
   dynamodb: {
     OldImage: MOCK_NO_REFERRED_BY,
