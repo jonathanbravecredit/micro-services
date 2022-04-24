@@ -10,6 +10,7 @@ const stage = process.env.NODE_ENV;
 const urlConfig = {
   dev: process.env.DEVAPIURL,
   qa: process.env.QAAPIURL,
+  staging: process.env.STAGINGAPIURL,
   prod: process.env.PRODAPIURL,
 };
 const apiUrl = urlConfig[stage];
