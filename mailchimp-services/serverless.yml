@@ -22,7 +22,7 @@ custom:
     fixPackages: # Include fixes for specific packages
       - 'formidable@1.x'
 
-  snsProxy: !Sub '${self:provider.stage}-api-endpoints-sns-proxy'
+  snsProxy: !Sub '${self:provider.stage}-api-endpoints-sns-proxy-temp'
   settings:
     POOL:
       dev: 'us-east-2_beTcykTM9'
@@ -57,7 +57,7 @@ provider:
     EMAIL: 'support@brave.credit'
     DOMAIN: 'brave.credit'
     POOL: ${self:custom.settings.POOL.${opt:stage}}
-    SNS_PROXY_ARN: !ImportValue ${self:custom.snsProxy}
+    # SNS_PROXY_ARN: !ImportValue ${self:custom.snsProxy}
     MAILCHIMP_SNS_ARN: !Ref MailchimpSNSTopic
     MAILCHIMP_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpTx'
     MAILCHIMP_MRKT_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
