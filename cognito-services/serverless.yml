@@ -30,17 +30,20 @@ provider:
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
-        - 'cognito-identity:*'
-        - 'cognito-sync:*'
-        - 'cognito-idp:*'
+        - 'cognito-idp:ListUsers'
+        - 'cognito-idp:AdminLinkProviderForUser'
+        - 'cognito-idp:AdminCreateUser'
+        - 'cognito-idp:AdminSetUserPassword'
+        - 'cognito-idp:AdminUpdateUserAttributes'
       Resource: '*'
     - Effect: 'Allow'
       Action:
-        - 'ses:*'
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
       Resource: '*'
     - Effect: 'Allow'
       Action:
-        - 'sns:*'
+        - 'sns:publish'
       Resource: '*'
     - Effect: 'Allow'
       Action:
