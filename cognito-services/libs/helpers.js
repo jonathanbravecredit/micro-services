@@ -277,12 +277,12 @@ const publishSendMailChimpEmail = (payload) => {
   if (!payload) {
     return;
   }
-  console.log('sns topic ==> ', process.env.SNS_PROXY_TOPIC);
+  console.log('sns topic ==> ', process.env.MAILCHIMP_DEQUEUE_SNS_ARN);
   console.log('snsPayload', JSON.stringify(payload));
   const params = {
     Subject: 'SNS Proxy',
     Message: JSON.stringify(payload),
-    TopicArn: process.env.SNS_PROXY_TOPIC,
+    TopicArn: process.env.MAILCHIMP_DEQUEUE_SNS_ARN,
     MessageAttributes: {
       service: {
         DataType: 'String',
