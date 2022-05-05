@@ -22,7 +22,6 @@ custom:
     fixPackages: # Include fixes for specific packages
       - 'formidable@1.x'
 
-  # snsProxy: !Sub '${self:provider.stage}-api-endpoints-sns-proxy'
   settings:
     POOL:
       dev: 'us-east-2_beTcykTM9'
