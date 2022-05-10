@@ -33,6 +33,7 @@ import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
 import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
 import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
+import { DisputeAnalyticsReport } from 'libs/reports/dispute-analytics/dispute-analytics';
 
 // request.debug = true; import * as request from 'request';
 // const errorLogger = new ErrorLogger();
@@ -540,6 +541,26 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
     } catch (err) {
       console.log('error ==> ', err);
       return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+    }
+  }
+
+  /*===================================*/
+  //    dispute analytics report
+  /*===================================*/
+  const disputeAnalyticReport = event.Records.map((r) => {
+    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
+  }).filter((b) => {
+    return b.service === ReportNames.DisputeAnalytics;
+  });
+  console.log(`Received ${disputeAnalyticReport.length} dispute analytic report records `);
+
+  if (disputeAnalyticReport.length) {
+    const report = new DisputeAnalyticsReport(disputeAnalyticReport);
+    try {
+      const results = await report.run();
+      return results;
+    } catch (err) {
+      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
     }
   }
 

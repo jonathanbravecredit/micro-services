@@ -11,7 +11,7 @@ class TransunionScrubbers {
      */
     static scrubBackendData(data) {
         let clean = nested_1.Nested.delete(data, '__typename');
-        clean = nested_1.Nested.delete(data, 'isFresh');
+        clean = nested_1.Nested.delete(clean, 'isFresh');
         delete clean.createdAt; // this is a graphql managed field
         delete clean.updatedAt; // this is a graphql managed field
         delete clean.owner; // this is a graphql managed field
