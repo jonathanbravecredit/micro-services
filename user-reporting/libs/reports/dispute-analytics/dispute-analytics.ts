@@ -147,7 +147,7 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
           .map((item, idx) => {
             if (!item?.credit) return '';
             const { credit } = item;
-            return `Result-${idx}::item:${credit.item?.itemName},result:${credit.result}`;
+            return `Result-${idx}::reason:${credit.reason},result:${credit.result}`;
           })
           .join(';');
       })
