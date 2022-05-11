@@ -21,7 +21,7 @@ import { getCreditBureauReportResult } from 'libs/queries/credit-bureau-report-r
 export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
-    _.bindAll(this, 'parseDisputeResult');
+    _.bindAll(this, ['parseDisputeResult', 'parseDisputeDataReasons']);
   }
 
   async processQuery(
@@ -82,8 +82,13 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
   parseDispute(data: Dispute): string {
     if (!data) return '';
     const { disputeItems } = data;
-    const items = JSON.parse(disputeItems) as DisputeItem[];
-    return items.map(this.parseDisputeResult).join('');
+    if (!disputeItems) return '';
+    if (typeof disputeItems == 'string') {
+      const items = JSON.parse(disputeItems) as DisputeItem[];
+      return items.map(this.parseDisputeResult).join('');
+    } else {
+      return '';
+    }
   }
 
   parseDisputeResult(item: DisputeItem): string {
@@ -115,9 +120,14 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
   parseCBFinding(data: CreditBureauReportResult): any {
     if (!data) return;
     const { record } = data;
-    const creditBureau = JSON.parse(record) as IDisputeCreditBureau;
-    const prodArray = _.castArray(_nest.find<IProductArray | IProductArray[]>(creditBureau, 'productArray'));
-    return this.parseSubjectRecord(prodArray);
+    if (!record) return '';
+    if (typeof record == 'string') {
+      const creditBureau = JSON.parse(record) as IDisputeCreditBureau;
+      const prodArray = _.castArray(_nest.find<IProductArray | IProductArray[]>(creditBureau, 'productArray'));
+      return this.parseSubjectRecord(prodArray);
+    } else {
+      return '';
+    }
   }
 
   parseSubjectRecord(arr: IProductArray[]): string {
