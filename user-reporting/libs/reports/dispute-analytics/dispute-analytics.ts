@@ -43,7 +43,7 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
         const reasons = this.parseDispute(item);
         console.log('ids: ', cbID, userId);
         try {
-          const cbData = await this.queryCBReport(cbID, userId);
+          const cbData = await this.queryCBReport(userId, cbID);
           console.log('cbData', JSON.stringify(cbData));
           const results = cbData ? this.parseCBFinding(cbData) : '';
           const type = this.getDisputeType(reasons);
