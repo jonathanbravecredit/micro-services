@@ -14,4 +14,5 @@ export enum ReportNames {
   NoReportReport = 'noreportreport',
   MissingDisputeKeys = 'missingdisputekeys',
   DisputeErrors = 'disputeerrors',
+  DisputeAnalytics = 'disputeanalytics',
 }

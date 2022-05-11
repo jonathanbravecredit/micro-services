@@ -78,6 +78,8 @@ provider:
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditScores'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditReports'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Disputes'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/InvestigationResults'
+        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditBureauReportResults'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog/index/*'
         - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports'
@@ -200,6 +202,9 @@ functions:
   triggerDisputeEnrollmentsYTD:
     handler: src/triggers/triggerDisputeEnrollmentsYTD.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  triggerDisputeAnalytics:
+    handler: src/triggers/triggerDisputeAnalytics.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   triggerUserAggregatedMetricsReport:
     handler: src/triggers/triggerUserAggregatedMetricsReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -210,9 +215,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 8 * * ? *)
-  reportEnrollmentCount:
-    handler: src/handlers/compilers/reportEnrollmentCount.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportFailedCount:
     handler: src/handlers/compilers/reportFailedCount.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -243,9 +245,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportAllDisputes:
     handler: src/handlers/compilers/reportAllDisputes.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportFailedCancelEnrollments:
-    handler: src/handlers/compilers/reportFailedCancelEnrollments.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # FIXERS
@@ -329,6 +328,7 @@ resources:
             - usermetricsreport
             - missingdisputekeys
             - disputeerrors
+            - disputeanalytics
         RawMessageDelivery: 'true'
 
     OpsReports:
