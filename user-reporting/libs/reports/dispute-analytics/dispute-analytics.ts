@@ -41,7 +41,9 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
         const { id: userId, disputeCreditBureau: cbID } = item;
         if (!userId) return;
         const reasons = this.parseDispute(item);
+        console.log('ids: ', cbID, userId);
         const cbData = await this.queryCBReport(cbID, userId);
+        console.log('cbData', JSON.stringify(cbData));
         const results = cbData ? this.parseCBFinding(cbData) : '';
         const type = this.getDisputeType(reasons);
         const enriched = {
@@ -104,7 +106,7 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
       .map((reason, idx) => {
         const str = Object.entries(reason)
           .map(([k, v]) => `${k}:${v}`)
-          .join(',');
+          .join('|');
         return `Reason-${idx + 1}::${str}`;
       })
       .join(';');
@@ -151,7 +153,7 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
   getDisputeType(reason: string): string {
     if (reason.includes('pi-')) return 'Personal';
     if (reason.includes('pr-')) return 'Public Item';
-    if (!reason.includes('pr-') && !reason.includes('pi-')) return 'Tradeline Item';
+    if (!reason.includes('pr-') && !reason.includes('pi-') && reason.includes('Reason-')) return 'Tradeline Item';
     return 'unknown';
   }
 
