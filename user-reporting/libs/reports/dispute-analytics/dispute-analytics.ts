@@ -42,25 +42,29 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
         if (!userId) return;
         const reasons = this.parseDispute(item);
         console.log('ids: ', cbID, userId);
-        const cbData = await this.queryCBReport(cbID, userId);
-        console.log('cbData', JSON.stringify(cbData));
-        const results = cbData ? this.parseCBFinding(cbData) : '';
-        const type = this.getDisputeType(reasons);
-        const enriched = {
-          ...this.mapDisputeRecords(record),
-          type,
-          reasons,
-          results,
-        };
-        const ops = new OpsReportMaker(
-          ReportNames.DisputeAnalytics,
-          batchId,
-          JSON.stringify(schema),
-          JSON.stringify(enriched),
-        );
-        await createOpReport(ops);
-        this.counter++;
-        return true;
+        try {
+          const cbData = await this.queryCBReport(cbID, userId);
+          console.log('cbData', JSON.stringify(cbData));
+          const results = cbData ? this.parseCBFinding(cbData) : '';
+          const type = this.getDisputeType(reasons);
+          const enriched = {
+            ...this.mapDisputeRecords(record),
+            type,
+            reasons,
+            results,
+          };
+          const ops = new OpsReportMaker(
+            ReportNames.DisputeAnalytics,
+            batchId,
+            JSON.stringify(schema),
+            JSON.stringify(enriched),
+          );
+          await createOpReport(ops);
+          this.counter++;
+          return true;
+        } catch (err) {
+          console.error(err);
+        }
       }),
     );
   }

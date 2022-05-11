@@ -6,12 +6,8 @@ import { CreditBureauReportResult } from 'libs/models/credit-bureau.model';
 const db = new AWS.DynamoDB();
 const store = new DynamoStore(CreditBureauReportResult);
 
-export const getCreditBureauReportResult = (id: string, userId: string): Promise<CreditBureauReportResult> => {
-  return store
-    .get(id, userId)
-    .exec()
-    .then((res) => res)
-    .catch((err) => err);
+export const getCreditBureauReportResult = (id: string, userId: string): Promise<CreditBureauReportResult | null> => {
+  return store.get(id, userId).exec();
 };
 
 export const createCreditBureauReportResult = (report: CreditBureauReportResult): Promise<PutItemOutput> => {
