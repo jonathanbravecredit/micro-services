@@ -110,10 +110,10 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
       .map((reason, idx) => {
         const str = Object.entries(reason)
           .map(([k, v]) => `${k}:${v}`)
-          .join('|');
-        return `Reason-${idx + 1}::${str}`;
+          .join(';');
+        return `::Reason-${idx + 1}::${str.trim()}`;
       })
-      .join(';');
+      .join('');
   }
 
   async queryCBReport(userId: string, cbID: string | null): Promise<CreditBureauReportResult | null> {
@@ -147,9 +147,9 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
           .map((item, idx) => {
             if (!item?.credit) return '';
             const { credit } = item;
-            return `Result-${idx}::reason:${credit.reason},result:${credit.result}`;
+            return `::Result-${idx}::reason:${credit.reason?.trim()};result:${credit.result?.trim()}`;
           })
-          .join(';');
+          .join('');
       })
       .join('');
   }
