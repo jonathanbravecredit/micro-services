@@ -215,9 +215,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 8 * * ? *)
-  reportEnrollmentCount:
-    handler: src/handlers/compilers/reportEnrollmentCount.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportFailedCount:
     handler: src/handlers/compilers/reportFailedCount.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -248,9 +245,6 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportAllDisputes:
     handler: src/handlers/compilers/reportAllDisputes.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportFailedCancelEnrollments:
-    handler: src/handlers/compilers/reportFailedCancelEnrollments.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # FIXERS
