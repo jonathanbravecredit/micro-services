@@ -26,7 +26,7 @@ custom:
     POOL:
       dev: 'us-east-2_beTcykTM9'
       qa: 'us-east-2_beTcykTM9'
-      staging: 'us-east-2_6RQqasoH3'
+      staging: 'us-east-2_80pbK9Kx7'
       prod: 'us-east-2_R22DawoAR'
     APPDATA:
       dev: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
