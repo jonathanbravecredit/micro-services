@@ -12,9 +12,10 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const [current, prior] = await db.listLastTwoReports(sub);
     console.log('current', current);
     console.log('prior', prior);
-    const instance = new ReportComparisons(prior, current);
+    const instance = new ReportComparisons();
+    // const instance = new ReportComparisons(prior, current);
     console.log('instance', instance);
-    instance.run();
+    // instance.run();
     return response(200, instance.comparison);
   } catch (err) {
     return response(500, err);
