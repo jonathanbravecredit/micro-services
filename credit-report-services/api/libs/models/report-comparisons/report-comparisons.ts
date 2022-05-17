@@ -35,8 +35,8 @@ export class ReportComparisons {
     const delta = prior?.metricValue != current?.metricValue ? ComparisonUpdates.Changed : ComparisonUpdates.NoChange;
     const data = {
       [metric]: {
-        priorValue: prior?.metricValue || null,
-        currentValue: current?.metricValue || null,
+        priorValue: prior?.metricValue,
+        currentValue: current?.metricValue,
         delta,
       },
     };
