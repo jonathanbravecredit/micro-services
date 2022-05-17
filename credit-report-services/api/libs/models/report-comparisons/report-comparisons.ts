@@ -23,6 +23,8 @@ export class ReportComparisons {
   compare(metric: MetricIds): void {
     const prior = this.priorMetrics.find((m) => m.metricId === metric);
     const current = this.currMetrics.find((m) => m.metricId === metric);
+    console.log('current metric', current);
+    console.log('prior metric', prior);
     const delta = prior?.metricValue != current?.metricValue ? ComparisonUpdates.Changed : ComparisonUpdates.NoChange;
     this.comparison[metric] = {
       priorValue: prior?.metricValue || null,

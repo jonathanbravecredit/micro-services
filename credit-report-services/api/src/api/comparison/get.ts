@@ -10,6 +10,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
   if (!sub) return response(200, 'no id provided');
   try {
     const [current, prior] = await db.listLastTwoReports(sub);
+    console.log('current', current);
+    console.log('prior', prior);
     const instance = new ReportComparisons(prior, current);
     instance.run();
     return response(200, instance.comparison);
