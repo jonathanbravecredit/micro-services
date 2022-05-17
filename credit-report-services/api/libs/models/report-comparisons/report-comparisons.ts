@@ -4,8 +4,8 @@ import { Comparisons } from 'libs/models/report-comparisons/report-comparatives.
 import { ComparisonUpdates } from 'libs/models/report-comparisons/report-comparisons.constants';
 
 export class ReportComparisons {
-  // priorMetrics: CreditReportMetric<unknown, unknown>[] = [];
-  // currMetrics: CreditReportMetric<unknown, unknown>[] = [];
+  priorMetrics: CreditReportMetric<unknown, unknown>[] = [];
+  currMetrics: CreditReportMetric<unknown, unknown>[] = [];
   comparison: Comparisons = {} as Comparisons;
   // metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
   // public prior: CreditReport, public current: CreditReport
