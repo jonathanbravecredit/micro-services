@@ -35,8 +35,10 @@
   "dependencies": {
     "@bravecredit/brave-sdk": "^1.0.22",
     "@shiftcoders/dynamo-easy": "^7.1.0",
+    "@types/lodash": "^4.14.182",
     "ajv": "^7.0.2",
     "dayjs": "^1.10.7",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13"
   }
 }

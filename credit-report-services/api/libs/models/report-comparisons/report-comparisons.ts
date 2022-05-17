@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { CreditReport, CreditReportMetric, CreditReportMetrics, MetricIds } from '@bravecredit/brave-sdk';
 import { Comparisons } from 'libs/models/report-comparisons/report-comparatives.interface';
 import { ComparisonUpdates } from 'libs/models/report-comparisons/report-comparisons.constants';
@@ -9,15 +10,17 @@ export class ReportComparisons {
   metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
 
   constructor(private prior: CreditReport, private current: CreditReport) {
+    _.bindAll(this, 'compare');
     this.priorMetrics = this.prior.metrics;
     this.currMetrics = this.current.metrics;
   }
 
   run(): void {
     this.check();
-    this.metrics.forEach((m) => {
-      this.compare(m);
-    });
+    console.log('current metricsss', this.currMetrics);
+    console.log('prior metricsss', this.priorMetrics);
+    console.log('this.metrics', this.metrics);
+    this.metrics.forEach(this.compare);
   }
 
   compare(metric: MetricIds): void {
@@ -35,12 +38,12 @@ export class ReportComparisons {
 
   check(): void {
     if (!this.priorMetrics || this.priorMetrics.length === 0) {
-      const metrics = new CreditReportMetrics(this.prior.report).calculateMetrics();
-      this.priorMetrics = metrics;
+      const prior = new CreditReportMetrics(this.prior.report).calculateMetrics();
+      this.priorMetrics = prior;
     }
     if (!this.currMetrics || this.currMetrics.length === 0) {
-      const metrics = new CreditReportMetrics(this.current.report).calculateMetrics();
-      this.currMetrics = metrics;
+      const current = new CreditReportMetrics(this.current.report).calculateMetrics();
+      this.currMetrics = current;
     }
   }
 }
