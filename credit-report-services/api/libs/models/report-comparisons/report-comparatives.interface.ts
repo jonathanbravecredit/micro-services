@@ -1,6 +1,6 @@
-import { ComparativeUpdates } from 'libs/models/report-comparatives/report-comparatives.constants';
+import { ComparisonUpdates } from 'libs/models/report-comparisons/report-comparisons.constants';
 
-export type Comparatives = {
+export type Comparisons = {
   negative_accounts: Delta;
   credit_mix: Delta;
   credit_utilization: Delta;
@@ -11,5 +11,5 @@ export type Comparatives = {
 export interface Delta {
   priorValue: any;
   currentValue: any;
-  delta: ComparativeUpdates;
+  delta: ComparisonUpdates;
 }

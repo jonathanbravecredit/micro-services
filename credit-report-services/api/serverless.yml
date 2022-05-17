@@ -69,12 +69,12 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
-  getComparatives:
-    handler: src/api/comparatives/get.main
+  getComparison:
+    handler: src/api/comparison/get.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - http:
-          path: comparatives
+          path: comparison
           method: get
           cors: true
           authorizer:
