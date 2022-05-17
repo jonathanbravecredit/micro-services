@@ -34,15 +34,20 @@ export class ReportComparisons {
       currentValue: current?.metricValue || null,
       delta,
     };
+    console.log('this.comparison', this.comparison);
   }
 
   check(): void {
-    if (!this.priorMetrics || this.priorMetrics.length === 0) {
+    if (this.priorMetrics.length === 0) {
+      console.log('here 1');
       const prior = new CreditReportMetrics(this.prior.report).calculateMetrics();
+      console.log('prior metrics', prior);
       this.priorMetrics = prior;
     }
-    if (!this.currMetrics || this.currMetrics.length === 0) {
+    if (this.currMetrics.length === 0) {
+      console.log('here 2');
       const current = new CreditReportMetrics(this.current.report).calculateMetrics();
+      console.log('current metrics', current);
       this.currMetrics = current;
     }
   }
