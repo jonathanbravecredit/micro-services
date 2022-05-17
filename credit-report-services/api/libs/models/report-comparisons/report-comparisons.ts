@@ -19,6 +19,7 @@ export class ReportComparisons {
     this.check();
     console.log('current metricsss', this.currMetrics);
     console.log('prior metricsss', this.priorMetrics);
+    console.log('this.metrics', this.metrics);
     this.metrics.forEach(this.compare);
   }
 
