@@ -69,17 +69,17 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue web-api-resources-apigw-authorizer
-  getComparison:
-    handler: src/api/comparison/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: comparison
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !ImportValue web-api-resources-apigw-authorizer
+  # getComparison:
+  #   handler: src/api/comparison/get.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   events:
+  #     - http:
+  #         path: comparison
+  #         method: get
+  #         cors: true
+  #         authorizer:
+  #           type: COGNITO_USER_POOLS
+  #           authorizerId: !ImportValue web-api-resources-apigw-authorizer
 
   createCreditReport:
     handler: src/subs/creditreports/create.main
