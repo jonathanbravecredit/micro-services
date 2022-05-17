@@ -1,11 +1,11 @@
 import { CreditReport, CreditReportMetric, CreditReportMetrics, MetricIds } from '@bravecredit/brave-sdk';
-import { ComparativeUpdates } from 'libs/models/report-comparatives/report-comparatives.constants';
-import { Comparatives } from 'libs/models/report-comparatives/report-comparatives.interface';
+import { Comparisons } from 'libs/models/report-comparisons/report-comparatives.interface';
+import { ComparisonUpdates } from 'libs/models/report-comparisons/report-comparisons.constants';
 
-export class ReportComparatives {
+export class ReportComparisons {
   priorMetrics: CreditReportMetric<any, any>[] = [];
   currMetrics: CreditReportMetric<any, any>[] = [];
-  comparatives: Comparatives = {} as Comparatives;
+  comparison: Comparisons = {} as Comparisons;
   metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
 
   constructor(private prior: CreditReport, private current: CreditReport) {
@@ -23,8 +23,8 @@ export class ReportComparatives {
   compare(metric: MetricIds): void {
     const prior = this.priorMetrics.find((m) => m.metricId === metric);
     const current = this.currMetrics.find((m) => m.metricId === metric);
-    const delta = prior?.metricValue != current?.metricValue ? ComparativeUpdates.Changed : ComparativeUpdates.NoChange;
-    this.comparatives[metric] = {
+    const delta = prior?.metricValue != current?.metricValue ? ComparisonUpdates.Changed : ComparisonUpdates.NoChange;
+    this.comparison[metric] = {
       priorValue: prior?.metricValue || null,
       currentValue: current?.metricValue || null,
       delta,

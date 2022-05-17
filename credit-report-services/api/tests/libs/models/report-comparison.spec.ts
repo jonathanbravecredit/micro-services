@@ -1,18 +1,15 @@
 import { CreditReport, MetricIds } from '@bravecredit/brave-sdk';
-import { ReportComparatives } from 'libs/models/report-comparatives/report-comparatives';
+import { ReportComparisons } from 'libs/models/report-comparisons/report-comparisons';
 import { Helper } from 'tests/helpers/test-helper';
 import { CREDIT_REPORT_CURRENT, CREDIT_REPORT_PRIOR_CHANGE } from 'tests/__mocks__/credit-report.mocks';
 
 const mockMetrics = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
-describe('ReportComparative Class', () => {
-  let instance: ReportComparatives;
+describe('ReportComparison Class', () => {
+  let instance: ReportComparisons;
   let h: any;
   beforeEach(() => {
-    instance = new ReportComparatives(
-      CREDIT_REPORT_PRIOR_CHANGE as CreditReport,
-      CREDIT_REPORT_CURRENT as CreditReport,
-    );
-    h = new Helper<ReportComparatives>(instance);
+    instance = new ReportComparisons(CREDIT_REPORT_PRIOR_CHANGE as CreditReport, CREDIT_REPORT_CURRENT as CreditReport);
+    h = new Helper<ReportComparisons>(instance);
   });
 
   it('should run one test', () => {
@@ -22,8 +19,8 @@ describe('ReportComparative Class', () => {
     expect(h.hasMethod(instance, 'compare')).toEqual(true);
   });
 
-  it('should have a property called "comparatives"', () => {
-    expect(h.hasProperty(instance, 'comparatives')).toEqual(true);
+  it('should have a property called "comparisons"', () => {
+    expect(h.hasProperty(instance, 'comparisons')).toEqual(true);
   });
   it('should have a property called "priorMetrics"', () => {
     expect(h.hasProperty(instance, 'priorMetrics')).toEqual(true);
