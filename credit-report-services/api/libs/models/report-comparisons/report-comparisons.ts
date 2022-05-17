@@ -7,7 +7,7 @@ export class ReportComparisons {
   priorMetrics: CreditReportMetric<unknown, unknown>[] = [];
   currMetrics: CreditReportMetric<unknown, unknown>[] = [];
   comparison: Comparisons = {} as Comparisons;
-  metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
+  metrics: string[] = ['negative_accounts', 'credit_mix', 'credit_utilization'];
   // public prior: CreditReport, public current: CreditReport
   constructor() {
     console.log('here 0');
