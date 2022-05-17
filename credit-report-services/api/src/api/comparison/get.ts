@@ -15,7 +15,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const instance = new ReportComparisons(prior, current);
     console.log('instance', instance);
     instance.run();
-    return response(200, 'test response');
+    console.log('comparison', instance.comparison);
+    return response(200, instance.comparison);
   } catch (err) {
     return response(500, err);
   }
