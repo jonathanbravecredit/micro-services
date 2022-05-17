@@ -9,13 +9,14 @@ export class ReportComparisons {
   comparison: Comparisons = {} as Comparisons;
   metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
 
-  constructor(private prior: CreditReport, private current: CreditReport) {
+  constructor(public prior: CreditReport, public current: CreditReport) {
     _.bindAll(this, 'compare');
     this.priorMetrics = this.prior.metrics;
     this.currMetrics = this.current.metrics;
   }
 
   run(): void {
+    console.log('in run');
     this.check();
     console.log('current metricsss', this.currMetrics);
     console.log('prior metricsss', this.priorMetrics);
