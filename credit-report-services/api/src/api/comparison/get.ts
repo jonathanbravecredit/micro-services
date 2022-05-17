@@ -13,6 +13,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     console.log('current', current);
     console.log('prior', prior);
     const instance = new ReportComparisons(prior, current);
+    console.log('instance', instance);
     instance.run();
     return response(200, instance.comparison);
   } catch (err) {
