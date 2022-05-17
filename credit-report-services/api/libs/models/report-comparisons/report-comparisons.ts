@@ -13,6 +13,8 @@ export class ReportComparisons {
     _.bindAll(this, 'compare');
     this.priorMetrics = this.prior.metrics;
     this.currMetrics = this.current.metrics;
+    console.log('current metricsss', this.currMetrics);
+    console.log('prior metricsss', this.priorMetrics);
   }
 
   run(): void {
