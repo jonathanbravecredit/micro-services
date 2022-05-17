@@ -7,10 +7,11 @@ export class ReportComparisons {
   priorMetrics: CreditReportMetric<unknown, unknown>[] = [];
   currMetrics: CreditReportMetric<unknown, unknown>[] = [];
   comparison: Comparisons = {} as Comparisons;
-  // metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
+  metrics: MetricIds[] = [MetricIds.NegativeAccounts, MetricIds.CreditMix, MetricIds.CreditUtilization];
   // public prior: CreditReport, public current: CreditReport
   constructor() {
     console.log('here 0');
+    console.log('metrics array', this.metrics);
     // _.bindAll(this, 'compare');
     // this.priorMetrics = this.prior.metrics || [];
     // this.currMetrics = this.current.metrics || [];
