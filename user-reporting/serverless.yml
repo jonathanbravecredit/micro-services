@@ -13,6 +13,7 @@ plugins:
 custom:
   stage: ${opt:stage, self:provider.stage}
   bundle:
+    sourcemaps: true
     linting: false
     externals:
       - nodemailer
