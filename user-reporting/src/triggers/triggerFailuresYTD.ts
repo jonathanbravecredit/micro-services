@@ -19,7 +19,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   if (process.env.STAGE == 'dev') return;
   try {
     let counter = 0;
-    const segments = [];
+    const segments: number[] = [];
     for (let i = 0; i < 20; i++) {
       segments.push(i);
     }

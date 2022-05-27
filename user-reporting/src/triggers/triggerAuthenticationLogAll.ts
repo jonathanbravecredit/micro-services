@@ -18,7 +18,7 @@ const pubsub = new PubSubUtil();
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
   try {
     let counter = 0;
-    const segments = [];
+    const segments: number[] = [];
     for (let i = 0; i < 50; i++) {
       segments.push(i);
     }
