@@ -1,5 +1,5 @@
-# frameworkVersion: '2.15.0'
-service: user-reporting
+frameworkVersion: '^2.15.0'
+service: user-reporting-api
 
 package:
   individually: true
@@ -7,13 +7,13 @@ package:
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
-  - serverless-pseudo-parameters
   - serverless-dotenv-plugin
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   bundle:
     linting: false
+    disableForkTsChecker: true
     externals:
       - nodemailer
   settings:
@@ -46,13 +46,14 @@ provider:
   region: ${opt:region, 'us-east-2'}
   timeout: 900
   environment:
-    ACCOUNT_ID: '#{AWS::AccountId}'
+    ACCOUNT_ID: !Sub '${AWS::AccountId}'
     STAGE: ${opt:stage, self:provider.stage}
     POOL: ${self:custom.settings.POOL.${opt:stage}}
     APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
     APPSYNC_API: '${self:custom.settings.GRAPHQL_API.${opt:stage}}'
     APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
-    OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
+    OPSBATCH_SQS_ARN: !ImportValue 'user-reporting-resources-sqs-arn'
+    OPSBATCH_SNS_ARN: !ImportValue 'user-reporting-resources-sns-arn'
   iamRoleStatements:
     - Effect: Allow
       Resource:
@@ -90,7 +91,7 @@ provider:
         - cognito-idp:AdminDisableUser
         - cognito-idp:AdminDeleteUser
         - cognito-idp:AdminGetUser
-      Resource: 'arn:aws:cognito-idp:${self:provider.region}:#{AWS::AccountId}:userpool/*'
+      Resource: !Sub 'arn:aws:cognito-idp:${self:provider.region}:${AWS::AccountId}:userpool/*'
     - Effect: 'Allow'
       Action:
         - 'ses:SendEmail'
@@ -105,7 +106,6 @@ provider:
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'
-
 functions:
   # COMPILE AND CLEANUP
   cleanUpAllReports:
@@ -127,9 +127,7 @@ functions:
     reservedConcurrency: 5
     events:
       - sqs:
-          arn: !GetAtt
-            - OpsBatchQueue
-            - Arn
+          arn: !ImportValue 'user-reporting-resources-sqs-arn'
           batchSize: 1
           maximumBatchingWindow: 5
 
@@ -172,41 +170,8 @@ functions:
 
   # BATCHED MANUAL
   # no report report
-  triggerNoReportReport:
-    handler: src/triggers/triggerNoReportReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerActionsYTD:
-    handler: src/triggers/triggerActionsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerAuthenticationLogAll:
-    handler: src/triggers/triggerAuthenticationLogAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerMonthlyLogInReport:
-    handler: src/triggers/triggerMonthlyLogInReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerMissingDisputeKeyReport:
-    handler: src/triggers/triggerMissingDisputeKeyReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerDisputeErrors:
-    handler: src/triggers/triggerDisputeErrors.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerUserEmployerAll:
-    handler: src/triggers/triggerUserEmployerAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerFailedFulfill:
-    handler: src/triggers/triggerFailedFulfill.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerRegistrationsYTDReport:
-    handler: src/triggers/triggerRegistrationsYTDReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerDisputeEnrollmentsYTD:
-    handler: src/triggers/triggerDisputeEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerDisputeAnalytics:
-    handler: src/triggers/triggerDisputeAnalytics.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  triggerUserAggregatedMetricsReport:
-    handler: src/triggers/triggerUserAggregatedMetricsReport.main
+  triggerManualReport:
+    handler: src/triggers/triggerManualReport.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
   # SINGLE THREAD
@@ -254,108 +219,3 @@ functions:
   fixDisputeEnrollmentKeys:
     handler: src/handlers/fixers/fixDisputeEnrollmentKeys.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-
-resources:
-  Resources:
-    OpsBatchSNSTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: ${self:provider.stage}-ops-batch-topic
-
-    # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
-    OpsBatchQueueDLQ:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:provider.stage}-ops-batch-dlq
-        ReceiveMessageWaitTimeSeconds: 20
-
-    # Create our 'MailchimpQueue' SQS queue
-    OpsBatchQueue:
-      Type: 'AWS::SQS::Queue'
-      Properties:
-        QueueName: ${self:provider.stage}-ops-batch-sqs
-        ReceiveMessageWaitTimeSeconds: 20
-        RedrivePolicy:
-          deadLetterTargetArn: !GetAtt
-            - OpsBatchQueueDLQ
-            - Arn
-          maxReceiveCount: 3
-        VisibilityTimeout: 720
-
-    # Create our queue policy for the 'MailchimpQueue'
-    SnsToOpsBatchQueueSqsPolicy:
-      Type: AWS::SQS::QueuePolicy
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Sid: 'allow-sns-messages'
-              Effect: Allow
-              Principal: '*'
-              Resource: !GetAtt
-                - OpsBatchQueue
-                - Arn
-              Action: 'SQS:SendMessage'
-              Condition:
-                ArnEquals:
-                  'aws:SourceArn': ${self:provider.environment.OPSBATCH_SNS_ARN}
-        Queues:
-          - Ref: OpsBatchQueue
-
-    # Create the subscription to the 'queue
-    OpsBatchQueueSubscription:
-      Type: 'AWS::SNS::Subscription'
-      Properties:
-        TopicArn: ${self:provider.environment.OPSBATCH_SNS_ARN}
-        Endpoint: !GetAtt
-          - OpsBatchQueue
-          - Arn
-        Protocol: sqs
-        FilterPolicy:
-          service:
-            - opsbatch
-            - enrollmentreport
-            - noreportreport
-            - failurereport
-            - actionsreport
-            - disputeenrollmentreport
-            - authenticationcalls
-            - failedfulfillreport
-            - referralsreport
-            - monthlyloginreport
-            - registeredusersreport
-            - useremployerall
-            - usermetricsreport
-            - missingdisputekeys
-            - disputeerrors
-            - disputeanalytics
-        RawMessageDelivery: 'true'
-
-    OpsReports:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: 'reportId'
-            AttributeType: 'S'
-          - AttributeName: 'recordId'
-            AttributeType: 'S'
-          - AttributeName: 'batchId'
-            AttributeType: 'S'
-        KeySchema:
-          - AttributeName: 'reportId'
-            KeyType: 'HASH'
-          - AttributeName: 'recordId'
-            KeyType: 'RANGE'
-        GlobalSecondaryIndexes:
-          - IndexName: batchIdReportId-index
-            KeySchema:
-              - AttributeName: batchId
-                KeyType: 'HASH'
-              - AttributeName: reportId
-                KeyType: 'RANGE'
-            Projection:
-              ProjectionType: ALL
-        BillingMode: PAY_PER_REQUEST
-        TableName: OpsReports
-        StreamSpecification:
-          StreamViewType: NEW_IMAGE
