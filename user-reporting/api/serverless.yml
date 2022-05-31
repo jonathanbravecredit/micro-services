@@ -1,5 +1,5 @@
 # frameworkVersion: '2.15.0'
-service: user-reporting
+service: user-reporting-api
 
 package:
   individually: true
