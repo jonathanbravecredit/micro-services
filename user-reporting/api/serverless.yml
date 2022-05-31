@@ -126,7 +126,7 @@ functions:
     reservedConcurrency: 5
     events:
       - sqs:
-          arn: !Sub '${self:provider.environment.OPSBATCH_SQS_ARN}'
+          arn: !ImportValue 'user-reporting-resources-sqs-arn'
           batchSize: 1
           maximumBatchingWindow: 5
 
