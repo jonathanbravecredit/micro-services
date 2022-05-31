@@ -105,13 +105,13 @@ provider:
     - Effect: 'Allow'
       Action: 'sns:Publish'
       Resource: '*'
-# functions:
-#   # COMPILE AND CLEANUP
-#   cleanUpAllReports:
-#     handler: src/handlers/cleanup/cleanUpReportsAll.main
-#     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-#     events:
-#       - schedule: cron(0 12 * * ? *) # run every morning at 4:30 AM (PST)
+functions:
+  # COMPILE AND CLEANUP
+  cleanUpAllReports:
+    handler: src/handlers/cleanup/cleanUpReportsAll.main
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 12 * * ? *) # run every morning at 4:30 AM (PST)
 #   compileAllReports:
 #     handler: src/handlers/compilers/compileAllReports.main
 #     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
