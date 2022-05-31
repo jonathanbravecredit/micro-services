@@ -1,14 +1,8 @@
-# frameworkVersion: '2.15.0'
+frameworkVersion: '^2.3.0'
 service: user-reporting-resources
 
 package:
   individually: true
-
-plugins:
-  - serverless-bundle # Package our functions with Webpack
-  - serverless-offline
-  - serverless-pseudo-parameters
-  - serverless-dotenv-plugin
 
 custom:
   stage: ${opt:stage, self:provider.stage}

@@ -1,4 +1,4 @@
-# frameworkVersion: '2.15.0'
+frameworkVersion: '^2.3.0'
 service: user-reporting-api
 
 package:
