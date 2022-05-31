@@ -16,7 +16,7 @@ const pubsub = new PubSubUtil();
  * @returns Lambda proxy response
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
-  if (process.env.STAGE == 'dev') return;
+  // if (process.env.STAGE == 'dev') return;
   try {
     let counter = 0;
     const segments: number[] = [];
