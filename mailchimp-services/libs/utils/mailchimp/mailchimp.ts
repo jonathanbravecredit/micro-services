@@ -21,7 +21,7 @@ export class Mailchimp {
         command: 'POST',
         message: message,
       }),
-      TopicArn: process.env.SNS_PROXY_ARN || '',
+      TopicArn: process.env.MAILCHIMP_DEQUEUE_SNS_ARN || '',
     };
   }
 

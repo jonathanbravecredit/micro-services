@@ -22,12 +22,11 @@ custom:
     fixPackages: # Include fixes for specific packages
       - 'formidable@1.x'
 
-  snsProxy: !Sub '${self:provider.stage}-api-endpoints-sns-proxy'
   settings:
     POOL:
       dev: 'us-east-2_beTcykTM9'
       qa: 'us-east-2_beTcykTM9'
-      staging: 'us-east-2_6RQqasoH3'
+      staging: 'us-east-2_80pbK9Kx7'
       prod: 'us-east-2_R22DawoAR'
     APPDATA:
       dev: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
@@ -57,7 +56,7 @@ provider:
     EMAIL: 'support@brave.credit'
     DOMAIN: 'brave.credit'
     POOL: ${self:custom.settings.POOL.${opt:stage}}
-    SNS_PROXY_ARN: !ImportValue ${self:custom.snsProxy}
+    MAILCHIMP_DEQUEUE_SNS_ARN: !Ref MailchimpDequeueSNSTopic
     MAILCHIMP_SNS_ARN: !Ref MailchimpSNSTopic
     MAILCHIMP_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpTx'
     MAILCHIMP_MRKT_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
@@ -121,8 +120,8 @@ functions:
     description: Sends enqueued mailchimp emails
     events:
       - sns:
-          arn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:SnsProxyTopic'
-          topicName: SnsProxyTopic
+          arn: !Ref MailchimpDequeueSNSTopic
+          topicName: MailchimpDequeueSNSTopic
           integration: lambda-proxy
 
   sendScheduledMessages:
@@ -278,6 +277,11 @@ functions:
 
 resources:
   Resources:
+    MailchimpDequeueSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-${self:service}-dequeue-topic
+
     MailchimpSNSTopic:
       Type: AWS::SNS::Topic
       Properties:
@@ -354,3 +358,10 @@ resources:
         TableName: MailchimpData
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+
+  Outputs:
+    MailchimpDequeueSNSTopic:
+      Description: 'Mailchimp Topic to deuque emails'
+      Value: !Ref MailchimpDequeueSNSTopic
+      Export:
+        Name: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
