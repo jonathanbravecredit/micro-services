@@ -4,15 +4,13 @@ service: user-reporting-resources
 package:
   individually: true
 
-custom:
-  stage: ${opt:stage, self:provider.stage}
 provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
   environment:
-    STAGE: ${opt:stage, self:provider.stage}
+    STAGE: ${opt:stage, 'dev'}
     OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
 
 resources:
