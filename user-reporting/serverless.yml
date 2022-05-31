@@ -52,7 +52,7 @@ provider:
     APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
     APPSYNC_API: '${self:custom.settings.GRAPHQL_API.${opt:stage}}'
     APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
-    OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
+    # OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
   iamRoleStatements:
     - Effect: Allow
       Resource:
