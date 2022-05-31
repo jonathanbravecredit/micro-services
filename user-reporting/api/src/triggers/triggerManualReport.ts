@@ -1,5 +1,3 @@
-// "{\"nil\":true}"
-
 import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
@@ -12,17 +10,33 @@ const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 
 /**
- * Handler that processes single requests for Transunion services
- * @param service Service invoked via the SNS Proxy 'transunion'
- * @param command REST based command to invoke actions
- * @param message Object containing service specific package for processing
- * @returns Lambda proxy response
+ * Handler to manually kick off any report
+ * Available Reports:
+ * - "actionsreport"
+ * - "authenticationcalls"
+ * - "disputeanalytics"
+ * - "disputeenrollmentreport"
+ * - "disputeerrors"
+ * - "enrollmentreport"
+ * - "failedfulfillreport"
+ * - "failurereport"
+ * - "missingdisputekeys"
+ * - "monthlyloginreport"
+ * - "noreportreport"
+ * - "referralsreport"
+ * - "registeredusersreport"
+ * - "usermetricsreport"
+ * - "useremployerall"
+ * @param event
+ * @returns
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
+  const { report } = event as { report: ReportNames };
+  if (!report) throw `No report provided:${report}`;
   try {
     let counter = 0;
     const segments = [];
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 20; i++) {
       segments.push(i);
     }
     await Promise.all(
@@ -32,11 +46,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-          'opsbatch',
-          packet,
-          ReportNames.DisputeErrors,
-        );
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, report);
         await sns.publish(payload).promise();
       }),
     );
