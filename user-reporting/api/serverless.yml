@@ -13,6 +13,7 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   bundle:
     linting: false
+    disableForkTsChecker: true
     externals:
       - nodemailer
   settings:
