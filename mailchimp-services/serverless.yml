@@ -360,7 +360,7 @@ resources:
           StreamViewType: NEW_IMAGE
 
   Outputs:
-    MailchimpDequeueSNSTopic:
+    MailchimpDequeueSNSTopicArn:
       Description: 'Mailchimp Topic to deuque emails'
       Value: !Ref MailchimpDequeueSNSTopic
       Export:
