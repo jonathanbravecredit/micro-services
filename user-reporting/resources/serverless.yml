@@ -123,7 +123,7 @@ resources:
       Description: 'Ops Reports table'
       Value: !Ref OpsReports
       Export:
-        Name: !Sub '${self:stage}-ops-report-table'
+        Name: !Sub '${self:provider.stage}-ops-report-table'
     OpsBatchQueueArn:
       Description: 'Ops Batch queue ARN'
       Value: !GetAtt OpsBatchQueue.Arn
