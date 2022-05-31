@@ -52,6 +52,7 @@ provider:
     APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
     APPSYNC_API: '${self:custom.settings.GRAPHQL_API.${opt:stage}}'
     APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
+    OPSBATCH_SQS_ARN: !ImportValue 'user-reporting-resources-sqs-arn'
     OPSBATCH_SNS_ARN: !ImportValue 'user-reporting-resources-sns-arn'
   iamRoleStatements:
     - Effect: Allow
@@ -126,9 +127,7 @@ functions:
     reservedConcurrency: 5
     events:
       - sqs:
-          arn: !GetAtt
-            - OpsBatchQueue
-            - Arn
+          arn: !Sub '${self:provider.environment.OPSBATCH_SQS_ARN}'
           batchSize: 1
           maximumBatchingWindow: 5
 
