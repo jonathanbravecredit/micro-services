@@ -7,7 +7,6 @@ package:
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
-  - serverless-pseudo-parameters
   - serverless-dotenv-plugin
 
 custom:
@@ -46,7 +45,7 @@ provider:
   region: ${opt:region, 'us-east-2'}
   timeout: 900
   environment:
-    ACCOUNT_ID: '#{AWS::AccountId}'
+    ACCOUNT_ID: !Sub '${AWS::AccountId}'
     STAGE: ${opt:stage, self:provider.stage}
     POOL: ${self:custom.settings.POOL.${opt:stage}}
     APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
@@ -91,7 +90,7 @@ provider:
         - cognito-idp:AdminDisableUser
         - cognito-idp:AdminDeleteUser
         - cognito-idp:AdminGetUser
-      Resource: 'arn:aws:cognito-idp:${self:provider.region}:#{AWS::AccountId}:userpool/*'
+      Resource: !Sub 'arn:aws:cognito-idp:${self:provider.region}:${AWS::AccountId}:userpool/*'
     - Effect: 'Allow'
       Action:
         - 'ses:SendEmail'
