@@ -102,14 +102,14 @@ resources:
       Description: 'Mailchimp Topic to deuque emails'
       Value: !Ref MailchimpDequeueSNSTopic
       Export:
-        Name: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
+        Name: !Sub '${self:provider.stage}-${self:service}-dequeue-topic'
     MailchimpSNSTopicArn:
       Description: 'Mailchimp Topic for general purpose'
       Value: !Ref MailchimpSNSTopic
       Export:
-        Name: !Sub '${self:provider.stage}-mailchimp-topic'
+        Name: !Sub '${self:provider.stage}-${self:service}-topic'
     MailchimpSQSArn:
       Description: 'Mailchimp SQS arn'
       Value: !GetAtt MailchimpQueue.Arn
       Export:
-        Name: !Sub '${self:provider.stage}-mailchimp-sqs-arn'
+        Name: !Sub '${self:provider.stage}-${self:service}-sqs-arn'

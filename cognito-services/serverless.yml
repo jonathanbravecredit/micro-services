@@ -20,7 +20,8 @@ provider:
     PRODAPIURL: 'https://k8yolkr65j.execute-api'
     STAGINGAPIURL: 'https://a8tk8rzrpe.execute-api'
     MAILCHIMP_DEQUEUE_SNS_ARN:
-      Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
+      ''
+      # Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-dequeue-topic'
     DEVPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://dev-app.brave.credit'
     STAGINGPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://staging-app.brave.credit'
     PRODPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://app.brave.credit'
