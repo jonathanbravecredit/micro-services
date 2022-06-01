@@ -1,6 +1,7 @@
 frameworkVersion: '^2.15.0'
-service: user-reporting-resources
+service: mailchimp-service-resources
 
+# Create an optimized package for our functions
 package:
   individually: true
 
@@ -10,38 +11,42 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
   environment:
-    STAGE: ${opt:stage, 'dev'}
-    OPSBATCH_SNS_ARN: !Ref OpsBatchSNSTopic
+    STAGE: ${opt:stage, self:provider.stage}
 
 resources:
   Resources:
-    OpsBatchSNSTopic:
+    MailchimpDequeueSNSTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: ${self:provider.stage}-ops-batch-topic
+        TopicName: ${self:provider.stage}-${self:service}-dequeue-topic
 
-    # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
-    OpsBatchQueueDLQ:
-      Type: AWS::SQS::Queue
+    MailchimpSNSTopic:
+      Type: AWS::SNS::Topic
       Properties:
-        QueueName: ${self:provider.stage}-ops-batch-dlq
-        ReceiveMessageWaitTimeSeconds: 20
+        TopicName: ${self:provider.stage}-${self:service}-sns-topic
 
     # Create our 'MailchimpQueue' SQS queue
-    OpsBatchQueue:
+    MailchimpQueue:
       Type: 'AWS::SQS::Queue'
       Properties:
-        QueueName: ${self:provider.stage}-ops-batch-sqs
+        QueueName: ${self:provider.stage}-${self:service}-sqs
         ReceiveMessageWaitTimeSeconds: 20
         RedrivePolicy:
           deadLetterTargetArn: !GetAtt
-            - OpsBatchQueueDLQ
+            - MailchimpQueueDLQ
             - Arn
           maxReceiveCount: 3
         VisibilityTimeout: 720
 
+    # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
+    MailchimpQueueDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-${self:service}-dlq
+        ReceiveMessageWaitTimeSeconds: 20
+
     # Create our queue policy for the 'MailchimpQueue'
-    SnsToOpsBatchQueueSqsPolicy:
+    SnsToMailchimpQueueSqsPolicy:
       Type: AWS::SQS::QueuePolicy
       Properties:
         PolicyDocument:
@@ -51,86 +56,60 @@ resources:
               Effect: Allow
               Principal: '*'
               Resource: !GetAtt
-                - OpsBatchQueue
+                - MailchimpQueue
                 - Arn
               Action: 'SQS:SendMessage'
               Condition:
                 ArnEquals:
-                  'aws:SourceArn': ${self:provider.environment.OPSBATCH_SNS_ARN}
+                  'aws:SourceArn': !Ref MailchimpSNSTopic
         Queues:
-          - Ref: OpsBatchQueue
+          - Ref: MailchimpQueue
 
     # Create the subscription to the 'queue
-    OpsBatchQueueSubscription:
+    MailchimpQueueSubscription:
       Type: 'AWS::SNS::Subscription'
       Properties:
-        TopicArn: ${self:provider.environment.OPSBATCH_SNS_ARN}
+        TopicArn: !Ref MailchimpSNSTopic
         Endpoint: !GetAtt
-          - OpsBatchQueue
+          - MailchimpQueue
           - Arn
         Protocol: sqs
         FilterPolicy:
           service:
-            - opsbatch
-            - enrollmentreport
-            - noreportreport
-            - failurereport
-            - actionsreport
-            - disputeenrollmentreport
-            - authenticationcalls
-            - failedfulfillreport
-            - referralsreport
-            - monthlyloginreport
-            - registeredusersreport
-            - useremployerall
-            - usermetricsreport
-            - missingdisputekeys
-            - disputeerrors
-            - disputeanalytics
+            - mailchimpbatch
         RawMessageDelivery: 'true'
 
-    OpsReports:
+    MailchimpData:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'reportId'
+          - AttributeName: 'userId'
             AttributeType: 'S'
-          - AttributeName: 'recordId'
-            AttributeType: 'S'
-          - AttributeName: 'batchId'
+          - AttributeName: 'messageId'
             AttributeType: 'S'
         KeySchema:
-          - AttributeName: 'reportId'
+          - AttributeName: 'userId'
             KeyType: 'HASH'
-          - AttributeName: 'recordId'
+          - AttributeName: 'messageId'
             KeyType: 'RANGE'
-        GlobalSecondaryIndexes:
-          - IndexName: batchIdReportId-index
-            KeySchema:
-              - AttributeName: batchId
-                KeyType: 'HASH'
-              - AttributeName: reportId
-                KeyType: 'RANGE'
-            Projection:
-              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-        TableName: OpsReports
+        TableName: MailchimpData
         StreamSpecification:
           StreamViewType: NEW_IMAGE
 
   Outputs:
-    OpsReportsTable:
-      Description: 'Ops Reports table'
-      Value: !Ref OpsReports
+    MailchimpDequeueSNSTopicArn:
+      Description: 'Mailchimp Topic to deuque emails'
+      Value: !Ref MailchimpDequeueSNSTopic
       Export:
-        Name: !Sub '${self:provider.stage}-ops-report-table'
-    OpsBatchQueueArn:
-      Description: 'Ops Batch queue ARN'
-      Value: !GetAtt OpsBatchQueue.Arn
+        Name: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
+    MailchimpSNSTopicArn:
+      Description: 'Mailchimp Topic for general purpose'
+      Value: !Ref MailchimpSNSTopic
       Export:
-        Name: !Sub '${self:service}-sqs-arn'
-    OpsBatchSNSTopicArn:
-      Description: 'Ops Batch SNS ARN'
-      Value: !Ref OpsBatchSNSTopic
+        Name: !Sub '${self:provider.stage}-mailchimp-topic'
+    MailchimpSQSArn:
+      Description: 'Mailchimp SQS arn'
+      Value: !GetAtt MailchimpQueue.Arn
       Export:
-        Name: !Sub '${self:service}-sns-arn'
+        Name: !Sub '${self:provider.stage}-mailchimp-sqs-arn'
