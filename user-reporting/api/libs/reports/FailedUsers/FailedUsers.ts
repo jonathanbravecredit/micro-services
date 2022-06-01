@@ -1,20 +1,14 @@
-import dayjs from "dayjs";
-import { ReportBase } from "libs/reports/ReportBase";
-import {
-  IAttributeValue,
-  IBatchMsg,
-  IBatchPayload,
-} from "libs/interfaces/batch.interfaces";
-import { OpsReportMaker } from "libs/models/ops-reports";
-import { createOpReport } from "libs/queries/ops-report.queries";
-import { parallelScanAppData } from "../../../../mailchimp-services/libs/queries/appdata.queries";
-import { mapSuspendedFields } from "../../helpers";
-import * as enrollmentYTDSchema from "libs/schema/schema_enrolled-user-report.json";
-import { ReportNames } from "../../data/reports";
+import dayjs from 'dayjs';
+import { ReportBase } from 'libs/reports/ReportBase';
+import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
+import { OpsReportMaker } from 'libs/models/ops-reports';
+import { createOpReport } from 'libs/queries/ops-report.queries';
+import { mapSuspendedFields } from 'libs/helpers';
+import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
+import { ReportNames } from 'libs/data/reports';
+import { parallelScanAppData } from 'libs/db/appdata';
 
-export class FailedUsers extends ReportBase<
-  IBatchMsg<IAttributeValue> | undefined
-> {
+export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
   }
@@ -22,7 +16,7 @@ export class FailedUsers extends ReportBase<
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
     return await parallelScanAppData(esk, segment, totalSegments);
   }
@@ -30,20 +24,18 @@ export class FailedUsers extends ReportBase<
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: any) => {
-        const failed = item?.status === "suspended";
+        const failed = item?.status === 'suspended';
         const createdAt = item?.createdAt;
-        const inCurrentYear = dayjs(createdAt).isAfter(dayjs("2021-11-30"));
+        const inCurrentYear = dayjs(createdAt).isAfter(dayjs('2021-11-30'));
         if (failed && inCurrentYear) {
-          const batchId = dayjs(new Date())
-            .add(-5, "hours")
-            .format("YYYY-MM-DD");
+          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = enrollmentYTDSchema;
           const record = mapSuspendedFields(item);
           const ops = new OpsReportMaker(
             ReportNames.FailureYTD,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record)
+            JSON.stringify(record),
           );
           await createOpReport(ops);
           this.counter++;
@@ -51,7 +43,7 @@ export class FailedUsers extends ReportBase<
         } else {
           return false;
         }
-      })
+      }),
     );
   }
 
@@ -63,13 +55,9 @@ export class FailedUsers extends ReportBase<
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-        "opsbatch",
-        packet,
-        "failurereport"
-      );
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
       const res = await this.sns.publish(payload).promise();
-      console.log("sns resp ==> ", res);
+      console.log('sns resp ==> ', res);
     }
   }
 }

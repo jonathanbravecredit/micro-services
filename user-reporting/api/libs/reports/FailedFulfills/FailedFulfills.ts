@@ -1,19 +1,13 @@
-import dayjs from "dayjs";
-import { ReportBase } from "libs/reports/ReportBase";
-import {
-  IAttributeValue,
-  IBatchMsg,
-  IBatchPayload,
-} from "libs/interfaces/batch.interfaces";
-import { OpsReportMaker } from "libs/models/ops-reports";
-import { createOpReport } from "libs/queries/ops-report.queries";
-import { parallelScanAppData } from "../../../../mailchimp-services/libs/queries/appdata.queries";
-import { mapFailedFulfilFields } from "../../helpers";
-import { ReportNames } from "../../data/reports";
+import dayjs from 'dayjs';
+import { ReportBase } from 'libs/reports/ReportBase';
+import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
+import { OpsReportMaker } from 'libs/models/ops-reports';
+import { createOpReport } from 'libs/queries/ops-report.queries';
+import { mapFailedFulfilFields } from 'libs/helpers';
+import { ReportNames } from 'libs/data/reports';
+import { parallelScanAppData } from 'libs/db/appdata';
 
-export class FailedFulfills extends ReportBase<
-  IBatchMsg<IAttributeValue> | undefined
-> {
+export class FailedFulfills extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
   }
@@ -21,29 +15,27 @@ export class FailedFulfills extends ReportBase<
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
     return await parallelScanAppData(esk, segment, totalSegments);
   }
 
   async processScan(): Promise<void> {
-    const fulfillCalledOn = new Date("2022-03-05");
+    const fulfillCalledOn = new Date('2022-03-05');
     await Promise.all(
       this.scan?.items.map(async (item: any) => {
         const enrolled = item.agencies.transunion.enrolled;
         const fulfilledOn = new Date(item.agencies.transunion.fulfilledOn);
         const ranPriorTo = dayjs(fulfilledOn).isBefore(dayjs(fulfillCalledOn));
         if (enrolled && ranPriorTo) {
-          const batchId = dayjs(new Date())
-            .add(-5, "hours")
-            .format("YYYY-MM-DD");
+          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = {};
           const record = mapFailedFulfilFields(item);
           const ops = new OpsReportMaker(
             ReportNames.FailedFulfillAll,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record)
+            JSON.stringify(record),
           );
           await createOpReport(ops);
           this.counter++;
@@ -51,7 +43,7 @@ export class FailedFulfills extends ReportBase<
         } else {
           return false;
         }
-      })
+      }),
     );
   }
 
@@ -64,12 +56,12 @@ export class FailedFulfills extends ReportBase<
         totalSegments: scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-        "opsbatch",
+        'opsbatch',
         packet,
-        "failedfulfillreport"
+        'failedfulfillreport',
       );
       const res = await this.sns.publish(payload).promise();
-      console.log("sns resp ==> ", res);
+      console.log('sns resp ==> ', res);
     }
   }
 }

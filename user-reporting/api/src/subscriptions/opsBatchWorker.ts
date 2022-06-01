@@ -1,58 +1,36 @@
-import "reflect-metadata";
-import * as nodemailer from "nodemailer";
-import * as enrollmentYTDSchema from "libs/schema/schema_enrolled-user-report.json";
-import dayjs from "dayjs";
-import { safeParse } from "libs/safeJson";
-import { SNS, SES, DynamoDB, CognitoIdentityServiceProvider } from "aws-sdk";
-import { SQSEvent, SQSHandler } from "aws-lambda";
-import { ReportNames } from "libs/data/reports";
-import { PubSubUtil } from "libs/pubsub/pubsub";
-import { getCognitoUsers } from "libs/db/cognito";
-import { createOpReport } from "libs/queries/ops-report.queries";
-import { IEnrollUserBatchMsg } from "libs/interfaces/enrolled-user-report.interface";
-import {
-  IEmployer,
-  IMergeReport,
-} from "libs/interfaces/merge-report.interfaces";
-import {
-  IAttributeValue,
-  IBatchCognitoMsg,
-  IBatchMsg,
-  IBatchPayload,
-} from "libs/interfaces/batch.interfaces";
-import { parallelScanAppData } from "libs/db/appdata";
-import { parallelScanAPIData } from "libs/queries/api-transaction.queries";
-import { parallelScanReferrals } from "libs/db/referrals";
-import { parallelScanActionData } from "libs/db/actions";
-import { APITransactionLog } from "libs/models/api-transaction.model";
-import { Referral } from "libs/models/referral.model";
-import {
-  flattenUser,
-  generateEmailParams,
-  mapDisputeEnrollmentFields,
-  mapEnrollmentFields,
-  mapFailedFulfilFields,
-  mapSuspendedFields,
-} from "libs/helpers";
-import { OpsReportMaker } from "libs/models/ops-reports";
-import { MonthlyLogins } from "libs/reports/MonthlyLogin/MonthlyLogin";
-import { UserAggregateMetrics } from "libs/reports/UserAggregateMetrics/UserAggregateMetrics";
-import { NoReportReport } from "libs/reports/NoReportReport/NoReportReport";
-import { MissingDisputeKeysReport } from "libs/reports/MissingDisputeKeys/MissingDisputeKeysReport";
-import { DisputeErrorsReport } from "libs/reports/disputeerrors/disputeerrors";
-import { DisputeAnalyticsReport } from "libs/reports/dispute-analytics/dispute-analytics";
+import 'reflect-metadata';
+import * as nodemailer from 'nodemailer';
+import dayjs from 'dayjs';
+import { safeParse } from 'libs/safeJson';
+import { SNS, SES, CognitoIdentityServiceProvider } from 'aws-sdk';
+import { SQSEvent, SQSHandler } from 'aws-lambda';
+import { ReportNames } from 'libs/data/reports';
+import { PubSubUtil } from 'libs/pubsub/pubsub';
+import { getCognitoUsers } from 'libs/db/cognito';
+import { createOpReport } from 'libs/queries/ops-report.queries';
+import { IEmployer, IMergeReport } from 'libs/interfaces/merge-report.interfaces';
+import { IAttributeValue, IBatchCognitoMsg, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
+import { parallelScanAppData } from 'libs/db/appdata';
+import { flattenUser, generateEmailParams } from 'libs/helpers';
+import { OpsReportMaker } from 'libs/models/ops-reports';
+import { MonthlyLogins } from 'libs/reports/MonthlyLogin/MonthlyLogin';
+import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggregateMetrics';
+import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
+import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
+import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
+import { DisputeAnalyticsReport } from 'libs/reports/dispute-analytics/dispute-analytics';
 
 // request.debug = true; import * as request from 'request';
-import { Enrollment } from "../../libs/reports/Enrollment/Enrollment";
-import { FailedUsers } from "../../libs/reports/FailedUsers/FailedUsers";
-import { Actions } from "../../libs/reports/Actions/Actions";
-import { Authentication } from '../../libs/reports/Authentication/Authentication';
-import { DisputeEnrollment } from '../../libs/reports/DisputeEnrollment/DisputeEnrollment';
-import { FailedFulfills } from '../../libs/reports/FailedFulfills/FailedFulfills';
-import { Referrals } from '../../libs/reports/Referrals/Referrals';
+import { Enrollment } from 'libs/reports/Enrollment/Enrollment';
+import { FailedUsers } from 'libs/reports/FailedUsers/FailedUsers';
+import { Actions } from 'libs/reports/Actions/Actions';
+import { Authentication } from 'libs/reports/Authentication/Authentication';
+import { DisputeEnrollment } from 'libs/reports/DisputeEnrollment/DisputeEnrollment';
+import { FailedFulfills } from 'libs/reports/FailedFulfills/FailedFulfills';
+import { Referrals } from 'libs/reports/Referrals/Referrals';
 // const errorLogger = new ErrorLogger();
-const ses = new SES({ region: "us-east-1" });
-const sns = new SNS({ region: "us-east-2" });
+const ses = new SES({ region: 'us-east-1' });
+const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 const STAGE = process.env.STAGE;
 
@@ -70,11 +48,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const enrollmentReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "enrollmentreport";
+    return b.service === 'enrollmentreport';
   });
-  console.log(
-    `Received ${enrollmentReport.length} creditscoreupdates records `
-  );
+  console.log(`Received ${enrollmentReport.length} creditscoreupdates records `);
 
   if (enrollmentReport.length) {
     const report = new Enrollment(enrollmentReport);
@@ -95,7 +71,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const failedReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "failurereport";
+    return b.service === 'failurereport';
   });
   console.log(`Received ${failedReport.length} failure report records `);
 
@@ -118,7 +94,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const actionsReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "actionsreport";
+    return b.service === 'actionsreport';
   });
   console.log(`Received ${actionsReport.length} actions report records `);
 
@@ -141,11 +117,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const authenticationReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "authenticationcalls";
+    return b.service === 'authenticationcalls';
   });
-  console.log(
-    `Received ${authenticationReport.length} authentication report records `
-  );
+  console.log(`Received ${authenticationReport.length} authentication report records `);
 
   if (authenticationReport.length) {
     const report = new Authentication(enrollmentReport);
@@ -166,11 +140,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const monthlyLogInReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "monthlyloginreport";
+    return b.service === 'monthlyloginreport';
   });
-  console.log(
-    `Received ${monthlyLogInReport.length} monthly login report records `
-  );
+  console.log(`Received ${monthlyLogInReport.length} monthly login report records `);
 
   if (monthlyLogInReport.length) {
     const report = new MonthlyLogins(monthlyLogInReport);
@@ -191,11 +163,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const userAggregateMetrics = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "usermetricsreport";
+    return b.service === 'usermetricsreport';
   });
-  console.log(
-    `Received ${userAggregateMetrics.length} user aggregate metrics report records `
-  );
+  console.log(`Received ${userAggregateMetrics.length} user aggregate metrics report records `);
 
   if (userAggregateMetrics.length) {
     const report = new UserAggregateMetrics(userAggregateMetrics);
@@ -216,7 +186,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const userEmployerAll = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "useremployerall";
+    return b.service === 'useremployerall';
   });
   console.log(`Received ${userEmployerAll.length} user employer records `);
 
@@ -227,49 +197,40 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
         userEmployerAll.map(async (rec) => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log("message ==> ", message);
+          console.log('message ==> ', message);
           const scan = await parallelScanAppData(esk, segment, totalSegments);
           await Promise.all(
             scan?.items.map(async (item: any) => {
               //* type is AppData
-              const batchId = dayjs(new Date())
-                .add(-5, "hours")
-                .format("YYYY-MM-DD");
+              const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
               const schema = {};
               const userId = item.id;
-              const fulfillMergeReport =
-                item?.agencies?.transunion?.fulfillMergeReport;
+              const fulfillMergeReport = item?.agencies?.transunion?.fulfillMergeReport;
               if (!fulfillMergeReport) return false;
-              const mergeReport: IMergeReport = safeParse(
-                fulfillMergeReport,
-                "serviceProductObject"
-              );
+              const mergeReport: IMergeReport = safeParse(fulfillMergeReport, 'serviceProductObject');
               if (!mergeReport) return false;
 
               let employers =
-                mergeReport.TrueLinkCreditReportType?.Borrower
-                  ?.Employer instanceof Array
+                mergeReport.TrueLinkCreditReportType?.Borrower?.Employer instanceof Array
                   ? mergeReport.TrueLinkCreditReportType?.Borrower?.Employer
                   : [mergeReport.TrueLinkCreditReportType?.Borrower?.Employer];
 
               if (!employers) return;
 
-              const report = (employers.filter(Boolean) as IEmployer[]).map(
-                (employer: IEmployer) => {
-                  return {
-                    userId: userId,
-                    employerName: employer.name,
-                    city: employer.CreditAddress?.city,
-                    state: employer.CreditAddress?.stateCode,
-                    country: employer.CreditAddress?.country,
-                    abbreviation: employer.Source?.Bureau?.abbreviation,
-                    partitionSet: employer.partitionSet,
-                    dateReported: employer.dateReported,
-                    dateUpdated: employer.dateUpdated,
-                    fufilledOn: item?.agencies?.transunion?.fulfilledOn,
-                  };
-                }
-              );
+              const report = (employers.filter(Boolean) as IEmployer[]).map((employer: IEmployer) => {
+                return {
+                  userId: userId,
+                  employerName: employer.name,
+                  city: employer.CreditAddress?.city,
+                  state: employer.CreditAddress?.stateCode,
+                  country: employer.CreditAddress?.country,
+                  abbreviation: employer.Source?.Bureau?.abbreviation,
+                  partitionSet: employer.partitionSet,
+                  dateReported: employer.dateReported,
+                  dateUpdated: employer.dateUpdated,
+                  fufilledOn: item?.agencies?.transunion?.fulfilledOn,
+                };
+              });
 
               await Promise.all(
                 report.map(async (r: any) => {
@@ -277,14 +238,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                     ReportNames.UserEmployerAll,
                     batchId,
                     JSON.stringify(schema),
-                    JSON.stringify(r)
+                    JSON.stringify(r),
                   );
                   await createOpReport(ops);
                   counter++;
-                })
+                }),
               );
               return true;
-            })
+            }),
           );
           // send the data to the query
           // get the next start key.
@@ -294,27 +255,22 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               segment: scan.segment,
               totalSegments: scan.totalSegments,
             };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-              "opsbatch",
-              packet,
-              "useremployerall"
-            );
+            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'useremployerall');
             const res = await sns.publish(payload).promise();
-            console.log("sns resp ==> ", res);
+            console.log('sns resp ==> ', res);
           } else {
             // send an email letting me know which segment is done
-            const emails =
-              STAGE === "dev" ? ["noah@brave.credit"] : ["noah@brave.credit"];
+            const emails = STAGE === 'dev' ? ['noah@brave.credit'] : ['noah@brave.credit'];
             let params = generateEmailParams(
               `User Employer segment ${segment} of ${totalSegments} total segments finished`,
-              emails
+              emails,
             );
             let transporter = nodemailer.createTransport({
               SES: ses,
             });
             await transporter.sendMail(params);
           }
-        })
+        }),
       );
       const results = {
         success: true,
@@ -324,7 +280,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       console.log(JSON.stringify(results));
       return JSON.stringify(results);
     } catch (err) {
-      console.log("error ==> ", err);
+      console.log('error ==> ', err);
       return JSON.stringify({
         success: false,
         error: { error: `Unknown server error=${err}` },
@@ -338,11 +294,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const disputeEnrollmentReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "disputeenrollmentreport";
+    return b.service === 'disputeenrollmentreport';
   });
-  console.log(
-    `Received ${disputeEnrollmentReport.length} dispute enrollment report records `
-  );
+  console.log(`Received ${disputeEnrollmentReport.length} dispute enrollment report records `);
 
   if (disputeEnrollmentReport.length) {
     const report = new DisputeEnrollment(userAggregateMetrics);
@@ -365,9 +319,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }).filter((b) => {
     return b.service === ReportNames.DisputeAnalytics;
   });
-  console.log(
-    `Received ${disputeAnalyticReport.length} dispute analytic report records `
-  );
+  console.log(`Received ${disputeAnalyticReport.length} dispute analytic report records `);
 
   if (disputeAnalyticReport.length) {
     const report = new DisputeAnalyticsReport(disputeAnalyticReport);
@@ -388,11 +340,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const failedFulfillReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "failedfulfillreport";
+    return b.service === 'failedfulfillreport';
   });
-  console.log(
-    `Received ${failedFulfillReport.length} failed fulfill report records `
-  );
+  console.log(`Received ${failedFulfillReport.length} failed fulfill report records `);
 
   if (failedFulfillReport.length) {
     const report = new FailedFulfills(userAggregateMetrics);
@@ -413,7 +363,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const referralsReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
   }).filter((b) => {
-    return b.service === "referralsreport";
+    return b.service === 'referralsreport';
   });
   console.log(`Received ${referralsReport.length} referrals report records `);
 
@@ -504,11 +454,9 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   const registrationReport = event.Records.map((r) => {
     return JSON.parse(r.body) as IBatchPayload<IBatchCognitoMsg<string>>;
   }).filter((b) => {
-    return b.service === "registeredusersreport";
+    return b.service === 'registeredusersreport';
   });
-  console.log(
-    `Received ${registrationReport.length} registration report records `
-  );
+  console.log(`Received ${registrationReport.length} registration report records `);
 
   if (registrationReport.length) {
     try {
@@ -517,77 +465,60 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
         registrationReport.map(async (rec) => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log("message ==> ", message);
-          const scan: CognitoIdentityServiceProvider.ListUsersResponse =
-            await getCognitoUsers(esk || "", 60);
+          console.log('message ==> ', message);
+          const scan: CognitoIdentityServiceProvider.ListUsersResponse = await getCognitoUsers(esk || '', 60);
           if (scan && scan.Users) {
             await Promise.all(
-              scan.Users.map(
-                async (item: CognitoIdentityServiceProvider.UserType) => {
-                  const batchId = dayjs(new Date())
-                    .add(-5, "hours")
-                    .format("YYYY-MM-DD");
-                  const newYear = dayjs("2022-01-01");
-                  const created = dayjs(item.UserCreateDate);
-                  const test = created.isAfter(newYear);
-                  if (!test) return false;
-                  const schema = {};
-                  const attrs = {
-                    sub: flattenUser(
-                      item.Attributes as { Name: string; Value: string }[],
-                      "sub"
-                    ),
-                    email: flattenUser(
-                      item.Attributes as { Name: string; Value: string }[],
-                      "email"
-                    ),
-                    email_verified: flattenUser(
-                      item.Attributes as { Name: string; Value: string }[],
-                      "email_verified"
-                    ),
-                  };
-                  const mapped = {
-                    userName: item.Username,
-                    userCreateDate: item.UserCreateDate?.toISOString(),
-                    enabled: item.Enabled,
-                    userStatus: item.UserStatus,
-                    ...attrs,
-                  };
+              scan.Users.map(async (item: CognitoIdentityServiceProvider.UserType) => {
+                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+                const newYear = dayjs('2022-01-01');
+                const created = dayjs(item.UserCreateDate);
+                const test = created.isAfter(newYear);
+                if (!test) return false;
+                const schema = {};
+                const attrs = {
+                  sub: flattenUser(item.Attributes as { Name: string; Value: string }[], 'sub'),
+                  email: flattenUser(item.Attributes as { Name: string; Value: string }[], 'email'),
+                  email_verified: flattenUser(item.Attributes as { Name: string; Value: string }[], 'email_verified'),
+                };
+                const mapped = {
+                  userName: item.Username,
+                  userCreateDate: item.UserCreateDate?.toISOString(),
+                  enabled: item.Enabled,
+                  userStatus: item.UserStatus,
+                  ...attrs,
+                };
 
-                  const ops = new OpsReportMaker(
-                    ReportNames.RegistrationsYTD,
-                    batchId,
-                    JSON.stringify(schema),
-                    JSON.stringify(mapped)
-                  );
-                  await createOpReport(ops);
-                  counter++;
-                  return true;
-                }
-              )
+                const ops = new OpsReportMaker(
+                  ReportNames.RegistrationsYTD,
+                  batchId,
+                  JSON.stringify(schema),
+                  JSON.stringify(mapped),
+                );
+                await createOpReport(ops);
+                counter++;
+                return true;
+              }),
             );
           }
           // send the data to the query
           // get the next start key.
-          if (
-            scan?.PaginationToken != undefined &&
-            scan?.PaginationToken !== null
-          ) {
+          if (scan?.PaginationToken != undefined && scan?.PaginationToken !== null) {
             const packet: IBatchCognitoMsg<string> = {
               exclusiveStartKey: scan.PaginationToken,
               segment: 0,
               totalSegments: 1,
             };
-            console.log("packet: ", packet);
+            console.log('packet: ', packet);
             const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
-              "opsbatch",
+              'opsbatch',
               packet,
-              "registeredusersreport"
+              'registeredusersreport',
             );
             const res = await sns.publish(payload).promise();
-            console.log("sns resp ==> ", res);
+            console.log('sns resp ==> ', res);
           }
-        })
+        }),
       );
       const results = {
         success: true,
@@ -597,7 +528,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       console.log(JSON.stringify(results));
       return JSON.stringify(results);
     } catch (err) {
-      console.log("error ==> ", err);
+      console.log('error ==> ', err);
       return JSON.stringify({
         success: false,
         error: { error: `Unknown server error=${err}` },
