@@ -110,6 +110,6 @@ resources:
         Name: !Sub '${self:provider.stage}-mailchimp-topic'
     MailchimpSQSArn:
       Description: 'Mailchimp SQS arn'
-      Value: !GetAtt MailchimpSNSTopic.Arn
+      Value: !GetAtt MailchimpQueue.Arn
       Export:
         Name: !Sub '${self:provider.stage}-mailchimp-sqs-arn'
