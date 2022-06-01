@@ -1,19 +1,13 @@
-import dayjs from "dayjs";
-import { ReportBase } from "libs/reports/ReportBase";
-import {
-  IAttributeValue,
-  IBatchMsg,
-  IBatchPayload,
-} from "libs/interfaces/batch.interfaces";
-import { OpsReportMaker } from "libs/models/ops-reports";
-import { createOpReport } from "libs/queries/ops-report.queries";
-import { parallelScanAppData } from "../../../../mailchimp-services/libs/queries/appdata.queries";
-import { ReportNames } from "../../data/reports";
-import { mapDisputeEnrollmentFields } from "../../helpers";
+import dayjs from 'dayjs';
+import { ReportBase } from 'libs/reports/ReportBase';
+import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
+import { OpsReportMaker } from 'libs/models/ops-reports';
+import { createOpReport } from 'libs/queries/ops-report.queries';
+import { ReportNames } from 'libs/data/reports';
+import { mapDisputeEnrollmentFields } from 'libs/helpers';
+import { parallelScanAppData } from 'libs/db/appdata';
 
-export class DisputeEnrollment extends ReportBase<
-  IBatchMsg<IAttributeValue> | undefined
-> {
+export class DisputeEnrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
   }
@@ -21,7 +15,7 @@ export class DisputeEnrollment extends ReportBase<
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number
+    totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
     return await parallelScanAppData(esk, segment, totalSegments);
   }
@@ -31,20 +25,16 @@ export class DisputeEnrollment extends ReportBase<
       this.scan?.items.map(async (item: any) => {
         const disputeEnrolled = item?.agencies?.transunion?.disputeEnrolled;
         const disputeEnrolledOn = item?.agencies?.transunion?.disputeEnrolledOn;
-        const inCurrentYear = dayjs(disputeEnrolledOn).isAfter(
-          dayjs("2021-11-30")
-        );
+        const inCurrentYear = dayjs(disputeEnrolledOn).isAfter(dayjs('2021-11-30'));
         if (disputeEnrolled && inCurrentYear) {
-          const batchId = dayjs(new Date())
-            .add(-5, "hours")
-            .format("YYYY-MM-DD");
+          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = {};
           const record = mapDisputeEnrollmentFields(item);
           const ops = new OpsReportMaker(
             ReportNames.DisputeEnrollmentYTD,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record)
+            JSON.stringify(record),
           );
           await createOpReport(ops);
           this.counter++;
@@ -52,7 +42,7 @@ export class DisputeEnrollment extends ReportBase<
         } else {
           return false;
         }
-      })
+      }),
     );
   }
 
@@ -65,12 +55,12 @@ export class DisputeEnrollment extends ReportBase<
         totalSegments: scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-        "opsbatch",
+        'opsbatch',
         packet,
-        "disputeenrollmentreport"
+        'disputeenrollmentreport',
       );
       const res = await this.sns.publish(payload).promise();
-      console.log("sns resp ==> ", res);
+      console.log('sns resp ==> ', res);
     }
   }
 }
