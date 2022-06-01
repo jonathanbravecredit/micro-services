@@ -1,7 +1,7 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
+import { CreditReport } from '@bravecredit/brave-sdk';
 import { updateNavbarCreditReportBadge } from 'libs/queries/appdata.queries';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { IMailchimpPacket, IMarketingData } from 'libs/utils/mailchimp/interfaces';

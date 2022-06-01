@@ -2,7 +2,8 @@ import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
-import { IBatchMsg, IAttributeValue } from 'libs/interfaces/batch.interfaces';
+import { IAttributeValue } from 'libs/interfaces/batch.interfaces';
+import { IBatchMsg } from '@bravecredit/brave-sdk';
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 

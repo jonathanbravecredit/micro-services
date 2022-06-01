@@ -1,6 +1,6 @@
+import { UserInitiative } from '@bravecredit/brave-sdk';
 import { DynamoDBRecord } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
-import { UserInitiative } from 'libs/models/UserInitiative.model';
 import { CognitoUtil } from 'libs/utils/cognito/cognito';
 import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
 import { PutItemOutput } from 'aws-sdk/clients/dynamodb';
-import { UserInitiative } from 'libs/models/UserInitiative.model';
+import { UserInitiative } from '@bravecredit/brave-sdk';
 import dayjs from 'dayjs';
 
 const store = new DynamoStore(UserInitiative);

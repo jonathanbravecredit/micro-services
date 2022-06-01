@@ -1,5 +1,5 @@
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { CreditScore } from 'libs/models/credit-scores.model';
+import { CreditScore } from '@bravecredit/brave-sdk';
 
 const store = new DynamoStore(CreditScore);
 

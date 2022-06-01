@@ -1,11 +1,11 @@
 const MailChimpTx = require('@mailchimp/mailchimp_transactional');
-import * as interfaces from 'libs/interfaces';
 import { ajv } from 'libs/schema/validation';
 import { SNSEvent, SNSHandler } from 'aws-lambda';
 import { Mailchimp as chimp } from 'libs/utils/mailchimp/mailchimp';
 import { response } from 'libs/utils/response';
 import { getSecretKey } from 'libs/utils/secrets';
 import { IMailChimp } from 'libs/interfaces/mailchimp.interfaces';
+import { ProxyRequest } from 'libs/interfaces';
 
 let mailChimp: IMailChimp;
 const mailchimpSKLoc = process.env.MAILCHIMP_SECRET_LOCATION || '';
@@ -13,8 +13,8 @@ const mailchimpMarketingSKLoc = process.env.MAILCHIMP_MRKT_SECRET_LOCATION || ''
 const bcEmail = process.env.EMAIL || '';
 
 export const main: SNSHandler = async (event: SNSEvent): Promise<any> => {
-  let trxRequests: interfaces.ProxyRequest[] = [];
-  let mrktRequests: interfaces.ProxyRequest[] = [];
+  let trxRequests: ProxyRequest[] = [];
+  let mrktRequests: ProxyRequest[] = [];
   let mrktConfig: { apiKey: string; server: string };
 
   try {
@@ -24,8 +24,8 @@ export const main: SNSHandler = async (event: SNSEvent): Promise<any> => {
         Sns: { Message: message },
       } = record;
 
-      const payload: interfaces.ProxyRequest = JSON.parse(message);
-      const validate = ajv.getSchema<interfaces.ProxyRequest>('mailChimpRequest');
+      const payload: ProxyRequest = JSON.parse(message);
+      const validate = ajv.getSchema<ProxyRequest>('mailChimpRequest');
       if (!validate) throw `Schema validator missing=${validate}`;
       if (!validate(payload)) throw `Malformed message=${message}`;
       // parse the emails into transactional or marketing

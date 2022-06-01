@@ -1,16 +1,19 @@
-import 'reflect-metadata';
-import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { Campaign } from 'libs/models/campaign.model';
+import "reflect-metadata";
+import { DynamoStore } from "@shiftcoders/dynamo-easy";
+import { Campaign } from "@bravecredit/brave-sdk";
 
 const store = new DynamoStore(Campaign);
 
-export const getCampaign = (pkey: number, skey: number): Promise<Campaign | null> => {
+export const getCampaign = (
+  pkey: number,
+  skey: number
+): Promise<Campaign | null> => {
   return store
     .get(pkey, skey)
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('getCampaign error: ', JSON.stringify(err));
+      console.log("getCampaign error: ", JSON.stringify(err));
       return err;
     });
 };
@@ -21,7 +24,7 @@ export const listCampaigns = (): Promise<Campaign[]> => {
     .execFetchAll()
     .then((res) => res)
     .catch((err) => {
-      console.log('listCampaigns error: ', JSON.stringify(err));
+      console.log("listCampaigns error: ", JSON.stringify(err));
       return err;
     });
 };
@@ -33,7 +36,7 @@ export const createCampaign = (campaign: Campaign): Promise<void> => {
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('createCampaign error: ', JSON.stringify(err));
+      console.log("createCampaign error: ", JSON.stringify(err));
       return err;
     });
 };
@@ -42,32 +45,32 @@ export const updateCurrentCampaign = (campaign: Campaign): Promise<void> => {
   const now = new Date().toISOString();
   return store
     .update(1, 0)
-    .updateAttribute('currentVersion')
+    .updateAttribute("currentVersion")
     .set(campaign.currentVersion)
-    .updateAttribute('campaign')
+    .updateAttribute("campaign")
     .set(campaign.campaign)
-    .updateAttribute('denomination')
+    .updateAttribute("denomination")
     .set(campaign.denomination)
-    .updateAttribute('bonusThreshold')
+    .updateAttribute("bonusThreshold")
     .set(campaign.bonusThreshold)
-    .updateAttribute('bonusAmount')
+    .updateAttribute("bonusAmount")
     .set(campaign.bonusAmount)
-    .updateAttribute('addOnFlagOne')
-    .set(campaign.addOnFlagOne || '')
-    .updateAttribute('addOnFlagTwo')
-    .set(campaign.addOnFlagTwo || '')
-    .updateAttribute('addOnFlagThree')
-    .set(campaign.addOnFlagThree || '')
-    .updateAttribute('startDate')
+    .updateAttribute("addOnFlagOne")
+    .set(campaign.addOnFlagOne || "")
+    .updateAttribute("addOnFlagTwo")
+    .set(campaign.addOnFlagTwo || "")
+    .updateAttribute("addOnFlagThree")
+    .set(campaign.addOnFlagThree || "")
+    .updateAttribute("startDate")
     .set(campaign.startDate)
-    .updateAttribute('endDate')
+    .updateAttribute("endDate")
     .set(campaign.endDate)
-    .updateAttribute('modifiedOn')
+    .updateAttribute("modifiedOn")
     .set(now)
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('updateCurrentCampaign Error: ', JSON.stringify(err));
+      console.log("updateCurrentCampaign Error: ", JSON.stringify(err));
       return err;
     });
 };
@@ -97,7 +100,7 @@ export const getLatestCampaign = (pkey: number): Promise<Campaign[]> => {
     .exec()
     .then((res) => res)
     .catch((err) => {
-      console.log('getLatestCampaign error: ', JSON.stringify(err));
+      console.log("getLatestCampaign error: ", JSON.stringify(err));
       return err;
     });
 };

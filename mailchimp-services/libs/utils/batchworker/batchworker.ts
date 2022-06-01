@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 import { UpdateAppDataInput } from 'libs/aws/api.service';
-import { IBatchPayload, IBatchMsg, IAttributeValue } from 'libs/interfaces/batch.interfaces';
+import { IAttributeValue } from 'libs/interfaces/batch.interfaces';
 import { parallelScanAppData } from 'libs/queries/appdata.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 import { CreditReport } from 'libs/interfaces/credit-report.interface';
@@ -11,6 +11,7 @@ import { IMailchimpPacket, IMarketingData, MailMessage } from 'libs/utils/mailch
 import { flattenUser, getUsersBySub } from 'libs/queries/cognito.queries';
 import { getLastTwoReports } from 'libs/queries/CreditReport.queries';
 import { getRandomDisputesById } from 'libs/queries/disputes.queries';
+import { IBatchMsg, IBatchPayload } from '@bravecredit/brave-sdk';
 
 export class BatchTagWorker {
   lookup: Map<string, string> = new Map();

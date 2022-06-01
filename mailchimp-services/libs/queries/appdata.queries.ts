@@ -1,10 +1,14 @@
-import { AttributeValue } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
-import { IBatchMsg, IAttributeValue } from 'libs/interfaces/batch.interfaces';
-const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-const tableName = process.env.APPTABLE || '';
+import { IBatchMsg } from "@bravecredit/brave-sdk";
+import { AttributeValue } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
+import { IAttributeValue } from "libs/interfaces/batch.interfaces";
+const db = new DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
+const tableName = process.env.APPTABLE || "";
 
-export const sortByDate = (a: { createdOn: number }, b: { createdOn: number }) => {
+export const sortByDate = (
+  a: { createdOn: number },
+  b: { createdOn: number }
+) => {
   if (a.createdOn > b.createdOn) {
     return -1;
   } else return 1;
@@ -22,7 +26,9 @@ export const createItemInDB = (post: any) => {
     .catch((err) => err);
 };
 
-export const getItemsInDB = (id: any): Promise<DynamoDB.DocumentClient.GetItemOutput> => {
+export const getItemsInDB = (
+  id: any
+): Promise<DynamoDB.DocumentClient.GetItemOutput> => {
   const params = {
     Key: {
       id: id,
@@ -48,12 +54,15 @@ export const getAllItemsInDB = async () => {
     items = await db.scan(params).promise();
     items.Items?.forEach((item) => scanResults.push(item));
     params.ExclusiveStartKey = items.LastEvaluatedKey;
-  } while (typeof items.LastEvaluatedKey != 'undefined');
+  } while (typeof items.LastEvaluatedKey != "undefined");
 
   return scanResults;
 };
 
-export const updateItemInDB = (id: any, data: { customerEmail: any; brokerCode: any }) => {
+export const updateItemInDB = (
+  id: any,
+  data: { customerEmail: any; brokerCode: any }
+) => {
   let timeStamp = new Date().toUTCString(); //always have last updated date
   const params = {
     TableName: tableName,
@@ -61,13 +70,14 @@ export const updateItemInDB = (id: any, data: { customerEmail: any; brokerCode: 
       customerId: id,
     },
     // ConditionExpression: 'attribute_exists(queryParam.tableId)',
-    UpdateExpression: 'set customerEmail = :e, brokerCode = :d, modifiedOnUTC = :t',
+    UpdateExpression:
+      "set customerEmail = :e, brokerCode = :d, modifiedOnUTC = :t",
     ExpressionAttributeValues: {
-      ':e': data.customerEmail,
-      ':d': data.brokerCode,
-      ':t': timeStamp,
+      ":e": data.customerEmail,
+      ":d": data.brokerCode,
+      ":t": timeStamp,
     },
-    ReturnValues: 'UPDATED_NEW',
+    ReturnValues: "UPDATED_NEW",
   };
 
   return db
@@ -79,7 +89,7 @@ export const updateItemInDB = (id: any, data: { customerEmail: any; brokerCode: 
 
 export const updateNavbarCreditReportBadge = (
   id: string,
-  payload: { report: { badge: boolean } },
+  payload: { report: { badge: boolean } }
 ): Promise<DynamoDB.DocumentClient.UpdateItemOutput> => {
   let timeStamp = new Date().toISOString(); //always have last updated date
 
@@ -89,25 +99,25 @@ export const updateNavbarCreditReportBadge = (
       id: id,
     },
     // ConditionExpression: 'attribute_exists(queryParam.tableId)',
-    UpdateExpression: 'SET #n.#r = :r, updatedAt = :m',
+    UpdateExpression: "SET #n.#r = :r, updatedAt = :m",
     ExpressionAttributeNames: {
-      '#n': 'navBar',
-      '#r': 'report',
+      "#n": "navBar",
+      "#r": "report",
     },
     ExpressionAttributeValues: {
-      ':r': payload.report || { badge: false },
-      ':m': timeStamp,
+      ":r": payload.report || { badge: false },
+      ":m": timeStamp,
     },
   };
 
-  console.log('params: ', JSON.stringify(params));
+  console.log("params: ", JSON.stringify(params));
   return db.update(params).promise();
 };
 
 export const parallelScanAppData = async (
   esk: { [key: string]: AttributeValue } | undefined,
   segment: number,
-  totalSegments: number,
+  totalSegments: number
 ): Promise<IBatchMsg<IAttributeValue> | undefined> => {
   let params: DynamoDB.DocumentClient.ScanInput = {
     TableName: tableName, // I need a big table for testing
@@ -116,7 +126,9 @@ export const parallelScanAppData = async (
     TotalSegments: totalSegments,
   };
   try {
-    const items: DynamoDB.DocumentClient.ScanOutput = await db.scan(params).promise();
+    const items: DynamoDB.DocumentClient.ScanOutput = await db
+      .scan(params)
+      .promise();
     const { LastEvaluatedKey, Items } = items;
     // write the records to the reports table
     // then write the key back
@@ -127,6 +139,6 @@ export const parallelScanAppData = async (
       totalSegments: totalSegments,
     };
   } catch (err) {
-    console.log('err ==> ', err);
+    console.log("err ==> ", err);
   }
 };

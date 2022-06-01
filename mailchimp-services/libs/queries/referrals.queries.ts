@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { DynamoStore } from '@shiftcoders/dynamo-easy';
-import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, Referral, REFERRAL_CODE_GSI } from 'libs/models/referral.model';
+import { CAMPAIGNACTIVE_GSI, ELIGIBLE_GSI, REFERRAL_CODE_GSI } from 'libs/models/referral.model';
+import { Referral } from '@bravecredit/brave-sdk';
 
 const store = new DynamoStore(Referral);
 
