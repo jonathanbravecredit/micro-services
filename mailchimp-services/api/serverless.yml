@@ -56,14 +56,11 @@ provider:
     EMAIL: 'support@brave.credit'
     DOMAIN: 'brave.credit'
     POOL: ${self:custom.settings.POOL.${opt:stage}}
-    MAILCHIMP_DEQUEUE_SNS_ARN: ''
-    # Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
-    MAILCHIMP_SNS_ARN: ''
-    # Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-topic'
-    MAILCHIMP_SECRET_LOCATION: ''
-    # '${self:provider.stage}/mailchimp-services/mailchimpTx'
-    MAILCHIMP_MRKT_SECRET_LOCATION: ''
-    # '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
+    MAILCHIMP_DEQUEUE_SNS_ARN: Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-dequeue-topic'
+    MAILCHIMP_SNS_ARN: Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-topic'
+    MAILCHIMP_SQS_ARN: Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-sqs-arn'
+    MAILCHIMP_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpTx'
+    MAILCHIMP_MRKT_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
   timeout: 60
   iamRoleStatements:
     - Effect: 'Allow'
@@ -119,21 +116,21 @@ provider:
       Resource: '*'
 
 functions:
-  # dequeueEmailMessages:
-  #   handler: src/subscriptions/dequeueEmailMessages.main
-  #   description: Sends enqueued mailchimp emails
-  #   events:
-  #     - sns:
-  #         arn: !Ref MailchimpDequeueSNSTopic
-  #         topicName: MailchimpDequeueSNSTopic
-  #         integration: lambda-proxy
+  dequeueEmailMessages:
+    handler: src/subscriptions/dequeueEmailMessages.main
+    description: Sends enqueued mailchimp emails
+    events:
+      - sns:
+          arn: ${self:provider.environment.MAILCHIMP_DEQUEUE_SNS_ARN}
+          topicName: MailchimpDequeueSNSTopic
+          integration: lambda-proxy
 
-  # sendScheduledMessages:
-  #   handler: src/handlers/sendScheduledMessages.main
-  #   description: Sends scheduled mailchimp emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - schedule: cron(0 16 * * ? *)
+  sendScheduledMessages:
+    handler: src/handlers/sendScheduledMessages.main
+    description: Sends scheduled mailchimp emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - schedule: cron(0 16 * * ? *)
 
   batchMarketingTag:
     handler: src/handlers/batchMarketingTag.main
@@ -141,140 +138,138 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     timeout: 120
     # events:
-  #   # - schedule: cron(0 0 15 * ? *) # manual trigger for now
-  # batchMarketingTagWorker:
-  #   handler: src/handlers/batchMarketingTagWorker.main
-  #   description: Force tags user emails with marketing tags even if no event occurs
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   timeout: 120
-  #   events:
-  #     - sqs:
-  #         arn: !GetAtt
-  #           - MailchimpQueue
-  #           - Arn
-  #         # batchSize: 100
-  #         # maximumBatchingWindow: 5
+    # - schedule: cron(0 0 15 * ? *) # manual trigger for now
+  batchMarketingTagWorker:
+    handler: src/handlers/batchMarketingTagWorker.main
+    description: Force tags user emails with marketing tags even if no event occurs
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    timeout: 120
+    events:
+      - sqs:
+          arn: ${self:provider.environment.MAILCHIMP_SQS_ARN}
+          # batchSize: 100
+          # maximumBatchingWindow: 5
 
-  #   # events:
-  #   # - schedule: cron(0 0 15 * ? *) # manual trigger for now
+    # events:
+    # - schedule: cron(0 0 15 * ? *) # manual trigger for now
 
-  # # app table triggers
-  # triggerTransactionalEmail:
-  #   handler: src/triggers/triggerTransactionalEmail.main
-  #   description: Monitors app database for events that trigger transactional emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn:
-  #           Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
-  # # marketing tags such as setting defaults and whether enrolled
-  # triggerAppDataForMarketing:
-  #   handler: src/triggers/triggerAppDataForMarketing.main
-  #   description: Monitors app database for events that trigger marketing emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn:
-  #           Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
+  # app table triggers
+  triggerTransactionalEmail:
+    handler: src/triggers/triggerTransactionalEmail.main
+    description: Monitors app database for events that trigger transactional emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
+  # marketing tags such as setting defaults and whether enrolled
+  triggerAppDataForMarketing:
+    handler: src/triggers/triggerAppDataForMarketing.main
+    description: Monitors app database for events that trigger marketing emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
 
-  # # dispute table triggers
-  # triggerDisputeTransactionalEmail:
-  #   handler: src/triggers/triggerDisputeTransactionalEmail.main
-  #   description: Monitors dispute database for events that trigger dispute transactional emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: !ImportValue agency-services-transunion-disputes-stream
-  # triggerDisputeMarketingEmail:
-  #   handler: src/triggers/triggerDisputeMarketingEmail.main
-  #   description: Monitors dispute database for events that trigger dispute transactional emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: !ImportValue agency-services-transunion-disputes-stream
+  # dispute table triggers
+  triggerDisputeTransactionalEmail:
+    handler: src/triggers/triggerDisputeTransactionalEmail.main
+    description: Monitors dispute database for events that trigger dispute transactional emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue agency-services-transunion-disputes-stream
+  triggerDisputeMarketingEmail:
+    handler: src/triggers/triggerDisputeMarketingEmail.main
+    description: Monitors dispute database for events that trigger dispute transactional emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue agency-services-transunion-disputes-stream
 
-  # # credit report table triggers
-  # triggerCreditReportEmail:
-  #   handler: src/triggers/triggerCreditReportEmail.main
-  #   description: Monitors credit report table for events that trigger marketing tags or emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: !ImportValue credit-report-service-resources-stream
+  # credit report table triggers
+  triggerCreditReportEmail:
+    handler: src/triggers/triggerCreditReportEmail.main
+    description: Monitors credit report table for events that trigger marketing tags or emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue credit-report-service-resources-stream
 
-  # triggerCreditReportForMarketing:
-  #   handler: src/triggers/triggerCreditReportForMarketing.main
-  #   description: Monitors credit report table for events that trigger marketing tags or emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: !ImportValue credit-report-service-resources-stream
+  triggerCreditReportForMarketing:
+    handler: src/triggers/triggerCreditReportForMarketing.main
+    description: Monitors credit report table for events that trigger marketing tags or emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue credit-report-service-resources-stream
 
-  # # referral table triggers
-  # triggerReferralEmail:
-  #   handler: src/triggers/triggerReferralEmail.main
-  #   description: Monitors referral system to send a email with referral code embedded when new recored added
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 10
-  #         startingPosition: LATEST
-  #         arn: !ImportValue referral-service-referrals-stream
-  # triggerReferralMarketingEmail:
-  #   handler: src/triggers/triggerReferralMarketingEmail.main
-  #   description: Monitors referral system to trigger marketing tags or emails
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn: !ImportValue referral-service-referrals-stream
-  # # initiative program table triggers
-  # triggerInitiativeProgramMarketing:
-  #   handler: src/triggers/triggerInitiativeProgramMarketing.main
-  #   description: Monitors initiative program system tables to add user tags
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 10
-  #         startingPosition: LATEST
-  #         arn: !ImportValue initiative-program-resources-stream
-  # batchInitiativeProgramMarketing:
-  #   handler: src/handlers/batchInitiativeTags.main
-  #   description: Monitors initiative program system tables to add user tags
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # referral table triggers
+  triggerReferralEmail:
+    handler: src/triggers/triggerReferralEmail.main
+    description: Monitors referral system to send a email with referral code embedded when new recored added
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 10
+          startingPosition: LATEST
+          arn: !ImportValue referral-service-referrals-stream
+  triggerReferralMarketingEmail:
+    handler: src/triggers/triggerReferralMarketingEmail.main
+    description: Monitors referral system to trigger marketing tags or emails
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn: !ImportValue referral-service-referrals-stream
+  # initiative program table triggers
+  triggerInitiativeProgramMarketing:
+    handler: src/triggers/triggerInitiativeProgramMarketing.main
+    description: Monitors initiative program system tables to add user tags
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 10
+          startingPosition: LATEST
+          arn: !ImportValue initiative-program-resources-stream
+  batchInitiativeProgramMarketing:
+    handler: src/handlers/batchInitiativeTags.main
+    description: Monitors initiative program system tables to add user tags
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
 
-  # # when changes to specific accounts occur, trigger the badge on the notification bar
-  # #  this should be moved to the credit report service
-  # monitorForNotifications:
-  #   handler: src/monitors/monitorForNotifications.main
-  #   description: Monitors marketing tags to turn on and off badges in nav bar
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 100
-  #         startingPosition: LATEST
-  #         arn:
-  #           Fn::ImportValue: credit-report-service-resources-stream
+  # when changes to specific accounts occur, trigger the badge on the notification bar
+  #  this should be moved to the credit report service
+  monitorForNotifications:
+    handler: src/monitors/monitorForNotifications.main
+    description: Monitors marketing tags to turn on and off badges in nav bar
+    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 100
+          startingPosition: LATEST
+          arn:
+            Fn::ImportValue: credit-report-service-resources-stream
