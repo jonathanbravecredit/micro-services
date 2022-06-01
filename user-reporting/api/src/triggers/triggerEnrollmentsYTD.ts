@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Handler } from 'aws-lambda';
 import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/pubsub/pubsub';
-import { IBatchCognitoMsg, IBatchMsg } from 'libs/interfaces/batch.interfaces';
+import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
 
 // request.debug = true; import * as request from 'request';
 const sns = new SNS({ region: 'us-east-2' });
@@ -16,23 +16,25 @@ const pubsub = new PubSubUtil();
  * @returns Lambda proxy response
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
+  if (process.env.STAGE == 'dev' && !event.override) return;
   try {
+    let counter = 0;
     const segments = [];
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 20; i++) {
       segments.push(i);
     }
     await Promise.all(
       segments.map(async (s) => {
-        const packet: IBatchCognitoMsg<null> = {
-          exclusiveStartKey: null,
+        const packet: IBatchMsg<IAttributeValue> = {
+          exclusiveStartKey: undefined,
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchCognitoMsg<null>>('opsbatch', packet, 'registeredusersreport');
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'enrollmentreport');
         await sns.publish(payload).promise();
       }),
     );
-    const results = { success: true, error: null, data: `Ops:batch queued ${segments.length} segments.` };
+    const results = { success: true, error: null, data: `Ops:batch queued ${counter} records.` };
     return JSON.stringify(results);
   } catch (err) {
     console.log('err ===> ', err);

@@ -16,6 +16,7 @@ const pubsub = new PubSubUtil();
  * @returns Lambda proxy response
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
+  if (process.env.STAGE == 'dev' && !event.override) return;
   try {
     let counter = 0;
     const segments = [];
@@ -29,7 +30,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'monthlyloginreport');
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
         await sns.publish(payload).promise();
       }),
     );

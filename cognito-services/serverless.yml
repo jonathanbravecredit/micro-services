@@ -16,10 +16,11 @@ provider:
     DOMAIN: 'brave.credit'
     ACCOUNT_ID: '#{AWS::AccountId}'
     REGION: ${self:provider.region}
-    SNS_PROXY_TOPIC: !Sub 'arn:aws:sns:us-east-2:${AWS::AccountId}:SnsProxyTopic'
     DEVAPIURL: 'https://yxd90lcrja.execute-api'
     PRODAPIURL: 'https://k8yolkr65j.execute-api'
     STAGINGAPIURL: 'https://a8tk8rzrpe.execute-api'
+    MAILCHIMP_DEQUEUE_SNS_ARN:
+      Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-dequeue-topic'
     DEVPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://dev-app.brave.credit'
     STAGINGPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://staging-app.brave.credit'
     PRODPOST_REGISTRATION_VERIFICATION_REDIRECT_URL: 'https://app.brave.credit'
