@@ -1,8 +1,10 @@
-import { UserInitiative } from 'libs/models/UserInitiative.model';
+// import { UserInitiative } from 'libs/models/UserInitiative.model';
 import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
 import { Helper } from 'tests/helpers/test-helper';
 import * as _ from 'lodash';
-import { InitiativeTask } from 'libs/classes/Initiative';
+// import { InitiativeTask } from 'libs/classes/Initiative';
+import { UserInitiative } from '@bravecredit/brave-sdk/dist/models/user-initiative/user-initiative';
+import { InitiativeTask } from '@bravecredit/brave-sdk/dist/models/user-initiative/initiative/initiative';
 
 describe('InitiativeCheck', () => {
   const mockEvent = 'INSERT';

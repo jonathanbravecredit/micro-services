@@ -1,4 +1,4 @@
-import { UpdateAppDataInput } from 'libs/aws/api.service';
+import { UpdateAppDataInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import { AppChecker } from 'libs/utils/mailchimp/checkers/AppChecker';
 import { IMarketingCheckerResults } from 'libs/utils/mailchimp/interfaces';
 

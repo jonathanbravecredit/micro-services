@@ -1,4 +1,4 @@
-import { TransunionInput } from 'libs/aws/api.service';
+import { TransunionInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import {
   IMergeReport,
   ISubscriber,
@@ -8,8 +8,8 @@ import {
   ITradelineSummary,
   IBorrowerAddress,
   IEmployer,
-} from 'libs/interfaces/mergereport.interface';
-import { IVantageScore } from 'libs/interfaces/vantage-score.interface';
+} from '@bravecredit/brave-sdk/dist/types/merge-report';
+import { IVantageScore } from '@bravecredit/brave-sdk/dist/types/vantage-score';
 
 export class TransunionUtil {
   id: string;

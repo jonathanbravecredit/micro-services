@@ -1,4 +1,4 @@
-import { TransunionInput, UpdateAppDataInput } from 'libs/aws/api.service';
+import { TransunionInput, UpdateAppDataInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import { MailchimpMarketingChecker } from 'libs/utils/mailchimp/checkers/MailchimpMarketingChecker';
 import { IAppChecker } from 'libs/utils/mailchimp/interfaces';
 

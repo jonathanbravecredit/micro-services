@@ -10,7 +10,7 @@ export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValu
 
   async run() {
     try {
-      const segments = [];
+      const segments: number[] = [];
       for (let i = 0; i < 128; i++) {
         segments.push(i);
       }

@@ -1,17 +1,25 @@
-import { IReferrals } from 'libs/interfaces/referrals.interfaces';
-import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
-import { IMailchimpPacket, ITransactionalData } from 'libs/utils/mailchimp/interfaces';
+import { Referral } from "@bravecredit/brave-sdk";
+import { MailchimpTriggerEmails } from "libs/utils/mailchimp/constants";
+import {
+  IMailchimpPacket,
+  ITransactionalData,
+} from "libs/utils/mailchimp/interfaces";
 
 export class MailchimpReferralTriggers {
   static currTriggers: IMailchimpPacket<ITransactionalData>[];
   constructor() {}
 
   // add different scenarios and a resolver
-  static resolver(oldImage: IReferrals | null, newImage: IReferrals): IMailchimpPacket<ITransactionalData>[] {
+  static resolver(
+    oldImage: Referral | null,
+    newImage: Referral
+  ): IMailchimpPacket<ITransactionalData>[] {
     let triggers: IMailchimpPacket<ITransactionalData>[] = [];
     for (let key in triggerLibrary) {
       const { data, test } = triggerLibrary[key](oldImage, newImage);
-      triggers = test ? (triggers = [...triggers, { template: key, data: data }]) : triggers;
+      triggers = test
+        ? (triggers = [...triggers, { template: key, data: data }])
+        : triggers;
     }
     this.currTriggers = triggers; // store for reference
     return triggers;
@@ -24,7 +32,10 @@ export class MailchimpReferralTriggers {
  * @param newImage
  * @returns
  */
-const checkOne = (oldImage: IReferrals | null, newImage: IReferrals): { test: boolean; data?: ITransactionalData } => {
+const checkOne = (
+  oldImage: Referral | null,
+  newImage: Referral
+): { test: boolean; data?: ITransactionalData } => {
   return { test: false }; // inactive;
 };
 
@@ -34,13 +45,20 @@ const checkOne = (oldImage: IReferrals | null, newImage: IReferrals): { test: bo
  * @param newImage
  * @returns
  */
-const checkTwo = (oldImage: IReferrals | null, newImage: IReferrals): { test: boolean; data?: ITransactionalData } => {
+const checkTwo = (
+  oldImage: Referral | null,
+  newImage: Referral
+): { test: boolean; data?: ITransactionalData } => {
   if (!oldImage) return { test: false };
-  if (!oldImage.eligible && newImage.eligible && newImage.campaignActive !== 'NO_CAMPAIGN') {
+  if (
+    !oldImage.eligible &&
+    newImage.eligible &&
+    newImage.campaignActive !== "NO_CAMPAIGN"
+  ) {
     return {
       test: true,
       data: {
-        api: 'transactional',
+        api: "transactional",
         payload: newImage.referralCode,
       },
     };
@@ -56,16 +74,20 @@ const checkTwo = (oldImage: IReferrals | null, newImage: IReferrals): { test: bo
  * @returns
  */
 const checkThree = (
-  oldImage: IReferrals | null,
-  newImage: IReferrals,
+  oldImage: Referral | null,
+  newImage: Referral
 ): { test: boolean; data?: ITransactionalData } => {
   // return { test: false }; // turning off temporarily
   if (!oldImage) return { test: false };
-  if (newImage.eligible && oldImage?.campaignActive === 'NO_CAMPAIGN' && newImage.campaignActive !== 'NO_CAMPAIGN') {
+  if (
+    newImage.eligible &&
+    oldImage?.campaignActive === "NO_CAMPAIGN" &&
+    newImage.campaignActive !== "NO_CAMPAIGN"
+  ) {
     return {
       test: true,
       data: {
-        api: 'transactional',
+        api: "transactional",
         payload: newImage.referralCode,
       },
     };
@@ -81,8 +103,8 @@ const checkThree = (
  * @returns
  */
 const checkTwoThree = (
-  oldImage: IReferrals | null,
-  newImage: IReferrals,
+  oldImage: Referral | null,
+  newImage: Referral
 ): { test: boolean; data?: ITransactionalData } => {
   // return { test: false }; // turning off temporarily
   const t1 = checkTwo(oldImage, newImage);
@@ -91,7 +113,7 @@ const checkTwoThree = (
     return {
       test: true,
       data: {
-        api: 'transactional',
+        api: "transactional",
         payload: newImage.referralCode,
       },
     };
@@ -102,7 +124,10 @@ const checkTwoThree = (
 
 const triggerLibrary: Record<
   string,
-  (oldImage: IReferrals | null, newImage: IReferrals) => { test: boolean; data?: ITransactionalData }
+  (
+    oldImage: Referral | null,
+    newImage: Referral
+  ) => { test: boolean; data?: ITransactionalData }
 > = {
   [MailchimpTriggerEmails.ReferralCode]: checkTwoThree,
 };

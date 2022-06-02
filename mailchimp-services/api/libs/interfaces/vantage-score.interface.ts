@@ -1,5 +1,5 @@
-import { ICodeRef, ISource } from 'libs/interfaces/common.interface';
-import { ICreditScoreFactor } from 'libs/interfaces/mergereport.interface';
+import { ICodeRef, ISource } from '@bravecredit/brave-sdk/dist/types/common-tu';
+import { ICreditScoreFactor } from '@bravecredit/brave-sdk/dist/types/merge-report';
 
 export interface IVantageScore {
   CreditScoreType: ICreditScoreType;

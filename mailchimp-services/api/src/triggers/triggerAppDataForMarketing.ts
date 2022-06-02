@@ -1,7 +1,7 @@
 'use strict';
+import { UpdateAppDataInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-import { UpdateAppDataInput } from 'libs/aws/api.service';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 

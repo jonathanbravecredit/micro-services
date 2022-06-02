@@ -9,12 +9,10 @@ import { DynamoDB, SNS } from "aws-sdk";
 import { getUsersBySub } from "libs/queries/cognito.queries";
 import { Mailchimp } from "libs/utils/mailchimp/mailchimp";
 import dayjs from "dayjs";
-import { getCampaign } from "libs/queries/campaigns.queries";
-import { IReferrals } from "libs/interfaces/referrals.interfaces";
+import { CampaignQueries, Referral } from "@bravecredit/brave-sdk";
 
 const sns = new SNS();
 const pool = process.env.POOL || "";
-const stage = process.env.STAGE;
 
 export const main: DynamoDBStreamHandler = async (
   event: DynamoDBStreamEvent
@@ -30,12 +28,12 @@ export const main: DynamoDBStreamHandler = async (
           if (!OldImage || !NewImage) return;
           const newImage = DynamoDB.Converter.unmarshall(
             NewImage
-          ) as unknown as IReferrals;
+          ) as unknown as Referral;
           const oldImage = DynamoDB.Converter.unmarshall(
             OldImage
-          ) as unknown as IReferrals;
+          ) as unknown as Referral;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
-          const campaign = await getCampaign(1, 0);
+          const campaign = await CampaignQueries.getCampaign(1, 0);
           if (
             campaign?.campaign === "NO_CAMPAIGN" ||
             dayjs(new Date()).isAfter(new Date(campaign?.endDate || 0))
