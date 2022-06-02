@@ -12,11 +12,14 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { ICreditReportMetrics } from 'libs/interfaces/credit-report-metrics.interface';
-import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
-import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
-import { Nested as _nest } from 'libs/utils/helpers/Nested';
-import { MergeReport } from 'libs/utils/mergereport/MergeReport/MergeReport';
-import { CreditReport } from '@bravecredit/brave-sdk';
+import {
+  AccountTypes,
+  ACCOUNT_TYPES,
+  CreditReport,
+  MergeReport,
+  NEGATIVE_PAY_STATUS_CODES,
+  Nested as _nest,
+} from '@bravecredit/brave-sdk';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

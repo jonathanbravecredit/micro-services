@@ -1,4 +1,4 @@
-import { TransunionInput } from "libs/aws/api.service";
+import { TransunionInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import {
   IMergeReport,
   ISubscriber,
@@ -8,8 +8,8 @@ import {
   ITradelineSummary,
   IBorrowerAddress,
   IEmployer,
-} from "@bravecredit/brave-sdk/dist/types/merge-report";
-import { IVantageScore } from "libs/interfaces/vantage-score.interface";
+} from '@bravecredit/brave-sdk/dist/types/merge-report';
+import { IVantageScore } from '@bravecredit/brave-sdk/dist/types/vantage-score';
 
 export class TransunionUtil {
   id: string;
@@ -30,22 +30,19 @@ export class TransunionUtil {
     this.subscribers = this.parseSubscriberRecords(this.report);
     this.borrowerRecords = this.parseBorrowerRecords(this.report);
     this.employers = this.parseEmployerRecords(this.report);
-    this.tradelineRecordsSummary =
-      this.report.TrueLinkCreditReportType?.Summary?.TradelineSummary || null;
+    this.tradelineRecordsSummary = this.report.TrueLinkCreditReportType?.Summary?.TradelineSummary || null;
     this.tradelineRecords = this.parseTradelineRecords(this.report);
     this.publicRecords = this.parsePublicRecords(this.report);
     this.disputedWithBrave = disputed;
   }
 
   get countNegativeAccounts(): number {
-    const value = this.tradelineRecordsSummary?.TransUnion
-      ?.DerogatoryAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.DerogatoryAccounts as number;
     return isNaN(value) ? 0 : value;
   }
 
   get totalNegativeAccounts(): number {
-    const value = this.tradelineRecordsSummary?.TransUnion
-      ?.DerogatoryAccounts as number;
+    const value = this.tradelineRecordsSummary?.TransUnion?.DerogatoryAccounts as number;
     return isNaN(value) ? 0 : value;
   }
   get totalAccounts(): number {
@@ -60,9 +57,7 @@ export class TransunionUtil {
 
   get totalNames(): number {
     if (!this.borrowerRecords?.BorrowerName) return 0;
-    return this.borrowerRecords?.BorrowerName instanceof Array
-      ? this.borrowerRecords?.BorrowerName.length
-      : 1;
+    return this.borrowerRecords?.BorrowerName instanceof Array ? this.borrowerRecords?.BorrowerName.length : 1;
   }
 
   get currentAddresses(): IBorrowerAddress[] {
@@ -79,30 +74,24 @@ export class TransunionUtil {
       : [this.borrowerRecords.PreviousAddress];
   }
 
-  parseTransunionMergeReport(
-    transunion: TransunionInput | null | undefined
-  ): IMergeReport {
-    if (!transunion) return JSON.parse("{}");
+  parseTransunionMergeReport(transunion: TransunionInput | null | undefined): IMergeReport {
+    if (!transunion) return JSON.parse('{}');
     const fulfillMergeReport = transunion.fulfillMergeReport;
     const enrollMergeReport = transunion.enrollMergeReport;
     const serviceProductString = fulfillMergeReport
-      ? fulfillMergeReport?.serviceProductObject || "{}"
-      : enrollMergeReport?.serviceProductObject || "{}";
+      ? fulfillMergeReport?.serviceProductObject || '{}'
+      : enrollMergeReport?.serviceProductObject || '{}';
     const serviceProductObject: IMergeReport =
-      typeof serviceProductString === "string"
-        ? JSON.parse(serviceProductString)
-        : serviceProductString;
+      typeof serviceProductString === 'string' ? JSON.parse(serviceProductString) : serviceProductString;
     return serviceProductObject ? serviceProductObject : ({} as IMergeReport);
   }
 
   parseCreditScore(transunion: TransunionInput): number | null {
-    if (!transunion) return JSON.parse("{}");
+    if (!transunion) return JSON.parse('{}');
     const fulfill = transunion.fulfillVantageScore;
     const enroll = transunion.enrollVantageScore;
-    const sps = fulfill
-      ? fulfill?.serviceProductObject || "{}"
-      : enroll?.serviceProductObject || "{}";
-    const spo: IVantageScore = typeof sps === "string" ? JSON.parse(sps) : sps;
+    const sps = fulfill ? fulfill?.serviceProductObject || '{}' : enroll?.serviceProductObject || '{}';
+    const spo: IVantageScore = typeof sps === 'string' ? JSON.parse(sps) : sps;
     const riskScore = spo.CreditScoreType.riskScore;
     if (!riskScore) return 0;
     const value = +`${riskScore}`;
@@ -148,7 +137,7 @@ export class TransunionUtil {
       const symbol = b.Tradeline?.GrantedTrade?.AccountType?.symbol;
       if (!symbol || !isNaN(+symbol)) return a + 0;
       const symStr = (symbol as string).toLowerCase();
-      return symStr === "st" || symStr === "educ" ? a + 1 : a + 0;
+      return symStr === 'st' || symStr === 'educ' ? a + 1 : a + 0;
     }, 0);
   }
 
@@ -156,7 +145,7 @@ export class TransunionUtil {
     if (!this.tradelineRecords || !this.tradelineRecords.length) return 0;
     // TrueLinkCreditReportType > TradeLinePartition > AccountTypeDescription > Primary or secondary mortgage (M)
     return this.tradelineRecords.reduce((a, b) => {
-      const isMortgage = b.accountTypeSymbol?.toLowerCase() === "m";
+      const isMortgage = b.accountTypeSymbol?.toLowerCase() === 'm';
       return isMortgage ? a + 1 : a + 0;
     }, 0);
   }
@@ -168,11 +157,7 @@ export class TransunionUtil {
       const symbol = b.Tradeline?.GrantedTrade?.AccountType?.symbol;
       if (!symbol || !isNaN(+symbol)) return a + 0;
       const symStr = (symbol as string).toLowerCase();
-      const isAutoLoan =
-        symStr === "al" ||
-        symStr === "ar" ||
-        symStr === "at" ||
-        symStr === "au";
+      const isAutoLoan = symStr === 'al' || symStr === 'ar' || symStr === 'at' || symStr === 'au';
       return isAutoLoan ? a + 1 : a + 0;
     }, 0);
   }
@@ -181,7 +166,7 @@ export class TransunionUtil {
     if (!this.tradelineRecords || !this.tradelineRecords.length) return 0;
     // TrueLinkCreditReportType > TradeLinePartition > AccountTypeDescription > Primary or secondary mortgage (M)
     return this.tradelineRecords.reduce((a, b) => {
-      const isCollections = b.accountTypeSymbol?.toLowerCase() === "y";
+      const isCollections = b.accountTypeSymbol?.toLowerCase() === 'y';
       return isCollections ? a + 1 : a + 0;
     }, 0);
   }

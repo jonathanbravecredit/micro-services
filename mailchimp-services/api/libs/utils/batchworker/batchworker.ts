@@ -1,17 +1,20 @@
 import * as _ from 'lodash';
 import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
-import { UpdateAppDataInput } from 'libs/aws/api.service';
 import { IAttributeValue } from 'libs/interfaces/batch.interfaces';
 import { parallelScanAppData } from 'libs/queries/appdata.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
-// import { CreditReport } from 'libs/interfaces/credit-report.interface';
 import { Dispute } from 'libs/models/dispute.model';
 import { IMailchimpPacket, IMarketingData, MailMessage } from 'libs/utils/mailchimp/interfaces';
 import { flattenUser, getUsersBySub } from 'libs/queries/cognito.queries';
-import { getLastTwoReports } from 'libs/queries/CreditReport.queries';
 import { getRandomDisputesById } from 'libs/queries/disputes.queries';
-import { CreditReport, IBatchMsg, IBatchPayload } from '@bravecredit/brave-sdk';
+import {
+  CreditReport,
+  CreditReportQueries,
+  IBatchMsg,
+  IBatchPayload,
+  UpdateAppDataInput,
+} from '@bravecredit/brave-sdk';
 
 export class BatchTagWorker {
   lookup: Map<string, string> = new Map();
@@ -79,7 +82,7 @@ export class BatchTagWorker {
       lookup.set(sub, email);
       const disputesArr = await getRandomDisputesById(sub);
       const dispute = disputesArr.pop() || null;
-      const [currReport, priorReport] = await getLastTwoReports(sub);
+      const [currReport, priorReport] = await CreditReportQueries.listLastTwoReports(sub);
       return {
         appData,
         dispute,

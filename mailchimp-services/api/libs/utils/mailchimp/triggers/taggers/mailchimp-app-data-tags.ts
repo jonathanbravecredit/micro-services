@@ -1,8 +1,8 @@
-import { UpdateAppDataInput } from 'libs/aws/api.service';
 import { MarketingCheckZero } from 'libs/utils/mailchimp/checkers/checks/MarketingCheckZero';
 import { MarketingCheckOne } from 'libs/utils/mailchimp/checkers/checks/MarketingCheckOne';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
 import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'libs/utils/mailchimp/interfaces';
+import { UpdateAppDataInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 
 export class MailchimpAppDataMarketingTags {
   static currTriggers: IMailchimpPacket<IMarketingData>[];
