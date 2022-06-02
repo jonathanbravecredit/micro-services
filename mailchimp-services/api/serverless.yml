@@ -12,13 +12,14 @@ plugins:
 
 custom:
   bundle:
-    external: all
+    # external: all
     linting: false
     aliases:
       - 'libs': libs
       - 'src': src
       - 'tests': tests
-    sourcemaps: true
+    sourcemaps: false
+    disableForkTsChecker: true
     fixPackages: # Include fixes for specific packages
       - 'formidable@1.x'
 

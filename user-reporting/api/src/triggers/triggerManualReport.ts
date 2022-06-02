@@ -35,7 +35,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   if (!report) throw `No report provided:${report}`;
   try {
     let counter = 0;
-    const segments: number[] = [];
+    const segments = [];
     for (let i = 0; i < 20; i++) {
       segments.push(i);
     }
