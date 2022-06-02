@@ -79,7 +79,10 @@ export const main: Handler<any, any> = async (event: { batchId: string }): Promi
     });
 
     // config the emails transporter
-    const emails = STAGE === 'dev' ? ['jonathan@brave.credit'] : ['jonathan@brave.credit', 'jorge@brave.credit'];
+    const emails =
+      STAGE === 'dev'
+        ? ['jonathan@brave.credit', 'noah@brave.credit']
+        : ['jonathan@brave.credit', 'jorge@brave.credit'];
     let params = generateEmailParams(`Report: ${ReportNames.EnrollmentYTD}`, emails);
     params.attachments = [
       {
