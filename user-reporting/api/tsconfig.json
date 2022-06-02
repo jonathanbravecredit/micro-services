@@ -6,7 +6,6 @@
     "target": "es6",
     "sourceMap": true,
     "strict": true,
-    "noImplicitAny": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,

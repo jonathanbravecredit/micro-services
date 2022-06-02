@@ -30,7 +30,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'enrollmentreport');
         await sns.publish(payload).promise();
       }),
     );
