@@ -1,11 +1,4 @@
-import {
-  IAccountHistorySummary,
-  IInquirySummary,
-  IPortfolioCreditSummary,
-  IPublicRecordSummary,
-  ISummary,
-  ITradelineSummary,
-} from 'libs/interfaces/mergereport.interface';
+import { IAccountHistorySummary, IInquirySummary, IPortfolioCreditSummary, IPublicRecordSummary, ISummary, ITradelineSummary } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { AccountHistorySummary } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/AccountHistorySummary';
 import { InquirySummary } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/InquirySummary';

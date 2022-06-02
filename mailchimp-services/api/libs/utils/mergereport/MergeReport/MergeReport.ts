@@ -1,4 +1,4 @@
-import { IMergeReport, ITrueLinkCreditReportType } from 'libs/interfaces/mergereport.interface';
+import { IMergeReport, ITrueLinkCreditReportType } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { TrueLinkCreditReportType } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/TrueLinkCreditReport';
 

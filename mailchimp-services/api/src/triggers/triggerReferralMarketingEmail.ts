@@ -1,13 +1,12 @@
 'use strict';
+import { Referral } from '@bravecredit/brave-sdk';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
 import { DynamoDB, SNS } from 'aws-sdk';
-import { IReferrals } from 'libs/interfaces/referrals.interfaces';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 
 const sns = new SNS();
 const pool = process.env.POOL || '';
-const stage = process.env.STAGE;
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
@@ -19,8 +18,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { OldImage, NewImage } = stream;
           if (!OldImage || !NewImage) return;
-          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as IReferrals;
-          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as IReferrals;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Referral;
+          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
             UserAttributes?.find((attr) => {

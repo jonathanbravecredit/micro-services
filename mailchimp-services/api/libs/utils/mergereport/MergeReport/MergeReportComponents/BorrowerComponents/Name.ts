@@ -1,4 +1,4 @@
-import { IName } from 'libs/interfaces/mergereport.interface';
+import { IName } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class Name extends Homogenize<Partial<IName>> implements IName {

@@ -1,4 +1,4 @@
-import { IInquirySummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { IInquirySummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class InquirySummaryInfo extends Homogenize<Partial<IInquirySummaryInfo>> implements IInquirySummaryInfo {

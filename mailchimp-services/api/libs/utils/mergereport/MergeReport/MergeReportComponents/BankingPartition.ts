@@ -1,4 +1,4 @@
-import { IBankingPartition, IBankingRecord } from 'libs/interfaces/mergereport.interface';
+import { IBankingPartition, IBankingRecord } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { BankingRecord } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/BankingComponents/BankingRecord';
 

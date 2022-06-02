@@ -1,5 +1,5 @@
-import { InitiativeTask } from 'libs/classes/Initiative';
-import { UserInitiative } from 'libs/models/UserInitiative.model';
+import { UserInitiative } from '@bravecredit/brave-sdk';
+import { InitiativeTask } from '@bravecredit/brave-sdk/dist/models/user-initiative/initiative/initiative';
 import { MailchimpMarketingChecker } from 'libs/utils/mailchimp/checkers/MailchimpMarketingChecker';
 import { IMarketingCheckerResults } from 'libs/utils/mailchimp/interfaces';
 import * as _ from 'lodash';

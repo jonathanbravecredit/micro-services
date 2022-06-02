@@ -1,4 +1,4 @@
-import { ITradelineSummary, ITradelineSummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { ITradelineSummary, ITradelineSummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { TradelineSummaryInfo } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/TradelineSummaryInfo';
 

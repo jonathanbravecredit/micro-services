@@ -1,5 +1,4 @@
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
-import { IMergeReport } from 'libs/interfaces/mergereport.interface';
+import { CreditReport, IMergeReport } from '@bravecredit/brave-sdk';
 import { MailchimpMarketingChecker } from 'libs/utils/mailchimp/checkers/MailchimpMarketingChecker';
 import { ICreditReportChecker } from 'libs/utils/mailchimp/interfaces';
 

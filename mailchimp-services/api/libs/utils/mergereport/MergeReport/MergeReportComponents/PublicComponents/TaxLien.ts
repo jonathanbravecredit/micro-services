@@ -1,5 +1,5 @@
-import { ITaxLien } from 'libs/interfaces/mergereport.interface';
-import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
+import { ITaxLien } from "@bravecredit/brave-sdk/dist/types/merge-report";
+import { Homogenize } from "libs/utils/mergereport/Base/HomogenizeData";
 
 export class TaxLien extends Homogenize<Partial<ITaxLien>> implements ITaxLien {
   amount: number | string | null = null;

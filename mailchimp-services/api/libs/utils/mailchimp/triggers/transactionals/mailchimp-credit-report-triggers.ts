@@ -1,6 +1,9 @@
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
-import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
-import { IMailchimpPacket, ITransactionalData } from 'libs/utils/mailchimp/interfaces';
+import { CreditReport } from "@bravecredit/brave-sdk";
+import { MailchimpTriggerEmails } from "libs/utils/mailchimp/constants";
+import {
+  IMailchimpPacket,
+  ITransactionalData,
+} from "libs/utils/mailchimp/interfaces";
 
 export class MailchimpCreditReportTriggers {
   static currTriggers: IMailchimpPacket<ITransactionalData>[];
@@ -10,12 +13,14 @@ export class MailchimpCreditReportTriggers {
   static resolver(
     oldImage: CreditReport | null,
     newImage: CreditReport,
-    event: 'INSERT' | 'MODIFY',
+    event: "INSERT" | "MODIFY"
   ): IMailchimpPacket<ITransactionalData>[] {
     let triggers: IMailchimpPacket<ITransactionalData>[] = [];
     for (let key in triggerLibrary) {
       const { data, test } = triggerLibrary[key](oldImage, newImage, event);
-      triggers = test ? (triggers = [...triggers, { template: key, data: data }]) : triggers;
+      triggers = test
+        ? (triggers = [...triggers, { template: key, data: data }])
+        : triggers;
     }
     this.currTriggers = triggers; // store for reference
     return triggers;
@@ -31,15 +36,16 @@ export class MailchimpCreditReportTriggers {
 const checkOne = (
   oldImage: CreditReport | null,
   newImage: CreditReport,
-  event: 'INSERT' | 'MODIFY',
+  event: "INSERT" | "MODIFY"
 ): { test: boolean; data?: ITransactionalData } => {
-  if (event !== 'MODIFY') return { test: false };
-  const t1 = newImage.version === 0 && newImage.modifiedOn !== oldImage?.modifiedOn;
+  if (event !== "MODIFY") return { test: false };
+  const t1 =
+    newImage.version === 0 && newImage.modifiedOn !== oldImage?.modifiedOn;
   if (!t1) return { test: false };
   return {
     test: true,
     data: {
-      api: 'transactional',
+      api: "transactional",
     },
   };
 };
@@ -49,7 +55,7 @@ const triggerLibrary: Record<
   (
     oldImage: CreditReport | null,
     newImage: CreditReport,
-    event: 'INSERT' | 'MODIFY',
+    event: "INSERT" | "MODIFY"
   ) => { test: boolean; data?: ITransactionalData }
 > = {
   [MailchimpTriggerEmails.ReportRefreshed]: checkOne,

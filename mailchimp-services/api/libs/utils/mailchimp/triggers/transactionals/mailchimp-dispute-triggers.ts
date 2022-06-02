@@ -1,6 +1,8 @@
-import { IDispute } from 'libs/interfaces';
-import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
-import { IMailchimpPacket, ITransactionalData } from 'libs/utils/mailchimp/interfaces';
+import { IDispute } from "libs/interfaces";
+import {
+  IMailchimpPacket,
+  ITransactionalData,
+} from "libs/utils/mailchimp/interfaces";
 
 export class MailchimpDisputeTriggers {
   static currTriggers: IMailchimpPacket<ITransactionalData>[];
@@ -10,12 +12,14 @@ export class MailchimpDisputeTriggers {
   static resolver(
     oldImage: IDispute | null,
     newImage: IDispute,
-    event: 'INSERT' | 'MODIFY',
+    event: "INSERT" | "MODIFY"
   ): IMailchimpPacket<ITransactionalData>[] {
     let triggers: IMailchimpPacket<ITransactionalData>[] = [];
     for (let key in triggerLibrary) {
       const { data, test } = triggerLibrary[key](oldImage, newImage, event);
-      triggers = test ? (triggers = [...triggers, { template: key, data: data }]) : triggers;
+      triggers = test
+        ? (triggers = [...triggers, { template: key, data: data }])
+        : triggers;
     }
     this.currTriggers = triggers; // store for reference
     return triggers;
@@ -28,7 +32,7 @@ const triggerLibrary: Record<
   (
     oldImage: IDispute | null,
     newImage: IDispute,
-    event: 'INSERT' | 'MODIFY',
+    event: "INSERT" | "MODIFY"
   ) => { test: boolean; data?: ITransactionalData }
 > = {
   // [MailchimpTriggerEmails.DisputeSubmitted]: checkTwo,

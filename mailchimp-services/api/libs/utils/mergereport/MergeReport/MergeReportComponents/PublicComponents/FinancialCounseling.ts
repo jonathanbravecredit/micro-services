@@ -1,4 +1,4 @@
-import { IFinancialCounseling } from 'libs/interfaces/mergereport.interface';
+import { IFinancialCounseling } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class FinancialCounseling extends Homogenize<Partial<IFinancialCounseling>> implements IFinancialCounseling {

@@ -1,4 +1,4 @@
-import { ISource, ISourceSummary } from 'libs/interfaces/common.interface';
+import { ISource, ISourceSummary } from "libs/interfaces/common.interface";
 import {
   IBankingPartition,
   IBorrower,
@@ -10,18 +10,18 @@ import {
   ISummary,
   ITradeLinePartition,
   ITrueLinkCreditReportType,
-} from 'libs/interfaces/mergereport.interface';
-import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
-import { SourceSummary } from 'libs/utils/mergereport/Common/SourceSummary';
-import { BankingPartition } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/BankingPartition';
-import { Borrower } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/Borrower';
-import { InquiryPartition } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/InquiryPartition';
-import { Message } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/Message';
-import { PublicPartition } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/PublicPartition';
-import { SB168Frozen } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SB168Frozen';
-import { Subscriber } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/Subscriber';
-import { Summary } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/Summary';
-import { TradeLinePartition } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/TradeLinePartition';
+} from "@bravecredit/brave-sdk/dist/types/merge-report";
+import { Homogenize } from "libs/utils/mergereport/Base/HomogenizeData";
+import { SourceSummary } from "libs/utils/mergereport/Common/SourceSummary";
+import { BankingPartition } from "libs/utils/mergereport/MergeReport/MergeReportComponents/BankingPartition";
+import { Borrower } from "libs/utils/mergereport/MergeReport/MergeReportComponents/Borrower";
+import { InquiryPartition } from "libs/utils/mergereport/MergeReport/MergeReportComponents/InquiryPartition";
+import { Message } from "libs/utils/mergereport/MergeReport/MergeReportComponents/Message";
+import { PublicPartition } from "libs/utils/mergereport/MergeReport/MergeReportComponents/PublicPartition";
+import { SB168Frozen } from "libs/utils/mergereport/MergeReport/MergeReportComponents/SB168Frozen";
+import { Subscriber } from "libs/utils/mergereport/MergeReport/MergeReportComponents/Subscriber";
+import { Summary } from "libs/utils/mergereport/MergeReport/MergeReportComponents/Summary";
+import { TradeLinePartition } from "libs/utils/mergereport/MergeReport/MergeReportComponents/TradeLinePartition";
 
 export class TrueLinkCreditReportType
   extends Homogenize<Partial<ITrueLinkCreditReportType>>
@@ -52,25 +52,34 @@ export class TrueLinkCreditReportType
   init(): void {
     this.SB168Frozen = new SB168Frozen(this.SB168Frozen);
     this.Borrower = new Borrower(this.Borrower);
-    this.TradeLinePartition = this.homogenizeArray<ITradeLinePartition, TradeLinePartition>(
-      this.TradeLinePartition,
-      TradeLinePartition,
+    this.TradeLinePartition = this.homogenizeArray<
+      ITradeLinePartition,
+      TradeLinePartition
+    >(this.TradeLinePartition, TradeLinePartition);
+    this.InquiryPartition = this.homogenizeArray<
+      IInquiryPartition,
+      InquiryPartition
+    >(this.InquiryPartition, InquiryPartition);
+    this.BankingRecordPartition = this.homogenizeArray<
+      IBankingPartition,
+      BankingPartition
+    >(this.BankingRecordPartition, BankingPartition);
+    this.PulblicRecordPartition = this.homogenizeArray<
+      IPublicPartition,
+      PublicPartition
+    >(this.PulblicRecordPartition, PublicPartition);
+    this.Subscriber = this.homogenizeArray<ISubscriber, Subscriber>(
+      this.Subscriber,
+      Subscriber
     );
-    this.InquiryPartition = this.homogenizeArray<IInquiryPartition, InquiryPartition>(
-      this.InquiryPartition,
-      InquiryPartition,
+    this.Message = this.homogenizeArray<IMessage, Message>(
+      this.Message,
+      Message
     );
-    this.BankingRecordPartition = this.homogenizeArray<IBankingPartition, BankingPartition>(
-      this.BankingRecordPartition,
-      BankingPartition,
-    );
-    this.PulblicRecordPartition = this.homogenizeArray<IPublicPartition, PublicPartition>(
-      this.PulblicRecordPartition,
-      PublicPartition,
-    );
-    this.Subscriber = this.homogenizeArray<ISubscriber, Subscriber>(this.Subscriber, Subscriber);
-    this.Message = this.homogenizeArray<IMessage, Message>(this.Message, Message);
     this.Summary = new Summary(this.Summary);
-    this.Sources = this.homogenizeArray<ISourceSummary, SourceSummary>(this.Sources, SourceSummary);
+    this.Sources = this.homogenizeArray<ISourceSummary, SourceSummary>(
+      this.Sources,
+      SourceSummary
+    );
   }
 }

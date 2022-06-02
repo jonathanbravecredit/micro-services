@@ -1,4 +1,4 @@
-import { IMiscPublicRecord } from 'libs/interfaces/mergereport.interface';
+import { IMiscPublicRecord } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class MiscPublicRecord extends Homogenize<Partial<IMiscPublicRecord>> implements IMiscPublicRecord {

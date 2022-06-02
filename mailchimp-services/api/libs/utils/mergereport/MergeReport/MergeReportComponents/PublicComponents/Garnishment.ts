@@ -1,4 +1,4 @@
-import { IGarnishment } from 'libs/interfaces/mergereport.interface';
+import { IGarnishment } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class Garnishment extends Homogenize<Partial<IGarnishment>> implements IGarnishment {

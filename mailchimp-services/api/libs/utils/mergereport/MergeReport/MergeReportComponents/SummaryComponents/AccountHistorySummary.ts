@@ -1,4 +1,4 @@
-import { IAccountHistorySummary, IAccountHistorySummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { IAccountHistorySummary, IAccountHistorySummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { AccountHistorySummaryInfo } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/AccountHistorySummaryInfo';
 
@@ -6,7 +6,7 @@ export class AccountHistorySummary
   extends Homogenize<Partial<IAccountHistorySummary>>
   implements IAccountHistorySummary
 {
-  Transunion!: IAccountHistorySummaryInfo;
+  TransUnion!: IAccountHistorySummaryInfo;
 
   constructor(_data: Partial<IAccountHistorySummary>) {
     super(_data);
@@ -15,6 +15,6 @@ export class AccountHistorySummary
   }
 
   init(): void {
-    this.Transunion = new AccountHistorySummaryInfo(this.Transunion);
+    this.TransUnion = new AccountHistorySummaryInfo(this.TransUnion);
   }
 }

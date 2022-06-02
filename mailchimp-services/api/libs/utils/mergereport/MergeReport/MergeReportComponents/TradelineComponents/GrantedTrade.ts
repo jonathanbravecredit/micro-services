@@ -1,5 +1,5 @@
 import { ICodeRef } from 'libs/interfaces/common.interface';
-import { IGrantedTrade, IPayStatusHistory } from 'libs/interfaces/mergereport.interface';
+import { IGrantedTrade, IPayStatusHistory } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { CodeRef } from 'libs/utils/mergereport/Common/CodeRef';
 import { PayStatusHistory } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/TradelineComponents/PayStatusHistory';

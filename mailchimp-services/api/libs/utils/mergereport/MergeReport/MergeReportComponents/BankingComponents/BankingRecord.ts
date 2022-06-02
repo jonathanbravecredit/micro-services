@@ -1,11 +1,14 @@
-import { ICodeRef, IRemark, ISource } from 'libs/interfaces/common.interface';
-import { IBankingRecord } from 'libs/interfaces/mergereport.interface';
-import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
-import { CodeRef } from 'libs/utils/mergereport/Common/CodeRef';
-import { Remark } from 'libs/utils/mergereport/Common/Remark';
-import { Source } from 'libs/utils/mergereport/Common/Source';
+import { ICodeRef, IRemark, ISource } from "libs/interfaces/common.interface";
+import { IBankingRecord } from "@bravecredit/brave-sdk/dist/types/merge-report";
+import { Homogenize } from "libs/utils/mergereport/Base/HomogenizeData";
+import { CodeRef } from "libs/utils/mergereport/Common/CodeRef";
+import { Remark } from "libs/utils/mergereport/Common/Remark";
+import { Source } from "libs/utils/mergereport/Common/Source";
 
-export class BankingRecord extends Homogenize<Partial<IBankingRecord>> implements IBankingRecord {
+export class BankingRecord
+  extends Homogenize<Partial<IBankingRecord>>
+  implements IBankingRecord
+{
   BankingType!: ICodeRef;
   AccountDesignator!: ICodeRef;
   IndustryCode!: ICodeRef;

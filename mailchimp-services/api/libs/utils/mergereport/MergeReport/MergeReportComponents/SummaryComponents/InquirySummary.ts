@@ -1,4 +1,4 @@
-import { IInquirySummary, IInquirySummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { IInquirySummary, IInquirySummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { InquirySummaryInfo } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/InquirySummaryInfo';
 

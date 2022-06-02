@@ -1,5 +1,5 @@
+import { CreditReport } from '@bravecredit/brave-sdk';
 import { TransunionInput, UpdateAppDataInput } from 'libs/aws/api.service';
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
 
 export interface MailPayload {
   service: string;

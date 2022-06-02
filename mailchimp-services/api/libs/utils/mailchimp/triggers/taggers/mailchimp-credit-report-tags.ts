@@ -12,8 +12,8 @@ import { MarketingCheckTwelve } from 'libs/utils/mailchimp/checkers/checks/Marke
 import { MarketingCheckThirteen } from 'libs/utils/mailchimp/checkers/checks/MarketingCheckThirteen';
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
 import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'libs/utils/mailchimp/interfaces';
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
 import { MarketingCheckFourteen } from 'libs/utils/mailchimp/checkers/checks/MarketingCheckFourteen';
+import { CreditReport } from '@bravecredit/brave-sdk';
 
 export class MailchimpCreditReportMarketingTags {
   static currTriggers: IMailchimpPacket<IMarketingData>[];

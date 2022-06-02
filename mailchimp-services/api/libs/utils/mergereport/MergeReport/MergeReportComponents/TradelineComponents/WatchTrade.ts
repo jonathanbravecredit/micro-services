@@ -1,9 +1,12 @@
-import { ICodeRef } from 'libs/interfaces/common.interface';
-import { IWatchTrade } from 'libs/interfaces/mergereport.interface';
-import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
-import { CodeRef } from 'libs/utils/mergereport/Common/CodeRef';
+import { ICodeRef } from "libs/interfaces/common.interface";
+import { IWatchTrade } from "@bravecredit/brave-sdk/dist/types/merge-report";
+import { Homogenize } from "libs/utils/mergereport/Base/HomogenizeData";
+import { CodeRef } from "libs/utils/mergereport/Common/CodeRef";
 
-export class WatchTrade extends Homogenize<Partial<IWatchTrade>> implements IWatchTrade {
+export class WatchTrade
+  extends Homogenize<Partial<IWatchTrade>>
+  implements IWatchTrade
+{
   ContactMethod!: ICodeRef;
   CreditType!: ICodeRef;
   PreviousAccountCondition!: ICodeRef;

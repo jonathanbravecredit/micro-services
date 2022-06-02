@@ -1,4 +1,4 @@
-import { ITradeline, ITradeLinePartition } from 'libs/interfaces/mergereport.interface';
+import { ITradeline, ITradeLinePartition } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { Tradeline } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/TradelineComponents/Tradeline';
 

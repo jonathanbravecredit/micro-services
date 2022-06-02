@@ -9,7 +9,7 @@ import {
   ICreditStatement,
   IEmployer,
   ISocialPartition,
-} from 'libs/interfaces/mergereport.interface';
+} from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { BorrowerAddress } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/BorrowerComponents/BorrowerAddress';
 import { BorrowerBirth } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/BorrowerComponents/BorrowerBirth';

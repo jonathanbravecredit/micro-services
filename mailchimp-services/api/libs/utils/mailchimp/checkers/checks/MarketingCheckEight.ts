@@ -1,4 +1,4 @@
-import { CreditReport } from 'libs/interfaces/credit-report.interface';
+import { CreditReport } from '@bravecredit/brave-sdk';
 import { CreditReportChecker } from 'libs/utils/mailchimp/checkers/CreditReportChecker';
 import { IMarketingCheckerResults } from 'libs/utils/mailchimp/interfaces';
 import { CreditReportMetrics } from 'libs/utils/transunion/CreditReportMetrics';

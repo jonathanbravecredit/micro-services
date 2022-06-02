@@ -1,5 +1,5 @@
 import { ISource } from 'libs/interfaces/common.interface';
-import { IBorrowerBureauIdentifier } from 'libs/interfaces/mergereport.interface';
+import { IBorrowerBureauIdentifier } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { Source } from 'libs/utils/mergereport/Common/Source';
 

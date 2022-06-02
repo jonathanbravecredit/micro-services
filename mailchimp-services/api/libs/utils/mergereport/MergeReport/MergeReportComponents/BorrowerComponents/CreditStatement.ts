@@ -1,5 +1,5 @@
 import { ICodeRef, ISource } from 'libs/interfaces/common.interface';
-import { ICreditStatement } from 'libs/interfaces/mergereport.interface';
+import { ICreditStatement } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { CodeRef } from 'libs/utils/mergereport/Common/CodeRef';
 import { Source } from 'libs/utils/mergereport/Common/Source';

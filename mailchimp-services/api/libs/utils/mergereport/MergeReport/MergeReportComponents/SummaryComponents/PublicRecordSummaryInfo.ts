@@ -1,4 +1,4 @@
-import { IPublicRecordSummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { IPublicRecordSummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class PublicRecordSummaryInfo

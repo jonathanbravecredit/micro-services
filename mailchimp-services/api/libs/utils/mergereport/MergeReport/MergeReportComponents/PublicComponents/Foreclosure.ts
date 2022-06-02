@@ -1,4 +1,4 @@
-import { IForeclosure } from 'libs/interfaces/mergereport.interface';
+import { IForeclosure } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class Foreclosure extends Homogenize<Partial<IForeclosure>> implements IForeclosure {

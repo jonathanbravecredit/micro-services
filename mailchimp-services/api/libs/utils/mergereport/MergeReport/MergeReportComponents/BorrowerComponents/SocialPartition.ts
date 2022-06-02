@@ -1,8 +1,14 @@
-import { ISocial, ISocialPartition } from 'libs/interfaces/mergereport.interface';
-import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
-import { Social } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/BorrowerComponents/Social';
+import {
+  ISocial,
+  ISocialPartition,
+} from "@bravecredit/brave-sdk/dist/types/merge-report";
+import { Homogenize } from "libs/utils/mergereport/Base/HomogenizeData";
+import { Social } from "libs/utils/mergereport/MergeReport/MergeReportComponents/BorrowerComponents/Social";
 
-export class SocialPartition extends Homogenize<Partial<ISocialPartition>> implements ISocialPartition {
+export class SocialPartition
+  extends Homogenize<Partial<ISocialPartition>>
+  implements ISocialPartition
+{
   Social: ISocial[] = [];
 
   constructor(_data: Partial<ISocialPartition>) {

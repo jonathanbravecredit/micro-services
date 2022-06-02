@@ -1,9 +1,9 @@
+import { IMonthlyPayStatusItem } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { ICodeRef } from 'libs/interfaces/common.interface';
-import { IMonthyPayStatusItem } from 'libs/interfaces/mergereport.interface';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { CodeRef } from 'libs/utils/mergereport/Common/CodeRef';
 
-export class MonthlyPayStatusItem extends Homogenize<Partial<IMonthyPayStatusItem>> implements IMonthyPayStatusItem {
+export class MonthlyPayStatusItem extends Homogenize<Partial<IMonthlyPayStatusItem>> implements IMonthlyPayStatusItem {
   GenericRemark!: ICodeRef;
   RatingRemark!: ICodeRef;
   ComplianceRemark!: ICodeRef;
@@ -17,7 +17,7 @@ export class MonthlyPayStatusItem extends Homogenize<Partial<IMonthyPayStatusIte
   currentBalance: number | string | null = null;
   changed: boolean | string | null = null;
 
-  constructor(_data: Partial<IMonthyPayStatusItem>) {
+  constructor(_data: Partial<IMonthlyPayStatusItem>) {
     super(_data);
     this.homogenize(_data);
     this.init();

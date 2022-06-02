@@ -1,4 +1,4 @@
-import { ISB168Frozen } from 'libs/interfaces/mergereport.interface';
+import { ISB168Frozen } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 
 export class SB168Frozen extends Homogenize<Partial<ISB168Frozen>> implements ISB168Frozen {

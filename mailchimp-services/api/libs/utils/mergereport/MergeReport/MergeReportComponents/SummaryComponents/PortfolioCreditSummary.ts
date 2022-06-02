@@ -1,4 +1,4 @@
-import { IPortfolioCreditSummary, IPortfolioCreditSummaryInfo } from 'libs/interfaces/mergereport.interface';
+import { IPortfolioCreditSummary, IPortfolioCreditSummaryInfo } from '@bravecredit/brave-sdk/dist/types/merge-report';
 import { Homogenize } from 'libs/utils/mergereport/Base/HomogenizeData';
 import { PortfolioCreditSummaryInfo } from 'libs/utils/mergereport/MergeReport/MergeReportComponents/SummaryComponents/PortfolioCreditSummaryInfo';
 
@@ -6,7 +6,7 @@ export class PortfolioCreditSummary
   extends Homogenize<Partial<IPortfolioCreditSummary>>
   implements IPortfolioCreditSummary
 {
-  Transunion!: IPortfolioCreditSummaryInfo;
+  TransUnion!: IPortfolioCreditSummaryInfo;
 
   constructor(_data: Partial<IPortfolioCreditSummary>) {
     super(_data);
@@ -15,6 +15,6 @@ export class PortfolioCreditSummary
   }
 
   init(): void {
-    this.Transunion = new PortfolioCreditSummaryInfo(this.Transunion);
+    this.TransUnion = new PortfolioCreditSummaryInfo(this.TransUnion);
   }
 }
