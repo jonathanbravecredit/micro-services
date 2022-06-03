@@ -79,7 +79,7 @@ resources:
             - mailchimpbatch
         RawMessageDelivery: 'true'
 
-    MailchimpData:
+    DNUMailchimpData:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
@@ -93,7 +93,7 @@ resources:
           - AttributeName: 'messageId'
             KeyType: 'RANGE'
         BillingMode: PAY_PER_REQUEST
-        TableName: MailchimpData
+        TableName: DNUMailchimpData
         StreamSpecification:
           StreamViewType: NEW_IMAGE
 
