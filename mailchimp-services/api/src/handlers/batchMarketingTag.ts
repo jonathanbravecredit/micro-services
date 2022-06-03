@@ -10,7 +10,7 @@ const pubsub = new PubSubUtil();
 export const main: Handler = async (): Promise<any> => {
   try {
     let counter = 0;
-    const segments = [];
+    const segments: number[] = [];
     for (let i = 0; i < 10; i++) {
       segments.push(i);
     }

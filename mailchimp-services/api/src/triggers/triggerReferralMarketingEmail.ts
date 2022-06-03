@@ -22,7 +22,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as Referral;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
-            UserAttributes?.find((attr) => {
+            UserAttributes?.find((attr: any) => {
               return attr.Name === 'email';
             })?.Value || '';
           const mailchimpTriggers = Mailchimp.marketing.referral.resolver(oldImage, newImage);
