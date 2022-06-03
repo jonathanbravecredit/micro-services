@@ -1,42 +1,32 @@
 import 'reflect-metadata';
 import * as nodemailer from 'nodemailer';
-import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
 import dayjs from 'dayjs';
 import { safeParse } from 'libs/safeJson';
-import { SNS, SES, DynamoDB, CognitoIdentityServiceProvider } from 'aws-sdk';
+import { SNS, SES, CognitoIdentityServiceProvider } from 'aws-sdk';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
 import { ReportNames } from 'libs/data/reports';
 import { PubSubUtil } from 'libs/pubsub/pubsub';
-import { getCognitoUsers, getUser } from 'libs/db/cognito';
-import { createOpReport } from 'libs/queries/ops-report.queries';
-import { IEnrollUserBatchMsg } from 'libs/interfaces/enrolled-user-report.interface';
-import { IEmployer, IMergeReport } from 'libs/interfaces/merge-report.interfaces';
+import { getCognitoUsers } from 'libs/db/cognito';
 import { IAttributeValue, IBatchCognitoMsg, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { parallelScanAppData } from 'libs/db/appdata';
-import { parallelScanAPIData } from 'libs/queries/api-transaction.queries';
-import { parallelScanReferrals } from 'libs/db/referrals';
-import { parallelScanActionData } from 'libs/db/actions';
-import { APITransactionLog } from 'libs/models/api-transaction.model';
-import { Referral } from 'libs/models/referral.model';
-import {
-  flattenUser,
-  generateEmailParams,
-  mapDisputeEnrollmentFields,
-  mapEnrollmentFields,
-  mapFailedFulfilFields,
-  mapSuspendedFields,
-} from 'libs/helpers';
-import { OpsReportMaker } from 'libs/models/ops-reports';
+import { flattenUser, generateEmailParams } from 'libs/helpers';
 import { MonthlyLogins } from 'libs/reports/MonthlyLogin/MonthlyLogin';
 import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggregateMetrics';
-import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
 import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
 import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
 import { DisputeAnalyticsReport } from 'libs/reports/dispute-analytics/dispute-analytics';
+import { Enrollment } from 'libs/reports/Enrollment/Enrollment';
+import { FailedUsers } from 'libs/reports/FailedUsers/FailedUsers';
+import { Actions } from 'libs/reports/Actions/Actions';
+import { Authentication } from 'libs/reports/Authentication/Authentication';
+import { DisputeEnrollment } from 'libs/reports/DisputeEnrollment/DisputeEnrollment';
+import { FailedFulfills } from 'libs/reports/FailedFulfills/FailedFulfills';
+import { Referrals } from 'libs/reports/Referrals/Referrals';
+import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import { IEmployer, IMergeReport } from '@bravecredit/brave-sdk/dist/types/merge-report';
 
-// request.debug = true; import * as request from 'request';
-// const errorLogger = new ErrorLogger();
 const ses = new SES({ region: 'us-east-1' });
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
@@ -61,61 +51,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${enrollmentReport.length} creditscoreupdates records `);
 
   if (enrollmentReport.length) {
+    const report = new Enrollment(enrollmentReport);
     try {
-      let counter = 0;
-      await Promise.all(
-        enrollmentReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanAppData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any) => {
-              const enrolled = item?.agencies?.transunion?.enrolled;
-              const enrolledOn = item?.agencies?.transunion?.enrolledOn;
-              const inCurrentYear = dayjs(enrolledOn).isAfter(dayjs('2021-11-30'));
-              if (enrolled && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = enrollmentYTDSchema;
-                const record = mapEnrollmentFields(item);
-                const ops = new OpsReportMaker(
-                  'enrollmentYTD',
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IEnrollUserBatchMsg = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IEnrollUserBatchMsg>('opsbatch', packet, 'enrollmentreport');
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -130,61 +74,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${failedReport.length} failure report records `);
 
   if (failedReport.length) {
+    const report = new FailedUsers(enrollmentReport);
     try {
-      let counter = 0;
-      await Promise.all(
-        failedReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanAppData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any) => {
-              const failed = item?.status === 'suspended';
-              const createdAt = item?.createdAt;
-              const inCurrentYear = dayjs(createdAt).isAfter(dayjs('2021-11-30'));
-              if (failed && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = enrollmentYTDSchema;
-                const record = mapSuspendedFields(item);
-                const ops = new OpsReportMaker(
-                  ReportNames.FailureYTD,
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -199,60 +97,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${actionsReport.length} actions report records `);
 
   if (actionsReport.length) {
+    const report = new Actions(enrollmentReport);
     try {
-      let counter = 0;
-      await Promise.all(
-        actionsReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanActionData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any) => {
-              const createdOn = item?.createdOn;
-              const inCurrentYear = dayjs(createdOn).isAfter(dayjs('2021-11-30'));
-              if (inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = {};
-                const record = item;
-                const ops = new OpsReportMaker(
-                  ReportNames.ActionsYTD,
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'actionsreport');
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -267,62 +120,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${authenticationReport.length} authentication report records `);
 
   if (authenticationReport.length) {
+    const report = new Authentication(enrollmentReport);
     try {
-      let counter = 0;
-      await Promise.all(
-        authenticationReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          const scan = await parallelScanAPIData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any, i: number) => {
-              const record = DynamoDB.Converter.unmarshall(item) as unknown as APITransactionLog;
-              const isAuth = record.action === 'Enroll:type';
-              if (isAuth) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = {};
-                const ops = new OpsReportMaker(
-                  ReportNames.AuthenticationAll,
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-              'opsbatch',
-              packet,
-              'authenticationcalls',
-            );
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -342,7 +148,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -362,7 +171,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -426,7 +238,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                     JSON.stringify(schema),
                     JSON.stringify(r),
                   );
-                  await createOpReport(ops);
+                  await OpsReportQueries.createOpReport(ops);
                   counter++;
                 }),
               );
@@ -467,7 +279,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       return JSON.stringify(results);
     } catch (err) {
       console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: { error: `Unknown server error=${err}` },
+      });
     }
   }
 
@@ -482,65 +297,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${disputeEnrollmentReport.length} dispute enrollment report records `);
 
   if (disputeEnrollmentReport.length) {
+    const report = new DisputeEnrollment(userAggregateMetrics);
     try {
-      let counter = 0;
-      await Promise.all(
-        disputeEnrollmentReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanAppData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any) => {
-              const disputeEnrolled = item?.agencies?.transunion?.disputeEnrolled;
-              const disputeEnrolledOn = item?.agencies?.transunion?.disputeEnrolledOn;
-              const inCurrentYear = dayjs(disputeEnrolledOn).isAfter(dayjs('2021-11-30'));
-              if (disputeEnrolled && inCurrentYear) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = {};
-                const record = mapDisputeEnrollmentFields(item);
-                const ops = new OpsReportMaker(
-                  ReportNames.DisputeEnrollmentYTD,
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-              'opsbatch',
-              packet,
-              'disputeenrollmentreport',
-            );
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -560,7 +325,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -575,66 +343,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${failedFulfillReport.length} failed fulfill report records `);
 
   if (failedFulfillReport.length) {
+    const report = new FailedFulfills(userAggregateMetrics);
     try {
-      let counter = 0;
-      const fulfillCalledOn = new Date('2022-03-05');
-      await Promise.all(
-        failedFulfillReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanAppData(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: any) => {
-              const enrolled = item.agencies.transunion.enrolled;
-              const fulfilledOn = new Date(item.agencies.transunion.fulfilledOn);
-              const ranPriorTo = dayjs(fulfilledOn).isBefore(dayjs(fulfillCalledOn));
-              if (enrolled && ranPriorTo) {
-                const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-                const schema = {};
-                const record = mapFailedFulfilFields(item);
-                const ops = new OpsReportMaker(
-                  ReportNames.FailedFulfillAll,
-                  batchId,
-                  JSON.stringify(schema),
-                  JSON.stringify(record),
-                );
-                await createOpReport(ops);
-                counter++;
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          );
-          // send the data to the query
-          // get the next start key.
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-              'opsbatch',
-              packet,
-              'failedfulfillreport',
-            );
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -649,89 +366,15 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   console.log(`Received ${referralsReport.length} referrals report records `);
 
   if (referralsReport.length) {
+    const report = new Referrals(userAggregateMetrics);
     try {
-      let counter = 0;
-      await Promise.all(
-        referralsReport.map(async (rec) => {
-          const message = rec.message;
-          const { exclusiveStartKey: esk, segment, totalSegments } = message;
-          console.log('message ==> ', message);
-          const scan = await parallelScanReferrals(esk, segment, totalSegments);
-          await Promise.all(
-            scan?.items.map(async (item: Referral) => {
-              const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
-              const schema = {};
-              let record: Referral = item;
-              // 1. only referred users
-              if (!record.enrolled) return;
-              // 2. if a referredByCode is present, get the id and email of the person
-              // if (record.referredByCode && record.referredById) {
-              //   try {
-              //     const user = await getUser(record.referredById);
-              //     console.log('user: ', JSON.stringify(user));
-              //     if (!user || !user.UserAttributes) return;
-              //     const email = flattenUser(user.UserAttributes, 'email');
-              //     record = {
-              //       ...record,
-              //       referredByEmail: email || '',
-              //     };
-              //   } catch (err) {
-              //     console.log('get reffered by error: ', JSON.stringify(err));
-              //     // do nothing
-              //   }
-              // }
-
-              // 3. get the user emails to add to report
-              // let email: string = '';
-              // try {
-              //   const user = await getUser(record.id);
-              //   if (!user || !user.UserAttributes) return;
-              //   email = flattenUser(user.UserAttributes, 'email');
-              // } catch (err) {
-              //   // do nothing
-              // }
-
-              // 4. write batch record to opsReport table
-              const ops = new OpsReportMaker(
-                ReportNames.ReferralsAll,
-                batchId,
-                JSON.stringify(schema),
-                JSON.stringify({
-                  ...record,
-                  referralEmail: '',
-                  referredById: record.referredById || '',
-                  referredByEmail: record.referredByEmail || '',
-                }),
-              );
-              await createOpReport(ops);
-              counter++;
-              return true;
-            }),
-          );
-
-          // 5. loop if lek still valid
-          if (scan?.lastEvaluatedKey != undefined) {
-            const packet: IBatchMsg<IAttributeValue> = {
-              exclusiveStartKey: scan.lastEvaluatedKey,
-              segment: scan.segment,
-              totalSegments: scan.totalSegments,
-            };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'referralsreport');
-            const res = await sns.publish(payload).promise();
-            console.log('sns resp ==> ', res);
-          }
-        }),
-      );
-      const results = {
-        success: true,
-        error: null,
-        data: `Ops batch worker successfully processed ${counter} records`,
-      };
-      console.log(JSON.stringify(results));
-      return JSON.stringify(results);
+      const results = await report.run();
+      return results;
     } catch (err) {
-      console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -751,7 +394,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -770,7 +416,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -789,7 +438,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       const results = await report.run();
       return results;
     } catch (err) {
-      return JSON.stringify({ success: false, error: `Unknown server error=${err}` });
+      return JSON.stringify({
+        success: false,
+        error: `Unknown server error=${err}`,
+      });
     }
   }
 
@@ -841,7 +493,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                   JSON.stringify(schema),
                   JSON.stringify(mapped),
                 );
-                await createOpReport(ops);
+                await OpsReportQueries.createOpReport(ops);
                 counter++;
                 return true;
               }),
@@ -875,7 +527,10 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
       return JSON.stringify(results);
     } catch (err) {
       console.log('error ==> ', err);
-      return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
+      return JSON.stringify({
+        success: false,
+        error: { error: `Unknown server error=${err}` },
+      });
     }
   }
 };

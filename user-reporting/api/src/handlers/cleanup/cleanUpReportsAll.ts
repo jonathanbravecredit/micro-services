@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import dayjs from 'dayjs';
 import { Handler } from 'aws-lambda';
-import { batchDeleteOpsReport, listOpsReportsByBatch } from 'libs/queries/ops-report.queries';
 import { ReportNames } from 'libs/data/reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
 
 /**
  * Handler that processes single requests for Transunion services
@@ -17,12 +17,12 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   try {
     await Promise.all(
       Object.values(ReportNames).map(async (reportId) => {
-        const opsreports = await listOpsReportsByBatch(batchId, reportId);
+        const opsreports = await OpsReportQueries.listOpsReportsByBatch(batchId, reportId);
         if (!opsreports?.length) return;
         let queue = opsreports;
         while (queue.length) {
           const next = queue.splice(0, 24);
-          await batchDeleteOpsReport(next);
+          await OpsReportQueries.batchDeleteOpsReport(next);
         }
         return;
       }),

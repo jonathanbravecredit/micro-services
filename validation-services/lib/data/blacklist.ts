@@ -66,6 +66,7 @@ export const BLACKLIST = {
   'cutradition.com': true,
   'killol25.xyz': true,
   'scpulse.com': true,
+  'knowledgemd.com': true,
 };
 
 export const TLDBLACKLIST = {

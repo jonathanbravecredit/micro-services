@@ -1,6 +1,6 @@
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-import { parallelScanCreditReports } from 'libs/queries/CreditReport.queries';
+import { parallelScanCreditReports } from 'libs/queries/credit-report.queries';
 
 export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   results: { userId: string; version: number; createdOn: string }[] = [];
@@ -10,7 +10,7 @@ export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValu
 
   async run() {
     try {
-      const segments = [];
+      const segments: number[] = [];
       for (let i = 0; i < 128; i++) {
         segments.push(i);
       }

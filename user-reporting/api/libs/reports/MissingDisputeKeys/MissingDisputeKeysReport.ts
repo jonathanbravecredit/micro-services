@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { parallelScanAppData } from 'libs/db/appdata';
 import { mapAcknowledgedFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
-import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
+import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
 
 export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -23,7 +21,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
 
   async processScan(): Promise<void> {
     await Promise.all(
-      this.scan?.items.map(async (item: IAppDataInput) => {
+      this.scan?.items.map(async (item: UpdateAppDataInput) => {
         const acked = item?.agencies?.transunion?.acknowledgedDisputeTerms;
         const keys = item?.agencies?.transunion?.disputeEnrollmentKey;
         if (acked && !keys) {
@@ -36,7 +34,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
             JSON.stringify(schema),
             JSON.stringify(record),
           );
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } else {

@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
-import { listOpsReportsByBatch } from 'libs/queries/ops-report.queries';
 import { generateEmailParams } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
 
 // request.debug = true; import * as request from 'request';
 const ses = new SES({ region: 'us-east-1' });
@@ -25,7 +25,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
     // get the data from the results table
     const batch = batchId ? batchId : dayjs(new Date()).format('YYYY-MM-DD');
     const reportId = ReportNames.ReferralsAll;
-    const opsreports = await listOpsReportsByBatch(batch, reportId);
+    const opsreports = await OpsReportQueries.listOpsReportsByBatch(batch, reportId);
     if (!opsreports?.length) return;
 
     // create the YTD and new (based on cutoff) data sets

@@ -14,7 +14,7 @@ export const getAllItemsInDB = async () => {
 
   do {
     items = await db.scan(params).promise();
-    items.Items?.forEach((item) => scanResults.push(item));
+    items.Items?.forEach((item: any) => scanResults.push(item));
     params.ExclusiveStartKey = items.LastEvaluatedKey;
   } while (typeof items.LastEvaluatedKey != 'undefined');
 

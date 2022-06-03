@@ -2,10 +2,10 @@ import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { parallelScanActionData } from 'libs/db/actions';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
 import { ReportNames } from 'libs/data/reports';
-import { Analytics } from 'libs/models/analytics.model';
-import { createOpReport } from 'libs/queries/ops-report.queries';
+import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import { Analytic } from '@bravecredit/brave-sdk/dist/models/analytic/analytic';
 
 export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   private month = dayjs(new Date()).add(-1, 'month').format('YYYY-MM');
@@ -23,7 +23,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
 
   async processScan(): Promise<void> {
     await Promise.all(
-      this.scan?.items.map(async (item: Analytics) => {
+      this.scan?.items.map(async (item: Analytic) => {
         const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         const record = item;
@@ -34,7 +34,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
             JSON.stringify(schema),
             JSON.stringify(record),
           );
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } else {
