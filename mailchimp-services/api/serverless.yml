@@ -11,6 +11,7 @@ plugins:
   - serverless-dotenv-plugin # Load .env as environment variables
 
 custom:
+  stage: ${opt:stage, 'dev'}
   bundle:
     # external: all
     linting: false
@@ -47,12 +48,6 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     STAGE: ${opt:stage, self:provider.stage}
-    TABLENAME1: MailchimpData
-    CREDIT_SCORE_TABLE: CreditScoreTrackings
-    CREDIT_SCORE_STREAM: 'GetAtt:CreditScoreTrackings;StreamArn'
-    DISPUTES_TABLE: Disputes
-    DISPUTES_STREAM: 'GetAtt:Disputes;StreamArn'
-    REFERRALS_TABLE: Referrals
     APPTABLE: ${self:custom.settings.APPTABLES.${opt:stage}}
     EMAIL: 'support@brave.credit'
     DOMAIN: 'brave.credit'
@@ -63,8 +58,8 @@ provider:
       Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-topic'
     MAILCHIMP_SQS_ARN:
       Fn::ImportValue: !Sub '${self:provider.stage}-mailchimp-service-resources-sqs-arn'
-    MAILCHIMP_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpTx'
-    MAILCHIMP_MRKT_SECRET_LOCATION: '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
+    MAILCHIMP_SECRET_LOCATION: !Sub '${self:provider.stage}/mailchimp-services/mailchimpTx'
+    MAILCHIMP_MRKT_SECRET_LOCATION: !Sub '${self:provider.stage}/mailchimp-services/mailchimpMrkt'
   timeout: 60
   iamRoleStatements:
     - Effect: 'Allow'
@@ -150,12 +145,10 @@ functions:
     timeout: 120
     events:
       - sqs:
-          arn: ${self:provider.environment.MAILCHIMP_SQS_ARN}
-          # batchSize: 100
-          # maximumBatchingWindow: 5
-
-    # events:
-    # - schedule: cron(0 0 15 * ? *) # manual trigger for now
+          arn:
+            Fn::ImportValue: '${self:custom.stage}-mailchimp-service-resources-sqs-arn'
+          batchSize: 1
+          maximumBatchingWindow: 5
 
   # app table triggers
   triggerTransactionalEmail:
@@ -167,8 +160,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn:
-            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
+          arn: !ImportValue ${self:custom.settings.APPDATA.${opt:stage}}
   # marketing tags such as setting defaults and whether enrolled
   triggerAppDataForMarketing:
     handler: src/triggers/triggerAppDataForMarketing.main
@@ -179,8 +171,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn:
-            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
+          arn: !ImportValue ${self:custom.settings.APPDATA.${opt:stage}}
 
   # dispute table triggers
   triggerDisputeTransactionalEmail:
