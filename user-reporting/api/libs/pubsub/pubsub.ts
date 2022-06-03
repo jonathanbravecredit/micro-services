@@ -1,7 +1,9 @@
+import { SNS } from 'aws-sdk';
+
 export class PubSubUtil {
   constructor() {}
 
-  createSNSPayload<T>(subject: string, message: T, service: string = 'opsbatch'): AWS.SNS.PublishInput {
+  createSNSPayload<T>(subject: string, message: T, service: string = 'opsbatch'): SNS.PublishInput {
     return {
       Subject: subject,
       Message: JSON.stringify({

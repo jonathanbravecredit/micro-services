@@ -1,6 +1,6 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
+import { DynamoDB } from 'aws-sdk';
 import { IDispute } from 'libs/interfaces';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { SecureMail } from 'libs/utils/securemail/securemail';
@@ -21,8 +21,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { OldImage, NewImage } = stream;
           if (!OldImage || !NewImage) return;
-          const oldImage = AWS.DynamoDB.Converter.unmarshall(OldImage) as unknown as IDispute;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
+          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as IDispute;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
             UserAttributes?.find((attr) => {
@@ -65,10 +65,10 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
-            UserAttributes?.find((attr) => {
+            UserAttributes?.find((attr: any) => {
               return attr.Name === 'email';
             })?.Value || '';
 

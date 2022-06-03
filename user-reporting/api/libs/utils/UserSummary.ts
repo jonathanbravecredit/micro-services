@@ -1,28 +1,29 @@
-import { TransunionInput } from 'libs/interfaces/transunion.interfaces';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { IUserSummaryMappedValues } from 'libs/interfaces/user-summary.interfaces';
+import {
+  AccountTypes,
+  ACCOUNT_TYPES,
+  NEGATIVE_PAY_STATUS_CODES,
+} from '@bravecredit/brave-sdk/dist/constants/transunion';
+import { AddressInput, CreditReportQueries, IMergeReport, UpdateAppDataInput, UserInput } from '@bravecredit/brave-sdk';
+import { DobInput, TransunionInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import {
   IBorrower,
-  IMergeReport,
   IPublicPartition,
   IPublicRecordSummary,
   ISubscriber,
   ITradeLinePartition,
   ITradelineSummary,
-} from 'libs/interfaces/merge-report.interfaces';
-import { IAddress, IAppDataInput, IDob, IUser } from 'libs/interfaces/appdata.interfaces';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { IUserSummaryMappedValues } from 'libs/interfaces/user-summary.interfaces';
-import { NEGATIVE_PAY_STATUS_CODES } from 'libs/data/pay-status-codes';
-import { ACCOUNT_TYPES, AccountTypes } from 'libs/data/account-types';
-import { getCurrentReport } from 'libs/queries/CreditReport.queries';
+} from '@bravecredit/brave-sdk/dist/types/merge-report';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Los_Angeles');
 
 export class UserSummary {
   id: string;
-  user: IUser | null | undefined;
+  user: UserInput | null | undefined;
   userAge: number = -1;
   userDob: string = 'UNKNOWN';
   userState: string = 'UNKNOWN';
@@ -39,7 +40,7 @@ export class UserSummary {
   transunion: TransunionInput | null | undefined;
   report: IUserSummaryMappedValues = {} as IUserSummaryMappedValues;
 
-  constructor(data: IAppDataInput) {
+  constructor(data: UpdateAppDataInput) {
     this.id = data.id;
     this.user = data.user;
     this.transunion = data.agencies?.transunion;
@@ -52,7 +53,7 @@ export class UserSummary {
   async init(): Promise<void> {
     let report;
     try {
-      report = await getCurrentReport(this.id);
+      report = await CreditReportQueries.getCurrentReport(this.id);
     } catch (err) {
       return;
     }
@@ -164,7 +165,7 @@ export class UserSummary {
     return isNaN(+bal) ? 0 : +bal;
   }
 
-  setUserAddressValues(address: IAddress | null | undefined): void {
+  setUserAddressValues(address: AddressInput | null | undefined): void {
     if (!address) {
       this.userState = 'UNKNOWN';
       this.userZip = 'UNKNOWN';
@@ -174,7 +175,7 @@ export class UserSummary {
     this.userZip = address.zip || 'UNKNOWN';
   }
 
-  setUserDobValus(dob: IDob | null | undefined): void {
+  setUserDobValus(dob: DobInput | null | undefined): void {
     if (!dob) {
       this.userDob = 'UNKNOWN';
       this.userAge = -1;
@@ -396,7 +397,7 @@ export class UserSummary {
   parseCreditScore(report: IMergeReport): number | null {
     if (!report) return null;
     const creditScore = report.TrueLinkCreditReportType?.Borrower?.CreditScore;
-    const riskScore = creditScore instanceof Array ? creditScore[0].riskScore || null : creditScore?.riskScore || null;
+    const riskScore = creditScore[0].riskScore || null;
     const value = +`${riskScore}`;
     if (isNaN(value)) return 0;
     return +value || 0;

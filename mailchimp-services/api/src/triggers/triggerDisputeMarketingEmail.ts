@@ -1,11 +1,11 @@
 'use strict';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
+import { SNS, DynamoDB } from 'aws-sdk';
 import { IDispute } from 'libs/interfaces';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 
-const sns = new AWS.SNS();
+const sns = new SNS();
 const pool = process.env.POOL || '';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
@@ -19,10 +19,10 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as IDispute;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
-            UserAttributes?.find((attr) => {
+            UserAttributes?.find((attr: any) => {
               return attr.Name === 'email';
             })?.Value || '';
           const mailchimpTriggers = Mailchimp.marketing.dispute.resolver(null, newImage, record.eventName);

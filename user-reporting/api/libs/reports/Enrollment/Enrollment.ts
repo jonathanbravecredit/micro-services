@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { mapEnrollmentFields } from 'libs/helpers';
 import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
 import { IEnrollUserBatchMsg } from 'libs/interfaces/enrolled-user-report.interface';
 import { parallelScanAppData } from 'libs/db/appdata';
+import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
 
 export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -32,7 +32,7 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
           const schema = enrollmentYTDSchema;
           const record = mapEnrollmentFields(item);
           const ops = new OpsReportMaker('enrollmentYTD', batchId, JSON.stringify(schema), JSON.stringify(record));
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } else {

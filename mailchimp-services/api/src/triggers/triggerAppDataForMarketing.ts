@@ -1,11 +1,11 @@
 'use strict';
 import { UpdateAppDataInput } from '@bravecredit/brave-sdk/dist/types/graphql-api';
 import { DynamoDBRecord, DynamoDBStreamEvent, DynamoDBStreamHandler, StreamRecord } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
+import { SNS, DynamoDB } from 'aws-sdk';
 import { getUsersBySub } from 'libs/queries/cognito.queries';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
 
-const sns = new AWS.SNS();
+const sns = new SNS();
 const pool = process.env.POOL || '';
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
@@ -19,8 +19,8 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { OldImage, NewImage } = stream;
           if (!OldImage || !NewImage) return;
-          const oldImage = AWS.DynamoDB.Converter.unmarshall(OldImage) as unknown as UpdateAppDataInput;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as UpdateAppDataInput;
+          const oldImage = DynamoDB.Converter.unmarshall(OldImage) as unknown as UpdateAppDataInput;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as UpdateAppDataInput;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
             UserAttributes?.find((attr) => {
@@ -56,7 +56,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const stream: StreamRecord = record.dynamodb || {};
           const { NewImage } = stream;
           if (!NewImage) return;
-          const newImage = AWS.DynamoDB.Converter.unmarshall(NewImage) as unknown as UpdateAppDataInput;
+          const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as UpdateAppDataInput;
           const { UserAttributes } = await getUsersBySub(pool, newImage.id);
           const email =
             UserAttributes?.find((attr) => {

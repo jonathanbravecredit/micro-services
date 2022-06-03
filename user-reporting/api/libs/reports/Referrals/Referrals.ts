@@ -1,11 +1,9 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { ReportNames } from 'libs/data/reports';
 import { parallelScanReferrals } from 'libs/db/referrals';
-import { Referral } from '@bravecredit/brave-sdk';
+import { OpsReportMaker, OpsReportQueries, Referral } from '@bravecredit/brave-sdk';
 
 export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -38,7 +36,7 @@ export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined
             referredByEmail: record.referredByEmail || '',
           }),
         );
-        await createOpReport(ops);
+        await OpsReportQueries.createOpReport(ops);
         this.counter++;
         return true;
       }),

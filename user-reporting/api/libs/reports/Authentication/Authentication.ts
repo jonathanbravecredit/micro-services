@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { ReportNames } from 'libs/data/reports';
 import { DynamoDB } from 'aws-sdk';
 import { parallelScanAPIData } from 'libs/queries/api-transaction.queries';
-import { APITransactionLog } from '@bravecredit/brave-sdk';
+import { APITransactionLog, OpsReportMaker, OpsReportQueries } from '@bravecredit/brave-sdk';
 
 export class Authentication extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -35,7 +33,7 @@ export class Authentication extends ReportBase<IBatchMsg<IAttributeValue> | unde
             JSON.stringify(schema),
             JSON.stringify(record),
           );
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } else {

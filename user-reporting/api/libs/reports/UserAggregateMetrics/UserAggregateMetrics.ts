@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
 import { ReportNames } from 'libs/data/reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { parallelScanAppData } from 'libs/db/appdata';
-import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
 import { UserSummary } from 'libs/utils/UserSummary';
+import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
 
 export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -23,7 +21,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
 
   async processScan(): Promise<void> {
     await Promise.all(
-      this.scan?.items.map(async (item: IAppDataInput) => {
+      this.scan?.items.map(async (item: UpdateAppDataInput) => {
         const user = new UserSummary(item);
         await user.init();
         user.aggregate();
@@ -37,7 +35,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
             JSON.stringify(schema),
             JSON.stringify(record),
           );
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } else {
