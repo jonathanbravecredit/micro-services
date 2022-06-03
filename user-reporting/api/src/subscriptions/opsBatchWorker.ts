@@ -7,20 +7,15 @@ import { SQSEvent, SQSHandler } from 'aws-lambda';
 import { ReportNames } from 'libs/data/reports';
 import { PubSubUtil } from 'libs/pubsub/pubsub';
 import { getCognitoUsers } from 'libs/db/cognito';
-import { createOpReport } from 'libs/queries/ops-report.queries';
-import { IEmployer, IMergeReport } from 'libs/interfaces/merge-report.interfaces';
 import { IAttributeValue, IBatchCognitoMsg, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { parallelScanAppData } from 'libs/db/appdata';
 import { flattenUser, generateEmailParams } from 'libs/helpers';
-import { OpsReportMaker } from 'libs/models/ops-reports';
 import { MonthlyLogins } from 'libs/reports/MonthlyLogin/MonthlyLogin';
 import { UserAggregateMetrics } from 'libs/reports/UserAggregateMetrics/UserAggregateMetrics';
 import { NoReportReport } from 'libs/reports/NoReportReport/NoReportReport';
 import { MissingDisputeKeysReport } from 'libs/reports/MissingDisputeKeys/MissingDisputeKeysReport';
 import { DisputeErrorsReport } from 'libs/reports/disputeerrors/disputeerrors';
 import { DisputeAnalyticsReport } from 'libs/reports/dispute-analytics/dispute-analytics';
-
-// request.debug = true; import * as request from 'request';
 import { Enrollment } from 'libs/reports/Enrollment/Enrollment';
 import { FailedUsers } from 'libs/reports/FailedUsers/FailedUsers';
 import { Actions } from 'libs/reports/Actions/Actions';
@@ -28,7 +23,10 @@ import { Authentication } from 'libs/reports/Authentication/Authentication';
 import { DisputeEnrollment } from 'libs/reports/DisputeEnrollment/DisputeEnrollment';
 import { FailedFulfills } from 'libs/reports/FailedFulfills/FailedFulfills';
 import { Referrals } from 'libs/reports/Referrals/Referrals';
-// const errorLogger = new ErrorLogger();
+import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import { IEmployer, IMergeReport } from '@bravecredit/brave-sdk/dist/types/merge-report';
+
 const ses = new SES({ region: 'us-east-1' });
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
@@ -240,7 +238,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                     JSON.stringify(schema),
                     JSON.stringify(r),
                   );
-                  await createOpReport(ops);
+                  await OpsReportQueries.createOpReport(ops);
                   counter++;
                 }),
               );
@@ -495,7 +493,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                   JSON.stringify(schema),
                   JSON.stringify(mapped),
                 );
-                await createOpReport(ops);
+                await OpsReportQueries.createOpReport(ops);
                 counter++;
                 return true;
               }),

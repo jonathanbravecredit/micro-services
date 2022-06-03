@@ -1,13 +1,10 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
 import { parallelScanAppData } from 'libs/db/appdata';
-import { getCurrentReport } from 'libs/queries/CreditReport.queries';
 import { mapEnrollmentFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
-import { IAppDataInput } from 'libs/interfaces/appdata.interfaces';
+import { OpsReportMaker, OpsReportQueries, CreditReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
 
 export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -24,12 +21,12 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
 
   async processScan(): Promise<void> {
     await Promise.all(
-      this.scan?.items.map(async (item: IAppDataInput) => {
+      this.scan?.items.map(async (item: UpdateAppDataInput) => {
         const enrolled = item?.agencies?.transunion?.enrolled;
         const active = item?.status === 'active';
         if (enrolled && active) {
           const userId = item.id;
-          const report = await getCurrentReport(userId);
+          const report = await CreditReportQueries.getCurrentReport(userId);
           if (!report) {
             const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
             const schema = {};
@@ -40,7 +37,7 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
               JSON.stringify(schema),
               JSON.stringify(record),
             );
-            await createOpReport(ops);
+            await OpsReportQueries.createOpReport(ops);
             this.counter++;
             return true;
           } else {

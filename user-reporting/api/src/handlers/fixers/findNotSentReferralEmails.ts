@@ -1,12 +1,11 @@
-// const paidUsers = ['jpizzolato36@gmail.com', 'jonathan@brave.credit'];
 const csvjson = require('csvjson');
 import * as nodemailer from 'nodemailer';
-import { CognitoIdentityServiceProvider, SES } from 'aws-sdk';
-import { listAllUsers, listUsersByEmail } from 'libs/db/cognito';
-import { getAllItemsInDB } from 'libs/db/referrals';
-import { flattenUser, generateEmailParams } from 'libs/helpers';
+import { SES } from 'aws-sdk';
+import { listAllUsers } from 'libs/db/cognito';
+import { generateEmailParams } from 'libs/helpers';
 import { Handler } from 'aws-lambda';
-const pool = process.env.POOL || '';
+import { ReferralQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/referral.queries';
+
 const ses = new SES({ region: 'us-east-1' });
 
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
@@ -14,7 +13,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   if (!list) return;
   try {
     //isolate out the active referrals
-    const referrals = (await getAllItemsInDB()) as { id: string; campaignActive: string }[];
+    const referrals = (await ReferralQueries.listReferrals()) as { id: string; campaignActive: string }[];
     const active = referrals.filter((i) => {
       return i.campaignActive === 'mar2022';
     });

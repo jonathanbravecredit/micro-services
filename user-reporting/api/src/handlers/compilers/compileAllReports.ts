@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
 import { SES } from 'aws-sdk';
 import { Handler } from 'aws-lambda';
-import { listOpsReportsByBatch } from 'libs/queries/ops-report.queries';
 import { generateEmailParams } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
+import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
 
 // request.debug = true; import * as request from 'request';
 const ses = new SES({ region: 'us-east-1' });
@@ -25,7 +25,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   try {
     await Promise.all(
       Object.values(ReportNames).map(async (reportId) => {
-        const opsreports = await listOpsReportsByBatch(batchId, reportId);
+        const opsreports = await OpsReportQueries.listOpsReportsByBatch(batchId, reportId);
         if (!opsreports?.length) return;
         console.log(`grabbed ${opsreports.length} records`);
         const reportData = opsreports.map((report, i) => {
