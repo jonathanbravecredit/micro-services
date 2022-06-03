@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mailchimp/mailchimp_transactional": "^1.0.19",
+    "@mailchimp/mailchimp_transactional": "^1.0.47",
     "nodemailer": "^6.7.2",
     "serverless-plugin-warmup": "^4.9.0",
     "serverless-pseudo-parameters": "^2.5.0"
