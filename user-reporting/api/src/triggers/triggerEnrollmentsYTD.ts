@@ -4,7 +4,6 @@ import { SNS } from 'aws-sdk';
 import { PubSubUtil } from 'libs/pubsub/pubsub';
 import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
 
-// request.debug = true; import * as request from 'request';
 const sns = new SNS({ region: 'us-east-2' });
 const pubsub = new PubSubUtil();
 
@@ -19,7 +18,7 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   if (process.env.STAGE == 'dev' && !event.override) return;
   try {
     let counter = 0;
-    const segments = [];
+    const segments: number[] = [];
     for (let i = 0; i < 20; i++) {
       segments.push(i);
     }

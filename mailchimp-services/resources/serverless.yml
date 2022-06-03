@@ -1,0 +1,115 @@
+frameworkVersion: '^2.15.0'
+service: mailchimp-service-resources
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
+
+resources:
+  Resources:
+    MailchimpDequeueSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-${self:service}-dequeue-topic
+
+    MailchimpSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:provider.stage}-${self:service}-sns-topic
+
+    # Create our 'MailchimpQueue' SQS queue
+    MailchimpQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: ${self:provider.stage}-${self:service}-sqs
+        ReceiveMessageWaitTimeSeconds: 20
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt
+            - MailchimpQueueDLQ
+            - Arn
+          maxReceiveCount: 3
+        VisibilityTimeout: 720
+
+    # Create our 'MailchimpQueue' Dead Letter Queue SQS queue
+    MailchimpQueueDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-${self:service}-dlq
+        ReceiveMessageWaitTimeSeconds: 20
+
+    # Create our queue policy for the 'MailchimpQueue'
+    SnsToMailchimpQueueSqsPolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: 'allow-sns-messages'
+              Effect: Allow
+              Principal: '*'
+              Resource: !GetAtt
+                - MailchimpQueue
+                - Arn
+              Action: 'SQS:SendMessage'
+              Condition:
+                ArnEquals:
+                  'aws:SourceArn': !Ref MailchimpSNSTopic
+        Queues:
+          - Ref: MailchimpQueue
+
+    # Create the subscription to the 'queue
+    MailchimpQueueSubscription:
+      Type: 'AWS::SNS::Subscription'
+      Properties:
+        TopicArn: !Ref MailchimpSNSTopic
+        Endpoint: !GetAtt
+          - MailchimpQueue
+          - Arn
+        Protocol: sqs
+        FilterPolicy:
+          service:
+            - mailchimpbatch
+        RawMessageDelivery: 'true'
+
+    DNUMailchimpData:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'userId'
+            AttributeType: 'S'
+          - AttributeName: 'messageId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'userId'
+            KeyType: 'HASH'
+          - AttributeName: 'messageId'
+            KeyType: 'RANGE'
+        BillingMode: PAY_PER_REQUEST
+        TableName: DNUMailchimpData
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+
+  Outputs:
+    MailchimpDequeueSNSTopicArn:
+      Description: 'Mailchimp Topic to deuque emails'
+      Value: !Ref MailchimpDequeueSNSTopic
+      Export:
+        Name: !Sub '${self:provider.stage}-${self:service}-dequeue-topic'
+    MailchimpSNSTopicArn:
+      Description: 'Mailchimp Topic for general purpose'
+      Value: !Ref MailchimpSNSTopic
+      Export:
+        Name: !Sub '${self:provider.stage}-${self:service}-topic'
+    MailchimpSQSArn:
+      Description: 'Mailchimp SQS arn'
+      Value: !GetAtt MailchimpQueue.Arn
+      Export:
+        Name: !Sub '${self:provider.stage}-${self:service}-sqs-arn'

@@ -10,13 +10,11 @@ import { ReportNames } from 'libs/data/reports';
 import { parallelScanDisputes } from 'libs/db/disputes';
 import { IBatchMsg, IAttributeValue, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { CreditBureauReportResult } from 'libs/models/credit-bureau.model';
-import { Dispute } from 'libs/models/dispute.model';
-import { OpsReportMaker } from 'libs/models/ops-reports';
-import { createOpReport } from 'libs/queries/ops-report.queries';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { Nested as _nest } from '@bravecredit/brave-sdk';
-import { DisputeItem, DisputeReason } from 'libs/interfaces/dispute-items';
 import { getCreditBureauReportResult } from 'libs/queries/credit-bureau-report-results.queries';
+import { Dispute } from 'libs/models/dispute.model';
+import { ReportBase } from 'libs/reports/ReportBase';
+import { Nested as _nest, OpsReportMaker, OpsReportQueries } from '@bravecredit/brave-sdk';
+import { DisputeItem, DisputeReason } from 'libs/interfaces/dispute-items';
 
 export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -59,7 +57,7 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
             JSON.stringify(schema),
             JSON.stringify(enriched),
           );
-          await createOpReport(ops);
+          await OpsReportQueries.createOpReport(ops);
           this.counter++;
           return true;
         } catch (err) {
