@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { response } from 'libs/utils/response';
 import { CreditReportQueries as db } from '@bravecredit/brave-sdk';
 import { ReportComparisons } from 'libs/models/report-comparisons/report-comparisons';
+import { COMPARISON_DEFAULT } from 'libs/models/report-comparisons/report-comparisons.constants';
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('event ==> ', JSON.stringify(event));
@@ -12,6 +13,7 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const [current, prior] = await db.listLastTwoReports(sub);
     console.log('current', current);
     console.log('prior', prior);
+    if (!current || !prior) return response(200, COMPARISON_DEFAULT);
     const instance = new ReportComparisons(prior, current);
     console.log('instance', instance);
     instance.run();
