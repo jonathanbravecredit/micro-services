@@ -48,7 +48,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }).filter((b) => {
     return b.service === 'enrollmentreport';
   });
-  console.log(`Received ${enrollmentReport.length} creditscoreupdates records `);
+  console.log(`Received ${enrollmentReport.length} enrollmentreport records `);
 
   if (enrollmentReport.length) {
     const report = new Enrollment(enrollmentReport);
@@ -387,6 +387,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }).filter((b) => {
     return b.service === ReportNames.NoReportReport;
   });
+  console.log(`Received ${noReportReport.length} NoReport report records `);
 
   if (noReportReport.length) {
     const report = new NoReportReport(noReportReport);
@@ -409,6 +410,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }).filter((b) => {
     return b.service === ReportNames.MissingDisputeKeys;
   });
+  console.log(`Received ${missingDisputeKeys.length} missing dispute keys report records `);
 
   if (missingDisputeKeys.length) {
     const report = new MissingDisputeKeysReport(missingDisputeKeys);
@@ -431,6 +433,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   }).filter((b) => {
     return b.service === ReportNames.DisputeErrors;
   });
+  console.log(`Received ${disputeErrors.length} dispute errors report records `);
 
   if (disputeErrors.length) {
     const report = new DisputeErrorsReport(disputeErrors);

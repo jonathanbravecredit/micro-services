@@ -31,6 +31,7 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
           const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
           const schema = enrollmentYTDSchema;
           const record = mapEnrollmentFields(item);
+          console.log('enrollment report record: ', JSON.stringify(record));
           const ops = new OpsReportMaker('enrollmentYTD', batchId, JSON.stringify(schema), JSON.stringify(record));
           await OpsReportQueries.createOpReport(ops);
           this.counter++;
