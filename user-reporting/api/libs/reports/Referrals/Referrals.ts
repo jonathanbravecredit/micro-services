@@ -24,6 +24,7 @@ export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined
         const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
         const schema = {};
         let record: Referral = item;
+        console.log('referral report record: ', JSON.stringify(record));
         if (!record.enrolled) return;
         const ops = new OpsReportMaker(
           ReportNames.ReferralsAll,
