@@ -30,8 +30,11 @@ export abstract class ReportBase<B> {
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           try {
             this.scan = await this.query(esk, segment, totalSegments);
+            console.log('here1 report base');
             await this.processScan();
-            this.processNext();
+            console.log('here2 report base');
+            await this.processNext();
+            console.log('here3 report base');
           } catch (err) {
             throw err;
           }
