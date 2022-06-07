@@ -39,6 +39,7 @@ export abstract class ReportBase<B> {
       );
       return this.onSuccess();
     } catch (err) {
+      console.log(`ReportBase Error: ${JSON.stringify(this.records)}`);
       this.handleCommonErrors(err as { code: string; message: string });
       return this.onError(err);
     }
