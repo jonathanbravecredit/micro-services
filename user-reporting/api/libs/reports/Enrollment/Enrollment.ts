@@ -33,6 +33,7 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
           const record = mapEnrollmentFields(item);
           console.log('enrollment report record: ', JSON.stringify(record));
           const ops = new OpsReportMaker('enrollmentYTD', batchId, JSON.stringify(schema), JSON.stringify(record));
+          console.log('ops: ', JSON.stringify(ops));
           try {
             await OpsReportQueries.createOpReport(ops);
             this.counter++;
