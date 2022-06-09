@@ -65,6 +65,8 @@ export const BLACKLIST = {
   'inbox.eu': true,
   'cutradition.com': true,
   'killol25.xyz': true,
+  "dilanfa.com": true,
+  "game4hr.com": true,
 };
 
 export const TLDBLACKLIST = {
