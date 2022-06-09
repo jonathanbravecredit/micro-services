@@ -32,9 +32,14 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
           const schema = enrollmentYTDSchema;
           const record = mapEnrollmentFields(item);
           const ops = new OpsReportMaker('enrollmentYTD', batchId, JSON.stringify(schema), JSON.stringify(record));
-          await OpsReportQueries.createOpReport(ops);
-          this.counter++;
-          return true;
+          try {
+            await OpsReportQueries.createOpReport(ops);
+            this.counter++;
+            return true;
+          } catch (err) {
+            console.log('enrollment report opsreportquery error: ', JSON.stringify(err));
+            return false;
+          }
         } else {
           return false;
         }
@@ -50,6 +55,7 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
+      console.log('processing next: ', JSON.stringify(packet));
       const payload = this.pubsub.createSNSPayload<IEnrollUserBatchMsg>('opsbatch', packet, 'enrollmentreport');
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);

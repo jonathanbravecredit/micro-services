@@ -1,4 +1,5 @@
 # NOTE: update this with your service name
+frameworkVersion: "^2.15.0"
 service: referral-service
 
 # Create an optimized package for our functions
