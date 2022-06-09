@@ -1,13 +1,7 @@
-import { DynamoDBRecord } from 'aws-lambda';
-import { Campaign } from 'libs/models/campaigns/campaign.model';
-import { Referral } from 'libs/models/referrals/referral.model';
-import {
-  getActiveCampaignReferrals,
-  getEligibileReferrals,
-  updateReferral,
-  updateReferralCampaign,
-} from 'libs/queries/referrals/referral.queries';
-import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
+import { Campaign, Referral, ReferralQueries } from "@bravecredit/brave-sdk";
+import { DynamoDBRecord } from "aws-lambda";
+
+import { DBStreamRunner } from "libs/utils/dynamodb/dbStreamRunner";
 
 export class CampaignDataManager extends DBStreamRunner<Campaign> {
   constructor(public record: DynamoDBRecord, public nocampaign: Campaign) {
@@ -17,16 +11,16 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
 
   init(): void {
     super.init();
-    console.log('currImage', this.currImage);
-    console.log('priorImage', this.priorImage);
+    console.log("currImage", this.currImage);
+    console.log("priorImage", this.priorImage);
   }
 
   async process(): Promise<void> {
-    if (this.event !== 'MODIFY') return;
+    if (this.event !== "MODIFY") return;
     const t1 = this.isDisabled();
     const t2 = this.isEnabled();
-    console.log('t1', t1);
-    console.log('t2', t2);
+    console.log("t1", t1);
+    console.log("t2", t2);
     if (this.isDisabled()) await this.disableCampaign();
     else if (this.isEnabled()) await this.enableCampaign();
   }
@@ -48,27 +42,29 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
     const isMasterRecord = pKey === 1 && version === 0;
     const isVersionChange = priorCV !== currCV;
     const isValidCampaign = campaign !== this.nocampaign.campaign;
-    const isNotNoCampaign = campaign !== 'NO_CAMPAIGN';
-    return isMasterRecord && isVersionChange && isValidCampaign && isNotNoCampaign;
+    const isNotNoCampaign = campaign !== "NO_CAMPAIGN";
+    return (
+      isMasterRecord && isVersionChange && isValidCampaign && isNotNoCampaign
+    );
   }
 
   async disableCampaign(): Promise<void> {
     try {
       const actives = await this.listReferralsByCampaign();
       if (!actives || !actives.length) return;
-      console.log('here:disabled');
+      console.log("here:disabled");
       await Promise.all(
         actives.map(async (referral) => {
           const reset = this.resetReferral(referral);
-          console.log('here:disabled2');
+          console.log("here:disabled2");
           if (!reset) return;
           try {
-            console.log('here:disabled3');
+            console.log("here:disabled3");
             await this.updateReferral(reset);
           } catch (err) {
             console.error(err);
           }
-        }),
+        })
       );
     } catch (err) {
       console.error(err);
@@ -79,17 +75,17 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
     try {
       const eligibles = await this.listReferralsByEligible();
       if (!eligibles || !eligibles.length) return;
-      console.log('here:enabled');
+      console.log("here:enabled");
       await Promise.all(
         eligibles.map(async (referral) => {
           try {
-            console.log('here:enabled2');
+            console.log("here:enabled2");
             await this.updateReferralCampaign(referral);
-            console.log('here:enabled3');
+            console.log("here:enabled3");
           } catch (err) {
             console.error(err);
           }
-        }),
+        })
       );
     } catch (err) {
       console.error(err);
@@ -99,22 +95,22 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
   async listReferralsByCampaign(): Promise<Referral[] | undefined> {
     if (!this.priorImage) return;
     const { campaign } = this.priorImage;
-    return await getActiveCampaignReferrals(campaign);
+    return await ReferralQueries.getActiveCampaignReferrals(campaign);
   }
 
   async listReferralsByEligible(): Promise<Referral[]> {
-    return await getEligibileReferrals();
+    return await ReferralQueries.getEligibileReferrals();
   }
 
   async updateReferralCampaign(referral: Referral): Promise<void> {
     if (!this.currImage) return;
     const { id } = referral;
     const { campaign } = this.currImage;
-    await updateReferralCampaign(id, campaign);
+    await ReferralQueries.updateReferralCampaign(id, campaign);
   }
 
   async updateReferral(referral: Referral): Promise<void> {
-    await updateReferral(referral);
+    await ReferralQueries.updateReferral(referral);
   }
 
   /**
@@ -147,7 +143,7 @@ export class CampaignDataManager extends DBStreamRunner<Campaign> {
       ...referral,
       ...active,
       ...prior,
-      nextPaymentDate: '',
+      nextPaymentDate: "",
       notified: false,
       modifiedOn: now,
     };

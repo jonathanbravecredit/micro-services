@@ -1,7 +1,6 @@
-import { DynamoDBRecord } from 'aws-lambda';
-import { Campaign } from 'libs/models/campaigns/campaign.model';
-import { getCampaign } from 'libs/queries/campaigns/campaigns.queries';
-import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
+import { DynamoDBRecord } from "aws-lambda";
+import { CampaignDataManager } from "libs/utils/managers/campaignDataManager";
+import { Campaign, CampaignQueries } from "@bravecredit/brave-sdk";
 
 export class CampaignMonitor {
   campaign: Campaign | null = null;
@@ -9,11 +8,11 @@ export class CampaignMonitor {
 
   async init(): Promise<void> {
     this.campaign = await this.getNoCampaign();
-    console.log('campaign: ', this.campaign);
+    console.log("campaign: ", this.campaign);
   }
 
   async monitor(): Promise<void> {
-    console.log('records: ', this.records);
+    console.log("records: ", this.records);
     await Promise.all(
       this.records.map(async (rec) => {
         try {
@@ -21,7 +20,7 @@ export class CampaignMonitor {
         } catch (err) {
           console.error(err);
         }
-      }),
+      })
     );
   }
 
@@ -36,6 +35,6 @@ export class CampaignMonitor {
   }
 
   async getNoCampaign(): Promise<Campaign | null> {
-    return await getCampaign(1, 1);
+    return await CampaignQueries.getCampaign(1, 1);
   }
 }

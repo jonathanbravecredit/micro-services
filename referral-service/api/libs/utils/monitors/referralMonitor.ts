@@ -1,12 +1,10 @@
-import { DynamoDBRecord, SNSEventRecord } from 'aws-lambda';
-import { ISession } from 'libs/interfaces/api/sessions/session.interface';
-import { DynamoDBorSNSRecord } from 'libs/interfaces/aws/dynamo-sns.interface';
-import { SnsMessage } from 'libs/interfaces/aws/sns-message.interface';
-import { Campaign } from 'libs/models/campaigns/campaign.model';
-import { getCampaign } from 'libs/queries/campaigns/campaigns.queries';
-import { ReferralActivationManager } from 'libs/utils/managers/referralActivationManager';
-import { ReferralAggregationManager } from 'libs/utils/managers/referralAggregationManager';
-import { ReferralSuspensionManager } from 'libs/utils/managers/referralSuspensionManager';
+import { DynamoDBRecord, SNSEventRecord } from "aws-lambda";
+import { DynamoDBorSNSRecord } from "libs/interfaces/aws/dynamo-sns.interface";
+import { SnsMessage } from "libs/interfaces/aws/sns-message.interface";
+import { ReferralActivationManager } from "libs/utils/managers/referralActivationManager";
+import { ReferralAggregationManager } from "libs/utils/managers/referralAggregationManager";
+import { ReferralSuspensionManager } from "libs/utils/managers/referralSuspensionManager";
+import { Campaign, Session, CampaignQueries } from "@bravecredit/brave-sdk";
 
 export class ReferralMonitor {
   public campaign: Campaign | null = null;
@@ -16,23 +14,24 @@ export class ReferralMonitor {
   constructor(public records: DynamoDBorSNSRecord[]) {}
 
   async init(): Promise<void> {
-    console.log('monitor records: ', JSON.stringify(this.records));
+    console.log("monitor records: ", JSON.stringify(this.records));
     this.campaign = await this.getCampaign();
     this.segmentRecords();
   }
 
   segmentRecords(): void {
     this.records.forEach((r: DynamoDBorSNSRecord) => {
-      if ((r as DynamoDBRecord).eventSource === 'aws:dynamodb') {
+      if ((r as DynamoDBRecord).eventSource === "aws:dynamodb") {
         this.dynamoRecords = [...this.dynamoRecords, r as DynamoDBRecord];
       }
-      if ((r as SNSEventRecord).EventSource === 'aws:sns') {
+      if ((r as SNSEventRecord).EventSource === "aws:sns") {
         const subj = (r as SNSEventRecord).Sns?.Subject;
         const msg = (r as SNSEventRecord).Sns?.Message;
         if (!subj || !msg) return;
-        const t1 = subj === 'sessiondataupdate' || subj === 'transunionenrollment';
-        const { service } = JSON.parse(msg) as SnsMessage<ISession>;
-        const t2 = service === 'referralservice';
+        const t1 =
+          subj === "sessiondataupdate" || subj === "transunionenrollment";
+        const { service } = JSON.parse(msg) as SnsMessage<Session>;
+        const t2 = service === "referralservice";
         if (t1 && t2) {
           this.snsRecords = [...this.snsRecords, r as SNSEventRecord];
         }
@@ -65,7 +64,7 @@ export class ReferralMonitor {
             } catch (err) {
               console.error(err);
             }
-          }),
+          })
       );
     } catch (err) {
       console.error(err);
@@ -81,7 +80,7 @@ export class ReferralMonitor {
           } catch (err) {
             console.error(err);
           }
-        }),
+        })
       );
     } catch (err) {
       console.error(err);
@@ -109,8 +108,11 @@ export class ReferralMonitor {
   }
 
   async checkActivations(rec: SNSEventRecord): Promise<any> {
-    const subj = rec.Sns?.Subject as 'sessiondataupdate' | 'transunionenrollment' | unknown;
-    if (subj !== 'sessiondataupdate' && subj !== 'transunionenrollment') return;
+    const subj = rec.Sns?.Subject as
+      | "sessiondataupdate"
+      | "transunionenrollment"
+      | unknown;
+    if (subj !== "sessiondataupdate" && subj !== "transunionenrollment") return;
     try {
       const manager = new ReferralActivationManager(rec, subj);
       await manager.init();
@@ -122,6 +124,6 @@ export class ReferralMonitor {
   }
 
   async getCampaign(): Promise<Campaign | null> {
-    return await getCampaign(1, 0);
+    return await CampaignQueries.getCampaign(1, 0);
   }
 }

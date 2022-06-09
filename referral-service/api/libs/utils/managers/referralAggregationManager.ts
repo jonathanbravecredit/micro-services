@@ -1,27 +1,25 @@
-import { DynamoDBRecord } from 'aws-lambda';
-import { Campaign } from 'libs/models/campaigns/campaign.model';
-import { Referral } from 'libs/models/referrals/referral.model';
-import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
-import dayjs from 'dayjs';
-import { getReferralByCode, updateReferral } from 'libs/queries/referrals/referral.queries';
-import { PaymentDateCalculator } from 'libs/utils/paymentdatecalculator/paymentDateCalculator';
+import { DynamoDBRecord } from "aws-lambda";
+import { DBStreamRunner } from "libs/utils/dynamodb/dbStreamRunner";
+import dayjs from "dayjs";
+import { PaymentDateCalculator } from "libs/utils/paymentdatecalculator/paymentDateCalculator";
+import { Campaign, ReferralQueries, Referral } from "@bravecredit/brave-sdk";
 
 export class ReferralAggregationManager extends DBStreamRunner<Referral> {
-  enrollment: 'not_enrolled' | 'new_enrolled' | 'past_enrolled' | undefined;
+  enrollment: "not_enrolled" | "new_enrolled" | "past_enrolled" | undefined;
   referrer: Referral | null = null;
   referree: Referral | null = null;
   constructor(public campaign: Campaign, public record: DynamoDBRecord) {
     super(record);
   }
   async init(): Promise<void> {
-    console.log('aggregation record: ', JSON.stringify(this.record));
+    console.log("aggregation record: ", JSON.stringify(this.record));
     super.init();
     this.setEnrollment();
     this.setReferree();
     await this.setReferrer();
-    console.log('enrollment: ===> ', this.enrollment);
-    console.log('referree: ===> ', this.referree);
-    console.log('referrer: ===> ', this.referrer);
+    console.log("enrollment: ===> ", this.enrollment);
+    console.log("referree: ===> ", this.referree);
+    console.log("referrer: ===> ", this.referrer);
   }
 
   setReferree(): void {
@@ -36,7 +34,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     if (!this.currImage) return null;
     const { referredByCode } = this.currImage;
     if (!referredByCode) return null;
-    return await getReferralByCode(referredByCode);
+    return await ReferralQueries.getReferralByCode(referredByCode);
   }
 
   /**
@@ -52,12 +50,18 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
    */
   setEnrollment(): void {
     if (!this.priorImage) {
-      this.enrollment = this.currImage?.enrolled ? 'past_enrolled' : 'not_enrolled';
+      this.enrollment = this.currImage?.enrolled
+        ? "past_enrolled"
+        : "not_enrolled";
       return;
     }
     const prior = this.priorImage?.enrolled || false;
     const curr = this.currImage?.enrolled || false;
-    this.enrollment = curr ? (prior ? 'past_enrolled' : 'new_enrolled') : 'not_enrolled';
+    this.enrollment = curr
+      ? prior
+        ? "past_enrolled"
+        : "new_enrolled"
+      : "not_enrolled";
   }
 
   /**
@@ -72,8 +76,8 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
    */
   async quantifyReferral(): Promise<void> {
     if (!this.isCampaignActive()) return;
-    if (this.enrollment === 'new_enrolled') {
-      console.log('quantifying');
+    if (this.enrollment === "new_enrolled") {
+      console.log("quantifying");
       await this.creditReferrer();
       await this.creditReferree();
     }
@@ -81,7 +85,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
 
   isCampaignActive(): boolean {
     const { campaign, endDate } = this.campaign;
-    if (campaign === 'NO_CAMPAIGN') return false;
+    if (campaign === "NO_CAMPAIGN") return false;
     if (dayjs(new Date()).isAfter(endDate)) return false;
     return true;
   }
@@ -94,7 +98,7 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     updated = { ...updated, ...this.incrementBase(this.referrer) };
     updated = { ...updated, ...this.incrementBonus(updated) };
     updated = { ...updated, ...this.getPaymentDate(updated) };
-    console.log('creditReferrer:updated ===> ', updated);
+    console.log("creditReferrer:updated ===> ", updated);
     await this.updateReferral(updated);
   }
 
@@ -104,17 +108,20 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     // keep in this order
     updated = { ...updated, ...this.incrementAddOn(updated) };
     updated = { ...updated, ...this.getPaymentDate(updated) };
-    console.log('creditReferree:updated ===> ', updated);
+    console.log("creditReferree:updated ===> ", updated);
     await this.updateReferral(updated);
   }
 
   async updateReferral(referral: Referral): Promise<void> {
-    await updateReferral(referral);
+    await ReferralQueries.updateReferral(referral);
   }
 
   getPaymentDate(referrer: Referral): { nextPaymentDate: string } {
     const bonusOrMax = this.hitMax(referrer);
-    const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(bonusOrMax, this.campaign.endDate);
+    const nextPaymentDate = new PaymentDateCalculator().calcPaymentDate(
+      bonusOrMax,
+      this.campaign.endDate
+    );
     return { nextPaymentDate };
   }
 
@@ -126,25 +133,37 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     return reachedMax;
   }
 
-  incrementCount(referrer: Referral): { campaignActiveReferred: number; totalReferred: number } {
+  incrementCount(referrer: Referral): {
+    campaignActiveReferred: number;
+    totalReferred: number;
+  } {
     const { maxReferrals } = this.campaign;
     let { campaignActiveReferred, totalReferred } = referrer;
-    if (campaignActiveReferred >= maxReferrals) return { campaignActiveReferred, totalReferred };
+    if (campaignActiveReferred >= maxReferrals)
+      return { campaignActiveReferred, totalReferred };
     campaignActiveReferred += 1;
     totalReferred += 1;
     return { campaignActiveReferred, totalReferred };
   }
 
-  incrementBase(referrer: Referral): { campaignActiveEarned: number; totalEarned: number } {
+  incrementBase(referrer: Referral): {
+    campaignActiveEarned: number;
+    totalEarned: number;
+  } {
     const { denomination, maxReferrals } = this.campaign;
-    let { campaignActiveReferred, campaignActiveEarned, totalEarned } = referrer;
-    if (campaignActiveReferred >= maxReferrals) return { campaignActiveEarned, totalEarned };
+    let { campaignActiveReferred, campaignActiveEarned, totalEarned } =
+      referrer;
+    if (campaignActiveReferred >= maxReferrals)
+      return { campaignActiveEarned, totalEarned };
     campaignActiveEarned += denomination;
     totalEarned += denomination;
     return { campaignActiveEarned, totalEarned };
   }
 
-  incrementBonus(referrer: Referral): { campaignActiveBonus: number; totalBonus: number } {
+  incrementBonus(referrer: Referral): {
+    campaignActiveBonus: number;
+    totalBonus: number;
+  } {
     const { bonusThreshold, bonusAmount } = this.campaign;
     let { campaignActiveReferred, campaignActiveBonus, totalBonus } = referrer;
     if (campaignActiveBonus > 0) return { campaignActiveBonus, totalBonus };
@@ -155,11 +174,16 @@ export class ReferralAggregationManager extends DBStreamRunner<Referral> {
     return { campaignActiveBonus, totalBonus };
   }
 
-  incrementAddOn(referree: Referral): { campaignActiveAddOn: number; totalAddOn: number } {
-    const { denomination, addOnFlagOne, addOnFlagTwo, addOnFlagThree } = this.campaign;
+  incrementAddOn(referree: Referral): {
+    campaignActiveAddOn: number;
+    totalAddOn: number;
+  } {
+    const { denomination, addOnFlagOne, addOnFlagTwo, addOnFlagThree } =
+      this.campaign;
     let { campaignActiveAddOn, totalAddOn } = referree;
     // add on one
-    if (!(addOnFlagOne === 'enrollment')) return { campaignActiveAddOn, totalAddOn };
+    if (!(addOnFlagOne === "enrollment"))
+      return { campaignActiveAddOn, totalAddOn };
     // need to add better logic here when multiple addons come on
     if (campaignActiveAddOn > 0) return { campaignActiveAddOn, totalAddOn }; // can only get it once
     campaignActiveAddOn += denomination;

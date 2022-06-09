@@ -1,6 +1,6 @@
 import { IGroupedYearMonthReferral } from 'libs/interfaces';
-import { Referral } from 'libs/models/referrals/referral.model';
 import dayjs from 'dayjs';
+import { Referral } from '@bravecredit/brave-sdk';
 
 export const groupReferralsByYearMonth = (referrals: Referral[]): IGroupedYearMonthReferral[] => {
   const grouped: IGroupedYearMonthReferral[] = [];

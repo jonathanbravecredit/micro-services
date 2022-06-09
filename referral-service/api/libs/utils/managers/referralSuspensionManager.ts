@@ -1,7 +1,6 @@
-import { DynamoDBRecord } from 'aws-lambda';
-import { Referral } from 'libs/models/referrals/referral.model';
-import { updateReferral } from 'libs/queries/referrals/referral.queries';
-import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
+import { DynamoDBRecord } from "aws-lambda";
+import { DBStreamRunner } from "libs/utils/dynamodb/dbStreamRunner";
+import { ReferralQueries, Referral } from "@bravecredit/brave-sdk";
 
 export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   constructor(public record: DynamoDBRecord) {
@@ -9,7 +8,7 @@ export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
   }
 
   init(): void {
-    console.log('suspension record: ', JSON.stringify(this.record));
+    console.log("suspension record: ", JSON.stringify(this.record));
     super.init();
   }
 
@@ -29,24 +28,24 @@ export class ReferralSuspensionManager extends DBStreamRunner<Referral> {
       ...this.currImage,
       eligible: 0,
       suspended: true,
-      campaignActive: 'NO_CAMPAIGN',
+      campaignActive: "NO_CAMPAIGN",
       campaignActiveReferred: 0,
       campaignActiveEarned: 0,
       campaignActivePaid: 0,
       campaignActiveAddOn: 0,
       campaignActiveBonus: 0,
-      campaignPrior: 'NO_CAMPAIGN',
+      campaignPrior: "NO_CAMPAIGN",
       campaignPriorReferred: 0,
       campaignPriorEarned: 0,
       campaignPriorPaid: 0,
       campaignPriorAddOn: 0,
       campaignPriorBonus: 0,
-      nextPaymentDate: 'SUSPENDED',
+      nextPaymentDate: "SUSPENDED",
     } as Referral;
     await this.updateReferral(updated);
   }
 
   async updateReferral(referral: Referral): Promise<void> {
-    await updateReferral(referral);
+    await ReferralQueries.updateReferral(referral);
   }
 }
