@@ -7,6 +7,8 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   'killol25.xyz': true,
   "dilanfa.com": true,
   "game4hr.com": true,
-};
+  'scpulse.com': true,
+  'knowledgemd.com': true,
+
 
 export const BANNED_USERS = [];

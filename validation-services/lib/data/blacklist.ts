@@ -67,7 +67,8 @@ export const BLACKLIST = {
   'killol25.xyz': true,
   "dilanfa.com": true,
   "game4hr.com": true,
-};
+  'scpulse.com': true,
+  'knowledgemd.com': true,
 
 export const TLDBLACKLIST = {
   net: true,
