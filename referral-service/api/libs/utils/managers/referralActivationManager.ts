@@ -1,7 +1,6 @@
 import { SNSEventRecord } from "aws-lambda";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
-import { UpdateAppDataInput } from "libs/aws/api.service";
 import { SnsMessage } from "libs/interfaces/aws/sns-message.interface";
 import {
   Campaign,
@@ -10,7 +9,8 @@ import {
   CampaignQueries,
   Referral,
   Session,
-  ReferralMaker
+  ReferralMaker,
+  UpdateAppDataInput,
 } from "@bravecredit/brave-sdk";
 
 export class ReferralActivationManager {

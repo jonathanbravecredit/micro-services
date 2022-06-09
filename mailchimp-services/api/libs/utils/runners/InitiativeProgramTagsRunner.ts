@@ -6,7 +6,7 @@ import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiative
 import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
 import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'libs/utils/mailchimp/interfaces';
 import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
-import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
+import { DBStreamRunner } from 'libs/utils/dynamodb/dbStreamRunner';
 
 export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> {
   email: string = '';

@@ -18,7 +18,6 @@ custom:
       - "libs": libs
       - "src": src
       - "tests": tests
-    externals: all
   settings:
     IDENTITY_IDS:
       dev: "us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612"
