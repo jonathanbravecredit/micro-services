@@ -45,7 +45,7 @@ provider:
     ACCOUNT_ID: !Sub "${AWS::AccountId}"
     IDENTITY_ID: "${self:custom.settings.IDENTITY_IDS.${opt:stage}}"
     POOL_ID: "${self:custom.settings.POOL_IDS.${opt:stage}}"
-    REFERRAL_TOPIC_ARN: !ImportValue ReferralsSNSTopic
+    REFERRAL_TOPIC_ARN: !ImportValue "referral-service-referrals-sns-topic"
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
@@ -188,7 +188,7 @@ functions:
           startingPosition: LATEST
           arn: !ImportValue "referral-service-referrals-stream"
       - sns:
-          arn: !ImportValue ReferralsSNSTopic
+          arn: !ImportValue "referral-service-referrals-sns-topic"
           topicName: ${self:provider.stage}-referral-sns-topic
           integration: lambda-proxy
   # campaignActiveMonitor:
