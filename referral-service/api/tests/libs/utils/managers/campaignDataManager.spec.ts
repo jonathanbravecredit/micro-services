@@ -1,9 +1,6 @@
 import {
-  getActiveCampaignReferrals,
-  getEligibileReferrals,
-  updateReferralCampaign,
-  updateReferral,
-} from 'libs/queries/referrals/referral.queries';
+  ReferralQueries
+} from '@bravecredit/brave-sdk';
 import { CampaignDataManager } from 'libs/utils/managers/campaignDataManager';
 import { Helper } from 'tests/helpers/test-helper';
 import { mocked } from 'ts-jest/utils';
@@ -19,10 +16,10 @@ jest.mock('libs/queries/referrals/referral.queries');
 describe('CampaignDataManager', () => {
   let manager = new CampaignDataManager(MOCK_MODIFY_ACTIVE_TO_ACTIVE, MOCK_CAMPAIGN_NO_CAMPAIGN);
   let h = new Helper<CampaignDataManager>(manager);
-  const mockedListActive = mocked(getActiveCampaignReferrals);
-  const mockedListEligible = mocked(getEligibileReferrals);
-  const mockedUpdate = mocked(updateReferralCampaign);
-  const mockedUpdateReferral = mocked(updateReferral);
+  const mockedListActive = mocked(ReferralQueries.getActiveCampaignReferrals);
+  const mockedListEligible = mocked(ReferralQueries.getEligibileReferrals);
+  const mockedUpdate = mocked(ReferralQueries.updateReferralCampaign);
+  const mockedUpdateReferral = mocked(ReferralQueries.updateReferral);
   beforeEach(() => {
     mockedListActive.mockClear();
     mockedListEligible.mockClear();
