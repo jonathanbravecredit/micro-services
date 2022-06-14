@@ -1,0 +1,51 @@
+frameworkVersion: "^2.15.0"
+service: waitlist-service-resources
+
+plugins:
+  - serverless-deployment-bucket
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  deploymentBucketName: ${self:service}-deployment-bucket-${opt:stage, 'dev'}
+  accessLogBucketName: analytics-access-logging-bucket-${opt:stage, 'dev'}
+  deploymentBucket:
+    versioning: true
+    blockPublicAccess: true
+    accessLog:
+      bucket: ${self:custom.accessLogBucketName}
+      prefix: ""
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  deploymentBucket:
+    name: ${self:custom.deploymentBucketName}
+    serverSideEncryption: AES256
+
+resources:
+  Resources:
+    Waitlist:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+        TableName: Waitlist
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+
+  Outputs:
+    WaitlistTable:
+      Description: "Waitlist Table"
+      Value: !Ref Waitlist
+      Export:
+        Name: !Sub "${self:service}-waitlist-table"
+    WaitlistTableStreamArn:
+      Description: "Waitlist Table stream ARN"
+      Value: !GetAtt Waitlist.StreamArn
