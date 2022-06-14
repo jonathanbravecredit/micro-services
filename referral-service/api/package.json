@@ -34,6 +34,7 @@
     "voucher-code-generator": "^1.1.1"
   },
   "devDependencies": {
+    "@bravecredit/brave-sdk": "^1.0.22",
     "serverless-bundle": "^5.2.0",
     "serverless-dotenv-plugin": "^3.10.0",
     "serverless-offline": "^8.3.1",
