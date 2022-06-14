@@ -176,7 +176,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn: { "Fn::GetAtt": ["Campaigns", "StreamArn"] }
+          arn: !ImportValue "referral-service-campaigns-stream"
   referralMonitor:
     handler: src/subs/referrals/referrals.main
     onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
@@ -186,7 +186,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn: { "Fn::GetAtt": ["Referrals", "StreamArn"] }
+          arn: !ImportValue "referral-service-referrals-stream"
       - sns:
           arn: !ImportValue ReferralsSNSTopicArn
           topicName: ${self:provider.stage}-referral-sns-topic
