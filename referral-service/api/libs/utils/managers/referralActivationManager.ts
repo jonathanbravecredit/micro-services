@@ -66,7 +66,7 @@ export class ReferralActivationManager {
       console.error(`no proper message passed: ${JSON.stringify(snsMsg)}`);
       return;
     }
-    console.log("here`");
+    console.log("here");
     this.id = msg.id;
     this.applicationMessage = snsMsg;
     try {
