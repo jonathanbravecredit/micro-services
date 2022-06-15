@@ -67,12 +67,12 @@ functions:
           cors: true
           authorizer: aws_iam
   getAccount:
-    handler: src/api/validation/getValidation.main
+    handler: src/api/account/getAccount.main
     onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
     events:
       - http:
-          path: /validation
-          method: post
+          path: /validation/account/{email}
+          method: get
           cors: true
           authorizer: aws_iam
   postIpwhitelist:
