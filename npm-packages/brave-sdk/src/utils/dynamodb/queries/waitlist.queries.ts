@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DynamoStore } from "@shiftcoders/dynamo-easy";
-import { EMAIL_INDEX, Waitlist } from "libs/models/waitlist.model";
+import { EMAIL_INDEX, Waitlist } from "../../../models/waitlist/waitlist";
 
 export class WaitlistQueries {
   static store = new DynamoStore(Waitlist);

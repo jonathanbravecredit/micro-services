@@ -1,5 +1,5 @@
+import { WaitlistQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/waitlist.queries";
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { WaitlistQueries } from "libs/queries/waitlist.queries";
 import { response } from "libs/utils/response";
 import { safeParse } from "libs/utils/safeJson";
 

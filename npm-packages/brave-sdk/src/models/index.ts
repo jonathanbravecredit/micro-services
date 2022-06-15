@@ -56,7 +56,7 @@ export {
   SourceSummary,
   Source,
   TUDate,
-} from './merge-report';
+} from "./merge-report";
 export {
   CreditDataBreachesMetric,
   CreditForbearanceMetric,
@@ -65,18 +65,19 @@ export {
   CreditUtilizationMetric,
   CreditReportMetrics,
   CreditReportMetric,
-} from './merge-report-metrics';
-export { Ad } from './ad/ad';
-export { Analytic, AnalyticMaker } from './analytic/analytic';
-export { APIErrorLog } from './api-error-log/api-error-log';
-export { APITransactionLog } from './api-transaction-log/api-transaction-log';
-export { Campaign, CampaignMaker } from './campaign/campaign';
-export { CreditReport, CreditReportMaker } from './credit-report/credit-report';
-export { BraveCreditScore, BraveCreditScoreMaker } from './credit-score/credit-score';
-export { InvestigationResult } from './investigation-result/investigation-result';
-export { OpsReport, OpsReportMaker } from './ops-report/ops-reports';
-export { Referral, ReferralMaker } from './referral/referral';
-export { Session, SessionMaker } from './session/session';
-export { Initiative, Program, UserInitiative } from './user-initiative';
-export { TransunionUtil } from '../utils/transunion';
-export { TransactionData, TransactionDataMaker } from './transaction-data/transaction-data';
+} from "./merge-report-metrics";
+export { Ad } from "./ad/ad";
+export { Analytic, AnalyticMaker } from "./analytic/analytic";
+export { APIErrorLog } from "./api-error-log/api-error-log";
+export { APITransactionLog } from "./api-transaction-log/api-transaction-log";
+export { Campaign, CampaignMaker } from "./campaign/campaign";
+export { CreditReport, CreditReportMaker } from "./credit-report/credit-report";
+export { BraveCreditScore, BraveCreditScoreMaker } from "./credit-score/credit-score";
+export { InvestigationResult } from "./investigation-result/investigation-result";
+export { OpsReport, OpsReportMaker } from "./ops-report/ops-reports";
+export { Referral, ReferralMaker } from "./referral/referral";
+export { Session, SessionMaker } from "./session/session";
+export { Initiative, Program, UserInitiative } from "./user-initiative";
+export { TransunionUtil } from "../utils/transunion";
+export { TransactionData, TransactionDataMaker } from "./transaction-data/transaction-data";
+export { Waitlist, WaitlistMaker } from "./waitlist/waitlist";
