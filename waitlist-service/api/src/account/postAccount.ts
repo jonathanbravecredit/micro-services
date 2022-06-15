@@ -1,5 +1,6 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { PostAccount } from "libs/interfaces/postAccount.interface";
+import { WaitlistMaker } from "libs/models/waitlist.model";
 import { listUsersByEmail } from "libs/queries/cognito";
 import { WaitlistQueries } from "libs/queries/waitlist.queries";
 import { response } from "libs/utils/response";
@@ -8,7 +9,7 @@ import { safeParse } from "libs/utils/safeJson";
 const USER_POOL_ID = process.env.POOL || "";
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const { firstName, lastName, email, phone } = safeParse(event, "body") as PostAccount;
+  const { firstName, lastName, email, phone, referredByCode } = safeParse(event, "body") as PostAccount;
   if (!firstName) return response(400, `Malformed body; missing firstName: ${firstName}`);
   if (!lastName) return response(400, `Malformed body; missing lastName: ${lastName}`);
   if (!email) return response(400, `Malformed body; missing email: ${email}`);
@@ -21,13 +22,8 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     if (!user) return response(400, `Request reject; could not locate user account`);
     const { Username: id } = user;
     if (!id) return response(400, `Request reject; could not locate user account`);
-    const account = await WaitlistQueries.createWaitlist({
-      id,
-      firstName,
-      lastName,
-      email,
-      phone,
-    });
+    const waitlist = new WaitlistMaker(id, firstName, lastName, email, phone, referredByCode);
+    const account = await WaitlistQueries.createWaitlist(waitlist);
     return response(200, account);
   } catch (err) {
     console.error(err);

@@ -3,4 +3,5 @@ export interface PostAccount {
   lastName: string;
   email: string;
   phone: string;
+  referredByCode: string | undefined;
 }
