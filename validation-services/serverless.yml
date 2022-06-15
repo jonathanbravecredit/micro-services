@@ -48,6 +48,10 @@ provider:
         - "lambda:InvokeFunction"
       Resource: "*"
     - Effect: "Allow"
+      Action:
+        - "cognito-idp:ListUsers"
+      Resource: "*"
+    - Effect: "Allow"
       Action: "sns:Publish"
       Resource: "arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue"
     - Effect: "Allow"
