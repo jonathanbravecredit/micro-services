@@ -37,7 +37,7 @@
     "serverless-offline": "^6.5.0"
   },
   "dependencies": {
-    "@bravecredit/brave-sdk": "^1.0.22",
+    "@bravecredit/brave-sdk": "^1.0.23",
     "@mailchimp/mailchimp_marketing": "^3.0.72",
     "@mailchimp/mailchimp_transactional": "^1.0.47",
     "@shiftcoders/dynamo-easy": "^7.1.0",

@@ -1,8 +1,8 @@
+import { WaitlistMaker } from "@bravecredit/brave-sdk/dist/models/waitlist/waitlist";
+import { WaitlistQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/waitlist.queries";
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { PostAccount } from "libs/interfaces/postAccount.interface";
-import { WaitlistMaker } from "libs/models/waitlist.model";
 import { listUsersByEmail } from "libs/queries/cognito";
-import { WaitlistQueries } from "libs/queries/waitlist.queries";
 import { response } from "libs/utils/response";
 import { safeParse } from "libs/utils/safeJson";
 

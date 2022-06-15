@@ -66,3 +66,5 @@ resources:
     WaitlistTableStreamArn:
       Description: "Waitlist Table stream ARN"
       Value: !GetAtt Waitlist.StreamArn
+      Export:
+        Name: !Sub "${self:service}-waitlist-table-arn"
