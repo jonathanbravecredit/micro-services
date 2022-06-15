@@ -21,6 +21,12 @@ custom:
     accessLog:
       bucket: ${self:custom.accessLogBucketName}
       prefix: ""
+  settings:
+    POOL:
+      dev: "us-east-2_beTcykTM9"
+      qa: "us-east-2_beTcykTM9"
+      staging: "us-east-2_80pbK9Kx7"
+      prod: "us-east-2_R22DawoAR"
   bundle:
     aliases:
       - "libs": libs
@@ -34,6 +40,7 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     STAGE: ${opt:stage, 'dev'}
+    POOL: ${self:custom.settings.POOL.${opt:stage}}
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
@@ -68,5 +75,14 @@ functions:
       - http:
           path: /waitlist/account/{email}
           method: get
+          cors: true
+          authorizer: aws_iam
+  postAccount:
+    handler: src/account/postAccount.main
+    onError: !Sub "arn:aws:sns:${self:provider.region}:${AWS::AccountId}:lambdadeadletterqueue"
+    events:
+      - http:
+          path: /waitlist/account
+          method: post
           cors: true
           authorizer: aws_iam
