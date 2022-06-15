@@ -63,7 +63,7 @@ provider:
 functions:
   getAccountByEmail:
     handler: src/account/getAccountByEmail.main
-    onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
+    onError: !Sub "arn:aws:sns:${self:provider.region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - http:
           path: /waitlist/account/{email}
