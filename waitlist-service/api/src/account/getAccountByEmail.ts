@@ -5,7 +5,7 @@ import { safeParse } from "libs/utils/safeJson";
 
 export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const { email } = safeParse(event, "pathParameters") as { email: string };
-  if (!email) response(400, `Malformed request path parameter: ${email}`);
+  if (!email) return response(400, `Malformed request path parameter: ${email}`);
   try {
     const account = await WaitlistQueries.getWaitlistByEmail(email);
     return response(200, account);
