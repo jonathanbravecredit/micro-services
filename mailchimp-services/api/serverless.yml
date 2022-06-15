@@ -252,16 +252,17 @@ functions:
           arn: !ImportValue initiative-program-resources-stream
 
   # referral table triggers
-  # triggerWaitlistEmail:
-  #   handler: src/triggers/triggerWaitlistEmail.main
-  #   description: Monitors waitlist system to send an email with referral code embedded when new recored added
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         batchSize: 10
-  #         startingPosition: LATEST
-  #         arn: !ImportValue referral-service-referrals-stream
+  triggerWaitlistEmail:
+    handler: src/triggers/triggerWaitlistEmail.main
+    description: Monitors waitlist system to send an email with referral code embedded when new recored added
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 10
+          startingPosition: LATEST
+          arn: !ImportValue waitlist-service-resources-waitlist-table-arn
+
   # when changes to specific accounts occur, trigger the badge on the notification bar
   #  this should be moved to the credit report service
   monitorForNotifications:
