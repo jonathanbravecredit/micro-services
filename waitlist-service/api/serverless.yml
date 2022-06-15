@@ -9,9 +9,17 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
-  -
+  - serverless-deployment-bucket
 
 custom:
+  deploymentBucketName: ${self:service}-deployment-bucket-${opt:stage, 'dev'}
+  accessLogBucketName: analytics-access-logging-bucket-${opt:stage, 'dev'}
+  deploymentBucket:
+    versioning: true
+    blockPublicAccess: true
+    accessLog:
+      bucket: ${self:custom.accessLogBucketName}
+      prefix: ""
   bundle:
     aliases:
       - "libs": libs

@@ -1,0 +1,81 @@
+frameworkVersion: "^2.15.0"
+service: microservice-logging-resources
+
+plugins:
+  - serverless-deployment-bucket
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  deploymentBucketName: ${self:service}-deployment-bucket-${opt:stage, 'dev'}
+  deploymentBucket:
+    versioning: true
+    blockPublicAccess: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  deploymentBucket:
+    name: ${self:custom.deploymentBucketName}
+    serverSideEncryption: AES256
+
+resources:
+  Resources:
+    # ==========================
+    # Data storage resources
+    # ==========================
+    MicroserviceLoggingBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: !Sub "microservice-access-logging-${self:custom.stage}"
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: True
+          BlockPublicPolicy: True
+          IgnorePublicAcls: True
+          RestrictPublicBuckets: True
+        AccessControl: Private
+        VersioningConfiguration:
+          Status: Enabled
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+    MicroserviceLoggingBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        Bucket: !Ref MicroserviceLoggingBucket
+        PolicyDocument:
+          Statement:
+            - Action: "s3:*"
+              Effect: Deny
+              Principal: "*"
+              Resource:
+                - !Join
+                  - ""
+                  - - "arn:"
+                    - !Ref "AWS::Partition"
+                    - ":s3:::"
+                    - !Ref MicroserviceLoggingBucket
+                    - /*
+                - !Join
+                  - ""
+                  - - "arn:"
+                    - !Ref "AWS::Partition"
+                    - ":s3:::"
+                    - !Ref MicroserviceLoggingBucket
+              Condition:
+                Bool:
+                  "aws:SecureTransport": false
+
+  Outputs:
+    MicroserviceLoggingBucketName:
+      Description: Microservice logging bucket name
+      Value: !Ref MicroserviceLoggingBucket
+      Export:
+        Name: "microservice-logging-bucket-name"
+    MicroserviceLoggingBucketArn:
+      Description: Microservice logging bucket arn
+      Value: !GetAtt MicroserviceLoggingBucket.Arn
+      Export:
+        Name: "microservice-logging-bucket-arn"
