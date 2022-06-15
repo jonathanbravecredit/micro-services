@@ -45,9 +45,12 @@ provider:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
 functions:
-  hello:
-    handler: handler.hello
+  getAccount:
+    handler: src/api/validation/getValidation.main
+    onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
     events:
       - http:
-          path: hello
+          path: /waitlist/account/{email}
           method: get
+          cors: true
+          authorizer: aws_iam
