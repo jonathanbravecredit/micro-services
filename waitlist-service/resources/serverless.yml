@@ -26,26 +26,43 @@ provider:
 
 resources:
   Resources:
-    Waitlist2:
+    Waitlist:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: "id"
             AttributeType: "S"
+          - AttributeName: "email"
+            AttributeType: "S"
+          - AttributeName: "phone"
+            AttributeType: "S"
         KeySchema:
           - AttributeName: "id"
             KeyType: "HASH"
+        GlobalSecondaryIndexes:
+          - IndexName: email-index
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: phone-index
+            KeySchema:
+              - AttributeName: phone
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-        TableName: Waitlist2
+        TableName: Waitlist
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-  # Outputs:
-  #   WaitlistTable:
-  #     Description: "Waitlist Table"
-  #     Value: !Ref Waitlist
-  #     Export:
-  #       Name: !Sub "${self:service}-waitlist-table"
-  #   WaitlistTableStreamArn:
-  #     Description: "Waitlist Table stream ARN"
-  #     Value: !GetAtt Waitlist.StreamArn
+  Outputs:
+    WaitlistTable:
+      Description: "Waitlist Table"
+      Value: !Ref Waitlist
+      Export:
+        Name: !Sub "${self:service}-waitlist-table"
+    WaitlistTableStreamArn:
+      Description: "Waitlist Table stream ARN"
+      Value: !GetAtt Waitlist.StreamArn
