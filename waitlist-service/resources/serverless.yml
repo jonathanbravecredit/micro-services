@@ -7,7 +7,7 @@ plugins:
 custom:
   stage: ${opt:stage, 'dev'}
   deploymentBucketName: ${self:service}-deployment-bucket-${opt:stage, 'dev'}
-  accessLogBucketName: analytics-access-logging-bucket-${opt:stage, 'dev'}
+  accessLogBucketName: !ImportValue microservice-logging-bucket-name
   deploymentBucket:
     versioning: true
     blockPublicAccess: true
