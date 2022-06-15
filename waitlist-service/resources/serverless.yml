@@ -34,6 +34,8 @@ resources:
             AttributeType: "S"
           - AttributeName: "email"
             AttributeType: "S"
+          - AttributeName: "phone"
+            AttributeType: "S"
         KeySchema:
           - AttributeName: "id"
             KeyType: "HASH"
