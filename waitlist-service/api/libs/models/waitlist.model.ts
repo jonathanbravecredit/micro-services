@@ -22,7 +22,7 @@ export class Waitlist {
 
   referralCode!: string;
 
-  referredByCode: string = "";
+  referredByCode = "";
 }
 
 export class WaitlistMaker {
@@ -33,6 +33,6 @@ export class WaitlistMaker {
     public lastName: string,
     public email: string,
     public phone: string,
-    public referredByCode: string = "",
+    public referredByCode = "",
   ) {}
 }
