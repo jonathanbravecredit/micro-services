@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DynamoStore } from "@shiftcoders/dynamo-easy";
-import { Waitlist } from "libs/models/waitlist.model";
+import { EMAIL_INDEX, Waitlist } from "libs/models/waitlist.model";
 
 export class WaitlistQueries {
   static store = new DynamoStore(Waitlist);
@@ -8,6 +8,10 @@ export class WaitlistQueries {
 
   static async getWaitlist(id: string): Promise<Waitlist | null> {
     return this.store.get(id).exec();
+  }
+
+  static async getWaitlistByEmail(email: string): Promise<Waitlist | null> {
+    return this.store.query().index(EMAIL_INDEX).wherePartitionKey(email).execSingle();
   }
 
   static async listWaitlists(): Promise<Waitlist[]> {
