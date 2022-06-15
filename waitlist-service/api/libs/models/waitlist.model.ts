@@ -4,7 +4,7 @@ import { GSIPartitionKey, Model, PartitionKey } from "@shiftcoders/dynamo-easy";
 export const EMAIL_INDEX = "email-index";
 export const PHONE_INDEX = "phone-index";
 
-@Model({ tableName: "Referrals" })
+@Model({ tableName: "Waitlist" })
 export class Waitlist {
   @PartitionKey()
   id!: string;
