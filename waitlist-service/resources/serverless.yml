@@ -25,27 +25,27 @@ provider:
     serverSideEncryption: AES256
 
 resources:
-  Resources:
-    Waitlist:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: "id"
-            AttributeType: "S"
-        KeySchema:
-          - AttributeName: "id"
-            KeyType: "HASH"
-        BillingMode: PAY_PER_REQUEST
-        TableName: Waitlist
-        StreamSpecification:
-          StreamViewType: NEW_AND_OLD_IMAGES
+  # Resources:
+  #   Waitlist:
+  #     Type: AWS::DynamoDB::Table
+  #     Properties:
+  #       AttributeDefinitions:
+  #         - AttributeName: "id"
+  #           AttributeType: "S"
+  #       KeySchema:
+  #         - AttributeName: "id"
+  #           KeyType: "HASH"
+  #       BillingMode: PAY_PER_REQUEST
+  #       TableName: Waitlist
+  #       StreamSpecification:
+  #         StreamViewType: NEW_AND_OLD_IMAGES
 
-  Outputs:
-    WaitlistTable:
-      Description: "Waitlist Table"
-      Value: !Ref Waitlist
-      Export:
-        Name: !Sub "${self:service}-waitlist-table"
-    WaitlistTableStreamArn:
-      Description: "Waitlist Table stream ARN"
-      Value: !GetAtt Waitlist.StreamArn
+  # Outputs:
+  #   WaitlistTable:
+  #     Description: "Waitlist Table"
+  #     Value: !Ref Waitlist
+  #     Export:
+  #       Name: !Sub "${self:service}-waitlist-table"
+  #   WaitlistTableStreamArn:
+  #     Description: "Waitlist Table stream ARN"
+  #     Value: !GetAtt Waitlist.StreamArn
