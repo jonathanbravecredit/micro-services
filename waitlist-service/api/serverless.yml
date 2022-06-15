@@ -54,6 +54,10 @@ provider:
       Resource: "*"
     - Effect: "Allow"
       Action:
+        - "cognito-idp:ListUsers"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
         - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Scan
