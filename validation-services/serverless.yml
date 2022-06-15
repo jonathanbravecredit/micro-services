@@ -16,6 +16,12 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   bundle:
     linting: false
+  settings:
+    POOL:
+      dev: "us-east-2_beTcykTM9"
+      qa: "us-east-2_beTcykTM9"
+      staging: "us-east-2_80pbK9Kx7"
+      prod: "us-east-2_R22DawoAR"
 
 provider:
   name: aws
@@ -25,32 +31,42 @@ provider:
   timeout: 30
   environment:
     OUR_ENV: ${opt:stage, 'dev'}
-    NEVERBOUNCE_SECRET_LOCATION: '${self:provider.stage}/neverbounce-services/neverbounce'
+    POOL: ${self:custom.settings.POOL.${opt:stage}}
+    NEVERBOUNCE_SECRET_LOCATION: "${self:provider.stage}/neverbounce-services/neverbounce"
     REGION: ${self:provider.region}
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
   iamRoleStatements:
-    - Effect: 'Allow'
+    - Effect: "Allow"
       Action:
         - secretsmanager:GetSecretValue
       Resource:
-        - 'arn:aws:secretsmanager:${self:provider.region}:#{AWS::AccountId}:secret:${self:provider.stage}/neverbounce-services/neverbounce-*'
-    - Effect: 'Allow'
+        - "arn:aws:secretsmanager:${self:provider.region}:#{AWS::AccountId}:secret:${self:provider.stage}/neverbounce-services/neverbounce-*"
+    - Effect: "Allow"
       Action:
-        - 'lambda:InvokeFunction'
-      Resource: '*'
-    - Effect: 'Allow'
-      Action: 'sns:Publish'
-      Resource: 'arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue'
-    - Effect: 'Allow'
+        - "lambda:InvokeFunction"
+      Resource: "*"
+    - Effect: "Allow"
+      Action: "sns:Publish"
+      Resource: "arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue"
+    - Effect: "Allow"
       Action:
-        - 'ses:SendEmail'
-        - 'ses:SendRawEmail'
-      Resource: '*'
+        - "ses:SendEmail"
+        - "ses:SendRawEmail"
+      Resource: "*"
 
 functions:
   getValidation:
+    handler: src/api/validation/getValidation.main
+    onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
+    events:
+      - http:
+          path: /validation
+          method: post
+          cors: true
+          authorizer: aws_iam
+  getAccount:
     handler: src/api/validation/getValidation.main
     onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
     events:

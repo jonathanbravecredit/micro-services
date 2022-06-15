@@ -9,6 +9,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["reflect-metadata", "jest"]
+    "types": ["jest"]
   }
 }
