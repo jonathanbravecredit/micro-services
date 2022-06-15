@@ -45,8 +45,8 @@ provider:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
 functions:
-  getAccount:
-    handler: src/api/validation/getValidation.main
+  getAccountByEmail:
+    handler: src/account/getAccountByEmail.main
     onError: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:lambdadeadletterqueue
     events:
       - http:

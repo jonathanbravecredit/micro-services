@@ -1,5 +1,8 @@
 import "reflect-metadata";
-import { Model, PartitionKey } from "@shiftcoders/dynamo-easy";
+import { GSIPartitionKey, Model, PartitionKey } from "@shiftcoders/dynamo-easy";
+
+export const EMAIL_INDEX = "email-index";
+export const PHONE_INDEX = "phone-index";
 
 @Model({ tableName: "Referrals" })
 export class Waitlist {
@@ -10,7 +13,9 @@ export class Waitlist {
 
   lastName!: string;
 
+  @GSIPartitionKey(EMAIL_INDEX)
   email!: string;
 
+  @GSIPartitionKey(PHONE_INDEX)
   phone!: string;
 }
