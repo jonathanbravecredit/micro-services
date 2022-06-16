@@ -20,7 +20,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { referralCode, email } = DynamoDB.Converter.unmarshall(NewImage) as unknown as Waitlist;
           if (!referralCode || !email) return;
           try {
-            const urlCode = `https://app.brave.credit/waitlist/?referralCode=${referralCode}`;
+            const urlCode = `https://app.brave.credit/waitlist/welcome?referralCode=${referralCode}`;
             const message = Mailchimp.createMailMessage(email, MailchimpTriggerEmails.Waitlist, [
               { name: "URL_CODE", content: urlCode },
             ]); // TODO need to define the merge vars on the trigger
