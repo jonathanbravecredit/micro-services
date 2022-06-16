@@ -1,39 +1,13 @@
 # NOTE: update this with your service name
+frameworkVersion: "^2.15.0"
 service: referral-service
 
 # Create an optimized package for our functions
 package:
   individually: true
 
-plugins:
-  - serverless-bundle # Package our functions with Webpack
-  - serverless-offline
-  - serverless-dotenv-plugin # Load .env as environment variables
-
 custom:
-  bundle:
-    linting: false
-    aliases:
-      - 'libs': libs
-      - 'src': src
-      - 'tests': tests
-    externals: all
-  settings:
-    IDENTITY_IDS:
-      dev: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      qa: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      staging: 'us-east-2:211dd2a1-db37-4632-a4da-d05c08a80c47'
-      prod: 'us-east-2:ea31caf7-0945-4607-a3c4-0c9942967a32'
-    POOL_IDS:
-      dev: 'us-east-2_beTcykTM9'
-      qa: 'us-east-2_beTcykTM9'
-      staging: 'us-east-2_80pbK9Kx7'
-      prod: 'us-east-2_R22DawoAR'
-    APPDATA:
-      dev: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
-      qa: 'rr5wtr4ev5exlbutrkih3r5lhq:GetAtt:AppDataTable:StreamArn'
-      staging: 'mza6aevpsvef5btykbyjp5ffdm:GetAtt:AppDataTable:StreamArn'
-      prod: '4tpaga7rzjayhk75opsmpeurme:GetAtt:AppDataTable:StreamArn'
+  stage: ${opt:stage, self:provider.stage}
 
 provider:
   name: aws
@@ -42,194 +16,6 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     STAGE: ${opt:stage, 'dev'}
-    ACCOUNT_ID: !Sub '${AWS::AccountId}'
-    IDENTITY_ID: '${self:custom.settings.IDENTITY_IDS.${opt:stage}}'
-    POOL_ID: '${self:custom.settings.POOL_IDS.${opt:stage}}'
-    REFERRAL_TOPIC_ARN: !Ref ReferralsSNSTopic
-  apiGateway:
-    restApiId: !ImportValue web-api-resources-apigw-id
-    restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource:
-        - '*'
-    - Effect: 'Allow'
-      Action: 'sns:Publish'
-      Resource: '*'
-    - Effect: 'Allow'
-      Action:
-        - 'lambda:InvokeFunction'
-      Resource: '*'
-    - Effect: 'Allow'
-      Action:
-        - 'ses:SendEmail'
-        - 'ses:SendRawEmail'
-      Resource: '*'
-    - Effect: 'Allow'
-      Action:
-        - cognito-idp:ListUsers
-        - cognito-idp:AdminGetUser
-      Resource:
-        - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*'
-    - Effect: 'Allow'
-      Action:
-        - dynamodb:ListStreams
-        - dynamodb:DescribeTable
-        - dynamodb:Scan
-        - dynamodb:Query
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        - dynamodb:BatchWriteItem
-      Resource:
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Referrals/index/*'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Campaigns/index/*'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Sessions/index/*'
-
-functions:
-  # API
-  # referrals
-  createReferral:
-    handler: src/api/referrals/create.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral
-          method: post
-          cors: true
-          authorizer: aws_iam
-  getReferral:
-    handler: src/api/referrals/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !ImportValue web-api-resources-apigw-authorizer
-  getReferralByCode:
-    handler: src/api/referrals/getReferralByCode.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/{referralCode}
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !ImportValue web-api-resources-apigw-authorizer
-  getReferralValidation:
-    handler: src/api/referrals/validation/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /referral/validation/{referralCode}
-          method: post
-          cors: true
-          authorizer: aws_iam
-
-  # campaigns
-  createCampaign:
-    handler: src/api/campaigns/create.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: post
-          cors: true
-          authorizer: aws_iam
-  getCampaign:
-    handler: src/api/campaigns/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns
-          method: get
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !ImportValue web-api-resources-apigw-authorizer
-  getCampaignPublic:
-    handler: src/api/campaigns/get.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - http:
-          path: /campaigns/public
-          method: get
-          cors: true
-          authorizer: aws_iam
-
-  # monitors
-  campaignMonitor:
-    handler: src/subs/campaigns/campaigns.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
-  referralMonitor:
-    handler: src/subs/referrals/referrals.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    timeout: 60
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
-      - sns:
-          arn: !Ref ReferralsSNSTopic
-          topicName: ${self:provider.stage}-referral-sns-topic
-          integration: lambda-proxy
-  # campaignActiveMonitor:
-  #   handler: src/handlers/monitors/campaignActiveMonitor.main
-  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  #   events:
-  #     - schedule: cron(*/15 * * * ? *)
-
-  # handlers
-  cleanReferralTable:
-    handler: src/handlers/scheduled/cleanReferralTable.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchCreateReferrals:
-    handler: src/handlers/scheduled/batchCreate.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchSuspendReferrals:
-    handler: src/handlers/scheduled/batchSuspend.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchPayReferrals:
-    handler: src/handlers/scheduled/batchPay.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchResetPay:
-    handler: src/handlers/scheduled/batchResetPay.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchResetPaymentDate:
-    handler: src/handlers/scheduled/batchResetPaymentDate.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  batchUpdateAddOn:
-    handler: src/handlers/scheduled/batchUpdateAddOn.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-
-  appDataPub:
-    handler: src/pubs/appDataPub.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          startingPosition: LATEST
-          arn:
-            Fn::ImportValue: '${self:custom.settings.APPDATA.${opt:stage}}'
 
 resources:
   Resources:
@@ -242,11 +28,11 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'id'
-            AttributeType: 'S'
+          - AttributeName: "id"
+            AttributeType: "S"
         KeySchema:
-          - AttributeName: 'id'
-            KeyType: 'HASH'
+          - AttributeName: "id"
+            KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST
         TableName: Referrals
         StreamSpecification:
@@ -256,15 +42,15 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'pKey'
-            AttributeType: 'N'
-          - AttributeName: 'version'
-            AttributeType: 'N'
+          - AttributeName: "pKey"
+            AttributeType: "N"
+          - AttributeName: "version"
+            AttributeType: "N"
         KeySchema:
-          - AttributeName: 'pKey'
-            KeyType: 'HASH'
-          - AttributeName: 'version'
-            KeyType: 'RANGE'
+          - AttributeName: "pKey"
+            KeyType: "HASH"
+          - AttributeName: "version"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
         TableName: Campaigns
         StreamSpecification:
@@ -272,25 +58,25 @@ resources:
 
   Outputs:
     ReferralsTable:
-      Description: 'Referrals Table'
+      Description: "Referrals Table"
       Value: !Ref Referrals
       Export:
-        Name: !Sub '${self:service}-referrals'
+        Name: !Sub "${self:service}-referrals"
     ReferralsTableStreamArn:
-      Value: { 'Fn::GetAtt': ['Referrals', 'StreamArn'] }
+      Value: { "Fn::GetAtt": ["Referrals", "StreamArn"] }
       Export:
-        Name: !Sub '${self:service}-referrals-stream'
+        Name: !Sub "${self:service}-referrals-stream"
     CampaignsTable:
-      Description: 'Campaigns Table'
+      Description: "Campaigns Table"
       Value: !Ref Campaigns
       Export:
-        Name: !Sub '${self:service}-campaigns'
+        Name: !Sub "${self:service}-campaigns"
     CampaignsTableStreamArn:
-      Value: { 'Fn::GetAtt': ['Campaigns', 'StreamArn'] }
+      Value: { "Fn::GetAtt": ["Campaigns", "StreamArn"] }
       Export:
-        Name: !Sub '${self:service}-campaigns-stream'
+        Name: !Sub "${self:service}-campaigns-stream"
     ReferralsSNSTopicArn:
-      Description: 'Referrals sub topic'
+      Description: "Referrals sub topic"
       Value: !Ref ReferralsSNSTopic
       Export:
-        Name: !Sub '${self:service}-referrals-sns-topic'
+        Name: !Sub "${self:service}-referrals-sns-topic"

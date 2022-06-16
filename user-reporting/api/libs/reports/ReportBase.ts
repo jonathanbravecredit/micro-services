@@ -31,7 +31,7 @@ export abstract class ReportBase<B> {
           try {
             this.scan = await this.query(esk, segment, totalSegments);
             await this.processScan();
-            this.processNext();
+            await this.processNext();
           } catch (err) {
             throw err;
           }
@@ -39,6 +39,7 @@ export abstract class ReportBase<B> {
       );
       return this.onSuccess();
     } catch (err) {
+      console.log(`ReportBase Error: ${JSON.stringify(this.records)}`);
       this.handleCommonErrors(err as { code: string; message: string });
       return this.onError(err);
     }
