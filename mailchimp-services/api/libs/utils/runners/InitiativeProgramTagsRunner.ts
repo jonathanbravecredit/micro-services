@@ -1,27 +1,27 @@
-import { UserInitiative } from '@bravecredit/brave-sdk';
-import { DynamoDBRecord } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
-import { CognitoUtil } from 'libs/utils/cognito/cognito';
-import { InitiativeCheck } from 'libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck';
-import { MailchimpTriggerEmails } from 'libs/utils/mailchimp/constants';
-import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from 'libs/utils/mailchimp/interfaces';
-import { Mailchimp } from 'libs/utils/mailchimp/mailchimp';
-import { DBStreamRunner } from 'libs/utils/runners/base/dbStreamRunner';
+import { UserInitiative } from "@bravecredit/brave-sdk";
+import { DynamoDBRecord } from "aws-lambda";
+import { SNS } from "aws-sdk";
+import { CognitoUtil } from "libs/utils/cognito/cognito";
+import { InitiativeCheck } from "libs/utils/mailchimp/checkers/checks/initiatives/InitiativeCheck";
+import { MailchimpTriggerEmails } from "libs/utils/mailchimp/constants";
+import { IMailchimpPacket, IMarketingCheckerResults, IMarketingData } from "libs/utils/mailchimp/interfaces";
+import { Mailchimp } from "libs/utils/mailchimp/mailchimp";
+import { DBStreamRunner } from "libs/utils/runners/base/dbStreamRunner";
 
 export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> {
-  email: string = '';
+  email: string = "";
   sns: SNS = new SNS();
   packets!: IMailchimpPacket<IMarketingData>[];
   triggerLibrary: Record<
     string,
-    (prior: UserInitiative | null, curr: UserInitiative, event: 'INSERT' | 'MODIFY') => IMarketingCheckerResults
+    (prior: UserInitiative | null, curr: UserInitiative, event: "INSERT" | "MODIFY") => IMarketingCheckerResults
   > = {
     [MailchimpTriggerEmails.GoalChosen]: (p, c, e) => new InitiativeCheck(e, c, p).checkOne(),
     [MailchimpTriggerEmails.GoalTaskStatus]: (p, c, e) => new InitiativeCheck(e, c, p).checkTwo(),
     [MailchimpTriggerEmails.GoalProgress]: (p, c, e) => new InitiativeCheck(e, c, p).checkThree(),
   };
 
-  constructor(public event: 'MODIFY' | 'INSERT', public record: DynamoDBRecord, public pool: string) {
+  constructor(public event: "MODIFY" | "INSERT", public record: DynamoDBRecord, public pool: string) {
     super(record);
     this.init();
   }
@@ -53,9 +53,9 @@ export class InitiativeProgramTagsRunner extends DBStreamRunner<UserInitiative> 
     await Promise.all(
       this.packets.map(async (pack) => {
         const { data, template } = pack;
-        if (data?.api !== 'marketing') return;
-        const message = Mailchimp.createMailMessage(this.email, 'tag_user', undefined, data.tag);
-        const payload = Mailchimp.createSNSPayload('marketing', message, 'marketing');
+        if (data?.api !== "marketing") return;
+        const message = Mailchimp.createMailMessage(this.email, "tag_user", undefined, data.tag);
+        const payload = Mailchimp.createSNSPayload("marketing", message, "marketing");
         await this.sns.publish(payload).promise();
       }),
     );
