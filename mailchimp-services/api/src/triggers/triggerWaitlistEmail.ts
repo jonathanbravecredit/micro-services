@@ -6,7 +6,13 @@ import { Waitlist } from "@bravecredit/brave-sdk/dist/models/waitlist/waitlist";
 import { MailchimpTriggerEmails } from "libs/utils/mailchimp/constants";
 
 const sns = new SNS();
-const subDomain = process.env.STAGE === 'dev' ? 'dev-app' : 'app';
+const subDomains: Record<string, string> = {
+  dev: "dev-app",
+  qa: "dev-app",
+  staging: "staging-app",
+  prod: "app",
+};
+const subDomain = subDomains[process.env.STAGE || "prod"];
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
