@@ -1,4 +1,4 @@
-frameworkVersion: '^2.15.0'
+frameworkVersion: "^2.15.0"
 service: user-reporting-resources
 
 package:
@@ -29,7 +29,7 @@ resources:
 
     # Create our 'MailchimpQueue' SQS queue
     OpsBatchQueue:
-      Type: 'AWS::SQS::Queue'
+      Type: "AWS::SQS::Queue"
       Properties:
         QueueName: ${self:provider.stage}-ops-batch-sqs
         ReceiveMessageWaitTimeSeconds: 20
@@ -45,24 +45,24 @@ resources:
       Type: AWS::SQS::QueuePolicy
       Properties:
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Sid: 'allow-sns-messages'
+            - Sid: "allow-sns-messages"
               Effect: Allow
-              Principal: '*'
+              Principal: "*"
               Resource: !GetAtt
                 - OpsBatchQueue
                 - Arn
-              Action: 'SQS:SendMessage'
+              Action: "SQS:SendMessage"
               Condition:
                 ArnEquals:
-                  'aws:SourceArn': ${self:provider.environment.OPSBATCH_SNS_ARN}
+                  "aws:SourceArn": ${self:provider.environment.OPSBATCH_SNS_ARN}
         Queues:
           - Ref: OpsBatchQueue
 
     # Create the subscription to the 'queue
     OpsBatchQueueSubscription:
-      Type: 'AWS::SNS::Subscription'
+      Type: "AWS::SNS::Subscription"
       Properties:
         TopicArn: ${self:provider.environment.OPSBATCH_SNS_ARN}
         Endpoint: !GetAtt
@@ -87,30 +87,31 @@ resources:
             - missingdisputekeys
             - disputeerrors
             - disputeanalytics
-        RawMessageDelivery: 'true'
+            - waitlistanalytics
+        RawMessageDelivery: "true"
 
     OpsReports:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'reportId'
-            AttributeType: 'S'
-          - AttributeName: 'recordId'
-            AttributeType: 'S'
-          - AttributeName: 'batchId'
-            AttributeType: 'S'
+          - AttributeName: "reportId"
+            AttributeType: "S"
+          - AttributeName: "recordId"
+            AttributeType: "S"
+          - AttributeName: "batchId"
+            AttributeType: "S"
         KeySchema:
-          - AttributeName: 'reportId'
-            KeyType: 'HASH'
-          - AttributeName: 'recordId'
-            KeyType: 'RANGE'
+          - AttributeName: "reportId"
+            KeyType: "HASH"
+          - AttributeName: "recordId"
+            KeyType: "RANGE"
         GlobalSecondaryIndexes:
           - IndexName: batchIdReportId-index
             KeySchema:
               - AttributeName: batchId
-                KeyType: 'HASH'
+                KeyType: "HASH"
               - AttributeName: reportId
-                KeyType: 'RANGE'
+                KeyType: "RANGE"
             Projection:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
@@ -120,17 +121,17 @@ resources:
 
   Outputs:
     OpsReportsTable:
-      Description: 'Ops Reports table'
+      Description: "Ops Reports table"
       Value: !Ref OpsReports
       Export:
-        Name: !Sub '${self:provider.stage}-ops-report-table'
+        Name: !Sub "${self:provider.stage}-ops-report-table"
     OpsBatchQueueArn:
-      Description: 'Ops Batch queue ARN'
+      Description: "Ops Batch queue ARN"
       Value: !GetAtt OpsBatchQueue.Arn
       Export:
-        Name: !Sub '${self:service}-sqs-arn'
+        Name: !Sub "${self:service}-sqs-arn"
     OpsBatchSNSTopicArn:
-      Description: 'Ops Batch SNS ARN'
+      Description: "Ops Batch SNS ARN"
       Value: !Ref OpsBatchSNSTopic
       Export:
-        Name: !Sub '${self:service}-sns-arn'
+        Name: !Sub "${self:service}-sns-arn"
