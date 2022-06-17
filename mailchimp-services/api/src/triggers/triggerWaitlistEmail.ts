@@ -6,6 +6,13 @@ import { Waitlist } from "@bravecredit/brave-sdk/dist/models/waitlist/waitlist";
 import { MailchimpTriggerEmails } from "libs/utils/mailchimp/constants";
 
 const sns = new SNS();
+const subDomains: Record<string, string> = {
+  dev: "dev-app",
+  qa: "dev-app",
+  staging: "staging-app",
+  prod: "app",
+};
+const subDomain = subDomains[process.env.STAGE || "prod"];
 
 export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): Promise<void> => {
   const records = event.Records;
@@ -20,7 +27,7 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
           const { referralCode, email } = DynamoDB.Converter.unmarshall(NewImage) as unknown as Waitlist;
           if (!referralCode || !email) return;
           try {
-            const urlCode = `https://app.brave.credit/waitlist/welcome?referralCode=${referralCode}`;
+            const urlCode = `https://${subDomain}.brave.credit/waitlist/welcome?referralCode=${referralCode}`;
             const message = Mailchimp.createMailMessage(email, MailchimpTriggerEmails.Waitlist, [
               { name: "URL_CODE", content: urlCode },
             ]); // TODO need to define the merge vars on the trigger
