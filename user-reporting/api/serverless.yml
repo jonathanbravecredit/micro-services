@@ -179,37 +179,35 @@ functions:
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
     events:
       - schedule: cron(0 8 * * ? *)
-  reportFailedCount:
-    handler: src/handlers/compilers/reportFailedCount.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportDuplicateFulfills:
-    handler: src/handlers/compilers/reportDuplicateFulfills.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-    memorySize: 1024
+  # reportFailedCount:
+  #   handler: src/handlers/compilers/reportFailedCount.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # reportDuplicateFulfills:
+  #   handler: src/handlers/compilers/reportDuplicateFulfills.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  #   memorySize: 1024
   disableCancelledUsers:
     handler: src/handlers/compilers/disableCancelledUsers.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  userEnrollments:
-    handler: src/handlers/compilers/reportEnrollments.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportEnrollmentDisconnect:
-    handler: src/handlers/compilers/reportEnrollmentDisconnect.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  userOnboardingErrors:
-    handler: src/handlers/compilers/reportOnboardingErrors.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  userSuspensions:
-    handler: src/handlers/compilers/reportSuspendedUsers.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  disableStaleUsers:
-    handler: src/handlers/compilers/disableStaleUsers.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # userEnrollments:
+  #   handler: src/handlers/compilers/reportEnrollments.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # reportEnrollmentDisconnect:
+  #   handler: src/handlers/compilers/reportEnrollmentDisconnect.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # userOnboardingErrors:
+  #   handler: src/handlers/compilers/reportOnboardingErrors.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # userSuspensions:
+  #   handler: src/handlers/compilers/reportSuspendedUsers.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+  # disableStaleUsers:
+  #   handler: src/handlers/compilers/disableStaleUsers.main
+  #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportFailedFulfills:
     handler: src/handlers/compilers/reportFailedFulfills.main
     onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-  reportAllDisputes:
-    handler: src/handlers/compilers/reportAllDisputes.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+Sp
 
   # FIXERS
   findNotSentReferralEmails:
