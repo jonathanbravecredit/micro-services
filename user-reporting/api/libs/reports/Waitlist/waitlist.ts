@@ -23,7 +23,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
 
   async processScan(): Promise<void> {
     await Promise.all(
-      this.scan?.items.map(async (item: Waitlist) => {
+      this.scan?.items?.map(async (item: Waitlist) => {
         const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
         const { id, firstName, lastName, phone, email, referralCode, referredByCode } = item;

@@ -84,6 +84,8 @@ provider:
         - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog/index/*"
         - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports"
         - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports/index/*"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Waitlist"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Waitlist/index/*"
     - Effect: "Allow"
       Action:
         - cognito-idp:ListUsers
