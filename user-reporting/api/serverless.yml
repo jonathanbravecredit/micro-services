@@ -1,4 +1,4 @@
-frameworkVersion: '^2.15.0'
+frameworkVersion: "^2.15.0"
 service: user-reporting-api
 
 package:
@@ -17,26 +17,26 @@ custom:
       - nodemailer
   settings:
     POOL:
-      dev: 'us-east-2_beTcykTM9'
-      qa: 'us-east-2_beTcykTM9'
-      staging: 'us-east-2_80pbK9Kx7'
-      prod: 'us-east-2_R22DawoAR'
+      dev: "us-east-2_beTcykTM9"
+      qa: "us-east-2_beTcykTM9"
+      staging: "us-east-2_80pbK9Kx7"
+      prod: "us-east-2_R22DawoAR"
     APPDATA:
-      dev: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
-      qa: 'AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev'
-      staging: 'AppData-mza6aevpsvef5btykbyjp5ffdm-staging'
-      prod: 'AppData-4tpaga7rzjayhk75opsmpeurme-prod'
+      dev: "AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev"
+      qa: "AppData-rr5wtr4ev5exlbutrkih3r5lhq-dev"
+      staging: "AppData-mza6aevpsvef5btykbyjp5ffdm-staging"
+      prod: "AppData-4tpaga7rzjayhk75opsmpeurme-prod"
     GRAPHQL_APIENDPOINTOUTPUT: !ImportValue GraphQLAPIEndpointOutput
     GRAPHQL_API:
-      dev: 'rr5wtr4ev5exlbutrkih3r5lhq'
-      qa: 'rr5wtr4ev5exlbutrkih3r5lhq'
-      staging: 'mza6aevpsvef5btykbyjp5ffdm'
-      prod: '4tpaga7rzjayhk75opsmpeurme'
+      dev: "rr5wtr4ev5exlbutrkih3r5lhq"
+      qa: "rr5wtr4ev5exlbutrkih3r5lhq"
+      staging: "mza6aevpsvef5btykbyjp5ffdm"
+      prod: "4tpaga7rzjayhk75opsmpeurme"
     GRAPHQL_ENDPOINT:
-      dev: '24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com'
-      qa: '24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com'
-      staging: 'xte3obhdpfbhfbxekxpfa2tcwq.appsync-api.us-east-2.amazonaws.com'
-      prod: 'krybm5pc3nbgdk4zwgcva2i4va.appsync-api.us-east-2.amazonaws.com'
+      dev: "24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com"
+      qa: "24ga46y3gbgodogktqwhh7vryq.appsync-api.us-east-2.amazonaws.com"
+      staging: "xte3obhdpfbhfbxekxpfa2tcwq.appsync-api.us-east-2.amazonaws.com"
+      prod: "krybm5pc3nbgdk4zwgcva2i4va.appsync-api.us-east-2.amazonaws.com"
 
 provider:
   name: aws
@@ -45,22 +45,22 @@ provider:
   region: ${opt:region, 'us-east-2'}
   timeout: 900
   environment:
-    ACCOUNT_ID: !Sub '${AWS::AccountId}'
+    ACCOUNT_ID: !Sub "${AWS::AccountId}"
     STAGE: ${opt:stage, self:provider.stage}
     POOL: ${self:custom.settings.POOL.${opt:stage}}
-    APPSYNC_ENDPOINT: '${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}'
-    APPSYNC_API: '${self:custom.settings.GRAPHQL_API.${opt:stage}}'
-    APPDATA: '${self:custom.settings.APPDATA.${opt:stage}}'
-    OPSBATCH_SQS_ARN: !ImportValue 'user-reporting-resources-sqs-arn'
-    OPSBATCH_SNS_ARN: !ImportValue 'user-reporting-resources-sns-arn'
+    APPSYNC_ENDPOINT: "${self:custom.settings.GRAPHQL_ENDPOINT.${opt:stage}}"
+    APPSYNC_API: "${self:custom.settings.GRAPHQL_API.${opt:stage}}"
+    APPDATA: "${self:custom.settings.APPDATA.${opt:stage}}"
+    OPSBATCH_SQS_ARN: !ImportValue "user-reporting-resources-sqs-arn"
+    OPSBATCH_SNS_ARN: !ImportValue "user-reporting-resources-sns-arn"
   iamRoleStatements:
     - Effect: Allow
       Resource:
-        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Query/*'
-        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Mutation/*'
-        - !Sub 'arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Subscription/*'
-      Action: 'appsync:GraphQL'
-    - Effect: 'Allow'
+        - !Sub "arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Query/*"
+        - !Sub "arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Mutation/*"
+        - !Sub "arn:aws:appsync:${AWS::Region}:${AWS::AccountId}:apis/${self:custom.settings.GRAPHQL_API.${opt:stage}}/types/Subscription/*"
+      Action: "appsync:GraphQL"
+    - Effect: "Allow"
       Action:
         - dynamodb:ListStreams
         - dynamodb:DescribeTable
@@ -72,111 +72,111 @@ provider:
         - dynamodb:DeleteItem
         - dynamodb:BatchWriteItem
       Resource:
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Referrals'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Analytics'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditScores'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditReports'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Disputes'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/InvestigationResults'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditBureauReportResults'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog/index/*'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports'
-        - !Sub 'arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports/index/*'
-    - Effect: 'Allow'
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/${self:provider.environment.APPDATA}"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Referrals"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Analytics"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditScores"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditReports"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/Disputes"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/InvestigationResults"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/CreditBureauReportResults"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/APITransactionLog/index/*"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports"
+        - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/OpsReports/index/*"
+    - Effect: "Allow"
       Action:
         - cognito-idp:ListUsers
         - cognito-idp:AdminDisableUser
         - cognito-idp:AdminDeleteUser
         - cognito-idp:AdminGetUser
-      Resource: !Sub 'arn:aws:cognito-idp:${self:provider.region}:${AWS::AccountId}:userpool/*'
-    - Effect: 'Allow'
+      Resource: !Sub "arn:aws:cognito-idp:${self:provider.region}:${AWS::AccountId}:userpool/*"
+    - Effect: "Allow"
       Action:
-        - 'ses:SendEmail'
-        - 'ses:SendRawEmail'
-      Resource: '*'
-    - Effect: 'Allow'
+        - "ses:SendEmail"
+        - "ses:SendRawEmail"
+      Resource: "*"
+    - Effect: "Allow"
       Action:
         - sqs:ReceiveMessage
         - sqs:DeleteMessage
         - sqs:GetQueueAttributes
-      Resource: '*'
-    - Effect: 'Allow'
-      Action: 'sns:Publish'
-      Resource: '*'
+      Resource: "*"
+    - Effect: "Allow"
+      Action: "sns:Publish"
+      Resource: "*"
 functions:
   # COMPILE AND CLEANUP
   cleanUpAllReports:
     handler: src/handlers/cleanup/cleanUpReportsAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(0 12 * * ? *) # run every morning at 4:30 AM (PST)
   compileAllReports:
     handler: src/handlers/compilers/compileAllReports.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     # events:
     # - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM (PST) # needs work
 
   # WORKER
   opsBatchWorker:
     handler: src/subscriptions/opsBatchWorker.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     timeout: 120
     reservedConcurrency: 5
     events:
       - sqs:
-          arn: !ImportValue 'user-reporting-resources-sqs-arn'
+          arn: !ImportValue "user-reporting-resources-sqs-arn"
           batchSize: 1
           maximumBatchingWindow: 5
 
   # BATCHED SCHEDULED
   triggerEnrollmentsYTD:
     handler: src/triggers/triggerEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(0 7 * * ? *) # run every morning at 12:30 AM
   triggerFailuresYTD:
     handler: src/triggers/triggerFailuresYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(15 7 * * ? *) # run every morning at 12:00 AM
   triggerReferralsAll:
     handler: src/triggers/triggerReferralsAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(0 7 * * ? *) # run every morning at 12:15 AM
 
   # BATCHED COMPILERS
   compileEnrollmentsYTD:
     handler: src/handlers/compilers/compileEnrollmentsYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(0 9 * * ? *) # run every morning at 1:00 AM
   compileFailuresYTD:
     handler: src/handlers/compilers/compileFailuresYTD.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(15 9 * * ? *) # run every morning at 1:30 AM
   compileReferralsAll:
     handler: src/handlers/compilers/compileReferralsAll.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(30 9 * * ? *) # run every morning at 1:15 AM
   compileUserAggregationMetrics:
     handler: src/handlers/compilers/compileUserAggregationReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
 
   # BATCHED MANUAL
   # no report report
   triggerManualReport:
     handler: src/triggers/triggerManualReport.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
 
   # SINGLE THREAD
   userRegistrations:
     handler: src/handlers/compilers/reportRegisteredUsers.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
       - schedule: cron(0 8 * * ? *)
   # reportFailedCount:
@@ -188,7 +188,7 @@ functions:
   #   memorySize: 1024
   disableCancelledUsers:
     handler: src/handlers/compilers/disableCancelledUsers.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
   # userEnrollments:
   #   handler: src/handlers/compilers/reportEnrollments.main
   #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
@@ -206,13 +206,12 @@ functions:
   #   onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
   reportFailedFulfills:
     handler: src/handlers/compilers/reportFailedFulfills.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
-Sp
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
 
   # FIXERS
   findNotSentReferralEmails:
     handler: src/handlers/fixers/findNotSentReferralEmails.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
   fixDisputeEnrollmentKeys:
     handler: src/handlers/fixers/fixDisputeEnrollmentKeys.main
-    onError: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue'
+    onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
