@@ -32,7 +32,7 @@
     "serverless-offline": "^8.8.0"
   },
   "dependencies": {
-    "@bravecredit/brave-sdk": "^1.0.23",
+    "@bravecredit/brave-sdk": "^1.0.24",
     "@shiftcoders/dynamo-easy": "^7.1.0",
     "reflect-metadata": "^0.1.13",
     "uuid": "^8.3.2"
