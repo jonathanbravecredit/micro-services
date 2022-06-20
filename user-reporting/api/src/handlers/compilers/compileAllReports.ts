@@ -25,7 +25,6 @@ export const main: Handler<any, any> = async (event: any): Promise<any> => {
   try {
     await Promise.all(
       Object.values(ReportNames).map(async (reportId) => {
-        if (reportId !== ReportNames.WaitlistAnalytics) return;
         const opsreports = await OpsReportQueries.listOpsReportsByBatch(batchId, reportId);
         if (!opsreports?.length) return;
         console.log(`grabbed ${opsreports.length} records`);

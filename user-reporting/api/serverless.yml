@@ -152,7 +152,7 @@ functions:
     handler: src/triggers/triggerWaitlistReport.main
     onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
     events:
-      - schedule: cron(0 7 * * ? *) # run every morning at 12:15 AM
+      - schedule: cron(0 7 * * ? *) # run every morning at 12:00 AM
 
   # BATCHED COMPILERS
   compileEnrollmentsYTD:
