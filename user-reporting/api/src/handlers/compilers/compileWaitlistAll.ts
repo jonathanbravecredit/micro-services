@@ -56,7 +56,7 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
       STAGE === "dev"
         ? ["jonathan@brave.credit"]
         : ["jonathan@brave.credit", "noah@brave.credit", "jorge@brave.credit"];
-    let params = generateEmailParams(`Report: ${ReportNames.ReferralsAll}`, emails);
+    let params = generateEmailParams(`Report: ${ReportNames.WaitlistAnalytics}`, emails);
     params.attachments = [
       {
         filename: `${ReportNames.WaitlistAnalytics}-${batch}.csv`,
