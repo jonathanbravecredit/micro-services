@@ -7,6 +7,7 @@ import { Handler } from "aws-lambda";
 import { generateEmailParams } from "libs/helpers";
 import { ReportNames } from "libs/data/reports";
 import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
+import { Waitlist } from "@bravecredit/brave-sdk/dist/models";
 
 // request.debug = true; import * as request from 'request';
 const ses = new SES({ region: "us-east-1" });
@@ -33,7 +34,8 @@ export const main: Handler<{ batchId: string }, any> = async (event: { batchId: 
     const cutoff = dayjs(new Date()).add(-1, "days").format("YYYY-MM-DD");
     const waitlists = opsreports.map((report, i) => {
       if (i < 2) console.log("DB record ==> ", report);
-      const data = JSON.parse(report.record);
+      const data: Waitlist = JSON.parse(report.record);
+      if (!data.createdOn) data["createdOn"] = "2022-06-20T18:45:00.000Z";
       return data;
     });
 
