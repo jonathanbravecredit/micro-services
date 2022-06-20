@@ -23,10 +23,13 @@ export class Waitlist {
   referralCode!: string;
 
   referredByCode = "";
+
+  createdOn!: string;
 }
 
 export class WaitlistMaker {
   public referralCode: string = v4();
+  public createdOn = new Date().toISOString();
   constructor(
     public id: string,
     public firstName: string,
