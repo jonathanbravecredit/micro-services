@@ -1,9 +1,9 @@
-import { AttributeValue } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
-import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-import { ParallelScanParams } from 'libs/interfaces/generic-db.interfaces';
+import { AttributeValue } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
+import { IAttributeValue, IBatchMsg } from "libs/interfaces/batch.interfaces";
+import { ParallelScanParams } from "libs/interfaces/generic-db.interfaces";
 
-const db = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
+const db = new DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
 
 export const getItem = (id: any, table: string): Promise<DynamoDB.DocumentClient.GetItemOutput> => {
   const params = {
@@ -31,7 +31,7 @@ export const listItems = async (table: string) => {
     items = await db.scan(params).promise();
     items.Items?.forEach((item) => scanResults.push(item));
     params.ExclusiveStartKey = items.LastEvaluatedKey;
-  } while (typeof items.LastEvaluatedKey != 'undefined');
+  } while (typeof items.LastEvaluatedKey != "undefined");
 
   return scanResults;
 };
@@ -42,18 +42,23 @@ export const pScan = async (
   totalSegments: number,
   params: ParallelScanParams,
 ): Promise<IBatchMsg<IAttributeValue> | undefined> => {
-  if (!params.table) throw 'no table provided';
+  if (!params.table) throw "no table provided";
   let input: DynamoDB.DocumentClient.ScanInput = {
     TableName: params.table, // I need a big table for testing
     ExclusiveStartKey: esk,
     Segment: segment,
     TotalSegments: totalSegments,
   };
+  console.log("input prior to merge", JSON.stringify(input));
   // map and merge
-  Object.entries(params).forEach(([k, v]) => {
-    Object.assign(input, { [parallelScanParamMap[k]]: v });
-  });
-  console.log('genric pScan input', JSON.stringify(input));
+  // TODO need to extend the ability to add params beyond just table name
+  // Object.entries(params).forEach(([k, v]) => {
+  //   input = {
+  //     ...input,
+  //     ...{ [parallelScanParamMap[k]]: v },
+  //   };
+  // });
+  console.log("genric pScan input", JSON.stringify(input));
   try {
     const items: DynamoDB.DocumentClient.ScanOutput = await db.scan(input).promise();
     const { LastEvaluatedKey, Items } = items;
@@ -64,7 +69,7 @@ export const pScan = async (
       totalSegments: totalSegments,
     };
   } catch (err) {
-    console.log('err ==> ', err);
+    console.log("err ==> ", err);
   }
 };
 
@@ -81,16 +86,16 @@ export const query = async (
       totalSegments: 1,
     };
   } catch (err) {
-    console.log('err ==> ', err);
+    console.log("err ==> ", err);
   }
 };
 
 export const parallelScanParamMap: Record<string, string> = {
-  table: 'TableName',
-  index: 'IndexName',
-  key: 'Key',
-  keyExpression: 'KeyConditionExpression',
-  filter: 'FilterExpression',
-  attributes: 'ExpressionAttributeNames',
-  values: 'ExpressionAttributeValues',
+  table: "TableName",
+  index: "IndexName",
+  key: "Key",
+  keyExpression: "KeyConditionExpression",
+  filter: "FilterExpression",
+  attributes: "ExpressionAttributeNames",
+  values: "ExpressionAttributeValues",
 };
