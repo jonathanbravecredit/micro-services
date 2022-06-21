@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 export declare const BATCHID_REPORTID_INDEX = "batchIdReportId-index";
 export declare class OpsReport {
     reportId: string;
