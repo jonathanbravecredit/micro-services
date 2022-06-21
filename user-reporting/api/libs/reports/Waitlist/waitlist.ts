@@ -29,30 +29,35 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       this.scan?.items?.map(async (item: Waitlist) => {
         const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
-        const { id, firstName, lastName, phone, email, referralCode, referredByCode } = item;
+        const { id, firstName, lastName, phone, email, referralCode, referredByCode = "" } = item;
         const ops = new OpsReportMaker(
           ReportNames.WaitlistAnalytics,
           batchId,
           JSON.stringify(schema),
           JSON.stringify({
-            id,
-            firstName,
-            lastName,
-            phone,
-            email,
-            referralCode,
-            referredByCode,
+            id: id,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone,
+            email: email,
+            referralCode: referralCode,
+            referredByCode: referredByCode,
           }),
         );
-        await OpsReportQueries.createOpReport(ops);
-        this.counter++;
-        return true;
+        console.log("Report Ops: ", ops);
+        try {
+          await OpsReportQueries.createOpReport(ops);
+          this.counter++;
+          return true;
+        } catch (err) {
+          console.error("OpsReport Query Error: ", JSON.stringify(err));
+          return false;
+        }
       }),
     );
   }
 
   async processNext() {
-    const scan = this.scan;
     console.log("process next this.scan: ", JSON.stringify(this.scan));
     if (!this.scan) return;
     if (this.scan.lastEvaluatedKey != undefined) {

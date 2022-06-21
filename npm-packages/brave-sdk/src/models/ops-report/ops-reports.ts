@@ -1,9 +1,9 @@
-import 'reflect-metadata';
-import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
+import "reflect-metadata";
+import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey } from "@shiftcoders/dynamo-easy";
+import { v4 } from "uuid";
+export const BATCHID_REPORTID_INDEX = "batchIdReportId-index";
 
-export const BATCHID_REPORTID_INDEX = 'batchIdReportId-index';
-
-@Model({ tableName: 'OpsReports' })
+@Model({ tableName: "OpsReports" })
 export class OpsReport {
   @PartitionKey()
   @GSISortKey(BATCHID_REPORTID_INDEX)
@@ -29,7 +29,7 @@ export class OpsReportMaker implements OpsReport {
 
   constructor(reportId: string, batchId: string, schema: string, record: string) {
     this.reportId = reportId;
-    this.recordId = new Date().toISOString();
+    this.recordId = `${new Date().valueOf()}_${v4().slice(-8)}`;
     this.batchId = batchId;
     this.schema = schema;
     this.record = record;
