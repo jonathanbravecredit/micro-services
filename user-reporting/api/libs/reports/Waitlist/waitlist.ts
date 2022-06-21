@@ -18,6 +18,9 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
+    console.log("esk 1: ", JSON.stringify(esk));
+    console.log("segment 1: ", segment);
+    console.log("totalSegments 1: ", totalSegments);
     return await parallelScanWaitlist(esk, segment, totalSegments);
   }
 

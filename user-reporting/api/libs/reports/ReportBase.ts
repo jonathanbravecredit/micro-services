@@ -29,6 +29,9 @@ export abstract class ReportBase<B> {
           const message = rec.message;
           console.log("message: ", JSON.stringify(message));
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
+          console.log("esk 0: ", JSON.stringify(esk));
+          console.log("segment 0: ", segment);
+          console.log("totalSegments 0: ", totalSegments);
           try {
             this.scan = await this.query(esk, segment, totalSegments);
             await this.processScan();

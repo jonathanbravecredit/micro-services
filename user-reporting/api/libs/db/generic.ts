@@ -43,6 +43,9 @@ export const pScan = async (
   params: ParallelScanParams,
 ): Promise<IBatchMsg<IAttributeValue> | undefined> => {
   if (!params.table) throw "no table provided";
+  console.log("esk 2: ", JSON.stringify(esk));
+  console.log("segment 2: ", segment);
+  console.log("totalSegments 2: ", totalSegments);
   let input: DynamoDB.DocumentClient.ScanInput = {
     TableName: params.table, // I need a big table for testing
     ExclusiveStartKey: esk,
