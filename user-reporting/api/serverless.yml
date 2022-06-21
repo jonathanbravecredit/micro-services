@@ -117,8 +117,8 @@ functions:
   compileAllReports:
     handler: src/handlers/compilers/compileAllReports.main
     onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
-    events:
-      - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM (PST) # needs work
+    # events:
+    #   - schedule: cron(30 9 * * ? *) # run every morning at 1:30 AM (PST) # needs work
 
   # WORKER
   opsBatchWorker:
