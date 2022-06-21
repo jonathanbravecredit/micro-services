@@ -65,6 +65,7 @@ export const pScan = async (
   try {
     const items: DynamoDB.DocumentClient.ScanOutput = await db.scan(input).promise();
     const { LastEvaluatedKey, Items } = items;
+    console.log("items in generic: ", JSON.stringify(items));
     return {
       lastEvaluatedKey: LastEvaluatedKey,
       items: Items,

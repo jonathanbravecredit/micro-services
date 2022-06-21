@@ -53,11 +53,13 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
 
   async processNext() {
     const scan = this.scan;
-    if (scan?.lastEvaluatedKey != undefined) {
+    console.log("process next this.scan: ", JSON.stringify(this.scan));
+    if (!this.scan) return;
+    if (this.scan.lastEvaluatedKey != undefined) {
       const packet: IBatchMsg<IAttributeValue> = {
-        exclusiveStartKey: scan.lastEvaluatedKey,
-        segment: scan.segment,
-        totalSegments: scan.totalSegments,
+        exclusiveStartKey: this.scan.lastEvaluatedKey,
+        segment: this.scan.segment,
+        totalSegments: this.scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         "opsbatch",
