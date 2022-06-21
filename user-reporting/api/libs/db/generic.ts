@@ -43,9 +43,6 @@ export const pScan = async (
   params: ParallelScanParams,
 ): Promise<IBatchMsg<IAttributeValue> | undefined> => {
   if (!params.table) throw "no table provided";
-  console.log("esk 2: ", JSON.stringify(esk));
-  console.log("segment 2: ", segment);
-  console.log("totalSegments 2: ", totalSegments);
   let input: DynamoDB.DocumentClient.ScanInput = {
     TableName: params.table, // I need a big table for testing
     ExclusiveStartKey: esk,
@@ -54,13 +51,12 @@ export const pScan = async (
   };
   console.log("input prior to merge", JSON.stringify(input));
   // map and merge
-  // TODO need to extend the ability to add params beyond just table name
-  // Object.entries(params).forEach(([k, v]) => {
-  //   input = {
-  //     ...input,
-  //     ...{ [parallelScanParamMap[k]]: v },
-  //   };
-  // });
+  Object.entries(params).forEach(([k, v]) => {
+    input = {
+      ...input,
+      ...{ [parallelScanParamMap[k]]: v },
+    };
+  });
   console.log("genric pScan input", JSON.stringify(input));
   try {
     const items: DynamoDB.DocumentClient.ScanOutput = await db.scan(input).promise();
