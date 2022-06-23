@@ -26,7 +26,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       this.scan?.items?.map(async (item: Waitlist) => {
         const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
-        const { id, firstName, lastName, phone, email, referralCode, referredByCode = "" } = item;
+        const { id, firstName, lastName, phone, email, referralCode, referredByCode = "", createdOn } = item;
         const ops = new OpsReportMaker(
           ReportNames.WaitlistAnalytics,
           batchId,
@@ -39,6 +39,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
             email: email,
             referralCode: referralCode,
             referredByCode: referredByCode,
+            createdOn: createdOn,
           }),
         );
         console.log("Report Ops: ", ops);
