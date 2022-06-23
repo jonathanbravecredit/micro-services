@@ -1,12 +1,7 @@
-import 'reflect-metadata';
-import { Handler } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
-import { PubSubUtil } from 'libs/pubsub/pubsub';
-import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-
+import "reflect-metadata";
+import { Handler } from "aws-lambda";
+import { TriggerUtility } from "./triggerUtility";
 // request.debug = true; import * as request from 'request';
-const sns = new SNS({ region: 'us-east-2' });
-const pubsub = new PubSubUtil();
 
 /**
  * Handler that processes single requests for Transunion services
@@ -16,28 +11,6 @@ const pubsub = new PubSubUtil();
  * @returns Lambda proxy response
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
-  if (process.env.STAGE == 'dev' && !event.override) return;
-  try {
-    let counter = 0;
-    const segments: number[] = [];
-    for (let i = 0; i < 20; i++) {
-      segments.push(i);
-    }
-    await Promise.all(
-      segments.map(async (s) => {
-        const packet: IBatchMsg<IAttributeValue> = {
-          exclusiveStartKey: undefined,
-          segment: s,
-          totalSegments: segments.length,
-        };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
-        await sns.publish(payload).promise();
-      }),
-    );
-    const results = { success: true, error: null, data: `Ops:batch queued ${counter} records.` };
-    return JSON.stringify(results);
-  } catch (err) {
-    console.log('err ===> ', err);
-    return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
-  }
+  let triggerUtil = new TriggerUtility();
+  return triggerUtil.triggerReport(event, "failurereport", 20, process.env.STAGE);
 };
