@@ -27,6 +27,7 @@ import { OpsReportMaker } from "@bravecredit/brave-sdk/dist/models/ops-report/op
 import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
 import { IEmployer, IMergeReport } from "@bravecredit/brave-sdk/dist/types/merge-report";
 import { WaitlistReport } from "libs/reports/Waitlist/waitlist";
+import { opsBatchWorkerUtil } from "./opsBatchWorkerUtil";
 
 const ses = new SES({ region: "us-east-1" });
 const sns = new SNS({ region: "us-east-2" });
@@ -44,162 +45,64 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   /*===================================*/
   //    waitlist report worker
   /*===================================*/
-  const waitlistReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === ReportNames.WaitlistAnalytics;
-  });
-  console.log(`Received ${waitlistReport.length} waitlist analytics records `);
 
-  if (waitlistReport.length) {
-    const report = new WaitlistReport(waitlistReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let waitlistRes = await opsBatchWorkerUtil(ReportNames.WaitlistAnalytics, WaitlistReport, event);
+  if (waitlistRes) {
+    return waitlistRes;
   }
 
   /*===================================*/
   //    enrollment report worker
   /*===================================*/
-  const enrollmentReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "enrollmentreport";
-  });
-  console.log(`Received ${enrollmentReport.length} enrollmentreport records `);
 
-  if (enrollmentReport.length) {
-    const report = new Enrollment(enrollmentReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let enrollmentRes = await opsBatchWorkerUtil("enrollmentreport", Enrollment, event);
+  if (enrollmentRes) {
+    return enrollmentRes;
   }
 
   /*===================================*/
   //    failed users
   /*===================================*/
-  const failedReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "failurereport";
-  });
-  console.log(`Received ${failedReport.length} failure report records `);
 
-  if (failedReport.length) {
-    const report = new FailedUsers(failedReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let failedUsersRes = await opsBatchWorkerUtil("failurereport", FailedUsers, event);
+  if (failedUsersRes) {
+    return failedUsersRes;
   }
 
   /*===================================*/
   //    actions report
   /*===================================*/
-  const actionsReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "actionsreport";
-  });
-  console.log(`Received ${actionsReport.length} actions report records `);
 
-  if (actionsReport.length) {
-    const report = new Actions(actionsReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let actionsRes = await opsBatchWorkerUtil("actionsreport", Actions, event);
+  if (actionsRes) {
+    return actionsRes;
   }
 
   /*===================================*/
   //    log authentication report
   /*===================================*/
-  const authenticationReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "authenticationcalls";
-  });
-  console.log(`Received ${authenticationReport.length} authentication report records `);
 
-  if (authenticationReport.length) {
-    const report = new Authentication(authenticationReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let authenticationRes = await opsBatchWorkerUtil("authenticationcalls", Authentication, event);
+  if (authenticationRes) {
+    return authenticationRes;
   }
 
   /*===================================*/
   //    monthly login report
   /*===================================*/
-  const monthlyLogInReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "monthlyloginreport";
-  });
-  console.log(`Received ${monthlyLogInReport.length} monthly login report records `);
 
-  if (monthlyLogInReport.length) {
-    const report = new MonthlyLogins(monthlyLogInReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let monthlyLoginRes = await opsBatchWorkerUtil("monthlyloginreport", MonthlyLogins, event);
+  if (monthlyLoginRes) {
+    return monthlyLoginRes;
   }
 
   /*===================================*/
   //    user aggregate metrics report
   /*===================================*/
-  const userAggregateMetrics = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "usermetricsreport";
-  });
-  console.log(`Received ${userAggregateMetrics.length} user aggregate metrics report records `);
 
-  if (userAggregateMetrics.length) {
-    const report = new UserAggregateMetrics(userAggregateMetrics);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let userAggregateMetricsRes = await opsBatchWorkerUtil("usermetricsreport", UserAggregateMetrics, event);
+  if (userAggregateMetricsRes) {
+    return userAggregateMetricsRes;
   }
 
   /*===================================*/
@@ -260,14 +163,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                     ReportNames.UserEmployerAll,
                     batchId,
                     JSON.stringify(schema),
-                    JSON.stringify(r),
+                    JSON.stringify(r)
                   );
                   await OpsReportQueries.createOpReport(ops);
                   counter++;
-                }),
+                })
               );
               return true;
-            }),
+            })
           );
           // send the data to the query
           // get the next start key.
@@ -285,14 +188,14 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
             const emails = STAGE === "dev" ? ["noah@brave.credit"] : ["noah@brave.credit"];
             let params = generateEmailParams(
               `User Employer segment ${segment} of ${totalSegments} total segments finished`,
-              emails,
+              emails
             );
             let transporter = nodemailer.createTransport({
               SES: ses,
             });
             await transporter.sendMail(params);
           }
-        }),
+        })
       );
       const results = {
         success: true,
@@ -313,163 +216,64 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
   /*===================================*/
   //    dispute enrollment report
   /*===================================*/
-  const disputeEnrollmentReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "disputeenrollmentreport";
-  });
-  console.log(`Received ${disputeEnrollmentReport.length} dispute enrollment report records `);
 
-  if (disputeEnrollmentReport.length) {
-    const report = new DisputeEnrollment(disputeEnrollmentReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let disputeEnrollmentRes = await opsBatchWorkerUtil("disputeenrollmentreport", DisputeEnrollment, event);
+  if (disputeEnrollmentRes) {
+    return disputeEnrollmentRes;
   }
 
   /*===================================*/
   //    dispute analytics report
   /*===================================*/
-  const disputeAnalyticReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === ReportNames.DisputeAnalytics;
-  });
-  console.log(`Received ${disputeAnalyticReport.length} dispute analytic report records `);
 
-  if (disputeAnalyticReport.length) {
-    const report = new DisputeAnalyticsReport(disputeAnalyticReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let disputeAnalyticRes = await opsBatchWorkerUtil(ReportNames.DisputeAnalytics, DisputeAnalyticsReport, event);
+  if (disputeAnalyticRes) {
+    return disputeAnalyticRes;
   }
 
   /*===================================*/
   //    failed fulfills report
   /*===================================*/
-  const failedFulfillReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "failedfulfillreport";
-  });
-  console.log(`Received ${failedFulfillReport.length} failed fulfill report records `);
 
-  if (failedFulfillReport.length) {
-    const report = new FailedFulfills(failedFulfillReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let failedFulfillRes = await opsBatchWorkerUtil("failedfulfillreport", FailedFulfills, event);
+  if (failedFulfillRes) {
+    return failedFulfillRes;
   }
 
   /*===================================*/
   //    referrals report
   /*===================================*/
-  const referralsReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === "referralsreport";
-  });
-  console.log(`Received ${referralsReport.length} referrals report records `);
 
-  if (referralsReport.length) {
-    const report = new Referrals(referralsReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let referralsRes = await opsBatchWorkerUtil("referralsreport", Referrals, event);
+  if (referralsRes) {
+    return referralsRes;
   }
 
   /*===================================*/
   //    no report report
   /*===================================*/
 
-  const noReportReport = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === ReportNames.NoReportReport;
-  });
-  console.log(`Received ${noReportReport.length} NoReport report records `);
-
-  if (noReportReport.length) {
-    const report = new NoReportReport(noReportReport);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let noReportRes = await opsBatchWorkerUtil(ReportNames.NoReportReport, NoReportReport, event);
+  if (noReportRes) {
+    return noReportRes;
   }
 
   /*===================================*/
   //    missing dispute keys
   /*===================================*/
-  const missingDisputeKeys = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === ReportNames.MissingDisputeKeys;
-  });
-  console.log(`Received ${missingDisputeKeys.length} missing dispute keys report records `);
 
-  if (missingDisputeKeys.length) {
-    const report = new MissingDisputeKeysReport(missingDisputeKeys);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let missingDisputeRes = await opsBatchWorkerUtil(ReportNames.MissingDisputeKeys, MissingDisputeKeysReport, event);
+  if (missingDisputeRes) {
+    return missingDisputeRes;
   }
 
   /*===================================*/
   //    disputeErrors
   /*===================================*/
-  const disputeErrors = event.Records.map((r) => {
-    return JSON.parse(r.body) as IBatchPayload<IBatchMsg<IAttributeValue>>;
-  }).filter((b) => {
-    return b.service === ReportNames.DisputeErrors;
-  });
-  console.log(`Received ${disputeErrors.length} dispute errors report records `);
 
-  if (disputeErrors.length) {
-    const report = new DisputeErrorsReport(disputeErrors);
-    try {
-      const results = await report.run();
-      return results;
-    } catch (err) {
-      return JSON.stringify({
-        success: false,
-        error: `Unknown server error=${err}`,
-      });
-    }
+  let disputeErrorsRes = await opsBatchWorkerUtil(ReportNames.DisputeErrors, DisputeErrorsReport, event);
+  if (disputeErrorsRes) {
+    return disputeErrorsRes;
   }
 
   /*===================================*/
@@ -518,12 +322,12 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
                   ReportNames.RegistrationsYTD,
                   batchId,
                   JSON.stringify(schema),
-                  JSON.stringify(mapped),
+                  JSON.stringify(mapped)
                 );
                 await OpsReportQueries.createOpReport(ops);
                 counter++;
                 return true;
-              }),
+              })
             );
           }
           // send the data to the query
@@ -538,12 +342,12 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
             const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
               "opsbatch",
               packet,
-              "registeredusersreport",
+              "registeredusersreport"
             );
             const res = await sns.publish(payload).promise();
             console.log("sns resp ==> ", res);
           }
-        }),
+        })
       );
       const results = {
         success: true,

@@ -1,14 +1,7 @@
-import 'reflect-metadata';
-import { Handler } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
-import { PubSubUtil } from 'libs/pubsub/pubsub';
-import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-import { ReportNames } from 'libs/data/reports';
-
-// request.debug = true; import * as request from 'request';
-import { TriggerUtility } from './triggerUtility';
-const sns = new SNS({ region: 'us-east-2' });
-const pubsub = new PubSubUtil();
+import "reflect-metadata";
+import { Handler } from "aws-lambda";
+import { ReportNames } from "libs/data/reports";
+import { triggerReport } from "./triggerUtility";
 
 /**
  * Handler to manually kick off any report
@@ -33,6 +26,5 @@ const pubsub = new PubSubUtil();
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
   const { report } = event as { report: ReportNames };
-  let triggerUtil = new TriggerUtility();
-  return triggerUtil.triggerReport(event, report, 20, process.env.STAGE);
+  return triggerReport(event, report, 20, process.env.STAGE);
 };

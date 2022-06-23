@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Handler } from "aws-lambda";
-import { TriggerUtility } from "./triggerUtility";
-// request.debug = true; import * as request from 'request';
+import { triggerReport } from './triggerUtility';
+import { ReportNames } from "libs/data/reports";
 
 /**
  * Handler that processes single requests for Transunion services
@@ -11,6 +11,5 @@ import { TriggerUtility } from "./triggerUtility";
  * @returns Lambda proxy response
  */
 export const main: Handler<any, any> = async (event: any): Promise<any> => {
-  let triggerUtil = new TriggerUtility();
-  return triggerUtil.triggerReport(event, "failurereport", 20, process.env.STAGE);
+  return triggerReport(event, ReportNames.FailureReport, 20, process.env.STAGE);
 };
