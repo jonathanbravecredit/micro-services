@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: referral-service
+service: referral-service-api
 
 # Create an optimized package for our functions
 package:
@@ -45,7 +45,7 @@ provider:
     ACCOUNT_ID: !Sub "${AWS::AccountId}"
     IDENTITY_ID: "${self:custom.settings.IDENTITY_IDS.${opt:stage}}"
     POOL_ID: "${self:custom.settings.POOL_IDS.${opt:stage}}"
-    REFERRAL_TOPIC_ARN: !ImportValue ReferralsSNSTopicArn
+    REFERRAL_TOPIC_ARN: !ImportValue "referral-service-referrals-sns-topic"
   apiGateway:
     restApiId: !ImportValue web-api-resources-apigw-id
     restApiRootResourceId: !ImportValue web-api-resources-apigw-rootresource
@@ -176,7 +176,7 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn: { "Fn::GetAtt": ["Campaigns", "StreamArn"] }
+          arn: !ImportValue "referral-service-campaigns-stream"
   referralMonitor:
     handler: src/subs/referrals/referrals.main
     onError: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:lambdadeadletterqueue"
@@ -186,9 +186,9 @@ functions:
           type: dynamodb
           batchSize: 100
           startingPosition: LATEST
-          arn: { "Fn::GetAtt": ["Referrals", "StreamArn"] }
+          arn: !ImportValue "referral-service-referrals-stream"
       - sns:
-          arn: !ImportValue ReferralsSNSTopicArn
+          arn: !ImportValue "referral-service-referrals-sns-topic"
           topicName: ${self:provider.stage}-referral-sns-topic
           integration: lambda-proxy
   # campaignActiveMonitor:

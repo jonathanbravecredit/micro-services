@@ -37,8 +37,6 @@ resources:
         TableName: Referrals
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        KinesisStreamSpecification:
-          StreamArn: !ImportValue analytics-raw-data-bucket-arn
 
     Campaigns:
       Type: AWS::DynamoDB::Table

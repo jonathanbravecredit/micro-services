@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OpsReportMaker = exports.OpsReport = exports.BATCHID_REPORTID_INDEX = void 0;
 require("reflect-metadata");
 const dynamo_easy_1 = require("@shiftcoders/dynamo-easy");
-exports.BATCHID_REPORTID_INDEX = 'batchIdReportId-index';
+const uuid_1 = require("uuid");
+exports.BATCHID_REPORTID_INDEX = "batchIdReportId-index";
 let OpsReport = class OpsReport {
 };
 __decorate([
@@ -29,13 +30,13 @@ __decorate([
     __metadata("design:type", String)
 ], OpsReport.prototype, "batchId", void 0);
 OpsReport = __decorate([
-    dynamo_easy_1.Model({ tableName: 'OpsReports' })
+    dynamo_easy_1.Model({ tableName: "OpsReports" })
 ], OpsReport);
 exports.OpsReport = OpsReport;
 class OpsReportMaker {
     constructor(reportId, batchId, schema, record) {
         this.reportId = reportId;
-        this.recordId = new Date().toISOString();
+        this.recordId = `${new Date().valueOf()}_${uuid_1.v4().slice(-8)}`;
         this.batchId = batchId;
         this.schema = schema;
         this.record = record;

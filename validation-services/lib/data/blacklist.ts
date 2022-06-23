@@ -69,6 +69,7 @@ export const BLACKLIST = {
   "game4hr.com": true,
   "scpulse.com": true,
   "knowledgemd.com": true,
+  "serosin.com": true,
 };
 
 export const TLDBLACKLIST = {
