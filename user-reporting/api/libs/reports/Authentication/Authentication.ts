@@ -3,8 +3,8 @@ import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { ReportNames } from 'libs/data/reports';
 import { DynamoDB } from 'aws-sdk';
-import { parallelScanAPIData } from 'libs/queries/api-transaction.queries';
 import { APITransactionLog, OpsReportMaker, OpsReportQueries } from '@bravecredit/brave-sdk';
+import { parallelScan } from '../../db/parallelScanUtil';
 
 export class Authentication extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -16,7 +16,7 @@ export class Authentication extends ReportBase<IBatchMsg<IAttributeValue> | unde
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAPIData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, "APITransactionLog");
   }
 
   async processScan(): Promise<void> {

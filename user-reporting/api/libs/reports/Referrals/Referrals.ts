@@ -1,8 +1,8 @@
+import { parallelScan } from "../../db/parallelScanUtil";
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { ReportNames } from 'libs/data/reports';
-import { parallelScanReferrals } from 'libs/db/referrals';
 import { OpsReportMaker, OpsReportQueries, Referral } from '@bravecredit/brave-sdk';
 
 export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
@@ -15,7 +15,7 @@ export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanReferrals(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, "Referrals");
   }
 
   async processScan(): Promise<void> {

@@ -3,9 +3,9 @@ import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { ReportNames } from 'libs/data/reports';
 import { mapDisputeEnrollmentFields } from 'libs/helpers';
-import { parallelScanAppData } from 'libs/db/appdata';
 import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
 import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import { parallelScan } from '../../db/parallelScanUtil';
 
 export class DisputeEnrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -17,7 +17,7 @@ export class DisputeEnrollment extends ReportBase<IBatchMsg<IAttributeValue> | u
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {

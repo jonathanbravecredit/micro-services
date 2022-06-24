@@ -8,7 +8,6 @@ import { ReportNames } from "libs/data/reports";
 import { PubSubUtil } from "libs/pubsub/pubsub";
 import { getCognitoUsers } from "libs/db/cognito";
 import { IAttributeValue, IBatchCognitoMsg, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
-import { parallelScanAppData } from "libs/db/appdata";
 import { flattenUser, generateEmailParams } from "libs/helpers";
 import { MonthlyLogins } from "libs/reports/MonthlyLogin/MonthlyLogin";
 import { UserAggregateMetrics } from "libs/reports/UserAggregateMetrics/UserAggregateMetrics";
@@ -28,6 +27,7 @@ import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/que
 import { IEmployer, IMergeReport } from "@bravecredit/brave-sdk/dist/types/merge-report";
 import { WaitlistReport } from "libs/reports/Waitlist/waitlist";
 import { opsBatchWorkerUtil } from "./opsBatchWorkerUtil";
+import { parallelScan } from '../../libs/db/parallelScanUtil';
 
 const ses = new SES({ region: "us-east-1" });
 const sns = new SNS({ region: "us-east-2" });
@@ -123,7 +123,7 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
           const message = rec.message;
           const { exclusiveStartKey: esk, segment, totalSegments } = message;
           console.log("message ==> ", message);
-          const scan = await parallelScanAppData(esk, segment, totalSegments);
+          const scan = await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
           await Promise.all(
             scan?.items.map(async (item: any) => {
               //* type is AppData

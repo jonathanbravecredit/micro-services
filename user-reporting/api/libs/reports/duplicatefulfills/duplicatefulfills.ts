@@ -1,6 +1,6 @@
-import { ReportBase } from 'libs/reports/ReportBase';
-import { IAttributeValue, IBatchMsg } from 'libs/interfaces/batch.interfaces';
-import { parallelScanCreditReports } from 'libs/queries/credit-report.queries';
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg } from "libs/interfaces/batch.interfaces";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   results: { userId: string; version: number; createdOn: string }[] = [];
@@ -31,14 +31,14 @@ export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValu
             this.scan = await this.processQuery(params.exclusiveStartKey, params.segment, params.totalSegments);
             await this.processScan();
             params.exclusiveStartKey = this.scan?.lastEvaluatedKey;
-          } while (typeof this.scan?.lastEvaluatedKey != 'undefined');
+          } while (typeof this.scan?.lastEvaluatedKey != "undefined");
           console.log(`segment: ${s} of total segments: ${segments.length}...processed: ${counter}`);
-        }),
+        })
       );
       const results = { success: true, error: null, data: `Ops:batch queued records.` };
       return JSON.stringify(results);
     } catch (err) {
-      console.log('err ===> ', err);
+      console.log("err ===> ", err);
       return JSON.stringify({ success: false, error: { error: `Unknown server error=${err}` } });
     }
   }
@@ -46,9 +46,9 @@ export class DuplicateFulfillsRunner extends ReportBase<IBatchMsg<IAttributeValu
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanCreditReports(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, "CreditReports");
   }
 
   async processScan(): Promise<void> {

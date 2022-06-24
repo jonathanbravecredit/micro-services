@@ -1,8 +1,8 @@
+import { parallelScan } from "../../db/parallelScanUtil";
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
 import { ReportNames } from 'libs/data/reports';
-import { parallelScanAppData } from 'libs/db/appdata';
 import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
 import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
 
@@ -16,7 +16,7 @@ export class Actions extends ReportBase<IBatchMsg<IAttributeValue> | undefined> 
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {
