@@ -49,7 +49,7 @@ export {
   INVESTIGATION_RESULTS_CODE_MAPPING,
   TRANSUNION_CRITICAL_ERRORS,
   TRANSUNION_ERROR_CODES,
-} from './constants';
+} from "./constants";
 
 /*======================*/
 /*        models         */
@@ -141,7 +141,7 @@ export {
   TransunionUtil,
   TransactionData,
   TransactionDataMaker,
-} from './models';
+} from "./models";
 
 /*======================*/
 /*        types         */
@@ -257,7 +257,7 @@ export {
   IVerifyAuthenticationQuestions,
   IVerifyAuthenticationResponseSuccess,
   IVerifyAuthenticationQuestionsResult,
-} from './types';
+} from "./types";
 
 export {
   Homogenize,
@@ -275,4 +275,5 @@ export {
   SessionQueries,
   UserInitiativeQueries,
   TransactionDataQueries,
-} from './utils';
+  PubSubUtil,
+} from "./utils";
