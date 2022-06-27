@@ -22,33 +22,6 @@ export const getAllItemsInDB = async () => {
   return scanResults;
 };
 
-export const parallelScanAppData = async (
-  esk: { [key: string]: AttributeValue } | undefined,
-  segment: number,
-  totalSegments: number,
-): Promise<IEnrollUserBatchMsg | undefined> => {
-  let params: DynamoDB.DocumentClient.ScanInput = {
-    TableName: tableName, // I need a big table for testing
-    ExclusiveStartKey: esk,
-    Segment: segment,
-    TotalSegments: totalSegments,
-  };
-  try {
-    const items: DynamoDB.DocumentClient.ScanOutput = await db.scan(params).promise();
-    const { LastEvaluatedKey, Items } = items;
-    // write the records to the reports table
-    // then write the key back
-    return {
-      lastEvaluatedKey: LastEvaluatedKey,
-      items: Items,
-      segment: segment,
-      totalSegments: totalSegments,
-    };
-  } catch (err) {
-    console.log('err ==> ', err);
-  }
-};
-
 export const getItemInDB = (id: any): Promise<DynamoDB.DocumentClient.GetItemOutput> => {
   const params = {
     Key: {

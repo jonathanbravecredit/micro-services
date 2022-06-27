@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import { ReportBase } from 'libs/reports/ReportBase';
 import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { parallelScanAppData } from 'libs/db/appdata';
 import { mapAcknowledgedFields } from 'libs/helpers';
 import { ReportNames } from 'libs/data/reports';
 import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
+import { parallelScan } from '../../db/parallelScanUtil';
 
 export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -16,7 +16,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {

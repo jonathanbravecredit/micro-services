@@ -4,9 +4,9 @@ import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch
 import { mapSuspendedFields } from 'libs/helpers';
 import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
 import { ReportNames } from 'libs/data/reports';
-import { parallelScanAppData } from 'libs/db/appdata';
 import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
 import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import { parallelScan } from '../../db/parallelScanUtil';
 
 export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -18,7 +18,7 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
     segment: number,
     totalSegments: number,
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {
