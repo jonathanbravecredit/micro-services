@@ -139,4 +139,6 @@ export const FILTERS = {
   cutradition: true,
   inbox: true,
   "killol25.xyz": true,
+  "mahazai.com": true,
+  "giftcv.com": true,
 };
