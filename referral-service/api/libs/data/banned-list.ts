@@ -12,4 +12,8 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   "serosin.com": true,
   "mahazai.com": true,
   "giftcv.com": true,
+  "kahase.com": true,
+  "lenfly.com": true,
+  "jrvps.com": true,
+  "hekarro.com": true,
 };

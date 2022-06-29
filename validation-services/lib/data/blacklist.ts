@@ -70,6 +70,10 @@ export const BLACKLIST = {
   "scpulse.com": true,
   "knowledgemd.com": true,
   "serosin.com": true,
+  "kahase.com": true,
+  "lenfly.com": true,
+  "jrvps.com": true,
+  "hekarro.com": true,
 };
 
 export const TLDBLACKLIST = {
