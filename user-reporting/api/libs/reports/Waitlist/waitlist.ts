@@ -67,7 +67,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         "opsbatch",
         packet,
-        ReportNames.WaitlistAnalytics
+        ReportNames.WaitlistAnalytics, ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log("sns resp ==> ", res);

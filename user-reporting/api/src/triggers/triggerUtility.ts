@@ -1,7 +1,7 @@
 import { IAttributeValue, IBatchMsg } from "../../libs/interfaces/batch.interfaces";
 import { SNS } from "aws-sdk";
-import { PubSubUtil } from 'libs/pubsub/pubsub';
-import { ReportNames } from 'libs/data/reports';
+import { ReportNames } from "libs/data/reports";
+import { PubSubUtil } from "@bravecredit/brave-sdk";
 
 const sns = new SNS({ region: "us-east-2" });
 const pubsub = new PubSubUtil();
@@ -24,7 +24,7 @@ export const triggerReport = async (
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, reportName);
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, reportName, "");
         await sns.publish(payload).promise();
       })
     );

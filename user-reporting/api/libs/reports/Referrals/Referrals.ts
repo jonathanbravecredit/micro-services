@@ -52,7 +52,7 @@ export class Referrals extends ReportBase<IBatchMsg<IAttributeValue> | undefined
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'referralsreport');
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'referralsreport', "");
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }

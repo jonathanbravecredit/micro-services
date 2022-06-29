@@ -57,7 +57,7 @@ export class DisputeEnrollment extends ReportBase<IBatchMsg<IAttributeValue> | u
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        'disputeenrollmentreport',
+        'disputeenrollmentreport', ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);

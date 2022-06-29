@@ -1,10 +1,9 @@
-import 'reflect-metadata';
-import { Handler } from 'aws-lambda';
-import { SNS } from 'aws-sdk';
-import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
-import { IAttributeValue } from 'libs/interfaces/batch.interfaces';
-import { IBatchMsg } from '@bravecredit/brave-sdk';
-const sns = new SNS({ region: 'us-east-2' });
+import "reflect-metadata";
+import { Handler } from "aws-lambda";
+import { SNS } from "aws-sdk";
+import { IAttributeValue } from "libs/interfaces/batch.interfaces";
+import { IBatchMsg, PubSubUtil } from "@bravecredit/brave-sdk";
+const sns = new SNS({ region: "us-east-2" });
 const pubsub = new PubSubUtil();
 
 export const main: Handler = async (): Promise<any> => {
@@ -21,14 +20,14 @@ export const main: Handler = async (): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('mailchimpbatch', packet);
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("mailchimpbatch", packet, "mailchimpbatch", "");
         await sns.publish(payload).promise();
-      }),
+      })
     );
     const results = { success: true, error: null, data: `Mailchimp:batch queued ${counter} records.` };
     return JSON.stringify(results);
   } catch (error) {
-    console.log('merketing error ==> ', error);
+    console.log("merketing error ==> ", error);
     return JSON.stringify({ success: false, error: { error: `Unknown server error=${JSON.stringify(error)}` } });
   }
 };

@@ -55,7 +55,7 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport');
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport', "");
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }

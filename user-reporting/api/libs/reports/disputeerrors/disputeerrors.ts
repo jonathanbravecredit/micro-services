@@ -53,7 +53,7 @@ export class DisputeErrorsReport extends ReportBase<IBatchMsg<IAttributeValue> |
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        ReportNames.DisputeErrors,
+        ReportNames.DisputeErrors, ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);

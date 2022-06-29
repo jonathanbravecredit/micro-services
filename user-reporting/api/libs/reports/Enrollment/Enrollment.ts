@@ -56,7 +56,7 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
         totalSegments: scan.totalSegments,
       };
       console.log('processing next: ', JSON.stringify(packet));
-      const payload = this.pubsub.createSNSPayload<IEnrollUserBatchMsg>('opsbatch', packet, 'enrollmentreport');
+      const payload = this.pubsub.createSNSPayload<IEnrollUserBatchMsg>('opsbatch', packet, 'enrollmentreport', "");
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }

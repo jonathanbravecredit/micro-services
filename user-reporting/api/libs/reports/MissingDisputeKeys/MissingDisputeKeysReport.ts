@@ -55,7 +55,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        ReportNames.MissingDisputeKeys,
+        ReportNames.MissingDisputeKeys, ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);

@@ -61,7 +61,7 @@ export class NoReportReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         'opsbatch',
         packet,
-        ReportNames.NoReportReport,
+        ReportNames.NoReportReport, ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);

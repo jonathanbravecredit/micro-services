@@ -53,7 +53,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'usermetricsreport');
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'usermetricsreport', "");
       const res = await this.sns.publish(payload).promise();
       console.log('sns resp ==> ', res);
     }

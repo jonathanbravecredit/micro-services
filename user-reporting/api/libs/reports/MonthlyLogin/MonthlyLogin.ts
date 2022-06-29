@@ -55,7 +55,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         "opsbatch",
         packet,
-        "monthlyloginreport"
+        "monthlyloginreport", ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log("sns resp ==> ", res);
