@@ -20,7 +20,12 @@ export const main: Handler = async (): Promise<any> => {
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("mailchimpbatch", packet, "mailchimpbatch", "");
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
+          "mailchimpbatch",
+          packet,
+          "mailchimpbatch",
+          process.env.MAILCHIMP_SNS_ARN || ""
+        );
         await sns.publish(payload).promise();
       })
     );

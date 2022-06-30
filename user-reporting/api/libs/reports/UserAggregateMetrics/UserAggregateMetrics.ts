@@ -1,10 +1,10 @@
-import dayjs from 'dayjs';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { ReportNames } from 'libs/data/reports';
-import { UserSummary } from 'libs/utils/UserSummary';
-import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
-import { parallelScan } from '../../db/parallelScanUtil';
+import dayjs from "dayjs";
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
+import { ReportNames } from "libs/data/reports";
+import { UserSummary } from "libs/utils/UserSummary";
+import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from "@bravecredit/brave-sdk";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -14,7 +14,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
     return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
@@ -25,7 +25,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
         const user = new UserSummary(item);
         await user.init();
         user.aggregate();
-        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+        const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
         const record = user.report;
         if (user.userEnrolled) {
@@ -33,7 +33,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
             ReportNames.UserAggregatedMetrics,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record),
+            JSON.stringify(record)
           );
           await OpsReportQueries.createOpReport(ops);
           this.counter++;
@@ -41,7 +41,7 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
         } else {
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -53,9 +53,14 @@ export class UserAggregateMetrics extends ReportBase<IBatchMsg<IAttributeValue> 
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'usermetricsreport', "");
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
+        "opsbatch",
+        packet,
+        "usermetricsreport",
+        process.env.OPSBATCH_SNS_ARN || ""
+      );
       const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      console.log("sns resp ==> ", res);
     }
   }
 }

@@ -1,12 +1,12 @@
-import dayjs from 'dayjs';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { mapSuspendedFields } from 'libs/helpers';
-import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
-import { ReportNames } from 'libs/data/reports';
-import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
-import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
-import { parallelScan } from '../../db/parallelScanUtil';
+import dayjs from "dayjs";
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
+import { mapSuspendedFields } from "libs/helpers";
+import * as enrollmentYTDSchema from "libs/schema/schema_enrolled-user-report.json";
+import { ReportNames } from "libs/data/reports";
+import { OpsReportMaker } from "@bravecredit/brave-sdk/dist/models/ops-report/ops-reports";
+import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -16,7 +16,7 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
     return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
@@ -24,18 +24,18 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: any) => {
-        const failed = item?.status === 'suspended';
+        const failed = item?.status === "suspended";
         const createdAt = item?.createdAt;
-        const inCurrentYear = dayjs(createdAt).isAfter(dayjs('2021-11-30'));
+        const inCurrentYear = dayjs(createdAt).isAfter(dayjs("2021-11-30"));
         if (failed && inCurrentYear) {
-          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+          const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
           const schema = enrollmentYTDSchema;
           const record = mapSuspendedFields(item);
           const ops = new OpsReportMaker(
             ReportNames.FailureYTD,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record),
+            JSON.stringify(record)
           );
           await OpsReportQueries.createOpReport(ops);
           this.counter++;
@@ -43,7 +43,7 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
         } else {
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -55,9 +55,14 @@ export class FailedUsers extends ReportBase<IBatchMsg<IAttributeValue> | undefin
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>('opsbatch', packet, 'failurereport', "");
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
+        "opsbatch",
+        packet,
+        "failurereport",
+        process.env.OPSBATCH_SNS_ARN || ""
+      );
       const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      console.log("sns resp ==> ", res);
     }
   }
 }

@@ -24,7 +24,12 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
             const subject = "transunionenrollment";
             const service = "referralservice";
             const message = newImage;
-            const payload = pubsub.createSNSPayload<UpdateAppDataInput>(subject, message, service, "");
+            const payload = pubsub.createSNSPayload<UpdateAppDataInput>(
+              subject,
+              message,
+              service,
+              process.env.REFERRAL_TOPIC_ARN || ""
+            );
             await sns.publish(payload).promise();
           }
         }

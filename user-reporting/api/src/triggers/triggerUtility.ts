@@ -24,7 +24,7 @@ export const triggerReport = async (
           segment: s,
           totalSegments: segments.length,
         };
-        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, reportName, "");
+        const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, reportName, process.env.OPSBATCH_SNS_ARN || '');
         await sns.publish(payload).promise();
       })
     );

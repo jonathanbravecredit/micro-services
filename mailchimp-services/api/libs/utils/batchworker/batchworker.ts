@@ -183,7 +183,7 @@ export class BatchTagWorker {
         "mailchimpbatch",
         packet,
         "mailchimpbatch",
-        ""
+        process.env.MAILCHIMP_SNS_ARN || ""
       );
       try {
         const res = await this.sns.publish(payload).promise();

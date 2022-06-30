@@ -52,7 +52,7 @@ export class Actions extends ReportBase<IBatchMsg<IAttributeValue> | undefined> 
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, "actionsreport", "");
+      const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, "actionsreport", process.env.OPSBATCH_SNS_ARN || '');
       const res = await this.sns.publish(payload).promise();
       console.log("sns resp ==> ", res);
     }

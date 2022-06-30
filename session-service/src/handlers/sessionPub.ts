@@ -21,7 +21,12 @@ export const main: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent): P
         const service = "referralservice";
         const newImage = DynamoDB.Converter.unmarshall(NewImage) as unknown as Session;
         const message = newImage;
-        const payload = pubsub.createSNSPayload<Session>(subject, message, service, "");
+        const payload = pubsub.createSNSPayload<Session>(
+          subject,
+          message,
+          service,
+          process.env.REFERRAL_TOPIC_ARN || ""
+        );
         await sns.publish(payload).promise();
       })
     );
