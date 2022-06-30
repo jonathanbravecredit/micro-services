@@ -3,9 +3,8 @@ import { SNS } from 'aws-sdk';
 import { SQSEvent, SQSHandler } from 'aws-lambda';
 import { getSecretKey } from 'libs/utils/secrets';
 import { IAttributeValue } from 'libs/interfaces/batch.interfaces';
-import { PubSubUtil } from 'libs/utils/pubsub/pubsub';
 import { BatchTagWorker } from 'libs/utils/batchworker/batchworker';
-import { IBatchMsg, IBatchPayload } from '@bravecredit/brave-sdk';
+import { IBatchMsg, IBatchPayload, PubSubUtil } from '@bravecredit/brave-sdk';
 
 const mailchimpMarketingSKLoc = process.env.MAILCHIMP_MRKT_SECRET_LOCATION || '';
 const POOL = process.env.POOL || '';

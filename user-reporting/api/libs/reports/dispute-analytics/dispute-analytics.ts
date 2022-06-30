@@ -78,7 +78,8 @@ export class DisputeAnalyticsReport extends ReportBase<IBatchMsg<IAttributeValue
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
         "opsbatch",
         packet,
-        ReportNames.DisputeAnalytics
+        ReportNames.DisputeAnalytics,
+        process.env.OPSBATCH_SNS_ARN || ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log("sns resp ==> ", res);

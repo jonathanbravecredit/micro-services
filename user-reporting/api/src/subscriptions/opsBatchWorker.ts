@@ -5,7 +5,6 @@ import { safeParse } from "libs/safeJson";
 import { SNS, SES, CognitoIdentityServiceProvider } from "aws-sdk";
 import { SQSEvent, SQSHandler } from "aws-lambda";
 import { ReportNames } from "libs/data/reports";
-import { PubSubUtil } from "libs/pubsub/pubsub";
 import { getCognitoUsers } from "libs/db/cognito";
 import { IAttributeValue, IBatchCognitoMsg, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
 import { flattenUser, generateEmailParams } from "libs/helpers";
@@ -27,7 +26,8 @@ import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/que
 import { IEmployer, IMergeReport } from "@bravecredit/brave-sdk/dist/types/merge-report";
 import { WaitlistReport } from "libs/reports/Waitlist/waitlist";
 import { opsBatchWorkerUtil } from "./opsBatchWorkerUtil";
-import { parallelScan } from '../../libs/db/parallelScanUtil';
+import { parallelScan } from "../../libs/db/parallelScanUtil";
+import { PubSubUtil } from "@bravecredit/brave-sdk";
 
 const ses = new SES({ region: "us-east-1" });
 const sns = new SNS({ region: "us-east-2" });
@@ -180,7 +180,12 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
               segment: scan.segment,
               totalSegments: scan.totalSegments,
             };
-            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>("opsbatch", packet, "useremployerall");
+            const payload = pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
+              "opsbatch",
+              packet,
+              "useremployerall",
+              process.env.OPSBATCH_SNS_ARN || ""
+            );
             const res = await sns.publish(payload).promise();
             console.log("sns resp ==> ", res);
           } else {
@@ -342,7 +347,8 @@ export const main: SQSHandler = async (event: SQSEvent): Promise<any> => {
             const payload = pubsub.createSNSPayload<IBatchCognitoMsg<string>>(
               "opsbatch",
               packet,
-              "registeredusersreport"
+              "registeredusersreport",
+              process.env.OPSBATCH_SNS_ARN || ""
             );
             const res = await sns.publish(payload).promise();
             console.log("sns resp ==> ", res);

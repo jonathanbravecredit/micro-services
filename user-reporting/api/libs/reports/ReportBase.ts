@@ -1,6 +1,6 @@
 import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
 import { SNS, SES } from "aws-sdk";
-import { PubSubUtil } from "libs/pubsub/pubsub";
+import { PubSubUtil } from "@bravecredit/brave-sdk";
 
 export abstract class ReportBase<B> {
   protected ses = new SES({ region: "us-east-1" });
