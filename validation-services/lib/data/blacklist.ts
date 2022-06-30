@@ -74,6 +74,10 @@ export const BLACKLIST = {
   "lenfly.com": true,
   "jrvps.com": true,
   "hekarro.com": true,
+  "meidir.com": true,
+  "lankew.com": true,
+  "weepm.com": true,
+  "shbiso.com": true,
 };
 
 export const TLDBLACKLIST = {

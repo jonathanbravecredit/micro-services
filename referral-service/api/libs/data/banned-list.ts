@@ -16,4 +16,8 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   "lenfly.com": true,
   "jrvps.com": true,
   "hekarro.com": true,
+  "meidir.com": true,
+  "lankew.com": true,
+  "weepm.com": true,
+  "shbiso.com": true,
 };
