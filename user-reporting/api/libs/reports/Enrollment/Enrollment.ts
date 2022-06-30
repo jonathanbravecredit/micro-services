@@ -1,12 +1,12 @@
-import dayjs from 'dayjs';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { mapEnrollmentFields } from 'libs/helpers';
-import * as enrollmentYTDSchema from 'libs/schema/schema_enrolled-user-report.json';
-import { IEnrollUserBatchMsg } from 'libs/interfaces/enrolled-user-report.interface';
-import { parallelScanAppData } from 'libs/db/appdata';
-import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
-import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
+import dayjs from "dayjs";
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
+import { mapEnrollmentFields } from "libs/helpers";
+import * as enrollmentYTDSchema from "libs/schema/schema_enrolled-user-report.json";
+import { IEnrollUserBatchMsg } from "libs/interfaces/enrolled-user-report.interface";
+import { OpsReportMaker } from "@bravecredit/brave-sdk/dist/models/ops-report/ops-reports";
+import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -16,9 +16,9 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {
@@ -26,24 +26,24 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
       this.scan?.items.map(async (item: any) => {
         const enrolled = item?.agencies?.transunion?.enrolled;
         const enrolledOn = item?.agencies?.transunion?.enrolledOn;
-        const inCurrentYear = dayjs(enrolledOn).isAfter(dayjs('2021-11-30'));
+        const inCurrentYear = dayjs(enrolledOn).isAfter(dayjs("2021-11-30"));
         if (enrolled && inCurrentYear) {
-          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+          const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
           const schema = enrollmentYTDSchema;
           const record = mapEnrollmentFields(item);
-          const ops = new OpsReportMaker('enrollmentYTD', batchId, JSON.stringify(schema), JSON.stringify(record));
+          const ops = new OpsReportMaker("enrollmentYTD", batchId, JSON.stringify(schema), JSON.stringify(record));
           try {
             await OpsReportQueries.createOpReport(ops);
             this.counter++;
             return true;
           } catch (err) {
-            console.log('enrollment report opsreportquery error: ', JSON.stringify(err));
+            console.log("enrollment report opsreportquery error: ", JSON.stringify(err));
             return false;
           }
         } else {
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -55,10 +55,15 @@ export class Enrollment extends ReportBase<IBatchMsg<IAttributeValue> | undefine
         segment: scan.segment,
         totalSegments: scan.totalSegments,
       };
-      console.log('processing next: ', JSON.stringify(packet));
-      const payload = this.pubsub.createSNSPayload<IEnrollUserBatchMsg>('opsbatch', packet, 'enrollmentreport');
+      console.log("processing next: ", JSON.stringify(packet));
+      const payload = this.pubsub.createSNSPayload<IEnrollUserBatchMsg>(
+        "opsbatch",
+        packet,
+        "enrollmentreport",
+        process.env.OPSBATCH_SNS_ARN || ""
+      );
       const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      console.log("sns resp ==> ", res);
     }
   }
 }

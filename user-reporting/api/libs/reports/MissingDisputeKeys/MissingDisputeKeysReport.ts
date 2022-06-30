@@ -1,10 +1,10 @@
-import dayjs from 'dayjs';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { parallelScanAppData } from 'libs/db/appdata';
-import { mapAcknowledgedFields } from 'libs/helpers';
-import { ReportNames } from 'libs/data/reports';
-import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from '@bravecredit/brave-sdk';
+import dayjs from "dayjs";
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
+import { mapAcknowledgedFields } from "libs/helpers";
+import { ReportNames } from "libs/data/reports";
+import { OpsReportMaker, OpsReportQueries, UpdateAppDataInput } from "@bravecredit/brave-sdk";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
@@ -14,9 +14,9 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanAppData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, process.env.APPDATA);
   }
 
   async processScan(): Promise<void> {
@@ -25,14 +25,14 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
         const acked = item?.agencies?.transunion?.acknowledgedDisputeTerms;
         const keys = item?.agencies?.transunion?.disputeEnrollmentKey;
         if (acked && !keys) {
-          const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+          const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
           const schema = {};
           const record = mapAcknowledgedFields(item);
           const ops = new OpsReportMaker(
             ReportNames.MissingDisputeKeys,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record),
+            JSON.stringify(record)
           );
           await OpsReportQueries.createOpReport(ops);
           this.counter++;
@@ -40,7 +40,7 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
         } else {
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -53,12 +53,13 @@ export class MissingDisputeKeysReport extends ReportBase<IBatchMsg<IAttributeVal
         totalSegments: scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-        'opsbatch',
+        "opsbatch",
         packet,
         ReportNames.MissingDisputeKeys,
+        process.env.OPSBATCH_SNS_ARN || ""
       );
       const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      console.log("sns resp ==> ", res);
     }
   }
 }

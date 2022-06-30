@@ -1,14 +1,14 @@
-import dayjs from 'dayjs';
-import { ReportBase } from 'libs/reports/ReportBase';
-import { parallelScanActionData } from 'libs/db/actions';
-import { IAttributeValue, IBatchMsg, IBatchPayload } from 'libs/interfaces/batch.interfaces';
-import { ReportNames } from 'libs/data/reports';
-import { OpsReportMaker } from '@bravecredit/brave-sdk/dist/models/ops-report/ops-reports';
-import { OpsReportQueries } from '@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries';
-import { Analytic } from '@bravecredit/brave-sdk/dist/models/analytic/analytic';
+import dayjs from "dayjs";
+import { ReportBase } from "libs/reports/ReportBase";
+import { IAttributeValue, IBatchMsg, IBatchPayload } from "libs/interfaces/batch.interfaces";
+import { ReportNames } from "libs/data/reports";
+import { OpsReportMaker } from "@bravecredit/brave-sdk/dist/models/ops-report/ops-reports";
+import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
+import { Analytic } from "@bravecredit/brave-sdk/dist/models/analytic/analytic";
+import { parallelScan } from "../../db/parallelScanUtil";
 
 export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undefined> {
-  private month = dayjs(new Date()).add(-1, 'month').format('YYYY-MM');
+  private month = dayjs(new Date()).add(-1, "month").format("YYYY-MM");
   constructor(records: IBatchPayload<IBatchMsg<IAttributeValue>>[]) {
     super(records);
   }
@@ -16,23 +16,23 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanActionData(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, "Analytics");
   }
 
   async processScan(): Promise<void> {
     await Promise.all(
       this.scan?.items.map(async (item: Analytic) => {
-        const batchId = dayjs(new Date()).add(-5, 'hours').format('YYYY-MM-DD');
+        const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
         const record = item;
-        if (dayjs(item.createdOn).format('YYYY-MM') === this.month && item.event === 'user_log_in') {
+        if (dayjs(item.createdOn).format("YYYY-MM") === this.month && item.event === "user_log_in") {
           const ops = new OpsReportMaker(
             ReportNames.MonthlyLogIn,
             batchId,
             JSON.stringify(schema),
-            JSON.stringify(record),
+            JSON.stringify(record)
           );
           await OpsReportQueries.createOpReport(ops);
           this.counter++;
@@ -40,7 +40,7 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
         } else {
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -53,12 +53,13 @@ export class MonthlyLogins extends ReportBase<IBatchMsg<IAttributeValue> | undef
         totalSegments: scan.totalSegments,
       };
       const payload = this.pubsub.createSNSPayload<IBatchMsg<IAttributeValue>>(
-        'opsbatch',
+        "opsbatch",
         packet,
-        'monthlyloginreport',
+        "monthlyloginreport",
+        process.env.OPSBATCH_SNS_ARN || ""
       );
       const res = await this.sns.publish(payload).promise();
-      console.log('sns resp ==> ', res);
+      console.log("sns resp ==> ", res);
     }
   }
 }

@@ -16,4 +16,7 @@ export enum ReportNames {
   DisputeErrors = "disputeerrors",
   DisputeAnalytics = "disputeanalytics",
   WaitlistAnalytics = "waitlistanalytics",
+  ReferralsReport = "referralsreport",
+  FailureReport = "failurereport",
+  EnrollmentReport = "enrollmentreport",
 }

@@ -9,4 +9,5 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   "game4hr.com": true,
   "scpulse.com": true,
   "knowledgemd.com": true,
+  "serosin.com": true,
 };

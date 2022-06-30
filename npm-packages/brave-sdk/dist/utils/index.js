@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TransactionDataQueries = exports.UserInitiativeQueries = exports.SessionQueries = exports.ReferralQueries = exports.OpsReportQueries = exports.InvestigationResultQueries = exports.CreditScoreQueries = exports.CreditReportQueries = exports.CampaignQueries = exports.APITransactionLogQueries = exports.APIErrorLogQueries = exports.AnalyticQueries = exports.AdsQueries = exports.Nested = exports.Homogenize = void 0;
+exports.PubSubUtil = exports.TransactionDataQueries = exports.UserInitiativeQueries = exports.SessionQueries = exports.ReferralQueries = exports.OpsReportQueries = exports.InvestigationResultQueries = exports.CreditScoreQueries = exports.CreditReportQueries = exports.CampaignQueries = exports.APITransactionLogQueries = exports.APIErrorLogQueries = exports.AnalyticQueries = exports.AdsQueries = exports.Nested = exports.Homogenize = void 0;
 var homogenize_data_1 = require("./homogenize/homogenize-data");
 Object.defineProperty(exports, "Homogenize", { enumerable: true, get: function () { return homogenize_data_1.Homogenize; } });
 var nested_1 = require("./nested/nested");
@@ -19,3 +19,5 @@ Object.defineProperty(exports, "ReferralQueries", { enumerable: true, get: funct
 Object.defineProperty(exports, "SessionQueries", { enumerable: true, get: function () { return dynamodb_1.SessionQueries; } });
 Object.defineProperty(exports, "UserInitiativeQueries", { enumerable: true, get: function () { return dynamodb_1.UserInitiativeQueries; } });
 Object.defineProperty(exports, "TransactionDataQueries", { enumerable: true, get: function () { return dynamodb_1.TransactionDataQueries; } });
+var pubsub_1 = require("./pubsub/pubsub");
+Object.defineProperty(exports, "PubSubUtil", { enumerable: true, get: function () { return pubsub_1.PubSubUtil; } });

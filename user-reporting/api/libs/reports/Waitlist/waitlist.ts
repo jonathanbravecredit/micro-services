@@ -1,10 +1,10 @@
+import { parallelScan } from "../../db/parallelScanUtil";
 import { OpsReportMaker } from "@bravecredit/brave-sdk/dist/models/ops-report/ops-reports";
 import { Waitlist } from "@bravecredit/brave-sdk/dist/models/waitlist/waitlist";
 import { IBatchMsg, IBatchPayload } from "@bravecredit/brave-sdk/dist/types/batch";
 import { OpsReportQueries } from "@bravecredit/brave-sdk/dist/utils/dynamodb/queries/ops-report.queries";
 import dayjs from "dayjs";
 import { ReportNames } from "libs/data/reports";
-import { parallelScanWaitlist } from "libs/db/waitlist";
 import { IAttributeValue } from "libs/interfaces/batch.interfaces";
 import { ReportBase } from "libs/reports/ReportBase";
 
@@ -16,9 +16,9 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
   async processQuery(
     esk: IAttributeValue | undefined,
     segment: number,
-    totalSegments: number,
+    totalSegments: number
   ): Promise<IBatchMsg<IAttributeValue> | undefined> {
-    return await parallelScanWaitlist(esk, segment, totalSegments);
+    return await parallelScan(esk, segment, totalSegments, "Waitlist");
   }
 
   async processScan(): Promise<void> {
@@ -26,7 +26,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
       this.scan?.items?.map(async (item: Waitlist) => {
         const batchId = dayjs(new Date()).add(-5, "hours").format("YYYY-MM-DD");
         const schema = {};
-        const { id, firstName, lastName, phone, email, referralCode, referredByCode = "" } = item;
+        const { id, firstName, lastName, phone, email, referralCode, referredByCode = "", createdOn } = item;
         const ops = new OpsReportMaker(
           ReportNames.WaitlistAnalytics,
           batchId,
@@ -39,7 +39,8 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
             email: email,
             referralCode: referralCode,
             referredByCode: referredByCode,
-          }),
+            createdOn: createdOn,
+          })
         );
         console.log("Report Ops: ", ops);
         try {
@@ -50,7 +51,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
           console.error("OpsReport Query Error: ", JSON.stringify(err));
           return false;
         }
-      }),
+      })
     );
   }
 
@@ -67,6 +68,7 @@ export class WaitlistReport extends ReportBase<IBatchMsg<IAttributeValue> | unde
         "opsbatch",
         packet,
         ReportNames.WaitlistAnalytics,
+        process.env.OPSBATCH_SNS_ARN || ""
       );
       const res = await this.sns.publish(payload).promise();
       console.log("sns resp ==> ", res);

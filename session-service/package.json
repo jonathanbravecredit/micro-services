@@ -26,6 +26,7 @@
     "serverless-offline": "*"
   },
   "dependencies": {
+    "@bravecredit/brave-sdk": "^1.0.28",
     "@shiftcoders/dynamo-easy": "*",
     "ajv": "7.0.2",
     "csvjson": "*",
