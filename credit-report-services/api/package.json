@@ -33,7 +33,7 @@
     "serverless-offline": "^8.3.1"
   },
   "dependencies": {
-    "@bravecredit/brave-sdk": "^1.0.22",
+    "@bravecredit/brave-sdk": "^1.0.28",
     "@shiftcoders/dynamo-easy": "^7.1.0",
     "@types/lodash": "^4.14.182",
     "ajv": "^7.0.2",

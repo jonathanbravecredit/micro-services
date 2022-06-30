@@ -1,5 +1,5 @@
-export { Homogenize } from './homogenize/homogenize-data';
-export { Nested } from './nested/nested';
+export { Homogenize } from "./homogenize/homogenize-data";
+export { Nested } from "./nested/nested";
 export {
   AdsQueries,
   AnalyticQueries,
@@ -14,4 +14,5 @@ export {
   SessionQueries,
   UserInitiativeQueries,
   TransactionDataQueries,
-} from './dynamodb';
+} from "./dynamodb";
+export { PubSubUtil } from "./pubsub/pubsub";
