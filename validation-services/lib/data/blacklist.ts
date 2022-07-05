@@ -78,6 +78,12 @@ export const BLACKLIST = {
   "lankew.com": true,
   "weepm.com": true,
   "shbiso.com": true,
+  "xcapitalhg.com": true,
+  "xprozacno.com": true,
+  "nfkeepingz.com": true,
+  "cchancesg.com": true,
+  "proceedwky.com": true,
+  "swimminggkm.com": true,
 };
 
 export const TLDBLACKLIST = {
