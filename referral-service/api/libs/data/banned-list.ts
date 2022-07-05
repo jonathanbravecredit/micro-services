@@ -20,4 +20,10 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   "lankew.com": true,
   "weepm.com": true,
   "shbiso.com": true,
+  "xcapitalhg.com": true,
+  "xprozacno.com": true,
+  "nfkeepingz.com": true,
+  "cchancesg.com": true,
+  "proceedwky.com": true,
+  "swimminggkm.com": true,
 };
