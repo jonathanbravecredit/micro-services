@@ -84,6 +84,7 @@ export const BLACKLIST = {
   "cchancesg.com": true,
   "proceedwky.com": true,
   "swimminggkm.com": true,
+  "nmappingqk": true,
 };
 
 export const TLDBLACKLIST = {
