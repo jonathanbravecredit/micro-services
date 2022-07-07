@@ -84,7 +84,9 @@ export const BLACKLIST = {
   "cchancesg.com": true,
   "proceedwky.com": true,
   "swimminggkm.com": true,
-  "nmappingqk": true,
+  "nmappingqk.com": true,
+  "mahazai.com": true,
+  "giftcv.com": true,
 };
 
 export const TLDBLACKLIST = {
@@ -153,7 +155,4 @@ export const FILTERS = {
   siberpay: true,
   cutradition: true,
   inbox: true,
-  "killol25.xyz": true,
-  "mahazai.com": true,
-  "giftcv.com": true,
 };

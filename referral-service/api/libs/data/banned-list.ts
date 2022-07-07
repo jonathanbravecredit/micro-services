@@ -26,5 +26,5 @@ export const BANNED_DOMAINS: Record<string, boolean> = {
   "cchancesg.com": true,
   "proceedwky.com": true,
   "swimminggkm.com": true,
-  "nmappingqk": true,
+  "nmappingqk.com": true,
 };
