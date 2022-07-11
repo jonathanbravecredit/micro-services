@@ -87,6 +87,7 @@ export const BLACKLIST = {
   "nmappingqk.com": true,
   "mahazai.com": true,
   "giftcv.com": true,
+  "sktzmobile.com": true,
 };
 
 export const TLDBLACKLIST = {
