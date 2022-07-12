@@ -37,6 +37,8 @@ resources:
         TableName: Referrals
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+        KinesisStreamSpecification:
+          StreamArn: !ImportValue data-analytics-kinesis-stream-arn
 
     Campaigns:
       Type: AWS::DynamoDB::Table
@@ -55,6 +57,8 @@ resources:
         TableName: Campaigns
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+        KinesisStreamSpecification:
+          StreamArn: !ImportValue data-analytics-kinesis-stream-arn
 
   Outputs:
     ReferralsTable:

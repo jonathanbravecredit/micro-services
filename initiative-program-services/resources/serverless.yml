@@ -15,19 +15,21 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'id'
-            AttributeType: 'S'
-          - AttributeName: 'program'
-            AttributeType: 'S'
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "program"
+            AttributeType: "S"
         KeySchema:
-          - AttributeName: 'id'
-            KeyType: 'HASH'
-          - AttributeName: 'program'
-            KeyType: 'RANGE'
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "program"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
         TableName: InitiativePrograms
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+        KinesisStreamSpecification:
+          StreamArn: !ImportValue data-analytics-kinesis-stream-arn
 
     InitiativeProgramSNSTopic:
       Type: AWS::SNS::Topic
@@ -43,7 +45,7 @@ resources:
 
     # Create our 'MailchimpQueue' SQS queue
     InitiativeProgramQueue:
-      Type: 'AWS::SQS::Queue'
+      Type: "AWS::SQS::Queue"
       Properties:
         QueueName: ${self:provider.stage}-initiative-program-sqs
         ReceiveMessageWaitTimeSeconds: 20
@@ -58,24 +60,24 @@ resources:
       Type: AWS::SQS::QueuePolicy
       Properties:
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Sid: 'allow-sns-messages'
+            - Sid: "allow-sns-messages"
               Effect: Allow
-              Principal: '*'
+              Principal: "*"
               Resource: !GetAtt
                 - InitiativeProgramQueue
                 - Arn
-              Action: 'SQS:SendMessage'
+              Action: "SQS:SendMessage"
               Condition:
                 ArnEquals:
-                  'aws:SourceArn': !Ref InitiativeProgramSNSTopic
+                  "aws:SourceArn": !Ref InitiativeProgramSNSTopic
         Queues:
           - Ref: InitiativeProgramQueue
 
     # Create the subscription to the 'queue
     InitiativeProgramQueueSubscription:
-      Type: 'AWS::SNS::Subscription'
+      Type: "AWS::SNS::Subscription"
       Properties:
         TopicArn: !Ref InitiativeProgramSNSTopic
         Endpoint: !GetAtt
@@ -85,25 +87,25 @@ resources:
         FilterPolicy:
           service:
             - initiativeprogram
-        RawMessageDelivery: 'true'
+        RawMessageDelivery: "true"
 
   Outputs:
     InitiativeProgramTable:
-      Description: 'Initiative program table'
+      Description: "Initiative program table"
       Value: !Ref InitiativePrograms
       Export:
-        Name: !Sub '${self:service}-table'
+        Name: !Sub "${self:service}-table"
     InitiativeProgramTableStreamArn:
-      Value: { 'Fn::GetAtt': ['InitiativePrograms', 'StreamArn'] }
+      Value: { "Fn::GetAtt": ["InitiativePrograms", "StreamArn"] }
       Export:
-        Name: !Sub '${self:service}-stream'
+        Name: !Sub "${self:service}-stream"
     InitiativeProgramQueueArn:
-      Description: 'Initiative program queue ARN'
+      Description: "Initiative program queue ARN"
       Value: !GetAtt InitiativeProgramQueue.Arn
       Export:
-        Name: !Sub '${self:service}-sqs-arn'
+        Name: !Sub "${self:service}-sqs-arn"
     InitiativeProgramTopicArn:
-      Description: 'Initiative program SNS ARN'
+      Description: "Initiative program SNS ARN"
       Value: !Ref InitiativeProgramSNSTopic
       Export:
-        Name: !Sub '${self:service}-sns-arn'
+        Name: !Sub "${self:service}-sns-arn"

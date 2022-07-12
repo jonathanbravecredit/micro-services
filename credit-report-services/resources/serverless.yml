@@ -4,15 +4,15 @@ service: credit-report-service-resources
 custom:
   settings:
     IDENTITY_IDS:
-      dev: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      qa: 'us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612'
-      staging: 'us-east-2:211dd2a1-db37-4632-a4da-d05c08a80c47'
-      prod: 'us-east-2:ea31caf7-0945-4607-a3c4-0c9942967a32'
+      dev: "us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612"
+      qa: "us-east-2:69169c15-c0c4-4e0b-886c-4afab307e612"
+      staging: "us-east-2:211dd2a1-db37-4632-a4da-d05c08a80c47"
+      prod: "us-east-2:ea31caf7-0945-4607-a3c4-0c9942967a32"
     POOL_IDS:
-      dev: 'us-east-2_beTcykTM9'
-      qa: 'us-east-2_beTcykTM9'
-      staging: 'us-east-2_80pbK9Kx7'
-      prod: 'us-east-2_R22DawoAR'
+      dev: "us-east-2_beTcykTM9"
+      qa: "us-east-2_beTcykTM9"
+      staging: "us-east-2_80pbK9Kx7"
+      prod: "us-east-2_R22DawoAR"
 
 provider:
   name: aws
@@ -22,8 +22,24 @@ provider:
   environment:
     OUR_ENV: ${self:provider.stage}
   vpc:
-    securityGroupIds: { 'Fn::Split': [',', { 'Fn::ImportValue': 'agency-services-transunion-vpc-natsecuritygroup' }] }
-    subnetIds: { 'Fn::Split': [',', { 'Fn::ImportValue': 'agency-services-transunion-subnets-private' }] }
+    securityGroupIds:
+      {
+        "Fn::Split":
+          [
+            ",",
+            {
+              "Fn::ImportValue": "agency-services-transunion-vpc-natsecuritygroup",
+            },
+          ],
+      }
+    subnetIds:
+      {
+        "Fn::Split":
+          [
+            ",",
+            { "Fn::ImportValue": "agency-services-transunion-subnets-private" },
+          ],
+      }
 
 resources:
   Resources:
@@ -31,19 +47,21 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: 'userId'
-            AttributeType: 'S'
-          - AttributeName: 'version'
-            AttributeType: 'N'
+          - AttributeName: "userId"
+            AttributeType: "S"
+          - AttributeName: "version"
+            AttributeType: "N"
         KeySchema:
-          - AttributeName: 'userId'
-            KeyType: 'HASH'
-          - AttributeName: 'version'
-            KeyType: 'RANGE'
+          - AttributeName: "userId"
+            KeyType: "HASH"
+          - AttributeName: "version"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
         TableName: CreditReports
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+        KinesisStreamSpecification:
+          StreamArn: !ImportValue data-analytics-kinesis-stream-arn
 
     CreditReportsSNSTopic:
       Type: AWS::SNS::Topic
@@ -64,7 +82,7 @@ resources:
 
     # Create our 'MailchimpQueue' SQS queue
     CreditReportsQueue:
-      Type: 'AWS::SQS::Queue'
+      Type: "AWS::SQS::Queue"
       Properties:
         QueueName: ${self:provider.stage}-credit-reports-sqs
         ReceiveMessageWaitTimeSeconds: 20
@@ -79,24 +97,24 @@ resources:
       Type: AWS::SQS::QueuePolicy
       Properties:
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Sid: 'allow-sns-messages'
+            - Sid: "allow-sns-messages"
               Effect: Allow
-              Principal: '*'
+              Principal: "*"
               Resource: !GetAtt
                 - CreditReportsQueue
                 - Arn
-              Action: 'SQS:SendMessage'
+              Action: "SQS:SendMessage"
               Condition:
                 ArnEquals:
-                  'aws:SourceArn': !Ref CreditReportsSNSTopic
+                  "aws:SourceArn": !Ref CreditReportsSNSTopic
         Queues:
           - Ref: CreditReportsQueue
 
     # Create the subscription to the 'queue
     CreditReportsQueueSubscription:
-      Type: 'AWS::SNS::Subscription'
+      Type: "AWS::SNS::Subscription"
       Properties:
         TopicArn: !Ref CreditReportsSNSTopic
         Endpoint: !GetAtt
@@ -106,30 +124,30 @@ resources:
         FilterPolicy:
           service:
             - creditreports
-        RawMessageDelivery: 'true'
+        RawMessageDelivery: "true"
 
   Outputs:
     CreditReportsTable:
-      Description: 'Credit reports table'
+      Description: "Credit reports table"
       Value: !Ref CreditReports
       Export:
-        Name: !Sub '${self:service}-table'
+        Name: !Sub "${self:service}-table"
     CreditReportsTableStreamArn:
-      Value: { 'Fn::GetAtt': ['CreditReports', 'StreamArn'] }
+      Value: { "Fn::GetAtt": ["CreditReports", "StreamArn"] }
       Export:
-        Name: !Sub '${self:service}-stream'
+        Name: !Sub "${self:service}-stream"
     CreditReportsQueueArn:
-      Description: 'Credit reports queue ARN'
+      Description: "Credit reports queue ARN"
       Value: !GetAtt CreditReportsQueue.Arn
       Export:
-        Name: !Sub '${self:service}-sqs-arn'
+        Name: !Sub "${self:service}-sqs-arn"
     CreditReportTopicArn:
-      Description: 'Credit reports SNS ARN'
+      Description: "Credit reports SNS ARN"
       Value: !Ref CreditReportsSNSTopic
       Export:
-        Name: !Sub '${self:service}-sns-arn'
+        Name: !Sub "${self:service}-sns-arn"
     CreditReportMetricsTopicArn:
-      Description: 'Credit report metrics SNS ARN'
+      Description: "Credit report metrics SNS ARN"
       Value: !Ref CreditReportMetricsSNSTopic
       Export:
-        Name: !Sub '${self:service}-metrics-sns-arn'
+        Name: !Sub "${self:service}-metrics-sns-arn"
