@@ -17,10 +17,11 @@ export const main: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent):
     const { data } = await axios.get(url);
     const geolocation: IIpStackResponse = data;
     console.log('resp ===> ', geolocation);
-    const result =
-      geolocation.country_code === 'US'
-        ? { success: true, result: 'US country code' }
-        : { success: false, result: 'non-US country code' };
+    const result = { success: true, result: 'US country code' }
+    // const result =
+    //   geolocation.country_code === 'US'
+    //     ? { success: true, result: 'US country code' }
+    //     : { success: false, result: 'non-US country code' };
     return response(200, result);
   } catch (err) {
     const errHandler = new IpStackErrorHandler(err, ipaddress);
