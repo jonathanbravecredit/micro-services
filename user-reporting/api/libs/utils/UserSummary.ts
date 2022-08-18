@@ -397,7 +397,7 @@ export class UserSummary {
   parseCreditScore(report: IMergeReport): number | null {
     if (!report) return null;
     const creditScore = report.TrueLinkCreditReportType?.Borrower?.CreditScore;
-    const riskScore = creditScore[0].riskScore || null;
+    const riskScore = creditScore[0]?.riskScore || null;
     const value = +`${riskScore}`;
     if (isNaN(value)) return 0;
     return +value || 0;
